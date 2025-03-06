@@ -2,6 +2,7 @@
 from flask import Flask
 from google.cloud.sql.connector import Connector
 import sqlalchemy
+import json
 
 app = Flask(__name__)
 
@@ -40,8 +41,12 @@ def get_users():
     try:
         with pool.connect() as conn:
             rows = conn.execute(sqlalchemy.text("SELECT * FROM competition"))
-            results = [dict(row) for row in rows]
-        return {"users": results}
+            results = []
+            for row in rows:
+                print(type(row))
+                results.append(row._asdict())
+            results = json.dumps(results)
+        return {"competitions": results}
     except Exception as e:
         return {"error": str(e)}, 500
 
