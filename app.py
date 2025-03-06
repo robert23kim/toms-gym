@@ -16,9 +16,9 @@ def getconn():
     conn = connector.connect(
         "toms-gym:us-east1:my-db",  # project-id:region:instance-name
         "pg8000",
-        user="my_user",
-        password="tomsgym",
-        db="my-db"
+        user="postgres",
+        password="test",
+        db="competition"
     )
     return conn
 
@@ -39,7 +39,7 @@ def get_users():
     """
     try:
         with pool.connect() as conn:
-            rows = conn.execute(sqlalchemy.text("SELECT * FROM users"))
+            rows = conn.execute(sqlalchemy.text("SELECT * FROM competition"))
             results = [dict(row) for row in rows]
         return {"users": results}
     except Exception as e:
