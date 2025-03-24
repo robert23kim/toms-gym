@@ -1,4 +1,3 @@
-
 import React from "react";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
@@ -93,21 +92,21 @@ const About = () => {
                 name: "Tom Oka",
                 role: "Founder & CEO",
                 bio: "Experienced software engineer and powerlifting enthusiast with a vision to revolutionize online competitions.",
-                avatar: "/placeholder.svg",
+                avatar: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952",
                 initials: "TO"
               },
               {
                 name: "Rob Kim",
                 role: "Head of Technology",
                 bio: "Technical leader with a passion for building scalable platforms that connect athletes worldwide.",
-                avatar: "/placeholder.svg",
+                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
                 initials: "RK"
               },
               {
                 name: "Jess Hum",
                 role: "Community Manager",
                 bio: "Former competitive lifter focused on building an inclusive and supportive community of athletes.",
-                avatar: "/placeholder.svg",
+                avatar: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
                 initials: "JH"
               }
             ].map((member) => (
@@ -129,4 +128,3 @@ const About = () => {
 };
 
 export default About;
-
