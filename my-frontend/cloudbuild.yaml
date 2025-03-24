@@ -1,0 +1,19 @@
+steps:
+  - name: 'node:18-alpine'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        npm ci --no-audit --prefer-offline && npm run build
+
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      "build", 
+      "-t", "gcr.io/toms-gym/my-frontend:latest",
+      "--cache-from=gcr.io/toms-gym/my-frontend:cache",
+      "--cache-to=type=registry,ref=gcr.io/toms-gym/my-frontend:cache",
+      "."
+    ]
+
+images:
+  - "gcr.io/toms-gym/my-frontend:latest"
