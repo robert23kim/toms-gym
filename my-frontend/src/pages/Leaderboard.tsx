@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { competitions } from '../lib/data';
@@ -9,16 +9,32 @@ type LiftCategory = 'squat' | 'bench' | 'deadlift' | 'total';
 const Leaderboard = () => {
   const [activeCategory, setActiveCategory] = useState<LiftCategory>('total');
   const [selectedWeightClass, setSelectedWeightClass] = useState<string>('all');
+  const [selectedLocation, setSelectedLocation] = useState<string>('all');
+
+  // Get all participants and their locations
+  const { allParticipants, locations } = useMemo(() => {
+    const participants = competitions.flatMap(c => 
+      c.participants.map(p => ({
+        ...p,
+        location: c.location // Add competition location to participant
+      }))
+    );
+    
+    const uniqueLocations = Array.from(
+      new Set(competitions.map(c => c.location))
+    ).sort();
+
+    return { allParticipants: participants, locations: uniqueLocations };
+  }, []);
 
   // Get all unique weight classes
-  const weightClasses = Array.from(
-    new Set(competitions.flatMap(c => c.participants.map(p => p.weightClass)))
-  ).sort();
+  const weightClasses = useMemo(() => 
+    Array.from(
+      new Set(allParticipants.map(p => p.weightClass))
+    ).sort()
+  , [allParticipants]);
 
-  // Get all participants across competitions
-  const allParticipants = competitions.flatMap(c => c.participants);
-
-  // Filter and sort participants based on active category and weight class
+  // Filter and sort participants based on active category, weight class, and location
   const getFilteredAndSortedParticipants = () => {
     let filtered = allParticipants;
     
@@ -26,12 +42,16 @@ const Leaderboard = () => {
       filtered = filtered.filter(p => p.weightClass === selectedWeightClass);
     }
 
+    if (selectedLocation !== 'all') {
+      filtered = filtered.filter(p => p.location === selectedLocation);
+    }
+
     return filtered.sort((a, b) => {
       if (activeCategory === 'total') {
         return (b.totalWeight || 0) - (a.totalWeight || 0);
       }
       
-      const getMaxLift = (participant: Participant, type: LiftCategory) => {
+      const getMaxLift = (participant: Participant & { location: string }, type: LiftCategory) => {
         return participant.attempts?.[type]?.reduce((max, current) => Math.max(max, current), 0) || 0;
       };
 
@@ -73,18 +93,33 @@ const Leaderboard = () => {
             ))}
           </div>
 
-          <select
-            value={selectedWeightClass}
-            onChange={(e) => setSelectedWeightClass(e.target.value)}
-            className="px-4 py-2 rounded-full bg-secondary text-foreground"
-          >
-            <option value="all">All Weight Classes</option>
-            {weightClasses.map((weightClass) => (
-              <option key={weightClass} value={weightClass}>
-                {weightClass}
-              </option>
-            ))}
-          </select>
+          <div className="flex gap-2">
+            <select
+              value={selectedWeightClass}
+              onChange={(e) => setSelectedWeightClass(e.target.value)}
+              className="px-4 py-2 rounded-full bg-secondary text-foreground"
+            >
+              <option value="all">All Weight Classes</option>
+              {weightClasses.map((weightClass) => (
+                <option key={weightClass} value={weightClass}>
+                  {weightClass}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+              className="px-4 py-2 rounded-full bg-secondary text-foreground"
+            >
+              <option value="all">All Locations</option>
+              {locations.map((location) => (
+                <option key={location} value={location}>
+                  {location}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
 
         <div className="glass rounded-lg overflow-hidden">
@@ -96,6 +131,7 @@ const Leaderboard = () => {
                   <th className="px-6 py-4 text-left">Athlete</th>
                   <th className="px-6 py-4 text-left">Weight Class</th>
                   <th className="px-6 py-4 text-left">Country</th>
+                  <th className="px-6 py-4 text-left">Location</th>
                   <th className="px-6 py-4 text-right">Best {activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}</th>
                 </tr>
               </thead>
@@ -128,6 +164,7 @@ const Leaderboard = () => {
                       </td>
                       <td className="px-6 py-4">{participant.weightClass}</td>
                       <td className="px-6 py-4">{participant.country}</td>
+                      <td className="px-6 py-4">{participant.location}</td>
                       <td className="px-6 py-4 text-right font-medium">
                         {bestLift ? `${bestLift}kg` : 'N/A'}
                       </td>

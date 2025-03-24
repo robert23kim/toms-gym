@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Dumbbell } from "lucide-react";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -30,20 +30,21 @@ const Navbar: React.FC = () => {
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
         isScrolled
-          ? "bg-white/80 backdrop-blur-md border-b border-border/40 shadow-sm"
+          ? "bg-background/80 backdrop-blur-md border-b border-border/40 shadow-sm"
           : "bg-transparent"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          <Link to="/" className="flex items-center space-x-2">
+          <Link to="/" className="flex items-center space-x-3">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.3 }}
-              className="font-semibold text-xl tracking-tight"
+              className="flex items-center gap-2"
             >
-              Liftopia
+              <Dumbbell size={28} className="text-accent" />
+              <span className="font-bold text-xl tracking-tight">Tom's Gym</span>
             </motion.div>
           </Link>
 
@@ -65,7 +66,7 @@ const Navbar: React.FC = () => {
           <div className="flex md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-gray-500 hover:text-gray-700 focus:outline-none"
+              className="text-foreground/70 hover:text-foreground focus:outline-none"
               aria-label="Toggle menu"
             >
               {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -81,7 +82,7 @@ const Navbar: React.FC = () => {
           animate={{ opacity: 1, height: "auto" }}
           exit={{ opacity: 0, height: 0 }}
           transition={{ duration: 0.3 }}
-          className="md:hidden bg-white/95 backdrop-blur-md border-b border-border/40"
+          className="md:hidden bg-background/95 backdrop-blur-md border-b border-border/40"
         >
           <div className="px-4 py-3 space-y-2">
             {["Home", "Competitions", "Leaderboard", "Athletes", "About"].map((item) => (
@@ -92,7 +93,7 @@ const Navbar: React.FC = () => {
                   (item === "Home" && location.pathname === "/") ||
                   (item !== "Home" && location.pathname.includes(item.toLowerCase()))
                     ? "text-accent font-semibold"
-                    : "text-gray-700 hover:text-accent hover:bg-gray-50"
+                    : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
                 }`}
               >
                 {item}
@@ -122,7 +123,7 @@ const NavLink: React.FC<NavLinkProps> = ({ to, label, isActive, delay = 0 }) => 
       <Link
         to={to}
         className={`relative px-1 py-2 transition-colors duration-200 ${
-          isActive ? "text-accent font-medium" : "text-foreground hover:text-accent"
+          isActive ? "text-accent font-medium" : "text-foreground/70 hover:text-foreground"
         }`}
       >
         {label}

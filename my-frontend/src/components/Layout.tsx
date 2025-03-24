@@ -1,4 +1,3 @@
-
 import React from "react";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion";
@@ -22,7 +21,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <footer className="py-6 px-4 border-t border-border/40 mt-auto">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Liftopia. All rights reserved.
+            © {new Date().getFullYear()} Tom's Gym. All rights reserved.
           </p>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">

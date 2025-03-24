@@ -1,17 +1,31 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { Plus } from "lucide-react";
 import Layout from "../components/Layout";
 import { competitions } from "../lib/data";
 import CompetitionCard from "../components/CompetitionCard";
-import { CompetitionStatus } from "../lib/types";
+import CreateCompetition from "../components/CreateCompetition";
+import { Competition, CompetitionStatus } from "../lib/types";
 
 const Competitions = () => {
   const [activeFilter, setActiveFilter] = useState<CompetitionStatus | "all">("all");
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [localCompetitions, setLocalCompetitions] = useState<Competition[]>(competitions);
 
   const filteredCompetitions = activeFilter === "all" 
-    ? competitions 
-    : competitions.filter(competition => competition.status === activeFilter);
+    ? localCompetitions 
+    : localCompetitions.filter(competition => competition.status === activeFilter);
+
+  const handleCreateCompetition = (newCompetition: Omit<Competition, 'id' | 'participants'>) => {
+    const competition: Competition = {
+      ...newCompetition,
+      id: `comp-${Date.now()}`, // Generate a unique ID
+      participants: [], // Start with empty participants
+    };
+
+    setLocalCompetitions(prev => [competition, ...prev]);
+    setIsCreateModalOpen(false);
+  };
 
   return (
     <Layout>
@@ -21,10 +35,22 @@ const Competitions = () => {
         transition={{ duration: 0.5 }}
         className="mb-8"
       >
-        <h1 className="text-3xl font-semibold mb-2">Competitions</h1>
-        <p className="text-muted-foreground">
-          Browse all available lifting competitions and find the perfect one for you.
-        </p>
+        <div className="flex justify-between items-center mb-4">
+          <div>
+            <h1 className="text-3xl font-semibold mb-2">Competitions</h1>
+            <p className="text-muted-foreground">
+              Browse all available lifting competitions and find the perfect one for you.
+            </p>
+          </div>
+
+          <button
+            onClick={() => setIsCreateModalOpen(true)}
+            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
+          >
+            <Plus size={20} />
+            <span>Create Competition</span>
+          </button>
+        </div>
       </motion.div>
 
       <div className="mb-6">
@@ -62,6 +88,13 @@ const Competitions = () => {
           )}
         </div>
       </div>
+
+      {isCreateModalOpen && (
+        <CreateCompetition
+          onClose={() => setIsCreateModalOpen(false)}
+          onSubmit={handleCreateCompetition}
+        />
+      )}
     </Layout>
   );
 };
