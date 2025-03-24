@@ -6,7 +6,7 @@ steps:
       - |
         npm ci --no-audit --prefer-offline && npm run build
 
-  # Set up docker-container builder (required for cache export)
+  # Set up docker-container builder (Docker Buildx)
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'sh'
     args:
@@ -15,7 +15,7 @@ steps:
         docker buildx create --name mybuilder --driver docker-container --use
         docker buildx inspect --bootstrap
 
-  # Build and push with caching (now using docker-container driver)
+  # Docker Buildx build & push
   - name: 'gcr.io/cloud-builders/docker'
     entrypoint: 'docker'
     args:
@@ -24,11 +24,6 @@ steps:
       - '--platform=linux/amd64'
       - '-t'
       - 'gcr.io/toms-gym/my-frontend:latest'
-      - '--cache-from=type=registry,ref=gcr.io/toms-gym/my-frontend:cache'
-      - '--cache-to=type=registry,ref=gcr.io/toms-gym/my-frontend:cache,mode=max'
       - '--push'
       - '.'
-
-images:
-  - "gcr.io/toms-gym/my-frontend:latest"
 

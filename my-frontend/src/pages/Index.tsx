@@ -1,9 +1,9 @@
-
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { competitions } from "../lib/data";
 import CompetitionCard from "../components/CompetitionCard";
 import Layout from "../components/Layout";
+import TopLifts from "../components/TopLifts";
 import { CompetitionStatus } from "../lib/types";
 
 const Index = () => {
@@ -113,6 +113,8 @@ const Index = () => {
           </div>
         </div>
       </section>
+      
+      <TopLifts />
       
       <section className="mb-20">
         <motion.div 

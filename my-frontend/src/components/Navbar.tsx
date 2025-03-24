@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -49,7 +48,7 @@ const Navbar: React.FC = () => {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {["Home", "Competitions", "Athletes", "About"].map((item, index) => (
+            {["Home", "Competitions", "Leaderboard", "Athletes", "About"].map((item, index) => (
               <NavLink
                 key={item}
                 to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
@@ -85,7 +84,7 @@ const Navbar: React.FC = () => {
           className="md:hidden bg-white/95 backdrop-blur-md border-b border-border/40"
         >
           <div className="px-4 py-3 space-y-2">
-            {["Home", "Competitions", "Athletes", "About"].map((item) => (
+            {["Home", "Competitions", "Leaderboard", "Athletes", "About"].map((item) => (
               <Link
                 key={item}
                 to={item === "Home" ? "/" : `/${item.toLowerCase()}`}

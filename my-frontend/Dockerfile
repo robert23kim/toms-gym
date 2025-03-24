@@ -4,24 +4,19 @@ FROM node:18-alpine AS build
 # Set working directory
 WORKDIR /app
 
-# Set environment variables to optimize esbuild
-ENV ESBUILD_BINARY_PATH=/app/node_modules/esbuild/bin/esbuild
-ENV ESBUILD_ARCH=amd64
-ENV ESBUILD_PLATFORM=linux
-
-# Copy only package.json and package-lock.json first to leverage caching
-COPY package.json package-lock.json* ./
+# Copy package.json and package-lock.json first for caching
+COPY package.json package-lock.json ./
 
 # Install dependencies efficiently
 RUN npm ci --no-audit --prefer-offline
 
-# Copy the rest of the application code
+# Copy the rest of the application files
 COPY . .
 
 # Build the React app
 RUN npm run build
 
-# Use a lightweight Nginx image for serving static files
+# Use lightweight Nginx image for serving static files
 FROM nginx:1.23-alpine
 
 # Set working directory inside Nginx
@@ -33,9 +28,9 @@ RUN rm -rf ./*
 # Copy built frontend files from the previous stage
 COPY --from=build /app/dist ./
 
-# Expose port 80
-EXPOSE 80
+# Copy the custom Nginx template for dynamic port configuration
+COPY nginx.conf.template /etc/nginx/templates/default.conf.template
 
-# Start Nginx
+# Start Nginx (port is dynamically set by Cloud Run via PORT env variable)
 CMD ["nginx", "-g", "daemon off;"]
 

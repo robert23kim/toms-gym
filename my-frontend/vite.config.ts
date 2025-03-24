@@ -6,11 +6,6 @@ import path from "path";
 export default defineConfig(async ({ mode }) => {
   const plugins = [react()];
 
-  if (mode === "development") {
-    const { componentTagger } = await import("lovable-tagger");
-    plugins.push(componentTagger());
-  }
-
   return {
     server: {
       host: "::",
