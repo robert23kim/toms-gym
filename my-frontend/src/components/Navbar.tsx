@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X, Dumbbell } from "lucide-react";
+import { Menu, X, Dumbbell, ShoppingBag } from "lucide-react";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -26,6 +26,15 @@ const Navbar: React.FC = () => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
+  const links = [
+    { href: "/", label: "Home" },
+    { href: "/competitions", label: "Competitions" },
+    { href: "/athletes", label: "Athletes" },
+    { href: "/leaderboard", label: "Leaderboard" },
+    { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },
+    { href: "/about", label: "About" },
+  ];
+
   return (
     <header
       className={`sticky top-0 z-50 w-full transition-all duration-300 ${
@@ -49,14 +58,14 @@ const Navbar: React.FC = () => {
           </Link>
 
           <nav className="hidden md:flex items-center space-x-8">
-            {["Home", "Competitions", "Leaderboard", "Athletes", "About"].map((item, index) => (
+            {links.map((item, index) => (
               <NavLink
-                key={item}
-                to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
-                label={item}
+                key={item.label}
+                to={item.href}
+                label={item.label}
                 isActive={
-                  (item === "Home" && location.pathname === "/") ||
-                  (item !== "Home" && location.pathname.includes(item.toLowerCase()))
+                  (item.label === "Home" && location.pathname === "/") ||
+                  (item.label !== "Home" && location.pathname.includes(item.label.toLowerCase()))
                 }
                 delay={index * 0.1}
               />
@@ -85,18 +94,18 @@ const Navbar: React.FC = () => {
           className="md:hidden bg-background/95 backdrop-blur-md border-b border-border/40"
         >
           <div className="px-4 py-3 space-y-2">
-            {["Home", "Competitions", "Leaderboard", "Athletes", "About"].map((item) => (
+            {links.map((item) => (
               <Link
-                key={item}
-                to={item === "Home" ? "/" : `/${item.toLowerCase()}`}
+                key={item.label}
+                to={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  (item === "Home" && location.pathname === "/") ||
-                  (item !== "Home" && location.pathname.includes(item.toLowerCase()))
+                  (item.label === "Home" && location.pathname === "/") ||
+                  (item.label !== "Home" && location.pathname.includes(item.label.toLowerCase()))
                     ? "text-accent font-semibold"
                     : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
                 }`}
               >
-                {item}
+                {item.label}
               </Link>
             ))}
           </div>

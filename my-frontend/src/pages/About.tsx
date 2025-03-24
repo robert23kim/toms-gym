@@ -12,12 +12,12 @@ const About = () => {
         transition={{ duration: 0.5 }}
         className="max-w-4xl mx-auto"
       >
-        <h1 className="text-3xl font-semibold mb-6">About Liftopia</h1>
+        <h1 className="text-3xl font-semibold mb-6">About Tom's Gym</h1>
         
         <div className="glass p-6 rounded-xl mb-8">
           <h2 className="text-2xl font-semibold mb-4">Our Mission</h2>
           <p className="text-muted-foreground mb-4">
-            At Liftopia, we're dedicated to making competitive lifting accessible to everyone, 
+            At Tom's Gym, we're dedicated to making competitive lifting accessible to everyone, 
             everywhere. Our platform enables lifters of all levels to participate in competitions 
             without geographical limitations, connecting the global lifting community through 
             technology.
@@ -80,7 +80,7 @@ const About = () => {
         <div className="glass p-6 rounded-xl">
           <h2 className="text-2xl font-semibold mb-4">Our Team</h2>
           <p className="text-muted-foreground mb-6">
-            Liftopia was founded by a group of passionate lifters who wanted to make competitive
+            Tom's Gym was founded by a group of passionate lifters who wanted to make competitive
             lifting more accessible. Our team includes certified coaches, former competitive lifters,
             and technology experts all working together to create the best possible platform for
             the lifting community.
