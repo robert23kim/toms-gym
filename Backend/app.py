@@ -266,15 +266,18 @@ def upload_video():
     # Explicitly set correct MIME type
     mime_type = 'video/quicktime' if filename.lower().endswith('.mov') else video.mimetype
     blob.upload_from_filename(local_file_path, content_type=mime_type)
+    print('Video uploaded')
 
-    blob.make_public()
-    public_url = blob.public_url
+    #blob.make_public()
+    #print('Public blob created')
+    #public_url = blob.public_url
 
+    print('Cleaning up temp files')
     os.remove(local_file_path)
+    print('Clean up completed')
 
     return jsonify({
-        'message': 'Video successfully uploaded',
-        'video_url': public_url
+        'message': 'Video successfully uploaded'
     }), 200
 
 @app.route('/users/<int:user_id>')
