@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Competition, CompetitionStatus } from '../lib/types';
+import axios from 'axios';
 
 interface CreateCompetitionProps {
   onClose: () => void;
@@ -10,38 +11,96 @@ interface CreateCompetitionProps {
 
 const CreateCompetition: React.FC<CreateCompetitionProps> = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    title: '',
-    date: '',
-    registrationDeadline: '',
+    name: '',
     location: '',
-    description: '',
-    image: '',
-    status: 'upcoming' as CompetitionStatus,
-    categories: [] as string[],
+    lifttypes: ['Squat', 'Bench Press', 'Deadlift'],
+    weightclasses: ['59kg', '66kg', '74kg', '83kg', '93kg', '105kg', '120kg', '120kg+'],
+    gender: 'M',
+    start_date: new Date().toISOString().split('T')[0],
+    end_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
   });
 
-  const [category, setCategory] = useState('');
+  const [message, setMessage] = useState<string>('');
+  const [error, setError] = useState<string>('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSubmit(formData);
-  };
-
-  const handleAddCategory = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (category && !formData.categories.includes(category)) {
-      setFormData(prev => ({
-        ...prev,
-        categories: [...prev.categories, category]
-      }));
-      setCategory('');
+    try {
+      console.log('Sending competition data:', formData);
+      const response = await axios.post('https://my-app-834341357827.us-east1.run.app/create_competition', formData, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        }
+      });
+      console.log('API Response:', response.data);
+      setMessage('Competition created successfully!');
+      setError('');
+      onSubmit({
+        title: formData.name,
+        date: formData.start_date,
+        registrationDeadline: formData.end_date,
+        location: formData.location,
+        description: `Competition for ${formData.gender} athletes with ${formData.lifttypes.join(', ')} lifts and ${formData.weightclasses.join(', ')} weight classes`,
+        image: '',
+        status: 'upcoming' as CompetitionStatus,
+        categories: [...formData.lifttypes, ...formData.weightclasses],
+        prizePool: {
+          first: 1000,
+          second: 500,
+          third: 250,
+          total: 1750
+        }
+      });
+      onClose();
+    } catch (err) {
+      console.error('Error creating competition:', err);
+      if (axios.isAxiosError(err)) {
+        setError(`Failed to create competition: ${err.response?.data?.error || err.message}`);
+      } else {
+        setError('Failed to create competition. Please try again.');
+      }
+      setMessage('');
     }
   };
 
-  const removeCategory = (categoryToRemove: string) => {
+  const handleAddLiftType = (e: React.FormEvent) => {
+    e.preventDefault();
+    const input = e.target as HTMLFormElement;
+    const liftType = (input.elements.namedItem('liftType') as HTMLInputElement).value;
+    if (liftType && !formData.lifttypes.includes(liftType)) {
+      setFormData(prev => ({
+        ...prev,
+        lifttypes: [...prev.lifttypes, liftType]
+      }));
+      (input.elements.namedItem('liftType') as HTMLInputElement).value = '';
+    }
+  };
+
+  const handleAddWeightClass = (e: React.FormEvent) => {
+    e.preventDefault();
+    const input = e.target as HTMLFormElement;
+    const weightClass = (input.elements.namedItem('weightClass') as HTMLInputElement).value;
+    if (weightClass && !formData.weightclasses.includes(weightClass)) {
+      setFormData(prev => ({
+        ...prev,
+        weightclasses: [...prev.weightclasses, weightClass]
+      }));
+      (input.elements.namedItem('weightClass') as HTMLInputElement).value = '';
+    }
+  };
+
+  const removeLiftType = (liftType: string) => {
     setFormData(prev => ({
       ...prev,
-      categories: prev.categories.filter(c => c !== categoryToRemove)
+      lifttypes: prev.lifttypes.filter(l => l !== liftType)
+    }));
+  };
+
+  const removeWeightClass = (weightClass: string) => {
+    setFormData(prev => ({
+      ...prev,
+      weightclasses: prev.weightclasses.filter(w => w !== weightClass)
     }));
   };
 
@@ -71,17 +130,21 @@ const CreateCompetition: React.FC<CreateCompetitionProps> = ({ onClose, onSubmit
             </button>
           </div>
 
+          {message && <div className="bg-green-100 text-green-700 p-3 rounded mb-4">{message}</div>}
+          {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
+
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
-                <label className="text-sm font-medium">Title</label>
+                <label className="text-sm font-medium">Name</label>
                 <input
                   type="text"
+                  name="name"
                   required
-                  value={formData.title}
-                  onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
+                  value={formData.name}
+                  onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))}
                   className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
-                  placeholder="Competition title"
+                  placeholder="Competition name"
                 />
               </div>
 
@@ -89,6 +152,7 @@ const CreateCompetition: React.FC<CreateCompetitionProps> = ({ onClose, onSubmit
                 <label className="text-sm font-medium">Location</label>
                 <input
                   type="text"
+                  name="location"
                   required
                   value={formData.location}
                   onChange={e => setFormData(prev => ({ ...prev, location: e.target.value }))}
@@ -98,79 +162,107 @@ const CreateCompetition: React.FC<CreateCompetitionProps> = ({ onClose, onSubmit
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Competition Date</label>
+                <label className="text-sm font-medium">Gender</label>
+                <select
+                  name="gender"
+                  required
+                  value={formData.gender}
+                  onChange={e => setFormData(prev => ({ ...prev, gender: e.target.value }))}
+                  className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                  <option value="">Select gender</option>
+                  <option value="M">Male</option>
+                  <option value="F">Female</option>
+                  <option value="X">Mixed</option>
+                </select>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-medium">Start Date</label>
                 <input
                   type="date"
+                  name="start_date"
                   required
-                  value={formData.date}
-                  onChange={e => setFormData(prev => ({ ...prev, date: e.target.value }))}
+                  value={formData.start_date}
+                  onChange={e => setFormData(prev => ({ ...prev, start_date: e.target.value }))}
                   className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">Registration Deadline</label>
+                <label className="text-sm font-medium">End Date</label>
                 <input
                   type="date"
+                  name="end_date"
                   required
-                  value={formData.registrationDeadline}
-                  onChange={e => setFormData(prev => ({ ...prev, registrationDeadline: e.target.value }))}
+                  value={formData.end_date}
+                  onChange={e => setFormData(prev => ({ ...prev, end_date: e.target.value }))}
                   className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm font-medium">Description</label>
-              <textarea
-                required
-                value={formData.description}
-                onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent min-h-[100px]"
-                placeholder="Competition description"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Cover Image URL</label>
-              <input
-                type="url"
-                required
-                value={formData.image}
-                onChange={e => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                className="w-full px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
-                placeholder="https://example.com/image.jpg"
-              />
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Categories</label>
-              <div className="flex gap-2">
+              <label className="text-sm font-medium">Lift Types</label>
+              <form onSubmit={handleAddLiftType} className="flex gap-2">
                 <input
                   type="text"
-                  value={category}
-                  onChange={e => setCategory(e.target.value)}
+                  name="liftType"
                   className="flex-1 px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
-                  placeholder="Add category"
+                  placeholder="Add lift type"
                 />
                 <button
-                  type="button"
-                  onClick={handleAddCategory}
+                  type="submit"
                   className="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
                 >
                   Add
                 </button>
-              </div>
+              </form>
               <div className="flex flex-wrap gap-2 mt-2">
-                {formData.categories.map(cat => (
+                {formData.lifttypes.map(liftType => (
                   <span
-                    key={cat}
+                    key={liftType}
                     className="px-2 py-1 bg-secondary rounded-full text-sm flex items-center gap-1"
                   >
-                    {cat}
+                    {liftType}
                     <button
                       type="button"
-                      onClick={() => removeCategory(cat)}
+                      onClick={() => removeLiftType(liftType)}
+                      className="hover:text-accent"
+                    >
+                      <X size={14} />
+                    </button>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Weight Classes</label>
+              <form onSubmit={handleAddWeightClass} className="flex gap-2">
+                <input
+                  type="text"
+                  name="weightClass"
+                  className="flex-1 px-3 py-2 rounded-md border border-border bg-background focus:outline-none focus:ring-2 focus:ring-accent"
+                  placeholder="Add weight class"
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
+                >
+                  Add
+                </button>
+              </form>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {formData.weightclasses.map(weightClass => (
+                  <span
+                    key={weightClass}
+                    className="px-2 py-1 bg-secondary rounded-full text-sm flex items-center gap-1"
+                  >
+                    {weightClass}
+                    <button
+                      type="button"
+                      onClick={() => removeWeightClass(weightClass)}
                       className="hover:text-accent"
                     >
                       <X size={14} />
