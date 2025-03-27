@@ -16,6 +16,7 @@ ALLOWED_EXTENSIONS = {'mov', 'mp4', 'avi', 'mkv'}  # Explicitly allowed formats
 
 
 app = Flask(__name__)
+<<<<<<< HEAD
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 CORS(app)  # Enable CORS for all routes
@@ -64,6 +65,82 @@ def get_competitions():
             rows = conn.execute(sqlalchemy.text("SELECT * FROM Competition"))
             results = [row._asdict() for row in rows]
         return {"competitions": results}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@app.route('/competitions/<int:competition_id>')
+def get_competition_by_id(competition_id):
+    """
+    Endpoint that queries a single competition by ID.
+    """
+    try:
+        with pool.connect() as conn:
+            row = conn.execute(
+                sqlalchemy.text("SELECT * FROM Competition WHERE id = :id"),
+                {"id": competition_id}
+            ).fetchone()
+            
+            if row is None:
+                return {"error": "Competition not found"}, 404
+                
+            result = row._asdict()
+            return {"competition": result}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@app.route('/competitions/<int:competition_id>/participants')
+def get_competition_participants(competition_id):
+    """
+    Endpoint that queries all participants for a specific competition.
+    """
+    try:
+        with pool.connect() as conn:
+            rows = conn.execute(
+                sqlalchemy.text("""
+                    SELECT u.id, u.name, u.avatar, uc.weight_class, u.country,
+                           COALESCE(SUM(CASE WHEN a.attempt_result = true THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
+                           json_object_agg(
+                               a.lift_type,
+                               json_agg(
+                                   json_build_object(
+                                       'weight', a.weight_attempted,
+                                       'success', a.attempt_result
+                                   )
+                               )
+                           ) as attempts
+                    FROM UserCompetition uc
+                    JOIN Users u ON uc.userid = u.id
+                    LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
+                    WHERE uc.competitionid = :competition_id
+                    GROUP BY u.id, u.name, u.avatar, uc.weight_class, u.country
+                """),
+                {"competition_id": competition_id}
+            )
+            results = [row._asdict() for row in rows]
+        return {"participants": results}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@app.route('/competitions/<int:competition_id>/lifts')
+def get_competition_lifts(competition_id):
+    """
+    Endpoint that queries all lifts for a specific competition.
+    """
+    try:
+        with pool.connect() as conn:
+            rows = conn.execute(
+                sqlalchemy.text("""
+                    SELECT a.attemptid as id, uc.userid as participant_id, uc.competitionid as competition_id,
+                           a.lift_type as type, a.weight_attempted as weight, a.attempt_result as success,
+                           a.video_link as video_url, a.timestamp
+                    FROM Attempts a
+                    JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
+                    WHERE uc.competitionid = :competition_id
+                """),
+                {"competition_id": competition_id}
+            )
+            results = [row._asdict() for row in rows]
+        return {"lifts": results}
     except Exception as e:
         return {"error": str(e)}, 500
 
@@ -202,6 +279,85 @@ def upload_video():
         'message': 'Video successfully uploaded',
         'video_url': public_url
     }), 200
+
+@app.route('/users/<int:user_id>')
+def get_user_profile(user_id):
+    """
+    Endpoint that queries a user's profile including their competition history and achievements.
+    """
+    try:
+        with pool.connect() as conn:
+            # Get user basic info
+            user_row = conn.execute(
+                sqlalchemy.text("SELECT * FROM \"User\" WHERE userid = :user_id"),
+                {"user_id": user_id}
+            ).fetchone()
+            
+            if user_row is None:
+                return {"error": "User not found"}, 404
+            
+            user_data = user_row._asdict()
+
+            # Get user's competition history
+            competitions = conn.execute(
+                sqlalchemy.text("""
+                    SELECT c.id, c.name, c.start_date, c.end_date, c.location,
+                           uc.weight_class, uc.status,
+                           COALESCE(SUM(CASE WHEN a.attempt_result = true THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
+                           COUNT(DISTINCT CASE WHEN a.attempt_result = true THEN a.lift_type END) as successful_lifts
+                    FROM UserCompetition uc
+                    JOIN Competition c ON uc.competitionid = c.id
+                    LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
+                    WHERE uc.userid = :user_id
+                    GROUP BY c.id, c.name, c.start_date, c.end_date, c.location, uc.weight_class, uc.status
+                    ORDER BY c.start_date DESC
+                """),
+                {"user_id": user_id}
+            ).fetchall()
+
+            # Get user's best lifts
+            best_lifts = conn.execute(
+                sqlalchemy.text("""
+                    SELECT a.lift_type as type,
+                           MAX(a.weight_attempted) as best_weight,
+                           c.name as competition_name,
+                           c.id as competition_id
+                    FROM Attempts a
+                    JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
+                    JOIN Competition c ON uc.competitionid = c.id
+                    WHERE uc.userid = :user_id
+                    AND a.attempt_result = true
+                    GROUP BY a.lift_type, c.name, c.id
+                """),
+                {"user_id": user_id}
+            ).fetchall()
+
+            # Get user's achievements
+            achievements = conn.execute(
+                sqlalchemy.text("""
+                    SELECT 
+                        COUNT(DISTINCT c.id) as total_competitions,
+                        COUNT(DISTINCT CASE WHEN a.attempt_result = true THEN a.lift_type END) as total_successful_lifts,
+                        MAX(a.weight_attempted) as heaviest_lift,
+                        COUNT(DISTINCT CASE WHEN a.attempt_result = true THEN a.lift_type END) FILTER (WHERE a.lift_type = 'Squat') as best_squat,
+                        COUNT(DISTINCT CASE WHEN a.attempt_result = true THEN a.lift_type END) FILTER (WHERE a.lift_type = 'Bench Press') as best_bench,
+                        COUNT(DISTINCT CASE WHEN a.attempt_result = true THEN a.lift_type END) FILTER (WHERE a.lift_type = 'Deadlift') as best_deadlift
+                    FROM UserCompetition uc
+                    JOIN Competition c ON uc.competitionid = c.id
+                    LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
+                    WHERE uc.userid = :user_id
+                """),
+                {"user_id": user_id}
+            ).fetchone()
+
+            return {
+                "user": user_data,
+                "competitions": [row._asdict() for row in competitions],
+                "best_lifts": [row._asdict() for row in best_lifts],
+                "achievements": achievements._asdict() if achievements else {}
+            }
+    except Exception as e:
+        return {"error": str(e)}, 500
 
 if __name__ == "__main__":
     # IMPORTANT: Cloud Run expects the app to listen on port 8080

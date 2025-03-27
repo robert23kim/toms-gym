@@ -1,35 +1,123 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { getCompetitionById, sampleLifts } from "../lib/data";
 import Layout from "../components/Layout";
 import { Calendar, MapPin, Clock, Users, ArrowLeft, Trophy, Play, Award } from "lucide-react";
+import axios from "axios";
+import { Competition, Participant, Lift } from "../lib/types";
 
 const CompetitionDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const competition = getCompetitionById(id || "");
+  const [competition, setCompetition] = useState<Competition | null>(null);
+  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [lifts, setLifts] = useState<Lift[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchCompetitionData = async () => {
+      try {
+        setIsLoading(true);
+        // Fetch competition details
+        const competitionResponse = await axios.get(`https://my-app-834341357827.us-east1.run.app/competitions/${id}`);
+        const compData = competitionResponse.data.competition;
+
+        // Transform the competition data to match our frontend type
+        const transformedCompetition: Competition = {
+          id: compData.id.toString(),
+          title: compData.name,
+          date: compData.start_date,
+          registrationDeadline: compData.end_date,
+          location: compData.location,
+          description: `Competition for ${compData.gender === 'M' ? 'Male' : compData.gender === 'F' ? 'Female' : 'Mixed'} athletes with ${compData.lifttypes.join(', ')} lifts and ${compData.weightclasses.join(', ')} weight classes`,
+          image: compData.gender === 'M' 
+            ? 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3'
+            : compData.gender === 'F'
+            ? 'https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3'
+            : 'https://images.unsplash.com/photo-1534438327276-14e5300c3a48?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+          status: determineStatus(compData.start_date, compData.end_date),
+          categories: [...compData.lifttypes, ...compData.weightclasses],
+          participants: [],
+          prizePool: {
+            first: 1000,
+            second: 500,
+            third: 250,
+            total: 1750
+          }
+        };
+
+        // Fetch participants
+        const participantsResponse = await axios.get(`https://my-app-834341357827.us-east1.run.app/competitions/${id}/participants`);
+        const participantsData = participantsResponse.data.participants.map((p: any) => ({
+          id: p.id.toString(),
+          name: p.name,
+          avatar: p.avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(p.name),
+          weightClass: p.weightclass,
+          country: p.country || 'Unknown',
+          totalWeight: p.total_weight || null,
+          attempts: p.attempts || null
+        }));
+
+        // Fetch lifts
+        const liftsResponse = await axios.get(`https://my-app-834341357827.us-east1.run.app/competitions/${id}/lifts`);
+        const liftsData = liftsResponse.data.lifts.map((l: any) => ({
+          id: l.id.toString(),
+          participantId: l.participant_id.toString(),
+          competitionId: l.competition_id.toString(),
+          type: l.type.toLowerCase(),
+          weight: l.weight,
+          success: l.success,
+          videoUrl: l.video_url,
+          timestamp: l.timestamp
+        }));
+
+        setCompetition(transformedCompetition);
+        setParticipants(participantsData);
+        setLifts(liftsData);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching competition data:', err);
+        setError('Failed to load competition data. Please try again later.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchCompetitionData();
+    }
+  }, [id]);
+
+  const determineStatus = (startDate: string, endDate: string): 'upcoming' | 'ongoing' | 'completed' => {
+    const now = new Date();
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (now < start) return 'upcoming';
+    if (now > end) return 'completed';
+    return 'ongoing';
+  };
 
   // Helper function to get best lifts
   const getBestLifts = () => {
-    if (!competition) return null;
+    if (!competition || !participants || !lifts) return null;
 
     const categories = ['squat', 'bench', 'deadlift'] as const;
     const bestLifts = categories.map(category => {
-      const best = competition.participants
+      const best = participants
         .map(participant => {
-          const maxAttempt = participant.attempts?.[category]?.reduce((max, current) => Math.max(max, current), 0) || 0;
-          // Find the corresponding lift video
-          const lift = sampleLifts.find(l => 
+          const participantLifts = lifts.filter(l => 
             l.participantId === participant.id && 
             l.type === category && 
-            l.weight === maxAttempt
-          ) || sampleLifts.find(l => l.type === category); // Fallback to any lift of this type
+            l.success
+          );
+          const maxAttempt = Math.max(...participantLifts.map(l => l.weight), 0);
 
           return {
             participant,
             weight: maxAttempt,
-            liftId: lift?.id
+            liftId: participantLifts.find(l => l.weight === maxAttempt)?.id
           };
         })
         .sort((a, b) => b.weight - a.weight)[0];
@@ -51,13 +139,23 @@ const CompetitionDetail = () => {
     return bestLifts;
   };
 
-  if (!competition) {
+  if (isLoading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-lg text-muted-foreground">Loading competition details...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (error || !competition) {
     return (
       <Layout>
         <div className="min-h-[60vh] flex flex-col items-center justify-center">
           <h2 className="text-2xl font-semibold mb-4">Competition Not Found</h2>
           <p className="text-muted-foreground mb-6">
-            The competition you're looking for doesn't exist or has been removed.
+            {error || "The competition you're looking for doesn't exist or has been removed."}
           </p>
           <button
             onClick={() => navigate("/")}
@@ -156,7 +254,7 @@ const CompetitionDetail = () => {
             </div>
             <div className="flex items-center">
               <Users size={18} className="mr-2 text-white/80" />
-              <span>{competition.participants.length} Participants</span>
+              <span>{participants.length} Participants</span>
             </div>
           </motion.div>
         </div>
@@ -273,9 +371,9 @@ const CompetitionDetail = () => {
           <div className="glass p-6 rounded-xl">
             <h2 className="text-2xl font-semibold mb-6">Participants</h2>
             <div className="space-y-6">
-              {competition.participants.map((participant, index) => {
+              {participants.map((participant, index) => {
                 // Find the participant's best lift video for each category
-                const participantLifts = sampleLifts.filter(
+                const participantLifts = lifts.filter(
                   lift => lift.participantId === participant.id
                 );
                 const firstLiftId = participantLifts[0]?.id || 'l1';

@@ -13,6 +13,7 @@ import VideoPlayer from "./pages/VideoPlayer";
 import NotFound from "./pages/NotFound";
 import Leaderboard from "./pages/Leaderboard";
 import Store from './pages/Store';
+import Profile from "./pages/Profile";
 
 const queryClient = new QueryClient();
 
@@ -54,6 +55,8 @@ const App = () => (
           <Route path="/competitions/:id" element={<CompetitionDetail />} />
           <Route path="/competitions/:competitionId/participants/:participantId/video" element={<VideoPlayer />} />
           <Route path="/competitions/:competitionId/participants/:participantId/video/:liftId" element={<VideoPlayer />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/profile/:id" element={<Profile />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
