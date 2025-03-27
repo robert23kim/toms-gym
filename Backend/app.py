@@ -1,10 +1,12 @@
 # app.py
 from flask import Flask, request
+from flask_cors import CORS
 from google.cloud.sql.connector import Connector
 import sqlalchemy
 import json
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Initialize the Cloud SQL Python Connector
 connector = Connector()
