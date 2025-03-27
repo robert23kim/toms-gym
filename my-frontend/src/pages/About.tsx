@@ -104,7 +104,7 @@ const About = () => {
               },
               {
                 name: "Jess Hum",
-                role: "Community Manager",
+                role: "Chief Strategy Officer",
                 bio: "Former competitive lifter focused on building an inclusive and supportive community of athletes.",
                 avatar: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
                 initials: "JH"
