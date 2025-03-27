@@ -13,10 +13,7 @@ load_dotenv()
 
 ALLOWED_EXTENSIONS = {'mov', 'mp4', 'avi', 'mkv'}  # Explicitly allowed formats
 
-
-
 app = Flask(__name__)
-<<<<<<< HEAD
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 CORS(app)  # Enable CORS for all routes
