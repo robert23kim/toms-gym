@@ -61,7 +61,7 @@ const Navbar: React.FC = () => {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/competitions", label: "Competitions" },
+    { href: "/challenges", label: "Challenges" },
     { href: "/athletes", label: "Athletes" },
     { href: "/leaderboard", label: "Leaderboard" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },

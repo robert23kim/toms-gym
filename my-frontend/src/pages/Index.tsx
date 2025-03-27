@@ -1,17 +1,58 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { competitions } from "../lib/data";
-import CompetitionCard from "../components/CompetitionCard";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import ChallengeCard from "../components/ChallengeCard";
 import Layout from "../components/Layout";
 import TopLifts from "../components/TopLifts";
-import { CompetitionStatus } from "../lib/types";
+import { Challenge } from "../lib/types";
 
 const Index = () => {
-  const [activeFilter, setActiveFilter] = useState<CompetitionStatus | "all">("all");
+  const [activeFilter, setActiveFilter] = useState<"all" | "upcoming" | "ongoing" | "completed">("all");
 
-  const filteredCompetitions = activeFilter === "all" 
-    ? competitions 
-    : competitions.filter(competition => competition.status === activeFilter);
+  // Mock data for featured challenges
+  const featuredChallenges: Challenge[] = [
+    {
+      id: 1,
+      title: "Summer Powerlifting Championship",
+      date: "2024-07-15",
+      registrationDeadline: "2024-07-01",
+      location: "New York, NY",
+      description: "Join us for the biggest powerlifting event of the summer!",
+      image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      status: "upcoming",
+      categories: ["Powerlifting", "Open"],
+      participants: 0,
+      prizePool: {
+        first: 1000,
+        second: 500,
+        third: 250,
+        total: 1750
+      }
+    },
+    {
+      id: 2,
+      title: "Women's Weightlifting Open",
+      date: "2024-06-20",
+      registrationDeadline: "2024-06-05",
+      location: "Los Angeles, CA",
+      description: "A celebration of women's strength and athleticism.",
+      image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+      status: "upcoming",
+      categories: ["Weightlifting", "Women"],
+      participants: 0,
+      prizePool: {
+        first: 800,
+        second: 400,
+        third: 200,
+        total: 1400
+      }
+    }
+  ];
+
+  const filteredChallenges = activeFilter === "all" 
+    ? featuredChallenges 
+    : featuredChallenges.filter(challenge => challenge.status === activeFilter);
 
   return (
     <Layout>
@@ -40,7 +81,7 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
                 >
-                  Online Lifting Competitions for Everyone
+                  Online Lifting Challenges for Everyone
                 </motion.h1>
                 
                 <motion.p 
@@ -57,17 +98,17 @@ const Index = () => {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
                 >
-                  <a 
-                    href="#competitions"
+                  <Link 
+                    to="/challenges"
                     className="inline-block px-6 py-3 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift"
                   >
-                    Browse Competitions
-                  </a>
+                    Browse Challenges
+                  </Link>
                 </motion.div>
               </div>
             </motion.div>
             
-            <div id="competitions" className="scroll-mt-20">
+            <div id="challenges" className="scroll-mt-20">
               <div className="flex justify-between items-center mb-8">
                 <motion.h2 
                   className="text-3xl font-semibold"
@@ -75,7 +116,7 @@ const Index = () => {
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ duration: 0.5, ease: "easeOut" }}
                 >
-                  Open Competitions
+                  Open Challenges
                 </motion.h2>
                 
                 <motion.div 
@@ -101,14 +142,14 @@ const Index = () => {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {filteredCompetitions.length > 0 ? (
-                  filteredCompetitions.map((competition, index) => (
-                    <CompetitionCard key={competition.id} competition={competition} index={index} />
+                {filteredChallenges.length > 0 ? (
+                  filteredChallenges.map((challenge, index) => (
+                    <ChallengeCard key={challenge.id} challenge={challenge} index={index} />
                   ))
                 ) : (
                   <div className="col-span-full py-16 text-center">
                     <p className="text-lg text-muted-foreground">
-                      No {activeFilter !== "all" ? activeFilter : ""} competitions found.
+                      No {activeFilter !== "all" ? activeFilter : ""} challenges found.
                     </p>
                   </div>
                 )}
@@ -125,7 +166,7 @@ const Index = () => {
             >
               <h2 className="text-3xl font-semibold mb-4">How It Works</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Participating in online lifting competitions has never been easier. Follow these simple steps to start your competitive journey.
+                Participating in online lifting challenges has never been easier. Follow these simple steps to start your competitive journey.
               </p>
             </motion.div>
             
@@ -133,12 +174,12 @@ const Index = () => {
               {[
                 {
                   title: "Register",
-                  description: "Choose a competition that matches your preferences and complete the registration process.",
+                  description: "Choose a challenge that matches your preferences and complete the registration process.",
                   icon: "📝",
                 },
                 {
                   title: "Record",
-                  description: "Record your lifts following the competition guidelines and submit them before the deadline.",
+                  description: "Record your lifts following the challenge guidelines and submit them before the deadline.",
                   icon: "🎥",
                 },
                 {
@@ -171,9 +212,9 @@ const Index = () => {
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <h2 className="text-3xl font-semibold mb-4">Join the Community</h2>
+              <h2 className="text-3xl font-semibold mb-4">Ready to Show Your Strength?</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Connect with lifters from around the world, share your progress, and receive support from the community.
+                Join our upcoming challenges and compete for prizes while pushing your limits.
               </p>
             </motion.div>
             
@@ -183,21 +224,30 @@ const Index = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <form className="space-y-4">
-                <div>
-                  <input
-                    type="email"
-                    placeholder="Your email address"
-                    className="w-full px-4 py-3 rounded-md border border-border bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent/50"
-                  />
+              <div className="space-y-6">
+                <div className="flex items-center justify-center gap-4">
+                  <div className="text-4xl">🏋️‍♂️</div>
+                  <div className="text-left">
+                    <h3 className="text-xl font-semibold">Summer Powerlifting Championship</h3>
+                    <p className="text-muted-foreground">July 15, 2024 • Prize Pool: $1,750</p>
+                  </div>
                 </div>
-                <button
-                  type="submit"
-                  className="w-full px-6 py-3 bg-accent text-white font-medium rounded-md shadow hover:bg-accent/90 transition-all hover-lift"
-                >
-                  Subscribe to Newsletter
-                </button>
-              </form>
+                <div className="flex items-center justify-center gap-4">
+                  <div className="text-4xl">💪</div>
+                  <div className="text-left">
+                    <h3 className="text-xl font-semibold">Women's Weightlifting Open</h3>
+                    <p className="text-muted-foreground">June 20, 2024 • Prize Pool: $1,400</p>
+                  </div>
+                </div>
+                <div className="pt-4">
+                  <Link
+                    to="/challenges"
+                    className="inline-block px-8 py-4 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift text-lg"
+                  >
+                    Sign Up for a Challenge
+                  </Link>
+                </div>
+              </div>
             </motion.div>
           </section>
         </div>

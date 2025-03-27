@@ -65,7 +65,7 @@ const TopLifts = () => {
                 {topLifters.map((lifter, index) => (
                   <Link
                     key={lifter.id}
-                    to={`/competitions/${lifter.competitionId}/participants/${lifter.id}/video/${lifter.liftId || 'l1'}`}
+                    to={`/challenges/${lifter.competitionId}/participants/${lifter.id}/video/${lifter.liftId || 'l1'}`}
                   >
                     <motion.div
                       className="flex items-center gap-3 p-2 rounded-md hover:bg-secondary/50 transition-colors"
