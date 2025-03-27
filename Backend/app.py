@@ -1,12 +1,31 @@
 # app.py
-from flask import Flask, request
+import os
+from flask import Flask, request, jsonify
 from flask_cors import CORS
 from google.cloud.sql.connector import Connector
+from google.cloud import storage
+from dotenv import load_dotenv
 import sqlalchemy
+from werkzeug.utils import secure_filename
 import json
 
+load_dotenv()
+
+ALLOWED_EXTENSIONS = {'mov', 'mp4', 'avi', 'mkv'}  # Explicitly allowed formats
+
+
+
 app = Flask(__name__)
+app.config['UPLOAD_FOLDER'] = 'uploads'
+os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 CORS(app)  # Enable CORS for all routes
+
+# Initialize Google Cloud Storage client
+storage_client = storage.Client.from_service_account_json(
+    os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
+)
+bucket_name = os.getenv('GCS_BUCKET_NAME')
+bucket = storage_client.bucket(bucket_name)
 
 # Initialize the Cloud SQL Python Connector
 connector = Connector()
@@ -147,6 +166,42 @@ def submit_attempt():
         return {"message": "Attempt submitted successfully!", "attempt_id": attempt_id}, 201
     except Exception as e:
         return {"error": str(e)}, 500
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+@app.route('/upload', methods=['POST'])
+def upload_video():
+    if 'video' not in request.files:
+        return jsonify({'error': 'No video file provided'}), 400
+
+    video = request.files['video']
+
+    if video.filename == '':
+        return jsonify({'error': 'No selected file'}), 400
+
+    if not allowed_file(video.filename):
+        return jsonify({'error': 'File type not allowed'}), 400
+
+    filename = secure_filename(video.filename)
+    local_file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    video.save(local_file_path)
+
+    blob = bucket.blob(f'videos/{filename}')
+
+    # Explicitly set correct MIME type
+    mime_type = 'video/quicktime' if filename.lower().endswith('.mov') else video.mimetype
+    blob.upload_from_filename(local_file_path, content_type=mime_type)
+
+    blob.make_public()
+    public_url = blob.public_url
+
+    os.remove(local_file_path)
+
+    return jsonify({
+        'message': 'Video successfully uploaded',
+        'video_url': public_url
+    }), 200
 
 if __name__ == "__main__":
     # IMPORTANT: Cloud Run expects the app to listen on port 8080
