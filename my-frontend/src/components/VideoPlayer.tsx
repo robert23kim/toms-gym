@@ -58,13 +58,32 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
+  const [isMobileDevice, setIsMobileDevice] = useState(false);
+  const [useNativeControls, setUseNativeControls] = useState(false);
   const controlsTimeoutRef = useRef<number | null>(null);
   const [comments] = useState<Comment[]>(mockComments);
   const [newComment, setNewComment] = useState("");
+  const touchStartTimeRef = useRef<number>(0);
+  const touchPositionRef = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
 
   useEffect(() => {
+    // Detect mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    setIsMobileDevice(isMobile);
+    
+    // On mobile devices, use native controls by default for better compatibility
+    if (isMobile) {
+      setUseNativeControls(true);
+      // This will be applied after the ref is available
+    }
+    
     const video = videoRef.current;
     if (!video) return;
+
+    // Apply native controls for mobile
+    if (isMobile) {
+      video.controls = true;
+    }
 
     const onLoadedMetadata = () => {
       setDuration(video.duration);
@@ -75,10 +94,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
       setCurrentTime(video.currentTime);
       setProgress((video.currentTime / video.duration) * 100);
     };
+    
+    const onError = () => {
+      console.error("Video error detected");
+      setIsLoading(false);
+      
+      // Fallback to native controls on error
+      if (isMobile && video) {
+        setUseNativeControls(true);
+        video.controls = true;
+      }
+    };
 
     video.addEventListener("loadedmetadata", onLoadedMetadata);
     video.addEventListener("timeupdate", onTimeUpdate);
     video.addEventListener("ended", () => setIsPlaying(false));
+    video.addEventListener("error", onError);
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
 
@@ -86,6 +117,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
       video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("ended", () => setIsPlaying(false));
+      video.removeEventListener("error", onError);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       
       if (controlsTimeoutRef.current) {
@@ -195,6 +227,28 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
     setNewComment("");
   };
 
+  // Touch handlers for mobile
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartTimeRef.current = Date.now();
+    if (e.touches.length === 1) {
+      touchPositionRef.current = { 
+        x: e.touches[0].clientX,
+        y: e.touches[0].clientY
+      };
+    }
+  };
+  
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    const touchDuration = Date.now() - touchStartTimeRef.current;
+    
+    // Short tap (less than 300ms) toggles play/pause
+    if (touchDuration < 300) {
+      togglePlay();
+    }
+    
+    showControls();
+  };
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2">
@@ -203,6 +257,8 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
             className="relative aspect-video bg-black group"
             onMouseMove={showControls}
             onMouseLeave={() => isPlaying && setIsControlsVisible(false)}
+            onTouchStart={handleTouchStart}
+            onTouchEnd={handleTouchEnd}
           >
             {isLoading && (
               <div className="absolute inset-0 flex items-center justify-center bg-black/10">
@@ -219,8 +275,20 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
               webkit-playsinline="true"
               x5-playsinline="true"
               muted={isMuted}
+              controls={useNativeControls}
               controlsList="nodownload"
               onCanPlay={() => setIsLoading(false)}
+              onError={(e) => {
+                console.error("Video error:", e);
+                setIsLoading(false);
+                // If there's an error, try showing native controls as fallback
+                if (videoRef.current) {
+                  setUseNativeControls(true);
+                  videoRef.current.controls = true;
+                }
+              }}
+              preload="metadata"
+              poster={videoUrl ? videoUrl + '?poster=true' : undefined}
             />
             
             {/* Play/Pause Overlay */}

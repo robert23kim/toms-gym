@@ -27,6 +27,7 @@ const RandomVideo = () => {
   } | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   const fetchVideo = async (endpoint: string) => {
     try {
@@ -46,9 +47,30 @@ const RandomVideo = () => {
         throw new Error('Video URL not found in response');
       }
       
+      // Make sure URL is properly formatted for mobile
+      const videoUrl = response.data.video_url;
+      
+      // Convert Google Storage URL to our proxy URL for better mobile support
+      let finalVideoUrl = videoUrl;
+      
+      // Check if it's a Google Storage URL
+      if (videoUrl.includes('storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/videos/')) {
+        // Extract video path
+        const videoPath = videoUrl.split('jtr-lift-u-4ever-cool-bucket/')[1];
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        // Use our proxy endpoint
+        finalVideoUrl = `${API_URL}/video/${encodeURIComponent(videoPath)}${isMobile ? '?mobile=true' : ''}`;
+      } else {
+        // Just add cache busting
+        const cacheBuster = `?t=${new Date().getTime()}`;
+        finalVideoUrl = videoUrl.includes('?') ? 
+          `${videoUrl}&alt=media${cacheBuster}` : 
+          `${videoUrl}?alt=media${cacheBuster}`;
+      }
+      
       setVideoData({
         ...response.data,
-        video_url: response.data.video_url
+        video_url: finalVideoUrl
       });
       setError(null);
     } catch (err) {
@@ -65,6 +87,11 @@ const RandomVideo = () => {
   useEffect(() => {
     fetchVideo('random-video');
   }, [liftTypeFilter]); // Re-fetch when the filter changes
+
+  const handleRetry = () => {
+    setRetryCount(prev => prev + 1);
+    fetchVideo('random-video');
+  };
 
   const handleNextVideo = () => {
     fetchVideo('next-video');
@@ -89,8 +116,11 @@ const RandomVideo = () => {
 
     if (error) {
       return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-xl text-red-500">{error}</div>
+        <div className="flex flex-col items-center justify-center min-h-screen p-4">
+          <div className="text-xl text-red-500 mb-4">{error}</div>
+          <Button onClick={handleRetry} variant="outline" className="mt-4">
+            Retry
+          </Button>
         </div>
       );
     }

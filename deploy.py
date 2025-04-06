@@ -184,7 +184,50 @@ class DeploymentManager:
                         break
                     line_str = line.decode('utf-8').rstrip()
                     timestamp = get_timestamp(self.start_time)
-                    print(f"{timestamp} {prefix} {line_str}")
+                    
+                    # Check if stderr line contains expected information messages
+                    if prefix.startswith(f"{Colors.RED}[ERR]"):
+                        # Common informational patterns from gcloud that appear in stderr
+                        info_patterns = [
+                            "already exists",
+                            "already has role",
+                            "Creating service account",
+                            "Setting IAM policy",
+                            "Beginning deployment",
+                            "Deploying container",
+                            "Deploying...",
+                            "Revision",
+                            "Setting IAM",
+                            "Created",
+                            "Creating revision",
+                            "Routing traffic",
+                            "Done.",
+                            "Service [",
+                            "revision [",
+                            "has been deployed",
+                            "percent of traffic",
+                            "Service URL:",
+                            "Creating",
+                            "waiting for",
+                            "Created service",
+                            "Waiting for",
+                            "https://",
+                            "Check the gcloud log",
+                            "Some files were not included",
+                            "Logs are available at",
+                            "Uploading tarball"
+                        ]
+                        
+                        if any(pattern in line_str for pattern in info_patterns):
+                            # Show as warning instead of error
+                            print(f"{timestamp} {Colors.YELLOW}[WARN]{Colors.NC} {line_str}")
+                        else:
+                            # Actual error
+                            print(f"{timestamp} {prefix} {line_str}")
+                    else:
+                        # Regular stdout messages
+                        print(f"{timestamp} {prefix} {line_str}")
+                        
                     if log_handle:
                         log_handle.write(f"{line_str}\n")
                         log_handle.flush()
@@ -268,7 +311,7 @@ class DeploymentManager:
             if "already exists" in str(e):
                 self.log("ℹ️  Service account already exists, continuing...", Colors.YELLOW)
             else:
-                self.log("ℹ️  Service account already exists or error occurred, continuing...", Colors.YELLOW)
+                self.log("⚠️  Service account setup yielded a warning, continuing...", Colors.YELLOW)
 
         # Add necessary roles (only if not already checked)
         roles_to_check = {
@@ -291,7 +334,7 @@ class DeploymentManager:
                         self.log(f"ℹ️  {role_name} already granted, continuing...", Colors.YELLOW)
                         self._roles_checked.add(role)
                     else:
-                        self.log(f"ℹ️  {role_name} already granted or error occurred, continuing...", Colors.YELLOW)
+                        self.log(f"⚠️  {role_name} assignment yielded a warning, continuing...", Colors.YELLOW)
                         self._roles_checked.add(role)
 
     async def get_service_image(self, service: str) -> str:

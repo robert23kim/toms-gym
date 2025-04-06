@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, Response, redirect
 import sqlalchemy
 from toms_gym.db import pool
 from google.cloud import storage
 import random
 import datetime
+import urllib.parse
 
 # Global variable to store video blobs
 _video_blobs = []
@@ -226,18 +227,53 @@ def get_random_video():
     """
     try:
         global _current_video_index
+        is_mobile = 'mobile' in request.args or request.user_agent.platform in ['android', 'iphone', 'ipad']
+        lift_type_filter = request.args.get('lift_type')
+        
+        # Refresh video list if needed
         video_blobs = _get_video_blobs()
         
         if not video_blobs:
             return jsonify({"error": "No videos found in bucket"}), 404
         
+        # Filter videos by lift type if requested
+        filtered_blobs = video_blobs
+        if lift_type_filter:
+            try:
+                # Connect to database to match videos with lift types
+                with pool.connect() as conn:
+                    # Get all video IDs with matching lift types
+                    query = sqlalchemy.text(
+                        "SELECT video_url FROM attempts WHERE lift_type = :lift_type"
+                    )
+                    
+                    result = conn.execute(query, {"lift_type": lift_type_filter}).fetchall()
+                    
+                    if result:
+                        video_urls = [row[0] for row in result]
+                        filtered_blobs = [blob for blob in video_blobs if any(url in blob.name for url in video_urls)]
+            except Exception as db_error:
+                # Log but don't fail completely, fall back to all videos
+                print(f"Database error when filtering videos: {db_error}")
+        
+        # If filtering resulted in no videos, fall back to all videos
+        if not filtered_blobs:
+            filtered_blobs = video_blobs
+        
         # Select a random video and update current index
-        random_blob = random.choice(video_blobs)
+        random_blob = random.choice(filtered_blobs)
         _current_video_index = video_blobs.index(random_blob)
         
-        return jsonify(_get_video_data(random_blob))
+        # Add mobile-specific parameters if needed
+        video_data = _get_video_data(random_blob)
+        if is_mobile:
+            # Add cache control headers for mobile
+            video_data['cache_control'] = 'no-store, no-cache, must-revalidate'
+            
+        return jsonify(video_data)
     except Exception as e:
-        return {"error": str(e)}, 500
+        print(f"Error in random-video endpoint: {str(e)}")
+        return jsonify({"error": str(e), "stack_trace": str(e.__traceback__)}), 500
 
 @competition_bp.route('/next-video')
 def get_next_video():
@@ -257,4 +293,46 @@ def get_next_video():
         
         return jsonify(_get_video_data(next_blob))
     except Exception as e:
-        return {"error": str(e)}, 500 
+        return {"error": str(e)}, 500
+
+@competition_bp.route('/video/<path:video_path>')
+def serve_video(video_path):
+    """
+    Proxy endpoint for serving videos with proper headers for mobile devices
+    """
+    try:
+        # Make sure the path is properly formatted for GCS
+        clean_path = urllib.parse.unquote(video_path)
+        if not clean_path.startswith('videos/'):
+            clean_path = f"videos/{clean_path}"
+            
+        # Check if mobile
+        is_mobile = 'mobile' in request.args or request.user_agent.platform in ['android', 'iphone', 'ipad']
+        
+        # Get the video from GCS with a signed URL
+        storage_client = storage.Client()
+        bucket = storage_client.bucket('jtr-lift-u-4ever-cool-bucket')
+        blob = bucket.blob(clean_path)
+        
+        if not blob.exists():
+            return jsonify({"error": "Video not found"}), 404
+            
+        # Generate a signed URL with appropriate headers
+        url = blob.generate_signed_url(
+            version="v4",
+            expiration=datetime.timedelta(minutes=30),
+            method="GET",
+            response_headers={
+                "Content-Type": "video/mp4",
+                "Access-Control-Allow-Origin": "*",
+                "Accept-Ranges": "bytes",
+                "Cache-Control": "no-cache, no-store, must-revalidate" if is_mobile else "public, max-age=3600"
+            }
+        )
+        
+        # Redirect to the signed URL
+        return redirect(url, code=302)
+        
+    except Exception as e:
+        print(f"Error serving video: {str(e)}")
+        return jsonify({"error": str(e)}), 500 
