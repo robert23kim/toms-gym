@@ -374,7 +374,6 @@ class DeploymentManager:
             "--tag", self.config.backend_image,
             "--machine-type=e2-highcpu-8",
             "--timeout=1800s",
-            "--stream-logs",
             "Backend/"
         ]
         
@@ -418,7 +417,6 @@ class DeploymentManager:
             "--config=cloudbuild.yaml",
             "--machine-type=e2-highcpu-32",
             "--timeout=1800s",
-            "--stream-logs"
         ]
         
         # Set the API_URL environment variable if provided

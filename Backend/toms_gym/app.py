@@ -15,7 +15,9 @@ load_dotenv()
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-CORS(app)  # Enable CORS for all routes
+
+# Configure CORS with more permissive settings
+CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
 
 # Register blueprints
 app.register_blueprint(competition_bp)

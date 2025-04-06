@@ -216,6 +216,11 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
               className="w-full h-full object-contain"
               onClick={togglePlay}
               playsInline
+              webkit-playsinline="true"
+              x5-playsinline="true"
+              muted={isMuted}
+              controlsList="nodownload"
+              onCanPlay={() => setIsLoading(false)}
             />
             
             {/* Play/Pause Overlay */}

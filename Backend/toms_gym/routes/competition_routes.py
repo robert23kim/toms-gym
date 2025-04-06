@@ -22,11 +22,12 @@ def _get_video_blobs():
 
 def _get_video_data(blob):
     """Helper function to create video response data"""
-    url = blob.generate_signed_url(
-        version="v4",
-        expiration=datetime.timedelta(hours=1),
-        method="GET"
-    )
+    # Create a public URL with https to ensure it works on all browsers
+    # The format is https://storage.googleapis.com/BUCKET_NAME/OBJECT_NAME
+    url = f"https://storage.googleapis.com/{blob.bucket.name}/{blob.name}"
+    
+    # For debugging - log the URL
+    print(f"Generated video URL: {url}")
     
     return {
         "video_id": 1,

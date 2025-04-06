@@ -38,14 +38,25 @@ const RandomVideo = () => {
         url += `?lift_type=${encodeURIComponent(liftTypeFilter)}`;
       }
       
+      console.log('Fetching video from URL:', url);
       const response = await axios.get(url);
+      console.log('Received response:', response.data);
+      
+      if (!response.data.video_url) {
+        throw new Error('Video URL not found in response');
+      }
+      
       setVideoData({
         ...response.data,
         video_url: response.data.video_url
       });
       setError(null);
     } catch (err) {
-      setError('Failed to fetch video');
+      console.error('Error fetching video:', err);
+      const errorMessage = err.response 
+        ? `Error: ${err.response.status} - ${err.response.statusText}` 
+        : 'Failed to fetch video. Please check your connection and try again.';
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
