@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Video Playback Tester</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #f0f2f5;
+            color: #333;
+            line-height: 1.5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        h1 {
+            color: #2962ff;
+            font-size: 24px;
+            margin-top: 0;
+        }
+        .section {
+            margin-bottom: 24px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 16px;
+        }
+        .video-container {
+            position: relative;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background-color: #000;
+        }
+        video {
+            width: 100%;
+            display: block;
+        }
+        button {
+            background-color: #2962ff;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            margin: 5px 5px 5px 0;
+        }
+        button:hover {
+            background-color: #0039cb;
+        }
+        button.secondary {
+            background-color: #f50057;
+        }
+        button.secondary:hover {
+            background-color: #bb002f;
+        }
+        .info-box {
+            background-color: #e3f2fd;
+            padding: 12px;
+            border-radius: 4px;
+            margin: 16px 0;
+            font-size: 14px;
+        }
+        .log-container {
+            margin-top: 16px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            background-color: #f5f5f5;
+            font-family: monospace;
+            font-size: 12px;
+        }
+        .log-entry {
+            margin: 4px 0;
+            word-wrap: break-word;
+        }
+        .log-entry.error {
+            color: #d50000;
+        }
+        .log-entry.success {
+            color: #00c853;
+        }
+        .device-info {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            padding: 8px;
+            background-color: #f5f5f5;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mobile Video Playback Tester</h1>
+        
+        <div class="device-info" id="device-info">
+            Detecting device...
+        </div>
+        
+        <div class="section">
+            <h2>Test 1: Direct GCS URL</h2>
+            <p>Testing playback from a Google Cloud Storage URL directly.</p>
+            <div class="video-container">
+                <video id="video1" controls playsinline webkit-playsinline x5-playsinline>
+                    Your browser doesn't support HTML5 video.
+                </video>
+            </div>
+            <button onclick="loadDirectVideo()">Load Direct GCS Video</button>
+            <button onclick="reloadVideo('video1')" class="secondary">Reload</button>
+        </div>
+        
+        <div class="section">
+            <h2>Test 2: Proxy Endpoint</h2>
+            <p>Testing playback through the backend proxy endpoint.</p>
+            <div class="video-container">
+                <video id="video2" controls playsinline webkit-playsinline x5-playsinline>
+                    Your browser doesn't support HTML5 video.
+                </video>
+            </div>
+            <button onclick="loadProxyVideo()">Load Video via Proxy</button>
+            <button onclick="reloadVideo('video2')" class="secondary">Reload</button>
+        </div>
+        
+        <div class="section">
+            <h2>Test 3: Random Video API</h2>
+            <p>Testing the random video endpoint with appropriate URL handling.</p>
+            <div class="video-container">
+                <video id="video3" controls playsinline webkit-playsinline x5-playsinline>
+                    Your browser doesn't support HTML5 video.
+                </video>
+            </div>
+            <button onclick="loadRandomVideo()">Load Random Video</button>
+            <button onclick="reloadVideo('video3')" class="secondary">Reload</button>
+        </div>
+        
+        <div class="info-box">
+            <strong>Testing Instructions:</strong>
+            <ol>
+                <li>Click each "Load" button to test different video sources</li>
+                <li>Check if videos play correctly on your device</li>
+                <li>Use the "Reload" button if a video fails to load</li>
+                <li>Review the log messages below for debugging info</li>
+            </ol>
+        </div>
+        
+        <div class="log-container" id="log">
+            <div class="log-entry">Test initialized. Waiting for actions...</div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const API_URL = 'https://my-python-backend-quyiiugyoq-ue.a.run.app';
+        const GCS_BUCKET = 'jtr-lift-u-4ever-cool-bucket';
+        const DIRECT_VIDEO_PATH = 'videos/demo-squat.mp4';
+        
+        // Device detection
+        function detectDevice() {
+            const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+            let deviceInfo = {
+                userAgent,
+                isMobile: false,
+                isIOS: false,
+                isAndroid: false,
+                browser: 'Unknown'
+            };
+            
+            // Mobile detection
+            if (/android/i.test(userAgent)) {
+                deviceInfo.isMobile = true;
+                deviceInfo.isAndroid = true;
+                deviceInfo.device = 'Android';
+            }
+            
+            if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                deviceInfo.isMobile = true;
+                deviceInfo.isIOS = true;
+                deviceInfo.device = 'iOS';
+            }
+            
+            // Browser detection
+            if (/chrome/i.test(userAgent)) deviceInfo.browser = 'Chrome';
+            if (/firefox/i.test(userAgent)) deviceInfo.browser = 'Firefox';
+            if (/safari/i.test(userAgent) && !/chrome/i.test(userAgent)) deviceInfo.browser = 'Safari';
+            
+            return deviceInfo;
+        }
+        
+        // Logging
+        function log(message, type = 'info') {
+            const logContainer = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `${new Date().toLocaleTimeString()} - ${message}`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+            console.log(`[${type}] ${message}`);
+        }
+        
+        // Load videos from different sources
+        function loadDirectVideo() {
+            const video = document.getElementById('video1');
+            const gcsUrl = `https://storage.googleapis.com/${GCS_BUCKET}/${DIRECT_VIDEO_PATH}?alt=media&t=${Date.now()}`;
+            
+            log(`Loading direct GCS video: ${gcsUrl}`);
+            video.src = gcsUrl;
+            
+            setupVideoListeners(video, 'Direct GCS');
+        }
+        
+        function loadProxyVideo() {
+            const video = document.getElementById('video2');
+            const proxyUrl = `${API_URL}/video/${encodeURIComponent(DIRECT_VIDEO_PATH)}?mobile=true&t=${Date.now()}`;
+            
+            log(`Loading video via proxy: ${proxyUrl}`);
+            video.src = proxyUrl;
+            
+            setupVideoListeners(video, 'Proxy');
+        }
+        
+        async function loadRandomVideo() {
+            const video = document.getElementById('video3');
+            
+            try {
+                log('Fetching random video from API...');
+                const response = await fetch(`${API_URL}/random-video`);
+                
+                if (!response.ok) {
+                    throw new Error(`API error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                log(`Random video API response received: ${data.video_url}`);
+                
+                // Process video URL as the RandomVideo component would
+                const videoUrl = data.video_url;
+                const deviceInfo = detectDevice();
+                
+                let finalVideoUrl = videoUrl;
+                
+                // Apply the same logic as in the RandomVideo component
+                if (videoUrl.includes('storage.googleapis.com/' + GCS_BUCKET)) {
+                    let videoPath = '';
+                    if (videoUrl.includes(GCS_BUCKET + '/videos/')) {
+                        videoPath = videoUrl.split(GCS_BUCKET + '/')[1];
+                    } else {
+                        const bucketPart = videoUrl.indexOf(GCS_BUCKET + '/');
+                        if (bucketPart >= 0) {
+                            videoPath = videoUrl.substring(bucketPart + (GCS_BUCKET + '/').length);
+                        }
+                    }
+                    
+                    if (videoPath) {
+                        log(`Video path extracted: ${videoPath}`);
+                        finalVideoUrl = `${API_URL}/video/${encodeURIComponent(videoPath)}?mobile=${deviceInfo.isMobile}`;
+                    } else {
+                        log('Could not extract video path, using fallback');
+                        const cacheBuster = `t=${Date.now()}`;
+                        finalVideoUrl = videoUrl.includes('?') ? 
+                            `${videoUrl}&alt=media&${cacheBuster}` : 
+                            `${videoUrl}?alt=media&${cacheBuster}`;
+                    }
+                } else {
+                    const cacheBuster = `t=${Date.now()}`;
+                    finalVideoUrl = videoUrl.includes('?') ? 
+                        `${videoUrl}&${cacheBuster}` : 
+                        `${videoUrl}?${cacheBuster}`;
+                }
+                
+                log(`Final video URL: ${finalVideoUrl}`);
+                video.src = finalVideoUrl;
+                
+                setupVideoListeners(video, 'Random');
+                
+            } catch (error) {
+                log(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        function setupVideoListeners(video, sourceType) {
+            const errorMessages = {
+                1: 'Video loading aborted',
+                2: 'Network error',
+                3: 'Decoding failed',
+                4: 'Video format not supported'
+            };
+            
+            // Clear previous listeners
+            video.onloadedmetadata = null;
+            video.oncanplay = null;
+            video.onerror = null;
+            video.onloadstart = null;
+            
+            // Set new listeners
+            video.onloadstart = () => log(`${sourceType} video: Loading started`);
+            
+            video.onloadedmetadata = () => {
+                log(`${sourceType} video: Metadata loaded - Duration: ${video.duration.toFixed(2)}s`, 'success');
+            };
+            
+            video.oncanplay = () => {
+                log(`${sourceType} video: Ready to play`, 'success');
+            };
+            
+            video.onerror = () => {
+                const code = video.error ? video.error.code : 'unknown';
+                const message = errorMessages[code] || `Unknown error (${code})`;
+                log(`${sourceType} video error: ${message}`, 'error');
+            };
+        }
+        
+        function reloadVideo(videoId) {
+            const video = document.getElementById(videoId);
+            const currentSrc = video.src;
+            
+            log(`Reloading video: ${videoId}`);
+            video.src = '';
+            
+            // Force a short delay before reloading
+            setTimeout(() => {
+                video.src = currentSrc.includes('?') ? 
+                    `${currentSrc}&reload=${Date.now()}` : 
+                    `${currentSrc}?reload=${Date.now()}`;
+                
+                video.load();
+            }, 100);
+        }
+        
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const deviceInfo = detectDevice();
+            const infoElement = document.getElementById('device-info');
+            
+            infoElement.innerHTML = `
+                <strong>Device Information:</strong><br>
+                Device: ${deviceInfo.device || 'Desktop'}<br>
+                Browser: ${deviceInfo.browser}<br>
+                Mobile: ${deviceInfo.isMobile ? 'Yes' : 'No'}<br>
+                User Agent: ${deviceInfo.userAgent}
+            `;
+            
+            log('Test page initialized for ' + (deviceInfo.isMobile ? deviceInfo.device : 'Desktop'));
+        });
+    </script>
+</body>
+</html> 

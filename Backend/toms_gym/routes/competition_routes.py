@@ -5,6 +5,7 @@ from google.cloud import storage
 import random
 import datetime
 import urllib.parse
+import os
 
 # Global variable to store video blobs
 _video_blobs = []
@@ -301,38 +302,114 @@ def serve_video(video_path):
     Proxy endpoint for serving videos with proper headers for mobile devices
     """
     try:
-        # Make sure the path is properly formatted for GCS
+        # Debug logs
+        print(f"Video path received: {video_path}")
+        
+        # Clean and normalize the path
         clean_path = urllib.parse.unquote(video_path)
+        if clean_path.startswith('video/'):
+            clean_path = clean_path[6:]  # Remove duplicate 'video/' prefix if present
+            
         if not clean_path.startswith('videos/'):
             clean_path = f"videos/{clean_path}"
             
-        # Check if mobile
-        is_mobile = 'mobile' in request.args or request.user_agent.platform in ['android', 'iphone', 'ipad']
+        print(f"Normalized path: {clean_path}")
+            
+        # Check if mobile - both from query param and user agent
+        is_mobile = (
+            request.args.get('mobile') in ['true', 'True', '1'] or
+            'mobile' in request.args or 
+            request.user_agent.platform in ['android', 'iphone', 'ipad'] or
+            any(device in request.user_agent.string.lower() for device in ['android', 'iphone', 'ipad', 'mobile'])
+        )
         
-        # Get the video from GCS with a signed URL
+        print(f"Request is from mobile device: {is_mobile}")
+        print(f"User agent: {request.user_agent.string}")
+        
+        # Get the video from GCS
         storage_client = storage.Client()
         bucket = storage_client.bucket('jtr-lift-u-4ever-cool-bucket')
         blob = bucket.blob(clean_path)
         
         if not blob.exists():
-            return jsonify({"error": "Video not found"}), 404
+            print(f"Video not found at path: {clean_path}")
+            # Try listing files in the bucket to debug
+            all_blobs = list(bucket.list_blobs(prefix='videos/'))
+            video_blobs = [b.name for b in all_blobs if b.name.lower().endswith(('.mp4', '.mov'))]
+            print(f"Available videos: {video_blobs}")
+            return jsonify({"error": "Video not found", "path": clean_path}), 404
             
-        # Generate a signed URL with appropriate headers
-        url = blob.generate_signed_url(
-            version="v4",
-            expiration=datetime.timedelta(minutes=30),
-            method="GET",
-            response_headers={
-                "Content-Type": "video/mp4",
-                "Access-Control-Allow-Origin": "*",
-                "Accept-Ranges": "bytes",
-                "Cache-Control": "no-cache, no-store, must-revalidate" if is_mobile else "public, max-age=3600"
-            }
-        )
+        # Determine content type based on file extension
+        content_type = "video/mp4"
+        if clean_path.lower().endswith('.mov'):
+            content_type = "video/quicktime"
+        elif clean_path.lower().endswith('.webm'):
+            content_type = "video/webm"
+            
+        print(f"Content type: {content_type}")
         
-        # Redirect to the signed URL
-        return redirect(url, code=302)
+        # Check if using local development environment
+        is_local_env = os.environ.get('FLASK_ENV') == 'development' or os.environ.get('USE_MOCK_DB') == 'true'
         
+        if is_local_env:
+            # For local testing, just redirect to the public GCS URL
+            print("Using direct GCS URL for local testing")
+            direct_url = f"https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/{clean_path}"
+            
+            # Add mobile-specific cache headers
+            response = redirect(direct_url, code=302)
+            response.headers['Content-Type'] = content_type
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Range, Content-Length, Accept-Ranges'
+            response.headers['Accept-Ranges'] = 'bytes'
+            
+            if is_mobile:
+                response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+            else:
+                response.headers['Cache-Control'] = 'public, max-age=3600'
+                
+            return response
+        else:
+            # For production, use signed URL
+            try:
+                # Generate a signed URL with appropriate headers
+                url = blob.generate_signed_url(
+                    version="v4",
+                    expiration=datetime.timedelta(minutes=30),
+                    method="GET",
+                    headers={
+                        "Content-Type": content_type,
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+                        "Access-Control-Allow-Headers": "Content-Type, Range, Content-Length, Accept-Ranges",
+                        "Accept-Ranges": "bytes",
+                        "Cache-Control": "no-cache, no-store, must-revalidate" if is_mobile else "public, max-age=3600"
+                    }
+                )
+                
+                print(f"Generated signed URL: {url}")
+                
+                # Redirect to the signed URL
+                return redirect(url, code=302)
+            except Exception as signing_error:
+                print(f"Error generating signed URL: {signing_error}")
+                # Fallback to direct URL if signing fails
+                direct_url = f"https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/{clean_path}"
+                return redirect(direct_url, code=302)
     except Exception as e:
+        import traceback
         print(f"Error serving video: {str(e)}")
-        return jsonify({"error": str(e)}), 500 
+        print(traceback.format_exc())
+        return jsonify({"error": str(e), "traceback": traceback.format_exc()}), 500
+
+@competition_bp.route('/health')
+def health_check():
+    """
+    Simple health check endpoint for monitoring
+    """
+    return jsonify({
+        "status": "healthy", 
+        "timestamp": datetime.datetime.now().isoformat(),
+        "service": "toms-gym-backend"
+    }) 

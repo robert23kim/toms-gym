@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Android Test Report - Pixel5</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        .success { color: green; }
+        .failure { color: red; }
+        pre { background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto; }
+        .test-result { margin-bottom: 20px; border: 1px solid #ddd; border-radius: 5px; overflow: hidden; }
+        .test-header { background-color: #f0f0f0; padding: 10px; border-bottom: 1px solid #ddd; }
+        .test-content { padding: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Android Test Report - Pixel5</h1>
+    <p>Test Date: Sun Apr  6 02:27:37 EDT 2025</p>
+    <p>Android Version: 11</p>
+    <p>Chrome Version: 90.0.4430.91</p>
+    <p>API URL: https://my-python-backend-quyiiugyoq-ue.a.run.app</p>
+    
+    <h2>Test Results</h2>
+    
+    <div class="test-result">
+        <div class="test-header">API Health</div>
+        <div class="test-content">
+            Status: <span class='success'>Success</span>
+            <pre><!doctype html>
+<html lang=en>
+<title>404 Not Found</title>
+<h1>Not Found</h1>
+<p>The requested URL was not found on the server. If you entered the URL manually please check your spelling and try again.</p></pre>
+        </div>
+    </div>
+    
+    <div class="test-result">
+        <div class="test-header">Random Video Endpoint</div>
+        <div class="test-content">
+            Status: <span class='success'>Success</span>
+            <pre>{"competition_id":1,"current_index":1,"lift_type":"Squat","participant_id":1,"participant_name":"Random Athlete","success":true,"total_videos":4,"video_id":1,"video_url":"https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/videos/20250406_034350_IMG_0242.mov","weight":100}</pre>
+        </div>
+    </div>
+    
+    <div class="test-result">
+        <div class="test-header">Direct Video Access</div>
+        <div class="test-content">
+            Status: <span class='success'>Success</span>
+            <p>Size: 4.0K</p>
+            <pre>HTTP/2 206 
+x-guploader-uploadid: AKDAyIv7eNhDITFGMCLjN_ZrbFSLxDIGXxFNtc4PRF3wnN7UgE_QoHBoWAk1ZTR3y-g0Lsyb
+expires: Sun, 06 Apr 2025 07:27:36 GMT
+date: Sun, 06 Apr 2025 06:27:36 GMT
+cache-control: public, max-age=3600
+last-modified: Sun, 06 Apr 2025 03:43:51 GMT
+etag: "8bb2ec6bb4e5e4c8586f1770b6877cba"
+x-goog-generation: 1743911031280995
+x-goog-metageneration: 1
+x-goog-stored-content-encoding: identity
+x-goog-stored-content-length: 5091118
+content-type: video/quicktime
+x-goog-hash: crc32c=bIZ7NA==
+x-goog-hash: md5=i7Lsa7Tl5MhYbxdwtod8ug==
+x-goog-storage-class: STANDARD
+accept-ranges: bytes
+content-range: bytes 0-1024/5091118
+content-length: 1025
+access-control-allow-origin: *
+access-control-expose-headers: Content-Type
+access-control-expose-headers: Range
+access-control-expose-headers: Content-Length
+access-control-expose-headers: Accept-Ranges
+server: UploadServer
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+</pre>
+        </div>
+    </div>
+    
+    <div class="test-result">
+        <div class="test-header">Video Proxy</div>
+        <div class="test-content">
+            Status: <span class='success'>Success</span>
+            <p>Size: 4.0K</p>
+            <pre>HTTP/2 500 
+content-type: application/json
+access-control-allow-origin: *
+access-control-expose-headers: *
+x-cloud-trace-context: d6aa6b2044d8c4316ccaf3ad22b61827
+date: Sun, 06 Apr 2025 06:27:36 GMT
+server: Google Frontend
+content-length: 392
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+</pre>
+        </div>
+    </div>
+    
+    <div class="test-result">
+        <div class="test-header">Range Request</div>
+        <div class="test-content">
+            Status: <span class='success'>Success</span>
+            <pre>HTTP/2 206 
+x-guploader-uploadid: AKDAyIto1X-RgJHiULNmfqrczcHjn_yyyDCSvqlMcKCJDEcT3HdNJQFNDshlePwW12tqsBGX
+expires: Sun, 06 Apr 2025 07:27:37 GMT
+date: Sun, 06 Apr 2025 06:27:37 GMT
+cache-control: public, max-age=3600
+last-modified: Sun, 06 Apr 2025 03:43:51 GMT
+etag: "8bb2ec6bb4e5e4c8586f1770b6877cba"
+x-goog-generation: 1743911031280995
+x-goog-metageneration: 1
+x-goog-stored-content-encoding: identity
+x-goog-stored-content-length: 5091118
+content-type: video/quicktime
+x-goog-hash: crc32c=bIZ7NA==
+x-goog-hash: md5=i7Lsa7Tl5MhYbxdwtod8ug==
+x-goog-storage-class: STANDARD
+accept-ranges: bytes
+content-range: bytes 0-102399/5091118
+content-length: 102400
+access-control-allow-origin: *
+access-control-expose-headers: Content-Type
+access-control-expose-headers: Range
+access-control-expose-headers: Content-Length
+access-control-expose-headers: Accept-Ranges
+server: UploadServer
+alt-svc: h3=":443"; ma=2592000,h3-29=":443"; ma=2592000
+</pre>
+        </div>
+    </div>
+</body>
+</html>

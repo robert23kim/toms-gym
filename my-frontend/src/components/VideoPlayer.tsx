@@ -60,13 +60,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
   const [isLoading, setIsLoading] = useState(true);
   const [isMobileDevice, setIsMobileDevice] = useState(false);
   const [useNativeControls, setUseNativeControls] = useState(false);
+  const [hasError, setHasError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
   const controlsTimeoutRef = useRef<number | null>(null);
   const [comments] = useState<Comment[]>(mockComments);
   const [newComment, setNewComment] = useState("");
   const touchStartTimeRef = useRef<number>(0);
   const touchPositionRef = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
+  const retryCountRef = useRef<number>(0);
 
   useEffect(() => {
+    // Reset error state when video URL changes
+    setHasError(false);
+    setErrorMessage("");
+    setIsLoading(true);
+    retryCountRef.current = 0;
+
     // Detect mobile device
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     setIsMobileDevice(isMobile);
@@ -74,7 +83,6 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
     // On mobile devices, use native controls by default for better compatibility
     if (isMobile) {
       setUseNativeControls(true);
-      // This will be applied after the ref is available
     }
     
     const video = videoRef.current;
@@ -86,8 +94,17 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
     }
 
     const onLoadedMetadata = () => {
+      console.log("Video metadata loaded successfully");
       setDuration(video.duration);
       setIsLoading(false);
+      setHasError(false);
+      
+      // Force play on mobile after metadata is loaded
+      if (isMobile) {
+        video.play().catch(err => {
+          console.warn("Autoplay failed after metadata load:", err);
+        });
+      }
     };
 
     const onTimeUpdate = () => {
@@ -95,21 +112,61 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
       setProgress((video.currentTime / video.duration) * 100);
     };
     
-    const onError = () => {
-      console.error("Video error detected");
+    const onError = (e: ErrorEvent) => {
+      console.error("Video error detected:", e, video.error);
       setIsLoading(false);
+      setHasError(true);
+      
+      // Get detailed error message
+      let message = "Video playback error";
+      if (video.error) {
+        switch (video.error.code) {
+          case 1:
+            message = "Video loading aborted";
+            break;
+          case 2:
+            message = "Network error occurred while loading video";
+            break;
+          case 3:
+            message = "Video decoding failed";
+            break;
+          case 4:
+            message = "Video format not supported";
+            break;
+          default:
+            message = `Error code: ${video.error.code}`;
+        }
+      }
+      setErrorMessage(message);
       
       // Fallback to native controls on error
       if (isMobile && video) {
         setUseNativeControls(true);
         video.controls = true;
+        
+        // Try to reload video on error (up to 3 times)
+        if (retryCountRef.current < 3) {
+          retryCountRef.current++;
+          console.log(`Attempting video reload (${retryCountRef.current}/3)`);
+          // Add a small delay before reload
+          setTimeout(() => {
+            video.load();
+          }, 1000);
+        }
       }
+    };
+    
+    const onCanPlay = () => {
+      console.log("Video can play now");
+      setIsLoading(false);
+      setHasError(false);
     };
 
     video.addEventListener("loadedmetadata", onLoadedMetadata);
     video.addEventListener("timeupdate", onTimeUpdate);
     video.addEventListener("ended", () => setIsPlaying(false));
-    video.addEventListener("error", onError);
+    video.addEventListener("error", onError as any);
+    video.addEventListener("canplay", onCanPlay);
 
     document.addEventListener("fullscreenchange", handleFullscreenChange);
 
@@ -117,14 +174,15 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
       video.removeEventListener("loadedmetadata", onLoadedMetadata);
       video.removeEventListener("timeupdate", onTimeUpdate);
       video.removeEventListener("ended", () => setIsPlaying(false));
-      video.removeEventListener("error", onError);
+      video.removeEventListener("error", onError as any);
+      video.removeEventListener("canplay", onCanPlay);
       document.removeEventListener("fullscreenchange", handleFullscreenChange);
       
       if (controlsTimeoutRef.current) {
         clearTimeout(controlsTimeoutRef.current);
       }
     };
-  }, []);
+  }, [videoUrl]); // Re-run when videoUrl changes
 
   useEffect(() => {
     const video = videoRef.current;
@@ -261,8 +319,40 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
             onTouchEnd={handleTouchEnd}
           >
             {isLoading && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/10">
-                <div className="w-12 h-12 border-4 border-t-accent border-opacity-50 rounded-full animate-spin"></div>
+              <div className="absolute inset-0 flex items-center justify-center bg-black/50 z-10">
+                <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-white"></div>
+              </div>
+            )}
+            
+            {hasError && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 p-4 text-center">
+                <div className="text-red-500 mb-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 mx-auto mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                  <h3 className="text-xl font-bold">Video Playback Error</h3>
+                  <p className="text-sm mt-2">{errorMessage || "There was a problem playing this video."}</p>
+                </div>
+                <button 
+                  className="bg-primary hover:bg-primary/90 text-white font-bold py-2 px-4 rounded-full"
+                  onClick={() => {
+                    setHasError(false);
+                    setIsLoading(true);
+                    if (videoRef.current) {
+                      videoRef.current.load();
+                    }
+                  }}
+                >
+                  Try Again
+                </button>
+                {onNextVideo && (
+                  <button 
+                    className="mt-2 bg-transparent hover:bg-white/10 text-white font-bold py-2 px-4 rounded-full"
+                    onClick={onNextVideo}
+                  >
+                    Next Video
+                  </button>
+                )}
               </div>
             )}
             
@@ -277,7 +367,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
               muted={isMuted}
               controls={useNativeControls}
               controlsList="nodownload"
-              onCanPlay={() => setIsLoading(false)}
+              onLoadStart={() => setIsLoading(true)}
               onError={(e) => {
                 console.error("Video error:", e);
                 setIsLoading(false);

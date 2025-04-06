@@ -29,6 +29,9 @@ const RandomVideo = () => {
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
 
+  // Improved mobile detection
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
   const fetchVideo = async (endpoint: string) => {
     try {
       setLoading(true);
@@ -47,26 +50,50 @@ const RandomVideo = () => {
         throw new Error('Video URL not found in response');
       }
       
-      // Make sure URL is properly formatted for mobile
+      // Extract the original video URL
       const videoUrl = response.data.video_url;
       
-      // Convert Google Storage URL to our proxy URL for better mobile support
+      // Handle URL differently based on device and URL type
       let finalVideoUrl = videoUrl;
       
       // Check if it's a Google Storage URL
-      if (videoUrl.includes('storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/videos/')) {
-        // Extract video path
-        const videoPath = videoUrl.split('jtr-lift-u-4ever-cool-bucket/')[1];
-        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-        // Use our proxy endpoint
-        finalVideoUrl = `${API_URL}/video/${encodeURIComponent(videoPath)}${isMobile ? '?mobile=true' : ''}`;
+      if (videoUrl.includes('storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/')) {
+        // Extract video path - handle both formats
+        let videoPath = '';
+        if (videoUrl.includes('jtr-lift-u-4ever-cool-bucket/videos/')) {
+          videoPath = videoUrl.split('jtr-lift-u-4ever-cool-bucket/')[1];
+        } else {
+          // In case the URL format changes but still contains the bucket name
+          const bucketPart = videoUrl.indexOf('jtr-lift-u-4ever-cool-bucket/');
+          if (bucketPart >= 0) {
+            videoPath = videoUrl.substring(bucketPart + 'jtr-lift-u-4ever-cool-bucket/'.length);
+          }
+        }
+        
+        if (videoPath) {
+          // Log for debugging
+          console.log(`Video path extracted: ${videoPath}`);
+          
+          // Use our proxy endpoint with explicit mobile parameter
+          finalVideoUrl = `${API_URL}/video/${encodeURIComponent(videoPath)}?mobile=${isMobile}`;
+          console.log(`Using proxy URL: ${finalVideoUrl}`);
+        } else {
+          // Fallback with alt=media and cache busting for Google Storage
+          console.log('Could not extract video path, using fallback');
+          const cacheBuster = `t=${new Date().getTime()}`;
+          finalVideoUrl = videoUrl.includes('?') ? 
+            `${videoUrl}&alt=media&${cacheBuster}` : 
+            `${videoUrl}?alt=media&${cacheBuster}`;
+        }
       } else {
-        // Just add cache busting
-        const cacheBuster = `?t=${new Date().getTime()}`;
+        // For non-Google Storage URLs, just add cache busting
+        const cacheBuster = `t=${new Date().getTime()}`;
         finalVideoUrl = videoUrl.includes('?') ? 
-          `${videoUrl}&alt=media${cacheBuster}` : 
-          `${videoUrl}?alt=media${cacheBuster}`;
+          `${videoUrl}&${cacheBuster}` : 
+          `${videoUrl}?${cacheBuster}`;
       }
+      
+      console.log('Final video URL:', finalVideoUrl);
       
       setVideoData({
         ...response.data,
