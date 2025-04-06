@@ -30,6 +30,10 @@ export const routes: RouteObject[] = [
     element: <UploadVideo />,
   },
   {
+    path: "/upload",
+    element: <UploadVideo />,
+  },
+  {
     path: "/challenges/:id/participants/:participantId/video/:videoId",
     element: <VideoPlayer />,
   },

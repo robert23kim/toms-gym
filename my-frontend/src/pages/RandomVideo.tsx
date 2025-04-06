@@ -3,10 +3,12 @@ import axios from 'axios';
 import { API_URL } from '../config';
 import VideoPlayer from '../components/VideoPlayer';
 import { Button } from '../components/ui/button';
-import { SkipForward } from 'lucide-react';
+import { SkipForward, Upload } from 'lucide-react';
 import Layout from '../components/Layout';
+import { useNavigate } from 'react-router-dom';
 
 const RandomVideo = () => {
+  const navigate = useNavigate();
   const [videoData, setVideoData] = useState<{
     video_id: number;
     participant_id: number;
@@ -44,6 +46,10 @@ const RandomVideo = () => {
 
   const handleNextVideo = () => {
     fetchVideo('next-video');
+  };
+
+  const handleUploadClick = () => {
+    navigate('/upload');
   };
 
   const renderContent = () => {
@@ -84,6 +90,15 @@ const RandomVideo = () => {
                 Video {videoData.current_index + 1} of {videoData.total_videos}
               </p>
             </div>
+            <Button 
+              variant="outline" 
+              size="lg"
+              onClick={handleUploadClick}
+              className="flex items-center gap-2"
+            >
+              <Upload className="h-4 w-4" />
+              Upload Video
+            </Button>
           </div>
         </div>
         <VideoPlayer

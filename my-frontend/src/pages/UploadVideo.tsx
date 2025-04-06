@@ -103,10 +103,35 @@ const UploadVideo: React.FC = () => {
     try {
       const formData = new FormData();
       formData.append('video', selectedFile);
-      formData.append('competition_id', id || '');
-      formData.append('user_id', localStorage.getItem('userId') || '');
       formData.append('lift_type', liftType);
-      formData.append('weight', weight);
+      
+      // Ensure weight is a valid number and convert to string
+      const weightValue = parseFloat(weight);
+      if (isNaN(weightValue)) {
+        setError("Please enter a valid weight");
+        return;
+      }
+      formData.append('weight', weightValue.toString());
+      
+      // Ensure user_id is a string
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        setError("User ID not found. Please log in again.");
+        return;
+      }
+      formData.append('user_id', userId);
+      
+      // For direct uploads, use a default competition_id
+      // For challenge uploads, use the provided id
+      const competitionId = id || '1'; // Using '1' as default for direct uploads
+      formData.append('competition_id', competitionId);
+
+      console.log("Sending form data:", {
+        lift_type: liftType,
+        weight: weightValue.toString(),
+        user_id: userId,
+        competition_id: competitionId
+      });
 
       const response = await axios.post(`${API_URL}/upload`, formData, {
         headers: {
@@ -115,15 +140,21 @@ const UploadVideo: React.FC = () => {
       });
 
       if (response.data.url) {
-        // Show success message and redirect back to challenge page
         toast({
           title: "Upload Successful!",
           description: "Your lift has been submitted for review.",
           duration: 5000,
         });
-        navigate(`/challenges/${id}`);
+        
+        // Navigate back to appropriate page
+        if (id) {
+          navigate(`/challenges/${id}`);
+        } else {
+          navigate('/random-video');
+        }
       }
     } catch (err: any) {
+      console.error("Upload error:", err.response?.data);
       setError(err.response?.data?.error || "Failed to upload video");
     } finally {
       setIsUploading(false);
@@ -138,13 +169,23 @@ const UploadVideo: React.FC = () => {
         className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
       >
         <div className="max-w-2xl mx-auto">
-          <Link
-            to={`/challenges/${id}`}
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
-          >
-            <ArrowLeft className="mr-2" size={16} />
-            Back to Challenge
-          </Link>
+          {id ? (
+            <Link
+              to={`/challenges/${id}`}
+              className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
+            >
+              <ArrowLeft className="mr-2" size={16} />
+              Back to Challenge
+            </Link>
+          ) : (
+            <Link
+              to="/random-video"
+              className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
+            >
+              <ArrowLeft className="mr-2" size={16} />
+              Back to Videos
+            </Link>
+          )}
 
           <div className="bg-card rounded-lg shadow-lg overflow-hidden">
             <div className="p-6 sm:p-8">
@@ -203,18 +244,15 @@ const UploadVideo: React.FC = () => {
                 </div>
 
                 {error && (
-                  <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
-                    {error}
-                  </div>
+                  <div className="text-red-500 text-sm">{error}</div>
                 )}
 
                 <button
                   type="submit"
-                  disabled={isUploading}
-                  className={`w-full py-3 px-4 rounded-lg bg-primary text-white font-medium
-                    ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
+                  disabled={isUploading || !selectedFile}
+                  className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isUploading ? 'Uploading...' : 'Upload Video'}
+                  {isUploading ? "Uploading..." : "Upload Video"}
                 </button>
               </form>
             </div>

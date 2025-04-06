@@ -47,21 +47,34 @@ class Spinner:
         self.current_char = 0
         self.progress = "[0/2] Starting"
         self.running = False
+        self.last_progress = ""
+        self.start_time = time.time()
+
+    def _get_timestamp(self):
+        elapsed = time.time() - self.start_time
+        minutes = int(elapsed // 60)
+        seconds = int(elapsed % 60)
+        return f"[{minutes:02d}:{seconds:02d}]"
 
     def update_progress(self, progress: str):
+        if progress != self.last_progress:
+            print()  # New line for new progress
+            self.last_progress = progress
         self.progress = progress
 
     async def spin(self):
         self.running = True
         while self.running:
             char = self.spinner_chars[self.current_char]
-            print(f"\r{self.color}[{self.service}]{Colors.NC} {Colors.BOLD}{self.progress}{Colors.NC} [{char}]  ", end="")
+            timestamp = self._get_timestamp()
+            print(f"\r{timestamp} {self.color}[{self.service}]{Colors.NC} {Colors.BOLD}{self.progress}{Colors.NC} [{char}]  ", end="", flush=True)
             self.current_char = (self.current_char + 1) % len(self.spinner_chars)
             await asyncio.sleep(0.1)
 
     def stop(self):
         self.running = False
-        print(f"\r{self.color}[{self.service}]{Colors.NC} {Colors.GREEN}Completed ✓{Colors.NC}                                          ")
+        timestamp = self._get_timestamp()
+        print(f"\n{timestamp} {self.color}[{self.service}]{Colors.NC} {Colors.GREEN}Completed ✓{Colors.NC}")
 
 class LogStreamer:
     def __init__(self, log_file: Path, service: str, color: str):
@@ -69,14 +82,26 @@ class LogStreamer:
         self.service = service
         self.color = color
         self.running = False
+        self.last_line = ""
+        self.start_time = time.time()
+
+    def _get_timestamp(self):
+        elapsed = time.time() - self.start_time
+        minutes = int(elapsed // 60)
+        seconds = int(elapsed % 60)
+        return f"[{minutes:02d}:{seconds:02d}]"
 
     async def stream(self):
         self.running = True
         with open(self.log_file, 'r') as f:
             while self.running:
                 line = f.readline()
-                if line:
-                    print(f"{self.color}[{self.service}]{Colors.NC} {line.strip()}")
+                if line and line != self.last_line:
+                    # Only print if it's a new line and not empty
+                    if line.strip():
+                        timestamp = self._get_timestamp()
+                        print(f"{timestamp} {self.color}[{self.service} Log]{Colors.NC} {line.strip()}")
+                    self.last_line = line
                 else:
                     await asyncio.sleep(0.1)
 
@@ -91,6 +116,7 @@ class DeploymentManager:
         self.frontend_spinner = Spinner("Frontend", Colors.BLUE)
         self.backend_logs = LogStreamer(Path("/tmp/backend-build.log"), "Backend", Colors.YELLOW)
         self.frontend_logs = LogStreamer(Path("/tmp/frontend-build.log"), "Frontend", Colors.BLUE)
+        self._roles_checked = set()  # Cache for checked roles
 
     async def setup_service_account(self):
         """Set up the service account for backend deployment"""
@@ -105,7 +131,7 @@ class DeploymentManager:
                 "gcloud", "iam", "service-accounts", "create", "toms-gym-service",
                 "--display-name=Tom's Gym Service Account",
                 f"--project={self.config.project_id}"
-            ], check=False)  # Changed to check=False to not raise on error
+            ], check=False, stderr=subprocess.DEVNULL)
             print(f"{Colors.GREEN}✓ Created service account{Colors.NC}")
         except Exception as e:
             if "already exists" in str(e):
@@ -113,32 +139,59 @@ class DeploymentManager:
             else:
                 print(f"{Colors.YELLOW}ℹ️  Service account already exists or error occurred, continuing...{Colors.NC}")
 
-        # Add necessary roles
-        try:
-            subprocess.run([
-                "gcloud", "projects", "add-iam-policy-binding", self.config.project_id,
-                f"--member=serviceAccount:{self.config.service_account}",
-                "--role=roles/storage.objectViewer"
-            ], check=False)  # Changed to check=False
-            print(f"{Colors.GREEN}✓ Added storage.objectViewer role{Colors.NC}")
-        except Exception as e:
-            if "already has role" in str(e):
-                print(f"{Colors.YELLOW}ℹ️  Storage role already granted, continuing...{Colors.NC}")
-            else:
-                print(f"{Colors.YELLOW}ℹ️  Storage role already granted or error occurred, continuing...{Colors.NC}")
+        # Add necessary roles (only if not already checked)
+        roles_to_check = {
+            "storage.objectViewer": "Storage role",
+            "cloudsql.client": "Cloud SQL role"
+        }
 
-        try:
-            subprocess.run([
-                "gcloud", "projects", "add-iam-policy-binding", self.config.project_id,
-                f"--member=serviceAccount:{self.config.service_account}",
-                "--role=roles/cloudsql.client"
-            ], check=False)  # Changed to check=False
-            print(f"{Colors.GREEN}✓ Added cloudsql.client role{Colors.NC}")
-        except Exception as e:
-            if "already has role" in str(e):
-                print(f"{Colors.YELLOW}ℹ️  Cloud SQL role already granted, continuing...{Colors.NC}")
-            else:
-                print(f"{Colors.YELLOW}ℹ️  Cloud SQL role already granted or error occurred, continuing...{Colors.NC}")
+        for role, role_name in roles_to_check.items():
+            if role not in self._roles_checked:
+                try:
+                    subprocess.run([
+                        "gcloud", "projects", "add-iam-policy-binding", self.config.project_id,
+                        f"--member=serviceAccount:{self.config.service_account}",
+                        f"--role=roles/{role}"
+                    ], check=False, stderr=subprocess.DEVNULL)
+                    print(f"{Colors.GREEN}✓ Added {role_name}{Colors.NC}")
+                    self._roles_checked.add(role)
+                except Exception as e:
+                    if "already has role" in str(e):
+                        print(f"{Colors.YELLOW}ℹ️  {role_name} already granted, continuing...{Colors.NC}")
+                        self._roles_checked.add(role)
+                    else:
+                        print(f"{Colors.YELLOW}ℹ️  {role_name} already granted or error occurred, continuing...{Colors.NC}")
+                        self._roles_checked.add(role)
+
+    async def get_service_image(self, service: str) -> str:
+        """Get the current image of a deployed service"""
+        result = subprocess.run([
+            "gcloud", "run", "services", "describe", service,
+            "--platform", "managed",
+            "--region", self.config.region,
+            "--format", "value(spec.template.spec.containers[0].image)"
+        ], capture_output=True, text=True, check=True)
+        return result.stdout.strip()
+
+    async def verify_deployment(self, service: str, expected_image: str) -> bool:
+        """Verify that the service is running the expected image version"""
+        max_attempts = 10
+        attempt = 0
+        
+        while attempt < max_attempts:
+            current_image = await self.get_service_image(service)
+            if current_image == expected_image:
+                print(f"{Colors.GREEN}✓ {service} is running the new version{Colors.NC}")
+                return True
+                
+            print(f"{Colors.YELLOW}Waiting for {service} to update... (attempt {attempt + 1}/{max_attempts}){Colors.NC}")
+            await asyncio.sleep(10)  # Wait 10 seconds between checks
+            attempt += 1
+            
+        print(f"{Colors.RED}⚠️  {service} failed to update to the new version{Colors.NC}")
+        print(f"Expected: {expected_image}")
+        print(f"Current: {current_image}")
+        return False
 
     async def deploy_backend(self):
         """Deploy the backend service"""
@@ -146,12 +199,37 @@ class DeploymentManager:
             return
 
         self.backend_spinner.update_progress("[1/2] Building container image")
-        subprocess.run([
+        # Get current image version
+        current_image = await self.get_service_image("my-python-backend")
+        print(f"{Colors.BLUE}Current backend image: {current_image}{Colors.NC}")
+
+        # Get the latest build number
+        latest_build = subprocess.run([
+            "gcloud", "builds", "list",
+            "--filter", f"images=gcr.io/{self.config.project_id}/my-python-backend",
+            "--format", "value(id)",
+            "--limit", "1"
+        ], capture_output=True, text=True, check=True).stdout.strip()
+
+        # Build the new version
+        build_result = subprocess.run([
             "gcloud", "builds", "submit", "--tag", f"gcr.io/{self.config.project_id}/my-python-backend",
             "--machine-type=e2-highcpu-8",
             "--timeout=1800s",
             "Backend/"
         ], stdout=open("/tmp/backend-build.log", "w"), stderr=subprocess.STDOUT, check=True)
+
+        # Get the new build number
+        new_build = subprocess.run([
+            "gcloud", "builds", "list",
+            "--filter", f"images=gcr.io/{self.config.project_id}/my-python-backend",
+            "--format", "value(id)",
+            "--limit", "1"
+        ], capture_output=True, text=True, check=True).stdout.strip()
+
+        if latest_build == new_build:
+            print(f"{Colors.RED}⚠️  Warning: New build has the same ID as the latest build{Colors.NC}")
+            return
 
         self.backend_spinner.update_progress("[2/2] Deploying to Cloud Run")
         subprocess.run([
@@ -169,18 +247,51 @@ class DeploymentManager:
             f"--set-env-vars=FLASK_ENV=production,DB_INSTANCE={self.config.project_id}:{self.config.region}:my-db,DB_USER=postgres,DB_PASS={self.config.db_pass},DB_NAME=postgres,GCS_BUCKET_NAME={self.config.bucket_name}"
         ], stdout=open("/tmp/backend-build.log", "a"), stderr=subprocess.STDOUT, check=True)
 
+        # Get new image version
+        new_image = await self.get_service_image("my-python-backend")
+        print(f"{Colors.GREEN}New backend image: {new_image}{Colors.NC}")
+
+        # Verify deployment
+        if not await self.verify_deployment("my-python-backend", new_image):
+            raise DeploymentError("Backend deployment verification failed")
+
     async def deploy_frontend(self):
         """Deploy the frontend service"""
         if self.mode not in [DeploymentMode.BOTH, DeploymentMode.FRONTEND]:
             return
 
         self.frontend_spinner.update_progress("[1/2] Building container image")
+        # Get current image version
+        current_image = await self.get_service_image("my-frontend")
+        print(f"{Colors.BLUE}Current frontend image: {current_image}{Colors.NC}")
+
+        # Get the latest build number
+        latest_build = subprocess.run([
+            "gcloud", "builds", "list",
+            "--filter", f"images=gcr.io/{self.config.project_id}/my-frontend",
+            "--format", "value(id)",
+            "--limit", "1"
+        ], capture_output=True, text=True, check=True).stdout.strip()
+
+        # Build the new version
         subprocess.run([
             "gcloud", "builds", "submit",
             "--config=cloudbuild.yaml",
             "--machine-type=e2-highcpu-32",
             "--timeout=1800s"
         ], cwd="my-frontend", stdout=open("/tmp/frontend-build.log", "w"), stderr=subprocess.STDOUT, check=True)
+
+        # Get the new build number
+        new_build = subprocess.run([
+            "gcloud", "builds", "list",
+            "--filter", f"images=gcr.io/{self.config.project_id}/my-frontend",
+            "--format", "value(id)",
+            "--limit", "1"
+        ], capture_output=True, text=True, check=True).stdout.strip()
+
+        if latest_build == new_build:
+            print(f"{Colors.RED}⚠️  Warning: New build has the same ID as the latest build{Colors.NC}")
+            return
 
         self.frontend_spinner.update_progress("[2/2] Deploying to Cloud Run")
         subprocess.run([
@@ -195,6 +306,14 @@ class DeploymentManager:
             "--concurrency=80",
             "--timeout=300"
         ], stdout=open("/tmp/frontend-build.log", "a"), stderr=subprocess.STDOUT, check=True)
+
+        # Get new image version
+        new_image = await self.get_service_image("my-frontend")
+        print(f"{Colors.GREEN}New frontend image: {new_image}{Colors.NC}")
+
+        # Verify deployment
+        if not await self.verify_deployment("my-frontend", new_image):
+            raise DeploymentError("Frontend deployment verification failed")
 
     async def get_service_url(self, service: str) -> str:
         """Get the URL of a deployed service"""

@@ -16,14 +16,11 @@ def upload_video():
         return jsonify({'error': 'No video file provided'}), 400
         
     file = request.files['video']
-    competition_id = request.form.get('competition_id')
-    user_id = request.form.get('user_id')
-    lift_type = request.form.get('lift_type')
-    weight = request.form.get('weight')
+    competition_id = request.form.get('competition_id', '1')  # Default to '1' if not provided
+    user_id = request.form.get('user_id', '1')  # Default to '1' if not provided
+    lift_type = request.form.get('lift_type', 'Squat')  # Default to 'Squat' if not provided
+    weight = request.form.get('weight', '0')  # Default to '0' if not provided
     
-    if not all([competition_id, user_id, lift_type, weight]):
-        return jsonify({'error': 'Missing required fields'}), 400
-        
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
         
@@ -52,17 +49,31 @@ def upload_video():
         
         # Store video metadata in the database
         with get_db().connect() as conn:
-            # First, get the usercompetition_id
+            # First, get or create the usercompetition_id
             result = conn.execute(
                 """
                 SELECT id FROM UserCompetition 
                 WHERE user_id = %s AND competition_id = %s
                 """,
-                (user_id, competition_id)
+                [int(user_id), int(competition_id)]  # Convert to integers and use list
             ).fetchone()
             
             if not result:
-                return jsonify({'error': 'User is not registered for this competition'}), 400
+                # Create a new UserCompetition entry if it doesn't exist
+                conn.execute(
+                    """
+                    INSERT INTO UserCompetition (user_id, competition_id)
+                    VALUES (%s, %s)
+                    """,
+                    [int(user_id), int(competition_id)]  # Use list
+                )
+                result = conn.execute(
+                    """
+                    SELECT id FROM UserCompetition 
+                    WHERE user_id = %s AND competition_id = %s
+                    """,
+                    [int(user_id), int(competition_id)]  # Use list
+                ).fetchone()
                 
             usercompetition_id = result[0]
             
@@ -73,7 +84,7 @@ def upload_video():
                 FROM Attempts
                 WHERE usercompetition_id = %s AND lift_type = %s
                 """,
-                (usercompetition_id, lift_type)
+                [int(usercompetition_id), lift_type]  # Use list
             ).fetchone()
             
             attempt_number = result[0]
@@ -87,8 +98,8 @@ def upload_video():
                     created_at
                 ) VALUES (%s, %s, %s, %s, %s, %s, NOW())
                 """,
-                (usercompetition_id, lift_type, weight, filename, 
-                 attempt_number, 'pending')
+                [int(usercompetition_id), lift_type, float(weight), filename, 
+                 int(attempt_number), 'pending']  # Use list
             )
             conn.commit()
         
@@ -100,4 +111,5 @@ def upload_video():
         }), 200
         
     except Exception as e:
+        print(f"Upload error: {str(e)}")  # Add error logging
         return jsonify({'error': str(e)}), 500 
