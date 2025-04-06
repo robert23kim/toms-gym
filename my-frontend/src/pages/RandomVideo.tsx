@@ -3,12 +3,16 @@ import axios from 'axios';
 import { API_URL } from '../config';
 import VideoPlayer from '../components/VideoPlayer';
 import { Button } from '../components/ui/button';
-import { SkipForward, Upload } from 'lucide-react';
+import { SkipForward, Upload, Filter, X } from 'lucide-react';
 import Layout from '../components/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 const RandomVideo = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const liftTypeFilter = queryParams.get('type');
+  
   const [videoData, setVideoData] = useState<{
     video_id: number;
     participant_id: number;
@@ -27,7 +31,14 @@ const RandomVideo = () => {
   const fetchVideo = async (endpoint: string) => {
     try {
       setLoading(true);
-      const response = await axios.get(`${API_URL}/${endpoint}`);
+      let url = `${API_URL}/${endpoint}`;
+      
+      // Add lift type filter if provided
+      if (liftTypeFilter) {
+        url += `?lift_type=${encodeURIComponent(liftTypeFilter)}`;
+      }
+      
+      const response = await axios.get(url);
       setVideoData({
         ...response.data,
         video_url: response.data.video_url
@@ -42,7 +53,7 @@ const RandomVideo = () => {
 
   useEffect(() => {
     fetchVideo('random-video');
-  }, []);
+  }, [liftTypeFilter]); // Re-fetch when the filter changes
 
   const handleNextVideo = () => {
     fetchVideo('next-video');
@@ -50,6 +61,10 @@ const RandomVideo = () => {
 
   const handleUploadClick = () => {
     navigate('/upload');
+  };
+  
+  const clearFilter = () => {
+    navigate('/random-video');
   };
 
   const renderContent = () => {
@@ -83,6 +98,18 @@ const RandomVideo = () => {
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-3xl font-bold">Random Video</h1>
+              {liftTypeFilter && (
+                <div className="flex items-center mt-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                  <Filter className="w-3 h-3 mr-1" />
+                  <span>Filtered by: {liftTypeFilter}</span>
+                  <button 
+                    onClick={clearFilter}
+                    className="ml-2 p-1 hover:bg-primary/20 rounded-full"
+                  >
+                    <X className="w-3 h-3" />
+                  </button>
+                </div>
+              )}
               <p className="text-muted-foreground mt-2">
                 {videoData.participant_name} - {videoData.lift_type} @ {videoData.weight}kg
               </p>

@@ -296,8 +296,9 @@ const ChallengeDetail: React.FC = () => {
                       <button
                         onClick={handleJoinChallenge}
                         disabled={isJoining}
-                        className={`w-full py-3 px-4 rounded-lg bg-primary text-white font-medium
-                          ${isJoining ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
+                        className={`w-full sm:w-auto sm:px-8 py-3 px-4 rounded-lg bg-green-500 text-white font-medium 
+                          shadow-sm transition-all hover:bg-green-600 hover:shadow
+                          ${isJoining ? 'opacity-50 cursor-not-allowed' : 'hover:translate-y-[-1px]'}`}
                       >
                         {isJoining ? 'Joining...' : 'Join Challenge'}
                       </button>
@@ -385,40 +386,54 @@ const ChallengeDetail: React.FC = () => {
                   <Users className="mr-2" size={20} />
                   Top Participants
                 </h2>
-                <div className="space-y-3">
+                <div className="space-y-2">
                   {participants.slice(0, 5).map((participant) => (
-                    <div key={participant.userid} className="mb-4 p-4 bg-card rounded-lg shadow">
-                      <div className="flex justify-between items-center mb-2">
+                    <div key={participant.userid} className="p-3 bg-card rounded-lg shadow">
+                      <div className="flex justify-between items-center mb-1">
                         <h4 className="text-lg font-semibold">{participant.name}</h4>
                         <span className="text-sm text-muted-foreground">{participant.weight_class}</span>
                       </div>
-                      <div className="space-y-2">
-                        {participant.attempts?.map((attempt, index) => (
-                          <div key={index} className="flex items-center justify-between text-sm">
-                            <div className="flex items-center gap-2">
-                              <span className={attempt.attempt_result === 'true' ? 'text-green-500' : 'text-red-500'}>
-                                {attempt.lift_type}
-                              </span>
-                              <span>{attempt.weight}kg</span>
-                            </div>
+                      
+                      {/* Horizontal layout for attempts */}
+                      <div className="flex flex-wrap gap-x-3 gap-y-2">
+                        {participant.attempts?.filter(attempt => attempt.weight).map((attempt, index) => (
+                          <div 
+                            key={index} 
+                            className={`flex items-center text-sm rounded-full px-3 py-1 ${
+                              attempt.attempt_result === 'true' 
+                                ? 'bg-green-500/10 border border-green-500/20' 
+                                : 'bg-red-500/10 border border-red-500/20'
+                            }`}
+                          >
+                            <Link 
+                              to={`/random-video?type=${attempt.lift_type}`}
+                              className={`hover:underline ${
+                                attempt.attempt_result === 'true' 
+                                  ? 'text-green-600 font-medium' 
+                                  : 'text-red-600 line-through'
+                              }`}
+                            >
+                              {attempt.lift_type}
+                            </Link>
+                            <span className="mx-1 font-bold">{attempt.weight}kg</span>
                             {attempt.video_url && (
                               <Link
                                 to={`/challenges/${id}/participants/${participant.userid}/video/${index}`}
-                                className="text-primary hover:underline"
+                                className="text-primary hover:underline text-xs ml-1"
                               >
-                                Watch Lift
+                                (watch)
                               </Link>
                             )}
                           </div>
                         ))}
-                      </div>
-                      <div className="mt-2 text-sm text-muted-foreground">
-                        Total Weight: {participant.total_weight}kg
+                        <div className="text-sm text-muted-foreground ml-auto self-center">
+                          Total: {participant.total_weight}kg
+                        </div>
                       </div>
                     </div>
                   ))}
                   {participants.length > 5 && (
-                    <p className="text-sm text-muted-foreground mt-2">
+                    <p className="text-sm text-muted-foreground mt-1">
                       And {participants.length - 5} more participants...
                     </p>
                   )}
