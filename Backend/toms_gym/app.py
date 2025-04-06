@@ -5,10 +5,10 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 
 # Import route blueprints
-from routes.competition_routes import competition_bp
-from routes.user_routes import user_bp
-from routes.attempt_routes import attempt_bp
-from routes.upload_routes import upload_bp
+from toms_gym.routes.competition_routes import competition_bp
+from toms_gym.routes.user_routes import user_bp
+from toms_gym.routes.attempt_routes import attempt_bp
+from toms_gym.routes.upload_routes import upload_bp
 
 load_dotenv()
 

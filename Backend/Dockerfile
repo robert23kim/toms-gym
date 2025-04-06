@@ -18,9 +18,12 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
+# Install the package in development mode
+RUN pip install -e .
+
 # Expose the port the app runs on
 EXPOSE 5000
 
-# Command to run the application
-CMD ["python", "app.py"]
+# Command to run the application (will be overridden by docker-compose for tests)
+CMD ["python", "main.py"]
 

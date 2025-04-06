@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
-from db import pool
+from toms_gym.db import pool
 
 attempt_bp = Blueprint('attempt', __name__)
 

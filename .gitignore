@@ -170,5 +170,11 @@ cython_debug/
 # PyPI configuration file
 .pypirc
 .DS_Store
+
+# Project specific
 Backend/.idea/
 Backend/credentials.json
+Backend/uploads/
+Backend/.pytest_cache/
+Backend/toms_gym.egg-info/
+.docker/

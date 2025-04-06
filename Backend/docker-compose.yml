@@ -15,4 +15,19 @@ services:
     volumes:
       - ./:/app
       - ${GOOGLE_APPLICATION_CREDENTIALS}:/app/credentials.json:ro
-    restart: unless-stopped 
+    restart: unless-stopped
+
+  test:
+    build: .
+    command: pytest -v
+    environment:
+      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
+      - DB_INSTANCE=${DB_INSTANCE}
+      - DB_USER=${DB_USER}
+      - DB_PASS=${DB_PASS}
+      - DB_NAME=${DB_NAME}
+      - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
+      - PYTHONPATH=/app
+    volumes:
+      - ./:/app
+      - ${GOOGLE_APPLICATION_CREDENTIALS}:/app/credentials.json:ro 

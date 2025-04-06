@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 import os
-from storage import bucket, ALLOWED_EXTENSIONS
+from toms_gym.storage import bucket, ALLOWED_EXTENSIONS
 
 upload_bp = Blueprint('upload', __name__)
 
