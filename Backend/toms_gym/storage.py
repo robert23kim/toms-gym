@@ -8,7 +8,9 @@ load_dotenv()
 storage_client = storage.Client.from_service_account_json(
     os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
 )
-bucket_name = os.getenv('GCS_BUCKET_NAME')
+
+# Set the bucket name to the existing bucket in toms-gym project
+bucket_name = 'jtr-lift-u-4ever-cool-bucket'
 bucket = storage_client.bucket(bucket_name)
 
 # Allowed file extensions

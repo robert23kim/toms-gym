@@ -20,6 +20,12 @@ def getconn():
 
 # Create a SQLAlchemy connection pool
 pool = sqlalchemy.create_engine(
-    "postgresql+pg8000://",
-    creator=getconn,
-) 
+    "postgresql+pg8000://",  # DSN prefix
+    creator=getconn,         # uses the getconn() function to connect
+)
+
+def get_db():
+    """
+    Returns the database connection pool.
+    """
+    return pool 

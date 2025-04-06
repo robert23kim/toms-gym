@@ -1,7 +1,10 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 import os
+from datetime import datetime, timedelta
 from toms_gym.storage import bucket, ALLOWED_EXTENSIONS
+from toms_gym.db import get_db
+import random
 
 upload_bp = Blueprint('upload', __name__)
 
@@ -14,6 +17,14 @@ def upload_video():
         return jsonify({'error': 'No video file provided'}), 400
         
     file = request.files['video']
+    competition_id = request.form.get('competition_id')
+    user_id = request.form.get('user_id')
+    lift_type = request.form.get('lift_type')
+    weight = request.form.get('weight')
+    
+    if not all([competition_id, user_id, lift_type, weight]):
+        return jsonify({'error': 'Missing required fields'}), 400
+        
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
         
@@ -21,8 +32,10 @@ def upload_video():
         return jsonify({'error': 'File type not allowed'}), 400
         
     try:
-        # Secure the filename
-        filename = secure_filename(file.filename)
+        # Secure the filename and add timestamp
+        original_filename = secure_filename(file.filename)
+        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S')
+        filename = f"videos/{timestamp}_{original_filename}"
         
         # Create a new blob and upload the file's content
         blob = bucket.blob(filename)
@@ -31,14 +44,85 @@ def upload_video():
             content_type=file.content_type
         )
         
-        # Make the blob publicly viewable
-        blob.make_public()
+        # Generate a signed URL that expires in 1 hour
+        signed_url = blob.generate_signed_url(
+            version="v4",
+            expiration=timedelta(hours=1),
+            method="GET"
+        )
         
-        # Return the public URL
+        # Store video metadata in the database
+        with get_db().connect() as conn:
+            # First, get the usercompetition_id
+            result = conn.execute(
+                """
+                SELECT id FROM UserCompetition 
+                WHERE user_id = %s AND competition_id = %s
+                """,
+                (user_id, competition_id)
+            ).fetchone()
+            
+            if not result:
+                return jsonify({'error': 'User is not registered for this competition'}), 400
+                
+            usercompetition_id = result[0]
+            
+            # Get the next attempt number for this user in this competition
+            result = conn.execute(
+                """
+                SELECT COALESCE(MAX(attempt_number), 0) + 1
+                FROM Attempts
+                WHERE usercompetition_id = %s AND lift_type = %s
+                """,
+                (usercompetition_id, lift_type)
+            ).fetchone()
+            
+            attempt_number = result[0]
+            
+            # Insert the attempt
+            conn.execute(
+                """
+                INSERT INTO Attempts (
+                    usercompetition_id, lift_type, weight, 
+                    video_url, attempt_number, attempt_result,
+                    created_at
+                ) VALUES (%s, %s, %s, %s, %s, %s, NOW())
+                """,
+                (usercompetition_id, lift_type, weight, filename, 
+                 attempt_number, 'pending')
+            )
+            conn.commit()
+        
+        # Return the signed URL and success message
         return jsonify({
             'message': 'File uploaded successfully',
-            'url': blob.public_url
+            'url': signed_url,
+            'attempt_number': attempt_number
         }), 200
         
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@upload_bp.route('/random_video')
+def get_random_video():
+    try:
+        # List all blobs in the videos directory
+        blobs = list(bucket.list_blobs(prefix='videos/'))
+        if not blobs:
+            return jsonify({'error': 'No videos found in bucket'}), 404
+            
+        # Select a random blob
+        random_blob = random.choice(blobs)
+        
+        # Generate a signed URL that expires in 1 hour
+        video_url = random_blob.generate_signed_url(
+            version="v4",
+            expiration=timedelta(hours=1),
+        )
+        
+        return jsonify({
+            'video_url': video_url,
+            'filename': random_blob.name
+        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500 

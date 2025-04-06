@@ -7,6 +7,7 @@ import ChallengeCard from "../components/ChallengeCard";
 import CreateChallenge from "../components/CreateChallenge";
 import { Challenge } from "../lib/types";
 import axios from "axios";
+import { API_URL } from "../config";
 
 const Challenges = () => {
   const [activeFilter, setActiveFilter] = useState<'upcoming' | 'ongoing' | 'completed' | 'all'>("all");
@@ -29,7 +30,7 @@ const Challenges = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get('https://my-app-834341357827.us-east1.run.app/competitions');
+      const response = await axios.get(`${API_URL}/competitions`);
       const dbChallenges = response.data.competitions;
 
       // Transform the database challenges to match our frontend type

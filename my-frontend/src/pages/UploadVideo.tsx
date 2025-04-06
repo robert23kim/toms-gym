@@ -1,0 +1,228 @@
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { ArrowLeft, Upload, Dumbbell } from "lucide-react";
+import axios from "axios";
+import Layout from "../components/Layout";
+import { API_URL } from "../config";
+import { useToast } from "../components/ui/use-toast";
+
+interface UserProfile {
+  best_lifts: {
+    type: string;
+    best_weight: number;
+    competition_name: string;
+    competition_id: number;
+  }[];
+}
+
+const UploadVideo: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [liftType, setLiftType] = useState<string>("Squat");
+  const [weight, setWeight] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+
+  // Default weights for each lift type
+  const defaultWeights = {
+    "Squat": "60",
+    "Bench": "40",
+    "Deadlift": "80"
+  };
+
+  const getWeightForLiftType = (type: string) => {
+    if (userProfile?.best_lifts) {
+      const bestLift = userProfile.best_lifts.find(lift => lift.type === type);
+      if (bestLift) {
+        return bestLift.best_weight.toString();
+      }
+    }
+    return defaultWeights[type as keyof typeof defaultWeights] || "0";
+  };
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+          // Set default weight if no user profile
+          setWeight(getWeightForLiftType(liftType));
+          return;
+        }
+
+        const response = await axios.get(`${API_URL}/users/${userId}`);
+        setUserProfile(response.data);
+
+        // Set initial weight based on best lift or default
+        const bestLift = response.data.best_lifts?.find(
+          (lift: any) => lift.type === liftType
+        );
+        setWeight(bestLift ? bestLift.best_weight.toString() : getWeightForLiftType(liftType));
+      } catch (err) {
+        console.error("Error fetching user profile:", err);
+        // Set default weight if error fetching profile
+        setWeight(getWeightForLiftType(liftType));
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  // Update weight when lift type changes
+  useEffect(() => {
+    setWeight(getWeightForLiftType(liftType));
+  }, [liftType, userProfile]);
+
+  const handleLiftTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLiftType = e.target.value;
+    setLiftType(newLiftType);
+    setWeight(getWeightForLiftType(newLiftType));
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!selectedFile || !weight || !liftType) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    setIsUploading(true);
+    setError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('video', selectedFile);
+      formData.append('competition_id', id || '');
+      formData.append('user_id', localStorage.getItem('userId') || '');
+      formData.append('lift_type', liftType);
+      formData.append('weight', weight);
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.url) {
+        // Show success message and redirect back to challenge page
+        toast({
+          title: "Upload Successful!",
+          description: "Your lift has been submitted for review.",
+          duration: 5000,
+        });
+        navigate(`/challenges/${id}`);
+      }
+    } catch (err: any) {
+      setError(err.response?.data?.error || "Failed to upload video");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  return (
+    <Layout>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
+      >
+        <div className="max-w-2xl mx-auto">
+          <Link
+            to={`/challenges/${id}`}
+            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
+          >
+            <ArrowLeft className="mr-2" size={16} />
+            Back to Challenge
+          </Link>
+
+          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
+            <div className="p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="p-2 bg-blue-500/10 rounded-lg">
+                  <Upload className="w-6 h-6 text-blue-500" />
+                </div>
+                <h1 className="text-2xl font-bold">Upload Your Lift</h1>
+              </div>
+
+              <form onSubmit={handleSubmit} className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Lift Type</label>
+                  <select
+                    value={liftType}
+                    onChange={handleLiftTypeChange}
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  >
+                    <option value="Squat">Squat</option>
+                    <option value="Bench">Bench Press</option>
+                    <option value="Deadlift">Deadlift</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Weight (kg)</label>
+                  <input
+                    type="number"
+                    value={weight}
+                    onChange={(e) => setWeight(e.target.value)}
+                    placeholder="Enter weight in kg"
+                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">Video</label>
+                  <div className="border-2 border-dashed border-input rounded-lg p-8 text-center">
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                      id="video-upload"
+                    />
+                    <label
+                      htmlFor="video-upload"
+                      className="cursor-pointer flex flex-col items-center"
+                    >
+                      <Dumbbell className="w-8 h-8 text-muted-foreground mb-2" />
+                      <span className="text-muted-foreground">
+                        {selectedFile ? selectedFile.name : "Click to select a video file"}
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {error && (
+                  <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
+                    {error}
+                  </div>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isUploading}
+                  className={`w-full py-3 px-4 rounded-lg bg-primary text-white font-medium
+                    ${isUploading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
+                >
+                  {isUploading ? 'Uploading...' : 'Upload Video'}
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </Layout>
+  );
+};
+
+export default UploadVideo; 

@@ -4,6 +4,8 @@ import { motion } from "framer-motion";
 import { Menu, X, Dumbbell, ShoppingBag, UserPlus, LogIn, LogOut, User } from "lucide-react";
 import CreateProfile from "./CreateProfile";
 import Login from "./Login";
+import axios from "axios";
+import { API_URL } from "../config";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -39,10 +41,28 @@ const Navbar: React.FC = () => {
     setIsMobileMenuOpen(false);
   }, [location.pathname]);
 
-  const handleCreateProfile = (profileData: any) => {
-    // For now, we'll just log the data
-    console.log('Creating profile:', profileData);
-    // In the future, this will make an API call to create the profile
+  const handleCreateProfile = async (profileData: any) => {
+    try {
+      const response = await axios.post(
+        `${API_URL}/create_user`,
+        {
+          name: profileData.name,
+          email: profileData.email,
+          gender: profileData.gender
+        }
+      );
+
+      if (response.status === 201) {
+        // Store the user ID in localStorage
+        localStorage.setItem('userId', response.data.user_id);
+        localStorage.setItem('isLoggedIn', 'true');
+        setIsLoggedIn(true);
+        return true;
+      }
+    } catch (err) {
+      console.error('Error creating profile:', err);
+      throw err;
+    }
   };
 
   const handleLogin = (loginData: any) => {
@@ -56,6 +76,7 @@ const Navbar: React.FC = () => {
   const handleLogout = () => {
     setIsLoggedIn(false);
     localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem('userId');
     // In the future, this will make an API call to logout
   };
 

@@ -4,17 +4,17 @@ import { X } from 'lucide-react';
 
 interface CreateProfileProps {
   onClose: () => void;
-  onSubmit: (profileData: any) => void;
+  onSubmit: (profileData: any) => Promise<boolean>;
 }
 
 const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
+    name: 'John Doe',
+    email: 'john.doe@example.com',
     gender: 'M',
-    weight_class: '93kg',
-    country: '',
-    bio: ''
+    weight_class: '83kg',
+    country: 'United States',
+    bio: 'Powerlifting enthusiast looking to compete and improve!'
   });
 
   const [message, setMessage] = useState<string>('');
@@ -23,12 +23,16 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      // For now, we'll just use the form data directly
-      onSubmit(formData);
-      onClose();
-    } catch (err) {
+      const success = await onSubmit(formData);
+      if (success) {
+        setMessage('Profile created successfully!');
+        setTimeout(() => {
+          onClose();
+        }, 1500);
+      }
+    } catch (err: any) {
       console.error('Error creating profile:', err);
-      setError('Failed to create profile. Please try again.');
+      setError(err.response?.data?.error || 'Failed to create profile. Please try again.');
       setMessage('');
     }
   };

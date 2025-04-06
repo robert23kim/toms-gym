@@ -1,6 +1,8 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
 from toms_gym.db import pool
+from datetime import timedelta
+from toms_gym.storage import bucket
 
 competition_bp = Blueprint('competition', __name__)
 
@@ -46,22 +48,20 @@ def get_competition_participants(competition_id):
         with pool.connect() as conn:
             rows = conn.execute(
                 sqlalchemy.text("""
-                    SELECT u.id, u.name, u.avatar, uc.weight_class, u.country,
-                           COALESCE(SUM(CASE WHEN a.attempt_result = true THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
-                           json_object_agg(
-                               a.lift_type,
-                               json_agg(
-                                   json_build_object(
-                                       'weight', a.weight_attempted,
-                                       'success', a.attempt_result
-                                   )
+                    SELECT u.userid, u.name, uc.weight_class,
+                           COALESCE(SUM(CASE WHEN a.attempt_result = 'true' THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
+                           json_agg(
+                               json_build_object(
+                                   'lift_type', a.lift_type,
+                                   'weight', a.weight_attempted,
+                                   'success', a.attempt_result
                                )
                            ) as attempts
                     FROM UserCompetition uc
-                    JOIN Users u ON uc.userid = u.id
+                    JOIN \"User\" u ON uc.userid = u.userid
                     LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
                     WHERE uc.competitionid = :competition_id
-                    GROUP BY u.id, u.name, u.avatar, uc.weight_class, u.country
+                    GROUP BY u.userid, u.name, uc.weight_class
                 """),
                 {"competition_id": competition_id}
             )
@@ -81,7 +81,7 @@ def get_competition_lifts(competition_id):
                 sqlalchemy.text("""
                     SELECT a.attemptid as id, uc.userid as participant_id, uc.competitionid as competition_id,
                            a.lift_type as type, a.weight_attempted as weight, a.attempt_result as success,
-                           a.video_link as video_url, a.timestamp
+                           a.video_link as video_url
                     FROM Attempts a
                     JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
                     WHERE uc.competitionid = :competition_id
@@ -140,5 +140,57 @@ def join_competition():
             conn.commit()
 
         return {"message": "Joined competition successfully!", "usercompetition_id": user_competition_id}, 201
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@competition_bp.route('/competitions/<int:competition_id>/participants/<int:participant_id>/attempts/<int:attempt_id>')
+def get_attempt_details(competition_id, participant_id, attempt_id):
+    """
+    Endpoint that queries details for a specific attempt including video URL.
+    """
+    try:
+        with pool.connect() as conn:
+            row = conn.execute(
+                sqlalchemy.text("""
+                    SELECT a.attemptid as id, 
+                           uc.userid as participant_id, 
+                           uc.competitionid as competition_id,
+                           u.name as participant_name,
+                           a.lift_type, 
+                           a.weight_attempted as weight, 
+                           a.attempt_result as success,
+                           a.video_url
+                    FROM Attempts a
+                    JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
+                    JOIN "User" u ON uc.userid = u.userid
+                    WHERE uc.competitionid = :competition_id
+                    AND uc.userid = :participant_id
+                    AND a.attemptid = :attempt_id
+                """),
+                {
+                    "competition_id": competition_id,
+                    "participant_id": participant_id,
+                    "attempt_id": attempt_id
+                }
+            ).fetchone()
+            
+            if row is None:
+                return {"error": "Attempt not found"}, 404
+            
+            result = row._asdict()
+            
+            # Generate signed URL for the video if it exists
+            if result['video_url']:
+                blob = bucket.blob(result['video_url'])
+                if blob.exists():
+                    result['video_url'] = blob.generate_signed_url(
+                        version="v4",
+                        expiration=timedelta(hours=1),
+                    )
+                else:
+                    # If video doesn't exist in bucket, return None
+                    result['video_url'] = None
+                
+            return {"attempt": result}
     except Exception as e:
         return {"error": str(e)}, 500 

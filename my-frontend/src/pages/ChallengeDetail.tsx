@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, Users, Clock, Trophy, Dumbbell, CheckCircle2, XCircle } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Clock, Trophy, Dumbbell, CheckCircle2, XCircle, ArrowRight } from "lucide-react";
 import axios from "axios";
 import { Challenge } from "../lib/types";
 import Layout from "../components/Layout";
+import { API_URL } from "../config";
 
 interface Attempt {
   id: number;
@@ -71,32 +72,50 @@ const ChallengeDetail: React.FC = () => {
   const [attempts] = useState<Attempt[]>(mockAttempts);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isJoining, setIsJoining] = useState(false);
+  const [joinError, setJoinError] = useState<string | null>(null);
+  const [participants, setParticipants] = useState<any[]>([]);
+  const [hasJoined, setHasJoined] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch challenge details
-        const challengeResponse = await axios.get(
-          `https://my-app-834341357827.us-east1.run.app/competitions/${id}`
-        );
+        setError(null);
 
-        // Transform the backend data to match our frontend Challenge type
+        const userId = localStorage.getItem('userId');
+        
+        // Fetch challenge, participants, and check if user has joined
+        const [challengeResponse, participantsResponse] = await Promise.all([
+          axios.get(`${API_URL}/competitions/${id}`),
+          axios.get(`${API_URL}/competitions/${id}/participants`)
+        ]);
+
         const backendData = challengeResponse.data.competition;
+        const participantsData = participantsResponse.data.participants || [];
+        setParticipants(participantsData);
+
+        // Check if the current user has already joined
+        if (userId) {
+          const hasUserJoined = participantsData.some((p: any) => p.userid === parseInt(userId));
+          setHasJoined(hasUserJoined);
+        }
+
+        // Transform backend data to match frontend Challenge type
         const transformedChallenge: Challenge = {
           id: backendData.id,
           title: backendData.name,
           date: backendData.start_date,
           registrationDeadline: backendData.end_date,
           location: backendData.location,
-          description: "Join us for an exciting powerlifting competition! This event will feature multiple weight classes and categories. Whether you're a seasoned lifter or just starting out, there's a place for you to compete and showcase your strength.",
+          description: backendData.description || "",
           status: determineStatus(backendData.start_date, backendData.end_date),
           categories: [
-            ...backendData.lifttypes,
-            ...backendData.weightclasses,
+            ...(backendData.lifttypes || []),
+            ...(backendData.weightclasses || []),
             backendData.gender === 'F' ? 'Women' : 'Men'
           ],
-          participants: 0, // This will be updated when we implement participant tracking
+          participants: participantsData.length,
           prizePool: {
             first: 1000,
             second: 500,
@@ -104,10 +123,21 @@ const ChallengeDetail: React.FC = () => {
             total: 1750
           }
         };
+
         setChallenge(transformedChallenge);
       } catch (err: any) {
         console.error("Error fetching data:", err);
-        setError(err.response?.data?.error || "Failed to load challenge details");
+        console.error("Error details:", {
+          message: err.message,
+          response: err.response?.data,
+          status: err.response?.status,
+          url: `${API_URL}/competitions/${id}`
+        });
+        setError(
+          err.response?.data?.error || 
+          err.message || 
+          "Failed to load challenge details"
+        );
       } finally {
         setLoading(false);
       }
@@ -124,6 +154,52 @@ const ChallengeDetail: React.FC = () => {
     if (now < start) return "upcoming";
     if (now > end) return "completed";
     return "ongoing";
+  };
+
+  const handleJoinChallenge = async () => {
+    try {
+      setIsJoining(true);
+      setJoinError(null);
+
+      const userId = localStorage.getItem('userId');
+      if (!userId) {
+        setJoinError('Please create a profile before joining a challenge');
+        return;
+      }
+      
+      await axios.post(
+        `${API_URL}/join_competition`,
+        {
+          userid: parseInt(userId),
+          competitionid: id,
+          weight_class: "83kg", // This should be selected by the user
+          gender: "M", // This should come from user profile
+          age: 25, // This should come from user profile
+          status: "registered"
+        }
+      );
+
+      // Fetch updated participants count
+      const participantsResponse = await axios.get(`${API_URL}/competitions/${id}/participants`);
+      const participantsData = participantsResponse.data.participants || [];
+      
+      // Update the challenge with the new participants count
+      if (challenge) {
+        setChallenge({
+          ...challenge,
+          participants: participantsData.length
+        });
+      }
+
+      // Update hasJoined state
+      setHasJoined(true);
+      setParticipants(participantsData);
+    } catch (err: any) {
+      console.error("Error joining challenge:", err);
+      setJoinError(err.response?.data?.error || "Failed to join challenge. Please try again.");
+    } finally {
+      setIsJoining(false);
+    }
   };
 
   if (loading) {
@@ -191,18 +267,55 @@ const ChallengeDetail: React.FC = () => {
             <div className="p-6 sm:p-8">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
                 <h1 className="text-3xl font-bold mb-4 sm:mb-0">{challenge.title}</h1>
-                <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium ${
-                    challenge.status === "upcoming"
-                      ? "bg-blue-500/10 text-blue-500"
-                      : challenge.status === "ongoing"
-                      ? "bg-green-500/10 text-green-500"
-                      : "bg-gray-500/10 text-gray-500"
-                  }`}
-                >
-                  {challenge.status.charAt(0).toUpperCase() + challenge.status.slice(1)}
-                </span>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${
+                      challenge.status === "upcoming"
+                        ? "bg-blue-500/10 text-blue-500"
+                        : challenge.status === "ongoing"
+                        ? "bg-green-500/10 text-green-500"
+                        : "bg-gray-500/10 text-gray-500"
+                    }`}
+                  >
+                    {challenge.status.charAt(0).toUpperCase() + challenge.status.slice(1)}
+                  </span>
+                  {hasJoined && (
+                    <div className="flex items-center gap-2 bg-green-500/10 text-green-500 px-3 py-1.5 rounded-full text-sm font-medium">
+                      <CheckCircle2 className="w-4 h-4" />
+                      <span>You've joined this challenge</span>
+                    </div>
+                  )}
+                </div>
               </div>
+
+              {/* Join Challenge Button - Moved outside the header */}
+              {!hasJoined && (
+                <div className="mb-6">
+                  {challenge?.status === "upcoming" ? (
+                    <>
+                      <button
+                        onClick={handleJoinChallenge}
+                        disabled={isJoining}
+                        className={`w-full py-3 px-4 rounded-lg bg-primary text-white font-medium
+                          ${isJoining ? 'opacity-50 cursor-not-allowed' : 'hover:bg-primary/90'}`}
+                      >
+                        {isJoining ? 'Joining...' : 'Join Challenge'}
+                      </button>
+                      {joinError && (
+                        <p className="mt-2 text-sm text-red-500">{joinError}</p>
+                      )}
+                    </>
+                  ) : challenge?.status === "completed" ? (
+                    <div className="text-center text-muted-foreground">
+                      This challenge has ended
+                    </div>
+                  ) : (
+                    <div className="text-center text-muted-foreground">
+                      Registration is closed
+                    </div>
+                  )}
+                </div>
+              )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
                 <div className="flex items-center text-muted-foreground">
@@ -242,6 +355,78 @@ const ChallengeDetail: React.FC = () => {
                 </div>
               </div>
 
+              {/* Upload Video Call to Action */}
+              {hasJoined && (
+                <div className="mb-8 bg-blue-500/5 rounded-lg p-6 border border-blue-500/10">
+                  <div className="flex items-start gap-4">
+                    <div className="p-3 bg-blue-500/10 rounded-lg">
+                      <Dumbbell className="w-6 h-6 text-blue-500" />
+                    </div>
+                    <div className="flex-1">
+                      <h2 className="text-xl font-semibold mb-2">Submit Your Lift</h2>
+                      <p className="text-muted-foreground mb-4">
+                        Ready to showcase your strength? Upload a video of your lift to participate in the challenge.
+                      </p>
+                      <Link
+                        to={`/challenges/${id}/upload`}
+                        className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
+                      >
+                        Upload Video
+                        <ArrowRight className="w-4 h-4" />
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Participants Section */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-4 flex items-center">
+                  <Users className="mr-2" size={20} />
+                  Top Participants
+                </h2>
+                <div className="space-y-3">
+                  {participants.slice(0, 5).map((participant) => (
+                    <div key={participant.userid} className="mb-4 p-4 bg-card rounded-lg shadow">
+                      <div className="flex justify-between items-center mb-2">
+                        <div className="flex items-center gap-4">
+                          <h4 className="text-lg font-semibold">{participant.name}</h4>
+                          <span className="text-sm text-muted-foreground">{participant.weight_class}</span>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          Total: {participant.total_weight}kg
+                        </div>
+                      </div>
+                      <div className="flex flex-wrap gap-4">
+                        {participant.attempts?.map((attempt) => (
+                          <div key={attempt.lift_type} className="flex items-center gap-2">
+                            <span className="text-sm font-medium min-w-[60px]">{attempt.lift_type}</span>
+                            <div className="flex gap-1.5">
+                              <Link
+                                to={`/challenges/${id}/participants/${participant.userid}/video/${attempt.id || 1}`}
+                                className={`
+                                  px-2.5 py-1 rounded-full text-sm border cursor-pointer hover:opacity-80 transition-opacity
+                                  ${attempt.success === 'true' 
+                                    ? 'border-green-500/30 bg-green-500/10 text-green-500' 
+                                    : 'border-red-500/30 bg-red-500/10 text-red-500'}
+                                `}
+                              >
+                                {attempt.weight}kg
+                              </Link>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                  {participants.length > 5 && (
+                    <p className="text-sm text-muted-foreground mt-2">
+                      And {participants.length - 5} more participants...
+                    </p>
+                  )}
+                </div>
+              </div>
+
               <div className="bg-primary/5 rounded-lg p-6">
                 <h2 className="text-xl font-semibold mb-4 flex items-center">
                   <Trophy className="mr-2" size={20} />
@@ -267,60 +452,6 @@ const ChallengeDetail: React.FC = () => {
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
-
-          {/* Recent Attempts Section */}
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-            <div className="p-6 sm:p-8">
-              <div className="flex items-center gap-2 mb-6">
-                <Dumbbell className="text-primary" size={24} />
-                <h2 className="text-xl font-semibold">Recent Attempts</h2>
-              </div>
-
-              {attempts.length === 0 ? (
-                <p className="text-muted-foreground text-center py-4">No attempts have been submitted yet.</p>
-              ) : (
-                <div className="space-y-4">
-                  {attempts.map((attempt) => (
-                    <motion.div
-                      key={attempt.id}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center justify-between p-4 bg-secondary/5 rounded-lg"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-full ${
-                          attempt.success ? "bg-green-500/10" : "bg-red-500/10"
-                        }`}>
-                          {attempt.success ? (
-                            <CheckCircle2 className="w-5 h-5 text-green-500" />
-                          ) : (
-                            <XCircle className="w-5 h-5 text-red-500" />
-                          )}
-                        </div>
-                        <div>
-                          <h3 className="font-medium">{attempt.type}</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(attempt.timestamp).toLocaleString()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4">
-                        <span className="font-bold">{attempt.weight}kg</span>
-                        {attempt.video_url && (
-                          <Link
-                            to={`/challenges/${id}/participants/${attempt.participant_id}/video/${attempt.id}`}
-                            className="text-primary hover:underline text-sm"
-                          >
-                            Watch Video
-                          </Link>
-                        )}
-                      </div>
-                    </motion.div>
-                  ))}
-                </div>
-              )}
             </div>
           </div>
         </div>
