@@ -1,6 +1,45 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
 from toms_gym.db import pool
+from google.cloud import storage
+import random
+import datetime
+
+# Global variable to store video blobs
+_video_blobs = []
+_current_video_index = 0
+
+def _get_video_blobs():
+    """Helper function to get and cache video blobs"""
+    global _video_blobs
+    # Always refresh the video list to ensure we have all videos
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('jtr-lift-u-4ever-cool-bucket')
+    blobs = list(bucket.list_blobs(prefix='videos/'))
+    _video_blobs = [blob for blob in blobs if blob.name.lower().endswith(('.mp4', '.mov'))]
+    random.shuffle(_video_blobs)  # Shuffle the list to ensure random order
+    return _video_blobs
+
+def _get_video_data(blob):
+    """Helper function to create video response data"""
+    url = blob.generate_signed_url(
+        version="v4",
+        expiration=datetime.timedelta(hours=1),
+        method="GET"
+    )
+    
+    return {
+        "video_id": 1,
+        "participant_id": 1,
+        "competition_id": 1,
+        "video_url": url,
+        "participant_name": "Random Athlete",
+        "lift_type": "Squat",
+        "weight": 100,
+        "success": True,
+        "total_videos": len(_video_blobs),
+        "current_index": _current_video_index
+    }
 
 competition_bp = Blueprint('competition', __name__)
 
@@ -176,5 +215,45 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
                 return {"error": "Attempt not found"}, 404
                 
             return {"attempt": row._asdict()}
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@competition_bp.route('/random-video')
+def get_random_video():
+    """
+    Endpoint that returns a random video from the GCS bucket.
+    """
+    try:
+        global _current_video_index
+        video_blobs = _get_video_blobs()
+        
+        if not video_blobs:
+            return jsonify({"error": "No videos found in bucket"}), 404
+        
+        # Select a random video and update current index
+        random_blob = random.choice(video_blobs)
+        _current_video_index = video_blobs.index(random_blob)
+        
+        return jsonify(_get_video_data(random_blob))
+    except Exception as e:
+        return {"error": str(e)}, 500
+
+@competition_bp.route('/next-video')
+def get_next_video():
+    """
+    Endpoint that returns the next video in sequence.
+    """
+    try:
+        global _current_video_index
+        video_blobs = _get_video_blobs()
+        
+        if not video_blobs:
+            return jsonify({"error": "No videos found in bucket"}), 404
+        
+        # Move to next video (with wraparound)
+        _current_video_index = (_current_video_index + 1) % len(video_blobs)
+        next_blob = video_blobs[_current_video_index]
+        
+        return jsonify(_get_video_data(next_blob))
     except Exception as e:
         return {"error": str(e)}, 500 

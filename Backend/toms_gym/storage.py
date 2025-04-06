@@ -5,9 +5,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Initialize Google Cloud Storage client
-storage_client = storage.Client.from_service_account_json(
-    os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
-)
+storage_client = storage.Client()
 
 # Set the bucket name to the existing bucket in toms-gym project
 bucket_name = 'jtr-lift-u-4ever-cool-bucket'

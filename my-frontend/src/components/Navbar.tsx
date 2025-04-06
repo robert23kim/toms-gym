@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X, Dumbbell, ShoppingBag, UserPlus, LogIn, LogOut, User } from "lucide-react";
+import { Menu, X, Dumbbell, ShoppingBag, UserPlus, LogIn, LogOut, User, Play } from "lucide-react";
 import CreateProfile from "./CreateProfile";
 import Login from "./Login";
 import axios from "axios";
@@ -87,6 +87,7 @@ const Navbar: React.FC = () => {
     { href: "/leaderboard", label: "Leaderboard" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },
     { href: "/about", label: "About" },
+    { href: "/random-video", label: "Random Video", icon: <Play className="w-4 h-4" /> },
   ];
 
   const AuthButton = () => {

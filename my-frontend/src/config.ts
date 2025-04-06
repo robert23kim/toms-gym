@@ -1,1 +1,3 @@
-export const API_URL = import.meta.env.VITE_API_URL || 'https://my-app-834341357827.us-east1.run.app'; 
+/// <reference types="vite/client" />
+
+export const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000'; 

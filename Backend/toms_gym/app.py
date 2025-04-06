@@ -25,7 +25,7 @@ app.register_blueprint(upload_bp)
 
 @app.route('/')
 def hello():
-    return "Hello from Flask + Cloud SQL (Postgres)!"
+    return "Hello from Toms Gym!"
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

@@ -10,6 +10,7 @@ import NotFound from "../pages/NotFound";
 import Leaderboard from "../pages/Leaderboard";
 import Store from '../pages/Store';
 import Profile from "../pages/Profile";
+import RandomVideo from "../pages/RandomVideo";
 
 export const routes: RouteObject[] = [
   {
@@ -31,6 +32,10 @@ export const routes: RouteObject[] = [
   {
     path: "/challenges/:id/participants/:participantId/video/:videoId",
     element: <VideoPlayer />,
+  },
+  {
+    path: "/random-video",
+    element: <RandomVideo />,
   },
   {
     path: "/athletes",
