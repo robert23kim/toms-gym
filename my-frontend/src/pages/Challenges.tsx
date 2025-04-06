@@ -9,6 +9,9 @@ import { Challenge } from "../lib/types";
 import axios from "axios";
 import { API_URL } from "../config";
 
+// Use the local API URL for competitions
+const COMPETITIONS_API_URL = API_URL;
+
 const Challenges = () => {
   const [activeFilter, setActiveFilter] = useState<'upcoming' | 'ongoing' | 'completed' | 'all'>("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -30,7 +33,7 @@ const Challenges = () => {
     try {
       setLoading(true);
       setError(null);
-      const response = await axios.get(`${API_URL}/competitions`);
+      const response = await axios.get(`${COMPETITIONS_API_URL}/competitions`);
       const dbChallenges = response.data.competitions;
 
       // Transform the database challenges to match our frontend type
@@ -158,7 +161,6 @@ const Challenges = () => {
 
       {isCreateModalOpen && (
         <CreateChallenge
-          isOpen={isCreateModalOpen}
           onClose={() => setIsCreateModalOpen(false)}
           onChallengeCreated={handleCreateChallenge}
         />

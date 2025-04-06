@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../config";  // Import the API_URL from config
 
 interface ChallengeFormProps {
   onSuccess: (challenge: any) => void;
@@ -67,7 +68,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({ onSuccess, onCancel }) =>
       console.log('Sending data to backend:', backendData); // Debug log
 
       const response = await axios.post(
-        "https://my-app-834341357827.us-east1.run.app/create_competition",
+        `${API_URL}/create_competition`,
         backendData,
         {
           headers: {

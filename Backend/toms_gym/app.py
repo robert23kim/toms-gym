@@ -3,6 +3,7 @@ import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
+import datetime
 
 # Import route blueprints
 from toms_gym.routes.competition_routes import competition_bp
@@ -17,13 +18,30 @@ app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Configure CORS with more permissive settings
-CORS(app, resources={r"/*": {"origins": "*", "allow_headers": "*", "expose_headers": "*"}})
+# Update to allow all origins and expose all headers
+CORS(app, resources={
+    r"/*": {
+        "origins": ["*", "http://localhost:8085", "http://localhost:3000", "http://localhost:8080", "http://localhost:8082"],
+        "allow_headers": "*",
+        "expose_headers": "*",
+        "supports_credentials": True
+    }
+})
 
 # Register blueprints
 app.register_blueprint(competition_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(attempt_bp)
 app.register_blueprint(upload_bp)
+
+@app.route('/health')
+def health():
+    """Health check endpoint"""
+    return jsonify({
+        "service": "toms-gym-backend",
+        "status": "healthy",
+        "timestamp": str(datetime.datetime.now())
+    })
 
 @app.route('/')
 def hello():

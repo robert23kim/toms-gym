@@ -7,6 +7,9 @@ import { Challenge } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 
+// Use the local API URL for competitions
+const COMPETITIONS_API_URL = API_URL;
+
 interface Attempt {
   id: number;
   participant_id: number;
@@ -86,18 +89,18 @@ const ChallengeDetail: React.FC = () => {
         const userId = localStorage.getItem('userId');
         
         // Fetch challenge, participants, and check if user has joined
-        const [challengeResponse, participantsResponse] = await Promise.all([
-          axios.get(`${API_URL}/competitions/${id}`),
-          axios.get(`${API_URL}/competitions/${id}/participants`)
+        const [challengeData, participantsData] = await Promise.all([
+          axios.get(`${COMPETITIONS_API_URL}/competitions/${id}`),
+          axios.get(`${COMPETITIONS_API_URL}/competitions/${id}/participants`)
         ]);
 
-        const backendData = challengeResponse.data.competition;
-        const participantsData = participantsResponse.data.participants || [];
-        setParticipants(participantsData);
+        const backendData = challengeData.data.competition;
+        const participantsDataBackend = participantsData.data.participants || [];
+        setParticipants(participantsDataBackend);
 
         // Check if the current user has already joined
         if (userId) {
-          const hasUserJoined = participantsData.some((p: any) => p.userid === parseInt(userId));
+          const hasUserJoined = participantsDataBackend.some((p: any) => p.userid === parseInt(userId));
           setHasJoined(hasUserJoined);
         }
 
@@ -115,7 +118,7 @@ const ChallengeDetail: React.FC = () => {
             ...(backendData.weightclasses || []),
             backendData.gender === 'F' ? 'Women' : 'Men'
           ],
-          participants: participantsData.length,
+          participants: participantsDataBackend.length,
           prizePool: {
             first: 1000,
             second: 500,
@@ -131,7 +134,7 @@ const ChallengeDetail: React.FC = () => {
           message: err.message,
           response: err.response?.data,
           status: err.response?.status,
-          url: `${API_URL}/competitions/${id}`
+          url: `${COMPETITIONS_API_URL}/competitions/${id}`
         });
         setError(
           err.response?.data?.error || 
@@ -168,7 +171,7 @@ const ChallengeDetail: React.FC = () => {
       }
       
       await axios.post(
-        `${API_URL}/join_competition`,
+        `${COMPETITIONS_API_URL}/join_competition`,
         {
           userid: parseInt(userId),
           competitionid: id,
@@ -180,7 +183,7 @@ const ChallengeDetail: React.FC = () => {
       );
 
       // Fetch updated participants count
-      const participantsResponse = await axios.get(`${API_URL}/competitions/${id}/participants`);
+      const participantsResponse = await axios.get(`${COMPETITIONS_API_URL}/competitions/${id}/participants`);
       const participantsData = participantsResponse.data.participants || [];
       
       // Update the challenge with the new participants count
