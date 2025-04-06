@@ -389,33 +389,31 @@ const ChallengeDetail: React.FC = () => {
                   {participants.slice(0, 5).map((participant) => (
                     <div key={participant.userid} className="mb-4 p-4 bg-card rounded-lg shadow">
                       <div className="flex justify-between items-center mb-2">
-                        <div className="flex items-center gap-4">
-                          <h4 className="text-lg font-semibold">{participant.name}</h4>
-                          <span className="text-sm text-muted-foreground">{participant.weight_class}</span>
-                        </div>
-                        <div className="text-sm text-muted-foreground">
-                          Total: {participant.total_weight}kg
-                        </div>
+                        <h4 className="text-lg font-semibold">{participant.name}</h4>
+                        <span className="text-sm text-muted-foreground">{participant.weight_class}</span>
                       </div>
-                      <div className="flex flex-wrap gap-4">
-                        {participant.attempts?.map((attempt) => (
-                          <div key={attempt.lift_type} className="flex items-center gap-2">
-                            <span className="text-sm font-medium min-w-[60px]">{attempt.lift_type}</span>
-                            <div className="flex gap-1.5">
-                              <Link
-                                to={`/challenges/${id}/participants/${participant.userid}/video/${attempt.id || 1}`}
-                                className={`
-                                  px-2.5 py-1 rounded-full text-sm border cursor-pointer hover:opacity-80 transition-opacity
-                                  ${attempt.success === 'true' 
-                                    ? 'border-green-500/30 bg-green-500/10 text-green-500' 
-                                    : 'border-red-500/30 bg-red-500/10 text-red-500'}
-                                `}
-                              >
-                                {attempt.weight}kg
-                              </Link>
+                      <div className="space-y-2">
+                        {participant.attempts?.map((attempt, index) => (
+                          <div key={index} className="flex items-center justify-between text-sm">
+                            <div className="flex items-center gap-2">
+                              <span className={attempt.attempt_result === 'true' ? 'text-green-500' : 'text-red-500'}>
+                                {attempt.lift_type}
+                              </span>
+                              <span>{attempt.weight}kg</span>
                             </div>
+                            {attempt.video_url && (
+                              <Link
+                                to={`/challenges/${id}/participants/${participant.userid}/video/${index}`}
+                                className="text-primary hover:underline"
+                              >
+                                Watch Lift
+                              </Link>
+                            )}
                           </div>
                         ))}
+                      </div>
+                      <div className="mt-2 text-sm text-muted-foreground">
+                        Total Weight: {participant.total_weight}kg
                       </div>
                     </div>
                   ))}

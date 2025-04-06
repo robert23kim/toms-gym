@@ -1,8 +1,6 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
 from toms_gym.db import pool
-from datetime import timedelta
-from toms_gym.storage import bucket
 
 competition_bp = Blueprint('competition', __name__)
 
@@ -159,7 +157,7 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
                            a.lift_type, 
                            a.weight_attempted as weight, 
                            a.attempt_result as success,
-                           a.video_url
+                           a.video_link as video_url
                     FROM Attempts a
                     JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
                     JOIN "User" u ON uc.userid = u.userid
@@ -176,21 +174,7 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
             
             if row is None:
                 return {"error": "Attempt not found"}, 404
-            
-            result = row._asdict()
-            
-            # Generate signed URL for the video if it exists
-            if result['video_url']:
-                blob = bucket.blob(result['video_url'])
-                if blob.exists():
-                    result['video_url'] = blob.generate_signed_url(
-                        version="v4",
-                        expiration=timedelta(hours=1),
-                    )
-                else:
-                    # If video doesn't exist in bucket, return None
-                    result['video_url'] = None
                 
-            return {"attempt": result}
+            return {"attempt": row._asdict()}
     except Exception as e:
         return {"error": str(e)}, 500 

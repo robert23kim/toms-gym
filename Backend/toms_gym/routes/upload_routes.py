@@ -4,7 +4,6 @@ import os
 from datetime import datetime, timedelta
 from toms_gym.storage import bucket, ALLOWED_EXTENSIONS
 from toms_gym.db import get_db
-import random
 
 upload_bp = Blueprint('upload', __name__)
 
@@ -100,29 +99,5 @@ def upload_video():
             'attempt_number': attempt_number
         }), 200
         
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@upload_bp.route('/random_video')
-def get_random_video():
-    try:
-        # List all blobs in the videos directory
-        blobs = list(bucket.list_blobs(prefix='videos/'))
-        if not blobs:
-            return jsonify({'error': 'No videos found in bucket'}), 404
-            
-        # Select a random blob
-        random_blob = random.choice(blobs)
-        
-        # Generate a signed URL that expires in 1 hour
-        video_url = random_blob.generate_signed_url(
-            version="v4",
-            expiration=timedelta(hours=1),
-        )
-        
-        return jsonify({
-            'video_url': video_url,
-            'filename': random_blob.name
-        })
     except Exception as e:
         return jsonify({'error': str(e)}), 500 
