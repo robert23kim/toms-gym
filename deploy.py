@@ -156,35 +156,98 @@ class DeploymentManager:
         log(message, color, self.start_time)
 
     async def run_command(self, command: List[str], cwd: str = None, log_file: str = None, 
-                          append: bool = False, check: bool = True) -> subprocess.CompletedProcess:
+                          append: bool = False, check: bool = True, show_output: bool = False) -> subprocess.CompletedProcess:
         """Run a command and handle logging consistently"""
         self.log(f"Running: {' '.join(command)}", Colors.BLUE)
         
-        # Open log file if provided
-        stdout_target = None
-        if log_file:
-            mode = "a" if append else "w"
-            stdout_target = open(log_file, mode)
-        
-        try:
-            result = subprocess.run(
-                command,
-                cwd=cwd,
-                stdout=stdout_target,
-                stderr=subprocess.STDOUT if stdout_target else None,
-                text=True,
-                capture_output=stdout_target is None,
-                check=check
+        # For commands where we want to show output in real time
+        if show_output:
+            # Run the command with output streaming to terminal
+            process = await asyncio.create_subprocess_exec(
+                *command,
+                stdout=asyncio.subprocess.PIPE,
+                stderr=asyncio.subprocess.PIPE,
+                cwd=cwd
             )
-            return result
-        except subprocess.CalledProcessError as e:
-            self.log(f"Command failed with exit code {e.returncode}: {e}", Colors.RED)
-            if check:
-                raise
-            return e
-        finally:
-            if stdout_target:
-                stdout_target.close()
+            
+            # Open log file if provided
+            log_file_handle = None
+            if log_file:
+                mode = "a" if append else "w"
+                log_file_handle = open(log_file, mode)
+            
+            # Process output in real-time
+            async def read_stream(stream, prefix, log_handle):
+                while True:
+                    line = await stream.readline()
+                    if not line:
+                        break
+                    line_str = line.decode('utf-8').rstrip()
+                    timestamp = get_timestamp(self.start_time)
+                    print(f"{timestamp} {prefix} {line_str}")
+                    if log_handle:
+                        log_handle.write(f"{line_str}\n")
+                        log_handle.flush()
+            
+            # Create tasks to read stdout and stderr
+            stdout_task = asyncio.create_task(
+                read_stream(process.stdout, f"{Colors.BLUE}[LOG]{Colors.NC}", log_file_handle)
+            )
+            stderr_task = asyncio.create_task(
+                read_stream(process.stderr, f"{Colors.RED}[ERR]{Colors.NC}", log_file_handle)
+            )
+            
+            # Wait for the command to complete
+            exit_code = await process.wait()
+            
+            # Wait for the output processing to complete
+            await stdout_task
+            await stderr_task
+            
+            # Close log file if opened
+            if log_file_handle:
+                log_file_handle.close()
+            
+            # Handle command result
+            if exit_code != 0 and check:
+                self.log(f"Command failed with exit code {exit_code}", Colors.RED)
+                raise subprocess.CalledProcessError(exit_code, command)
+            
+            # Create a CompletedProcess-like result
+            class Result:
+                def __init__(self, returncode, stdout):
+                    self.returncode = returncode
+                    self.stdout = stdout
+            
+            return Result(exit_code, "")
+        
+        # Original implementation for commands where we don't need real-time output
+        else:
+            # Open log file if provided
+            stdout_target = None
+            if log_file:
+                mode = "a" if append else "w"
+                stdout_target = open(log_file, mode)
+            
+            try:
+                result = subprocess.run(
+                    command,
+                    cwd=cwd,
+                    stdout=stdout_target,
+                    stderr=subprocess.STDOUT if stdout_target else None,
+                    text=True,
+                    capture_output=stdout_target is None,
+                    check=check
+                )
+                return result
+            except subprocess.CalledProcessError as e:
+                self.log(f"Command failed with exit code {e.returncode}: {e}", Colors.RED)
+                if check:
+                    raise
+                return e
+            finally:
+                if stdout_target:
+                    stdout_target.close()
 
     async def setup_service_account(self):
         """Set up the service account for backend deployment"""
@@ -278,14 +341,19 @@ class DeploymentManager:
         self.log(f"Starting {service_type.lower()} build...", Colors.YELLOW)
         
         build_start_time = time.time()
-        await self.run_command(build_commands, cwd=cwd, log_file=log_file)
+        await self.run_command(build_commands, cwd=cwd, log_file=log_file, show_output=True)
         build_end_time = time.time()
         build_duration = int(build_end_time - build_start_time)
         self.log(f"Build completed in {build_duration} seconds", Colors.GREEN)
         
         # Deploy step
         spinner.update_progress("[2/2] Deploying to Cloud Run")
-        await self.run_command(deploy_commands, log_file=log_file, append=True)
+        self.log(f"Starting {service_type.lower()} deployment...", Colors.YELLOW)
+        deploy_start_time = time.time()
+        await self.run_command(deploy_commands, log_file=log_file, append=True, show_output=True)
+        deploy_end_time = time.time()
+        deploy_duration = int(deploy_end_time - deploy_start_time)
+        self.log(f"Deployment completed in {deploy_duration} seconds", Colors.GREEN)
         
         # Get new image version
         new_image = await self.get_service_image(
@@ -306,6 +374,7 @@ class DeploymentManager:
             "--tag", self.config.backend_image,
             "--machine-type=e2-highcpu-8",
             "--timeout=1800s",
+            "--stream-logs",
             "Backend/"
         ]
         
@@ -348,7 +417,8 @@ class DeploymentManager:
             "gcloud", "builds", "submit",
             "--config=cloudbuild.yaml",
             "--machine-type=e2-highcpu-32",
-            "--timeout=1800s"
+            "--timeout=1800s",
+            "--stream-logs"
         ]
         
         # Set the API_URL environment variable if provided
