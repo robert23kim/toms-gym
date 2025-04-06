@@ -28,6 +28,11 @@ const RandomVideo = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [debugInfo, setDebugInfo] = useState({
+    apiUrl: API_URL,
+    envValue: import.meta.env.VITE_API_URL || 'not set',
+    errorDetails: ''
+  });
 
   // Improved mobile detection
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
@@ -43,6 +48,8 @@ const RandomVideo = () => {
       }
       
       console.log('Fetching video from URL:', url);
+      setDebugInfo(prev => ({...prev, apiUrl: API_URL}));
+      
       const response = await axios.get(url);
       console.log('Received response:', response.data);
       
@@ -106,6 +113,11 @@ const RandomVideo = () => {
         ? `Error: ${err.response.status} - ${err.response.statusText}` 
         : 'Failed to fetch video. Please check your connection and try again.';
       setError(errorMessage);
+      
+      setDebugInfo(prev => ({
+        ...prev, 
+        errorDetails: JSON.stringify(err.response?.data || err.message || 'Unknown error')
+      }));
     } finally {
       setLoading(false);
     }
@@ -135,8 +147,13 @@ const RandomVideo = () => {
   const renderContent = () => {
     if (loading) {
       return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-xl">Loading video...</div>
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <div className="text-xl mb-4">Loading video...</div>
+          <div className="bg-gray-100 p-4 rounded max-w-md">
+            <h3 className="font-bold">Debug Info:</h3>
+            <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>ENV Value:</strong> {debugInfo.envValue}</p>
+          </div>
         </div>
       );
     }
@@ -145,6 +162,12 @@ const RandomVideo = () => {
       return (
         <div className="flex flex-col items-center justify-center min-h-screen p-4">
           <div className="text-xl text-red-500 mb-4">{error}</div>
+          <div className="bg-gray-100 p-4 rounded max-w-md mb-4">
+            <h3 className="font-bold">Debug Info:</h3>
+            <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>ENV Value:</strong> {debugInfo.envValue}</p>
+            <p><strong>Error Details:</strong> {debugInfo.errorDetails}</p>
+          </div>
           <Button onClick={handleRetry} variant="outline" className="mt-4">
             Retry
           </Button>
@@ -154,8 +177,13 @@ const RandomVideo = () => {
 
     if (!videoData) {
       return (
-        <div className="flex items-center justify-center min-h-screen">
-          <div className="text-xl">No videos found</div>
+        <div className="flex flex-col items-center justify-center min-h-screen">
+          <div className="text-xl mb-4">No videos found</div>
+          <div className="bg-gray-100 p-4 rounded max-w-md">
+            <h3 className="font-bold">Debug Info:</h3>
+            <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>ENV Value:</strong> {debugInfo.envValue}</p>
+          </div>
         </div>
       );
     }

@@ -1,4 +1,4 @@
-import { defineConfig, loadEnv } from "vite";
+import { defineConfig, loadEnv, Plugin } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 
@@ -8,7 +8,17 @@ export default defineConfig(async ({ mode }) => {
   const nodeEnv = process.env.VITE_USER_NODE_ENV || mode;
   const env = loadEnv(nodeEnv, process.cwd(), '');
   
-  const plugins = [react()];
+  const plugins = [
+    react(),
+    {
+      name: 'html-transform',
+      transformIndexHtml(html: string) {
+        return html.replace(/\{\{(\w+)\}\}/g, (match: string, p1: string) => {
+          return env[p1] || '';
+        });
+      }
+    } as Plugin
+  ];
 
   // Determine host based on environment
   // Use 0.0.0.0 for wider network access when testing with emulators

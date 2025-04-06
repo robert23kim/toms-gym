@@ -21,6 +21,7 @@ class Colors:
     BLUE = '\033[0;34m'
     NC = '\033[0m'  # No Color
     BOLD = '\033[1m'
+    END = '\033[0m'  # Alias for NC for compatibility
 
 # Global timestamp function to ensure consistency across all logging
 def get_timestamp(start_time=None):
@@ -65,6 +66,10 @@ class DeploymentConfig:
     frontend_timeout: int = 300
     api_url: Optional[str] = None
     force_refresh: bool = False
+    backend_log: str = "backend_deploy.log"
+    frontend_log: str = "frontend_deploy.log"
+    db_pass: str = ""
+    bucket_name: str = "jtr-lift-u-4ever-cool-bucket"
     
     @classmethod
     def from_file(cls, config_file: str) -> 'DeploymentConfig':
@@ -90,6 +95,12 @@ class DeploymentConfig:
                 config.backend_concurrency = backend.get('concurrency', config.backend_concurrency)
                 config.backend_timeout = backend.get('timeout', config.backend_timeout)
                 config.service_account = backend.get('service_account', config.service_account)
+                
+                # Extract environment variables
+                if 'env_vars' in backend:
+                    env_vars = backend['env_vars']
+                    config.bucket_name = env_vars.get('GCS_BUCKET_NAME', config.bucket_name)
+                    config.db_pass = env_vars.get('DB_PASS', config.db_pass)
             
             # Load frontend config
             if 'frontend' in config_data:
@@ -152,37 +163,49 @@ class Spinner:
         print(f"\n{timestamp} {self.color}[{self.service}]{Colors.NC} {Colors.GREEN}Completed ✓{Colors.NC}")
 
 class LogStreamer:
+    """Streams log files in real-time."""
     def __init__(self, log_file: Path, service: str, color: str):
         self.log_file = log_file
         self.service = service
         self.color = color
-        self.running = False
-        self.last_line = ""
-        self.start_time = time.time()
-        self.last_timestamp = ""
-
-    def _get_timestamp(self):
-        elapsed = time.time() - self.start_time
-        minutes = int(elapsed // 60)
-        seconds = int(elapsed % 60)
-        timestamp = f"[{minutes:02d}:{seconds:02d}]"
-        if timestamp != self.last_timestamp:
-            self.last_timestamp = timestamp
-        return timestamp
-
-    async def stream(self):
         self.running = True
-        with open(self.log_file, 'r') as f:
-            while self.running:
-                line = f.readline()
-                if line and line != self.last_line:
-                    # Only print if it's a new line and not empty
-                    if line.strip():
-                        timestamp = self._get_timestamp()
-                        print(f"{timestamp} {self.color}[{self.service} Log]{Colors.NC} {line.strip()}")
-                    self.last_line = line
-                else:
-                    await asyncio.sleep(0.1)
+        self.last_line = None
+        
+        # Create the log file if it doesn't exist
+        if not os.path.exists(self.log_file):
+            with open(self.log_file, 'w') as f:
+                f.write(f"=== {service} Deployment Log ===\n")
+    
+    def _get_timestamp(self):
+        """Get a formatted timestamp for log output."""
+        return get_timestamp()
+        
+    async def stream(self):
+        """Stream the log file content in real-time."""
+        while self.running:
+            try:
+                with open(self.log_file, 'r') as f:
+                    # Go to the end of the file
+                    if self.last_line:
+                        f.seek(0, os.SEEK_END)
+                    
+                    while self.running:
+                        line = f.readline()
+                        if line:
+                            if line.strip():
+                                timestamp = self._get_timestamp()
+                                print(f"{timestamp} {self.color}[{self.service} Log]{Colors.NC} {line.strip()}")
+                            self.last_line = line
+                        else:
+                            await asyncio.sleep(0.1)
+            except FileNotFoundError:
+                # Create the log file if it doesn't exist
+                with open(self.log_file, 'w') as f:
+                    f.write(f"=== {self.service} Deployment Log ===\n")
+                await asyncio.sleep(1)
+            except Exception as e:
+                print(f"Error reading log file {self.log_file}: {e}")
+                await asyncio.sleep(1)
 
     def stop(self):
         self.running = False
@@ -499,11 +522,9 @@ class DeploymentManager:
             raise DeploymentError("Backend deployment verification failed")
 
     async def deploy_frontend(self):
-        """Deploy the frontend service"""
-        if self.mode not in [DeploymentMode.BOTH, DeploymentMode.FRONTEND]:
-            return
-            
-        # Build commands
+        """Deploy the frontend to Cloud Run"""
+        self.log("Deploying frontend...", Colors.BLUE)
+        
         build_commands = [
             "gcloud", "builds", "submit",
             "--config=cloudbuild.yaml",
@@ -511,17 +532,24 @@ class DeploymentManager:
             "--timeout=1800s",
         ]
         
-        # Set the API_URL environment variable if provided
-        if self.api_url:
-            self.log(f"Setting API_URL to {self.api_url} for frontend build", Colors.BLUE)
-            # Create a temporary .env.production file with the API_URL
-            with open("my-frontend/.env.production", "w") as f:
-                f.write(f"VITE_API_URL={self.api_url}\n")
-                f.write(f"VITE_BUILD_TIMESTAMP={int(time.time())}\n")
-        else:
-            # Create a timestamp even without custom API_URL
-            with open("my-frontend/.env.production", "w") as f:
-                f.write(f"VITE_BUILD_TIMESTAMP={int(time.time())}\n")
+        # Get the production backend URL if not explicitly provided
+        backend_url = self.api_url
+        if not backend_url:
+            # Get the backend service URL if it's already deployed
+            try:
+                backend_url = await self.get_service_url(self.config.backend_service)
+                self.log(f"Using backend URL from deployed service: {backend_url}", Colors.BLUE)
+            except Exception as e:
+                # Default to the standard production backend URL if we can't get it
+                backend_url = "https://my-python-backend-quyiiugyoq-ue.a.run.app"
+                self.log(f"Using default backend URL: {backend_url}", Colors.BLUE)
+        
+        # Always set the API_URL in the production environment
+        self.log(f"Setting API_URL to {backend_url} for frontend build", Colors.BLUE)
+        # Create a temporary .env.production file with the API_URL
+        with open("my-frontend/.env.production", "w") as f:
+            f.write(f"VITE_API_URL={backend_url}\n")
+            f.write(f"VITE_BUILD_TIMESTAMP={int(time.time())}\n")
         
         # Deploy commands
         deploy_commands = [
@@ -687,9 +715,9 @@ def main():
         print(f"{Colors.RED}Error: Cannot specify both --frontend-only and --backend-only{Colors.END}")
         sys.exit(1)
     elif args.frontend_only:
-        mode = DeploymentMode.FRONTEND_ONLY
+        mode = DeploymentMode.FRONTEND
     elif args.backend_only:
-        mode = DeploymentMode.BACKEND_ONLY
+        mode = DeploymentMode.BACKEND
     else:
         mode = DeploymentMode.BOTH
         
@@ -699,9 +727,21 @@ def main():
         
     # Load configuration
     try:
-        if os.path.exists(args.config):
-            config = DeploymentConfig.from_file(args.config)
-        else:
+        # Try different paths for the config file - current directory, absolute path, or relative to script
+        config_paths = [
+            args.config,
+            os.path.abspath(args.config),
+            os.path.join(os.path.dirname(os.path.abspath(__file__)), args.config)
+        ]
+        
+        config = None
+        for path in config_paths:
+            if os.path.exists(path):
+                print(f"Using config file: {path}")
+                config = DeploymentConfig.from_file(path)
+                break
+                
+        if not config:
             print(f"{Colors.YELLOW}Warning: Config file {args.config} not found, using defaults{Colors.END}")
             config = DeploymentConfig(project_id="toms-gym", region="us-east1")
             
@@ -713,14 +753,8 @@ def main():
         
         # Create deployment manager and run deployment
         manager = DeploymentManager(config, mode)
-        success = manager.deploy()
-        
-        if success:
-            print(f"\n{Colors.GREEN}🎉 Deployment completed successfully!{Colors.END}")
-            sys.exit(0)
-        else:
-            print(f"\n{Colors.RED}❌ Deployment failed!{Colors.END}")
-            sys.exit(1)
+        asyncio.run(manager.run())
+        sys.exit(0)
     except Exception as e:
         print(f"\n{Colors.RED}Error: {str(e)}{Colors.END}")
         if args.debug:
