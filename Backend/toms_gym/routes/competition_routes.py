@@ -6,21 +6,57 @@ import random
 import datetime
 import urllib.parse
 import os
+import logging
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# Use environment variable for bucket name
+GCS_BUCKET_NAME = os.environ.get('GCS_BUCKET', 'jtr-lift-u-4ever-cool-bucket')
 
 # Global variable to store video blobs
 _video_blobs = []
 _current_video_index = 0
+_video_blobs_cache = None
+_last_refresh_time = None
 
 def _get_video_blobs():
-    """Helper function to get and cache video blobs"""
-    global _video_blobs
-    # Always refresh the video list to ensure we have all videos
-    storage_client = storage.Client()
-    bucket = storage_client.bucket('jtr-lift-u-4ever-cool-bucket')
-    blobs = list(bucket.list_blobs(prefix='videos/'))
-    _video_blobs = [blob for blob in blobs if blob.name.lower().endswith(('.mp4', '.mov'))]
-    random.shuffle(_video_blobs)  # Shuffle the list to ensure random order
-    return _video_blobs
+    """
+    Get a list of video blobs from the GCS bucket with caching.
+    Refreshes the cache every 5 minutes.
+    """
+    global _video_blobs_cache, _last_refresh_time
+    
+    # Check if we need to refresh the cache
+    current_time = datetime.datetime.now()
+    if (_video_blobs_cache is None or 
+        _last_refresh_time is None or 
+        (current_time - _last_refresh_time).total_seconds() > 300):  # 5 minutes
+        
+        try:
+            logger.info(f"Refreshing video blobs from bucket: {GCS_BUCKET_NAME}")
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(GCS_BUCKET_NAME)
+            
+            # List all blobs in the videos folder
+            all_blobs = list(bucket.list_blobs(prefix='videos/'))
+            
+            # Filter for video files only
+            _video_blobs_cache = [
+                b for b in all_blobs 
+                if b.name.lower().endswith(('.mp4', '.mov', '.webm'))
+            ]
+            _last_refresh_time = current_time
+            
+            logger.info(f"Found {len(_video_blobs_cache)} videos in bucket")
+        except Exception as e:
+            logger.error(f"Error refreshing video blobs: {str(e)}")
+            # If we have a cached version, use it; otherwise return empty list
+            if _video_blobs_cache is None:
+                _video_blobs_cache = []
+    
+    return _video_blobs_cache
 
 def _get_video_data(blob):
     """Helper function to create video response data"""
@@ -40,7 +76,7 @@ def _get_video_data(blob):
         "lift_type": "Squat",
         "weight": 100,
         "success": True,
-        "total_videos": len(_video_blobs),
+        "total_videos": len(_video_blobs_cache),
         "current_index": _current_video_index
     }
 
@@ -299,45 +335,38 @@ def get_next_video():
 @competition_bp.route('/video/<path:video_path>')
 def serve_video(video_path):
     """
-    Proxy endpoint for serving videos with proper headers for mobile devices
+    Endpoint to serve a video from GCS.
+    For mobile devices, streams content directly.
+    For desktop, redirects to a signed URL.
     """
     try:
-        # Debug logs
-        print(f"Video path received: {video_path}")
+        # Check if the request is from a mobile device
+        is_mobile = 'mobile' in request.args or request.user_agent.platform in ['android', 'iphone', 'ipad']
+        logger.info(f"Request is from mobile device: {is_mobile}")
         
-        # Clean and normalize the path
-        clean_path = urllib.parse.unquote(video_path)
-        if clean_path.startswith('video/'):
-            clean_path = clean_path[6:]  # Remove duplicate 'video/' prefix if present
-            
+        # Clean the path to ensure it's properly formatted
+        clean_path = video_path.strip('/')
         if not clean_path.startswith('videos/'):
             clean_path = f"videos/{clean_path}"
-            
-        print(f"Normalized path: {clean_path}")
-            
-        # Check if mobile - both from query param and user agent
-        is_mobile = (
-            request.args.get('mobile') in ['true', 'True', '1'] or
-            'mobile' in request.args or 
-            request.user_agent.platform in ['android', 'iphone', 'ipad'] or
-            any(device in request.user_agent.string.lower() for device in ['android', 'iphone', 'ipad', 'mobile'])
-        )
         
-        print(f"Request is from mobile device: {is_mobile}")
-        print(f"User agent: {request.user_agent.string}")
+        logger.info(f"Serving video: {clean_path}")
         
         # Get the video from GCS
-        storage_client = storage.Client()
-        bucket = storage_client.bucket('jtr-lift-u-4ever-cool-bucket')
-        blob = bucket.blob(clean_path)
-        
-        if not blob.exists():
-            print(f"Video not found at path: {clean_path}")
-            # Try listing files in the bucket to debug
-            all_blobs = list(bucket.list_blobs(prefix='videos/'))
-            video_blobs = [b.name for b in all_blobs if b.name.lower().endswith(('.mp4', '.mov'))]
-            print(f"Available videos: {video_blobs}")
-            return jsonify({"error": "Video not found", "path": clean_path}), 404
+        try:
+            storage_client = storage.Client()
+            bucket = storage_client.bucket(GCS_BUCKET_NAME)
+            blob = bucket.blob(clean_path)
+            
+            if not blob.exists():
+                logger.warning(f"Video not found at path: {clean_path}")
+                # Try listing files in the bucket to debug
+                all_blobs = list(bucket.list_blobs(prefix='videos/'))
+                video_blobs = [b.name for b in all_blobs if b.name.lower().endswith(('.mp4', '.mov'))]
+                logger.info(f"Available videos: {video_blobs[:10]}...")
+                return jsonify({"error": "Video not found", "path": clean_path}), 404
+        except Exception as blob_error:
+            logger.error(f"Error accessing GCS: {str(blob_error)}")
+            return jsonify({"error": "Storage access error", "details": str(blob_error)}), 500
             
         # Determine content type based on file extension
         content_type = "video/mp4"
@@ -346,62 +375,140 @@ def serve_video(video_path):
         elif clean_path.lower().endswith('.webm'):
             content_type = "video/webm"
             
-        print(f"Content type: {content_type}")
+        logger.info(f"Content type: {content_type}")
         
         # Check if using local development environment
         is_local_env = os.environ.get('FLASK_ENV') == 'development' or os.environ.get('USE_MOCK_DB') == 'true'
         
-        if is_local_env:
-            # For local testing, just redirect to the public GCS URL
-            print("Using direct GCS URL for local testing")
-            direct_url = f"https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/{clean_path}"
+        # Check for range request
+        range_header = request.headers.get('Range', None)
+        
+        # For mobile devices, range requests, or in development mode, stream the content directly
+        if is_mobile or range_header or is_local_env:
+            logger.info(f"Streaming content directly (mobile={is_mobile}, range={bool(range_header)}, local={is_local_env})")
             
-            # Add mobile-specific cache headers
+            # Get file size
+            try:
+                blob.reload()  # Refresh metadata
+                file_size = blob.size
+                
+                if file_size is None or file_size == 0:
+                    raise ValueError("Invalid file size")
+            except Exception as size_error:
+                logger.error(f"Error getting file size: {str(size_error)}")
+                # Fallback - download the file and get its size
+                content = blob.download_as_bytes()
+                file_size = len(content)
+                
+                # Return the full content for non-range request
+                if not range_header:
+                    response = Response(
+                        content,
+                        mimetype=content_type,
+                        content_type=content_type,
+                        direct_passthrough=True
+                    )
+                    response.headers['Content-Length'] = str(file_size)
+                    response.headers['Accept-Ranges'] = 'bytes'
+                    
+                    # Add common headers
+                    response.headers['Content-Type'] = content_type
+                    response.headers['Access-Control-Allow-Origin'] = '*'
+                    response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
+                    response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Range, Content-Length, Accept-Ranges'
+                    response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+                    
+                    response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                        
+                    return response
+            
+            # Handle range request
+            if range_header:
+                # Parse range header
+                ranges = range_header.replace('bytes=', '').split('-')
+                start_byte = int(ranges[0]) if ranges[0] else 0
+                end_byte = int(ranges[1]) if len(ranges) > 1 and ranges[1] else file_size - 1
+                
+                # Ensure end byte doesn't exceed file size
+                end_byte = min(end_byte, file_size - 1)
+                
+                # Calculate length of the response
+                content_length = end_byte - start_byte + 1
+                
+                try:
+                    # Download only the requested bytes
+                    download_args = {"start": start_byte, "end": end_byte}
+                    content = blob.download_as_bytes(**download_args)
+                    
+                    # Prepare response with correct status and headers
+                    response = Response(
+                        content,
+                        status=206,
+                        mimetype=content_type,
+                        content_type=content_type,
+                        direct_passthrough=True
+                    )
+                    
+                    # Set Content-Range header
+                    response.headers['Content-Range'] = f'bytes {start_byte}-{end_byte}/{file_size}'
+                    response.headers['Content-Length'] = str(content_length)
+                    response.headers['Accept-Ranges'] = 'bytes'
+                except Exception as range_error:
+                    logger.error(f"Range request failed: {str(range_error)}")
+                    # Fallback to full download if range request fails
+                    content = blob.download_as_bytes()
+                    response = Response(
+                        content,
+                        mimetype=content_type,
+                        content_type=content_type,
+                        direct_passthrough=True
+                    )
+                    response.headers['Content-Length'] = str(len(content))
+                    response.headers['Accept-Ranges'] = 'bytes'
+            else:
+                # Download full file for non-range requests
+                content = blob.download_as_bytes()
+                response = Response(
+                    content,
+                    mimetype=content_type,
+                    content_type=content_type,
+                    direct_passthrough=True
+                )
+                # Ensure Content-Length is set correctly
+                content_length = len(content)
+                response.headers['Content-Length'] = str(content_length)
+                response.headers['Accept-Ranges'] = 'bytes'
+            
+            # Add common headers
+            response.headers['Content-Type'] = content_type
+            response.headers['Access-Control-Allow-Origin'] = '*'
+            response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
+            response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Range, Content-Length, Accept-Ranges'
+            response.headers['Access-Control-Expose-Headers'] = 'Content-Range'
+            response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
+                
+            return response
+        else:
+            # For desktop in production, use direct URL instead of signed URL
+            # (Signed URL has been causing issues)
+            logger.info("Using direct GCS URL for desktop")
+            direct_url = f"https://storage.googleapis.com/{GCS_BUCKET_NAME}/{clean_path}"
+            
+            # Add headers
             response = redirect(direct_url, code=302)
             response.headers['Content-Type'] = content_type
             response.headers['Access-Control-Allow-Origin'] = '*'
             response.headers['Access-Control-Allow-Methods'] = 'GET, HEAD, OPTIONS'
             response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Range, Content-Length, Accept-Ranges'
             response.headers['Accept-Ranges'] = 'bytes'
-            
-            if is_mobile:
-                response.headers['Cache-Control'] = 'no-cache, no-store, must-revalidate'
-            else:
-                response.headers['Cache-Control'] = 'public, max-age=3600'
+            response.headers['Cache-Control'] = 'public, max-age=3600'
                 
             return response
-        else:
-            # For production, use signed URL
-            try:
-                # Generate a signed URL with appropriate headers
-                url = blob.generate_signed_url(
-                    version="v4",
-                    expiration=datetime.timedelta(minutes=30),
-                    method="GET",
-                    headers={
-                        "Content-Type": content_type,
-                        "Access-Control-Allow-Origin": "*",
-                        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
-                        "Access-Control-Allow-Headers": "Content-Type, Range, Content-Length, Accept-Ranges",
-                        "Accept-Ranges": "bytes",
-                        "Cache-Control": "no-cache, no-store, must-revalidate" if is_mobile else "public, max-age=3600"
-                    }
-                )
-                
-                print(f"Generated signed URL: {url}")
-                
-                # Redirect to the signed URL
-                return redirect(url, code=302)
-            except Exception as signing_error:
-                print(f"Error generating signed URL: {signing_error}")
-                # Fallback to direct URL if signing fails
-                direct_url = f"https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/{clean_path}"
-                return redirect(direct_url, code=302)
     except Exception as e:
         import traceback
-        print(f"Error serving video: {str(e)}")
-        print(traceback.format_exc())
-        return jsonify({"error": str(e), "traceback": traceback.format_exc()}), 500
+        logger.error(f"Error serving video: {str(e)}")
+        logger.error(traceback.format_exc())
+        return jsonify({"error": str(e)}), 500
 
 @competition_bp.route('/health')
 def health_check():

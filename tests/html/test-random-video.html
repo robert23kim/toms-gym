@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Random Video Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .video-container { margin: 20px 0; }
+        video { max-width: 100%; border: 1px solid #ccc; }
+        button { padding: 8px 16px; margin: 5px; }
+        #log { background: #f5f5f5; padding: 10px; border-radius: 5px; height: 150px; overflow: auto; }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Random Video Test</h1>
+    <p>Testing the random_video endpoint from the local backend.</p>
+
+    <div>
+        <button id="getRandomVideo">Get Random Video</button>
+        <button id="clearLog">Clear Log</button>
+    </div>
+
+    <div class="video-container">
+        <h2>Video Player</h2>
+        <video id="videoPlayer" controls width="640">
+            Your browser does not support the video tag.
+        </video>
+        <div>
+            <button onclick="document.getElementById('videoPlayer').play()">Play</button>
+            <button onclick="document.getElementById('videoPlayer').pause()">Pause</button>
+            <button onclick="logVideoInfo()">Log Video Info</button>
+        </div>
+    </div>
+
+    <h2>Video Info</h2>
+    <pre id="videoInfo"></pre>
+
+    <h2>Log</h2>
+    <div id="log"></div>
+
+    <script>
+        // Get elements
+        const videoPlayer = document.getElementById('videoPlayer');
+        const videoInfo = document.getElementById('videoInfo');
+        const log = document.getElementById('log');
+        const getRandomVideoBtn = document.getElementById('getRandomVideo');
+        const clearLogBtn = document.getElementById('clearLog');
+
+        // Add event listeners
+        getRandomVideoBtn.addEventListener('click', fetchRandomVideo);
+        clearLogBtn.addEventListener('click', () => { log.innerHTML = ''; });
+
+        // Log video events
+        videoPlayer.addEventListener('loadstart', () => logMessage('loadstart event fired'));
+        videoPlayer.addEventListener('loadedmetadata', () => logMessage('loadedmetadata event fired'));
+        videoPlayer.addEventListener('canplay', () => logMessage('canplay event fired'));
+        videoPlayer.addEventListener('playing', () => logMessage('playing event fired'));
+        videoPlayer.addEventListener('error', () => logMessage(`error event fired: ${getErrorMessage(videoPlayer.error.code)}`, 'error'));
+
+        // Fetch random video from backend
+        function fetchRandomVideo() {
+            logMessage('Fetching random video...');
+            
+            fetch('http://localhost:8888/random-video')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP error ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    logMessage(`Got video: ${data.video_url}`);
+                    displayVideoInfo(data);
+                    
+                    // Set video source
+                    videoPlayer.innerHTML = `<source src="${data.video_url}" type="video/mp4">`;
+                    videoPlayer.load();
+                })
+                .catch(error => {
+                    logMessage(`Error fetching random video: ${error.message}`, 'error');
+                });
+        }
+
+        // Display video info
+        function displayVideoInfo(data) {
+            videoInfo.textContent = JSON.stringify(data, null, 2);
+        }
+
+        // Log video info
+        function logVideoInfo() {
+            try {
+                logMessage('=== Video Element Info ===');
+                logMessage(`Ready State: ${videoPlayer.readyState} (0=nothing, 1=metadata, 2=current data, 3=future data, 4=enough data)`);
+                logMessage(`Duration: ${videoPlayer.duration || 'N/A'}`);
+                logMessage(`Current Time: ${videoPlayer.currentTime}`);
+                logMessage(`Network State: ${videoPlayer.networkState} (0=empty, 1=idle, 2=loading, 3=no source)`);
+                logMessage(`Error: ${videoPlayer.error ? videoPlayer.error.code : 'None'}`);
+                
+                // Test range requests
+                testRangeRequests();
+            } catch (err) {
+                logMessage(`Error getting video info: ${err.message}`, 'error');
+            }
+        }
+
+        // Test range requests
+        function testRangeRequests() {
+            if (!videoPlayer.querySelector('source')) {
+                logMessage('No video source to test', 'error');
+                return;
+            }
+            
+            const url = videoPlayer.querySelector('source').src;
+            logMessage(`Testing range requests for ${url}...`);
+            
+            fetch(url, {
+                headers: {
+                    'Range': 'bytes=0-1023'
+                }
+            })
+            .then(response => {
+                if (response.status === 206) {
+                    logMessage(`Range requests supported: ${response.status} ${response.statusText}`, 'success');
+                    const range = response.headers.get('Content-Range');
+                    logMessage(`Content-Range: ${range}`);
+                } else {
+                    logMessage(`Range requests not supported: ${response.status} ${response.statusText}`, 'error');
+                }
+                return response.headers;
+            })
+            .then(headers => {
+                // Log important headers
+                logMessage(`Content-Type: ${headers.get('Content-Type')}`);
+                logMessage(`Accept-Ranges: ${headers.get('Accept-Ranges')}`);
+                logMessage(`Content-Length: ${headers.get('Content-Length')}`);
+            })
+            .catch(error => {
+                logMessage(`Error testing range requests: ${error.message}`, 'error');
+            });
+        }
+
+        // Log a message
+        function logMessage(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const messageClass = type ? ` class="${type}"` : '';
+            log.innerHTML += `<div${messageClass}>[${timestamp}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+        
+        // Get human-readable error message
+        function getErrorMessage(code) {
+            switch(code) {
+                case 1: return "MEDIA_ERR_ABORTED - Fetching process aborted by user";
+                case 2: return "MEDIA_ERR_NETWORK - Network error while loading";
+                case 3: return "MEDIA_ERR_DECODE - Error decoding media";
+                case 4: return "MEDIA_ERR_SRC_NOT_SUPPORTED - Media source not supported";
+                default: return "Unknown error";
+            }
+        }
+    </script>
+</body>
+</html> 

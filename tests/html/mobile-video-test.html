@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Video Playback Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 16px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        h1 {
+            font-size: 24px;
+            margin-bottom: 16px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 16px;
+            padding: 16px;
+        }
+        .video-container {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+        video {
+            width: 100%;
+            border-radius: 8px;
+            background: #000;
+        }
+        button {
+            background: #4361ee;
+            border: none;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        button:active {
+            opacity: 0.8;
+        }
+        .info {
+            font-size: 14px;
+            margin-bottom: 16px;
+            color: #666;
+        }
+        .log {
+            background: #f0f0f0;
+            border-radius: 8px;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            max-height: 200px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-all;
+        }
+        .success {
+            color: #38b000;
+        }
+        .error {
+            color: #d90429;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Mobile Video Playback Test</h1>
+        
+        <div class="card">
+            <div>
+                <button id="randomVideoBtn">Get Random Video</button>
+                <button id="clearLogBtn">Clear Log</button>
+            </div>
+            
+            <div class="info">
+                <div>Backend URL: <span id="apiUrl"></span></div>
+                <div>User Agent: <span id="userAgent"></span></div>
+                <div>Device: <span id="deviceInfo"></span></div>
+            </div>
+        </div>
+        
+        <div class="card">
+            <div id="videoInfo" class="info">No video loaded yet.</div>
+            
+            <div class="video-container">
+                <video id="videoPlayer" controls playsinline></video>
+            </div>
+            
+            <div>
+                <button id="playBtn">Play</button>
+                <button id="pauseBtn">Pause</button>
+                <button id="muteBtn">Mute</button>
+                <button id="testRangeBtn">Test Range</button>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Log</h2>
+            <div id="log" class="log"></div>
+        </div>
+    </div>
+    
+    <script>
+        // Configuration
+        const API_URL = "http://localhost:8888";  // Will work with port forwarding
+        
+        // Elements
+        const videoPlayer = document.getElementById('videoPlayer');
+        const randomVideoBtn = document.getElementById('randomVideoBtn');
+        const clearLogBtn = document.getElementById('clearLogBtn');
+        const playBtn = document.getElementById('playBtn');
+        const pauseBtn = document.getElementById('pauseBtn');
+        const muteBtn = document.getElementById('muteBtn');
+        const testRangeBtn = document.getElementById('testRangeBtn');
+        const log = document.getElementById('log');
+        const videoInfo = document.getElementById('videoInfo');
+        const apiUrlEl = document.getElementById('apiUrl');
+        const userAgentEl = document.getElementById('userAgent');
+        const deviceInfoEl = document.getElementById('deviceInfo');
+        
+        // Display environment info
+        apiUrlEl.textContent = API_URL;
+        userAgentEl.textContent = navigator.userAgent;
+        deviceInfoEl.textContent = `${screen.width}×${screen.height}, ${window.devicePixelRatio}x`;
+        
+        // Add event listeners
+        randomVideoBtn.addEventListener('click', getRandomVideo);
+        clearLogBtn.addEventListener('click', () => log.innerHTML = '');
+        playBtn.addEventListener('click', () => videoPlayer.play());
+        pauseBtn.addEventListener('click', () => videoPlayer.pause());
+        muteBtn.addEventListener('click', toggleMute);
+        testRangeBtn.addEventListener('click', testRangeRequests);
+        
+        // Video events
+        videoPlayer.addEventListener('loadstart', () => logMessage('Video loadstart event fired'));
+        videoPlayer.addEventListener('loadedmetadata', () => logMessage('Video loadedmetadata event fired', 'success'));
+        videoPlayer.addEventListener('canplay', () => logMessage('Video canplay event fired', 'success'));
+        videoPlayer.addEventListener('playing', () => logMessage('Video playing event fired', 'success'));
+        videoPlayer.addEventListener('pause', () => logMessage('Video pause event fired'));
+        videoPlayer.addEventListener('error', (e) => {
+            const error = videoPlayer.error;
+            let errorMsg = 'Unknown error';
+            
+            if (error) {
+                switch (error.code) {
+                    case 1: errorMsg = 'MEDIA_ERR_ABORTED: Fetching process aborted'; break;
+                    case 2: errorMsg = 'MEDIA_ERR_NETWORK: Network error while loading'; break;
+                    case 3: errorMsg = 'MEDIA_ERR_DECODE: Error decoding media'; break;
+                    case 4: errorMsg = 'MEDIA_ERR_SRC_NOT_SUPPORTED: Format not supported'; break;
+                    default: errorMsg = `Error code: ${error.code}`;
+                }
+            }
+            
+            logMessage(`Video error: ${errorMsg}`, 'error');
+        });
+        
+        // Get random video
+        async function getRandomVideo() {
+            try {
+                logMessage('Fetching random video...');
+                
+                const response = await fetch(`${API_URL}/random-video`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                logMessage(`Received video data: ${JSON.stringify(data, null, 2)}`);
+                
+                if (!data.video_url) {
+                    throw new Error('No video URL in response');
+                }
+                
+                // Update video info
+                videoInfo.innerHTML = `
+                    <strong>${data.participant_name || 'Unknown'}</strong> - 
+                    ${data.lift_type || 'Unknown lift'} @ 
+                    ${data.weight || '0'}kg<br>
+                    Video ${data.current_index + 1} of ${data.total_videos}
+                `;
+                
+                // Handle mobile detection
+                const videoUrl = data.video_url;
+                logMessage(`Setting video source to: ${videoUrl}`);
+                
+                // Set video source
+                videoPlayer.src = videoUrl;
+                videoPlayer.load();
+                
+                // Try to play automatically
+                videoPlayer.play().catch(e => {
+                    logMessage(`Autoplay failed: ${e.message}`);
+                });
+                
+            } catch (error) {
+                logMessage(`Error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Toggle mute
+        function toggleMute() {
+            videoPlayer.muted = !videoPlayer.muted;
+            muteBtn.textContent = videoPlayer.muted ? 'Unmute' : 'Mute';
+        }
+        
+        // Test range requests
+        async function testRangeRequests() {
+            if (!videoPlayer.src) {
+                logMessage('No video source to test', 'error');
+                return;
+            }
+            
+            try {
+                logMessage(`Testing range requests for: ${videoPlayer.src}`);
+                
+                const response = await fetch(videoPlayer.src, {
+                    headers: {
+                        'Range': 'bytes=0-1023'
+                    }
+                });
+                
+                if (response.status === 206) {
+                    logMessage(`Range request successful: ${response.status} ${response.statusText}`, 'success');
+                    
+                    const range = response.headers.get('Content-Range');
+                    const type = response.headers.get('Content-Type');
+                    const length = response.headers.get('Content-Length');
+                    
+                    logMessage(`Content-Range: ${range}`);
+                    logMessage(`Content-Type: ${type}`);
+                    logMessage(`Content-Length: ${length}`);
+                } else {
+                    logMessage(`Range request failed: ${response.status} ${response.statusText}`, 'error');
+                }
+            } catch (error) {
+                logMessage(`Range test error: ${error.message}`, 'error');
+            }
+        }
+        
+        // Log helper
+        function logMessage(message, type = '') {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = type ? ` class="${type}"` : '';
+            log.innerHTML += `<div${className}>[${timestamp}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+            console.log(`[${timestamp}] ${message}`);
+        }
+        
+        // Initial log
+        logMessage('Mobile video test initialized');
+    </script>
+</body>
+</html> 

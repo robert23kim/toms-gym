@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Video Playback Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+        .video-container { margin: 20px 0; }
+        video { max-width: 100%; border: 1px solid #ccc; }
+        h2 { margin-top: 30px; }
+        button { padding: 8px 16px; margin: 5px; }
+        .success { color: green; }
+        .error { color: red; }
+        #log { background: #f5f5f5; padding: 10px; border-radius: 5px; height: 200px; overflow: auto; }
+    </style>
+</head>
+<body>
+    <h1>Video Playback Test</h1>
+    <p>Testing different video playback methods to diagnose issues.</p>
+
+    <h2>1. Direct GCS URL</h2>
+    <div class="video-container">
+        <video id="direct-video" controls width="640">
+            <source src="https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/videos/20250406_023747_20250316_123704.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div>
+            <button onclick="document.getElementById('direct-video').play()">Play</button>
+            <button onclick="document.getElementById('direct-video').pause()">Pause</button>
+            <button onclick="logVideoInfo('direct-video')">Log Video Info</button>
+        </div>
+    </div>
+
+    <h2>2. Local Backend Proxy (localhost)</h2>
+    <div class="video-container">
+        <video id="proxy-video" controls width="640">
+            <source src="http://localhost:8888/video/videos/20250406_023747_20250316_123704.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div>
+            <button onclick="document.getElementById('proxy-video').play()">Play</button>
+            <button onclick="document.getElementById('proxy-video').pause()">Pause</button>
+            <button onclick="logVideoInfo('proxy-video')">Log Video Info</button>
+        </div>
+    </div>
+
+    <h2>3. Production Backend Proxy</h2>
+    <div class="video-container">
+        <video id="production-video" controls width="640">
+            <source src="https://my-python-backend-quyiiugyoq-ue.a.run.app/video/videos/20250406_023747_20250316_123704.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <div>
+            <button onclick="document.getElementById('production-video').play()">Play</button>
+            <button onclick="document.getElementById('production-video').pause()">Pause</button>
+            <button onclick="logVideoInfo('production-video')">Log Video Info</button>
+        </div>
+    </div>
+
+    <h2>Log</h2>
+    <div id="log"></div>
+
+    <script>
+        // Log any errors
+        window.addEventListener('error', function(e) {
+            logMessage('ERROR: ' + e.message);
+        });
+
+        // Log info about the video
+        function logVideoInfo(videoId) {
+            const video = document.getElementById(videoId);
+            const log = document.getElementById('log');
+            
+            try {
+                logMessage(`=== ${videoId} Info ===`);
+                logMessage(`Ready State: ${video.readyState} (0=nothing, 1=metadata, 2=current data, 3=future data, 4=enough data)`);
+                logMessage(`Duration: ${video.duration || 'N/A'}`);
+                logMessage(`Current Time: ${video.currentTime}`);
+                logMessage(`Network State: ${video.networkState} (0=empty, 1=idle, 2=loading, 3=no source)`);
+                logMessage(`Error: ${video.error ? video.error.code : 'None'}`);
+                
+                // Test range requests
+                testRangeRequests(videoId);
+            } catch (err) {
+                logMessage(`Error getting video info: ${err.message}`);
+            }
+        }
+
+        // Log a message to the log div
+        function logMessage(message) {
+            const log = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            log.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            log.scrollTop = log.scrollHeight;
+        }
+
+        // Test range requests using fetch
+        function testRangeRequests(videoId) {
+            const video = document.getElementById(videoId);
+            const url = video.querySelector('source').src;
+            
+            logMessage(`Testing range requests for ${videoId}...`);
+            
+            fetch(url, {
+                headers: {
+                    'Range': 'bytes=0-1023'
+                }
+            })
+            .then(response => {
+                if (response.status === 206) {
+                    logMessage(`<span class="success">✓ Range requests supported: ${response.status} ${response.statusText}</span>`);
+                    const range = response.headers.get('Content-Range');
+                    logMessage(`Content-Range: ${range}`);
+                } else {
+                    logMessage(`<span class="error">✗ Range requests not supported: ${response.status} ${response.statusText}</span>`);
+                }
+                return response.headers;
+            })
+            .then(headers => {
+                // Log important headers
+                logMessage(`Content-Type: ${headers.get('Content-Type')}`);
+                logMessage(`Accept-Ranges: ${headers.get('Accept-Ranges')}`);
+                logMessage(`Content-Length: ${headers.get('Content-Length')}`);
+            })
+            .catch(error => {
+                logMessage(`<span class="error">Error testing range requests: ${error.message}</span>`);
+            });
+        }
+
+        // Monitor video errors
+        document.querySelectorAll('video').forEach(video => {
+            video.addEventListener('error', function() {
+                const videoId = this.id;
+                const error = this.error;
+                logMessage(`<span class="error">Video error on ${videoId}: ${getErrorMessage(error.code)}</span>`);
+            });
+            
+            video.addEventListener('loadedmetadata', function() {
+                const videoId = this.id;
+                logMessage(`<span class="success">${videoId} metadata loaded. Duration: ${this.duration.toFixed(2)}s</span>`);
+            });
+        });
+        
+        // Get human-readable error message
+        function getErrorMessage(code) {
+            switch(code) {
+                case 1: return "MEDIA_ERR_ABORTED - Fetching process aborted by user";
+                case 2: return "MEDIA_ERR_NETWORK - Network error while loading";
+                case 3: return "MEDIA_ERR_DECODE - Error decoding media";
+                case 4: return "MEDIA_ERR_SRC_NOT_SUPPORTED - Media source not supported";
+                default: return "Unknown error";
+            }
+        }
+    </script>
+</body>
+</html> 

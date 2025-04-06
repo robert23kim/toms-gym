@@ -183,3 +183,101 @@ Backend/toms_gym.egg-info/
 # Test results
 tests/test-results/
 **/test-results/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+.env
+.venv
+venv/
+ENV/
+.python-version
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+.DS_Store
+coverage/
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Tests
+.coverage
+htmlcov/
+tests/test-results/
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.sublime-*
+.history/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials
+credentials.json
+*-credentials.json
+*-key.json
+*.pem
+*.key
+
+# Build files
+build/
+dist/
+*.tar.gz
+*.zip
+
+# Temporary files
+*.tmp
+*~
+.temp/
+.tmp/
+tmp/
+temp/
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Custom
+test_db.py

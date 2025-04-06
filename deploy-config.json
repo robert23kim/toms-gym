@@ -1,0 +1,31 @@
+{
+  "project_id": "toms-gym",
+  "region": "us-east1",
+  "backend": {
+    "service_name": "my-python-backend",
+    "min_instances": 1,
+    "max_instances": 10,
+    "memory": "1Gi",
+    "cpu": 1,
+    "concurrency": 80,
+    "timeout": 3600,
+    "service_account": "toms-gym-service@toms-gym.iam.gserviceaccount.com",
+    "env_vars": {
+      "FLASK_ENV": "production",
+      "DB_INSTANCE": "toms-gym:us-east1:my-db",
+      "DB_USER": "postgres",
+      "DB_NAME": "postgres",
+      "GCS_BUCKET_NAME": "jtr-lift-u-4ever-cool-bucket"
+    }
+  },
+  "frontend": {
+    "service_name": "my-frontend",
+    "min_instances": 1,
+    "max_instances": 10,
+    "memory": "512Mi",
+    "cpu": 1,
+    "concurrency": 80,
+    "timeout": 300,
+    "service_account": "toms-gym-service@toms-gym.iam.gserviceaccount.com"
+  }
+} 

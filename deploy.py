@@ -7,10 +7,11 @@ import os
 import subprocess
 import sys
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any
+from datetime import datetime
 
 # Colors for terminal output
 class Colors:
@@ -45,17 +46,65 @@ class DeploymentMode(Enum):
 
 @dataclass
 class DeploymentConfig:
-    project_id: str = "toms-gym"
-    region: str = "us-east1"
-    service_account: str = "toms-gym-service@toms-gym.iam.gserviceaccount.com"
-    db_pass: str = "test"
-    bucket_name: str = "jtr-lift-u-4ever-cool-bucket"
+    """Configuration for deployment."""
+    project_id: str
+    region: str
     backend_service: str = "my-python-backend"
     frontend_service: str = "my-frontend"
     backend_image: str = "gcr.io/toms-gym/my-python-backend:latest"
     frontend_image: str = "gcr.io/toms-gym/my-frontend:latest"
-    backend_log: str = "/tmp/backend-build.log"
-    frontend_log: str = "/tmp/frontend-build.log"
+    service_account: str = "toms-gym-service@toms-gym.iam.gserviceaccount.com"
+    min_instances: int = 1
+    backend_memory: str = "1Gi"
+    backend_cpu: int = 1
+    backend_concurrency: int = 80
+    backend_timeout: int = 3600
+    frontend_memory: str = "512Mi"
+    frontend_cpu: int = 1
+    frontend_concurrency: int = 80
+    frontend_timeout: int = 300
+    api_url: Optional[str] = None
+    force_refresh: bool = False
+    
+    @classmethod
+    def from_file(cls, config_file: str) -> 'DeploymentConfig':
+        """Load configuration from JSON file."""
+        try:
+            with open(config_file, 'r') as f:
+                config_data = json.load(f)
+            
+            # Create basic config
+            config = cls(
+                project_id=config_data.get('project_id', 'toms-gym'),
+                region=config_data.get('region', 'us-east1'),
+            )
+            
+            # Load backend config
+            if 'backend' in config_data:
+                backend = config_data['backend']
+                config.backend_service = backend.get('service_name', config.backend_service)
+                config.backend_image = f"gcr.io/{config.project_id}/{config.backend_service}:latest"
+                config.min_instances = backend.get('min_instances', config.min_instances)
+                config.backend_memory = backend.get('memory', config.backend_memory)
+                config.backend_cpu = backend.get('cpu', config.backend_cpu)
+                config.backend_concurrency = backend.get('concurrency', config.backend_concurrency)
+                config.backend_timeout = backend.get('timeout', config.backend_timeout)
+                config.service_account = backend.get('service_account', config.service_account)
+            
+            # Load frontend config
+            if 'frontend' in config_data:
+                frontend = config_data['frontend']
+                config.frontend_service = frontend.get('service_name', config.frontend_service)
+                config.frontend_image = f"gcr.io/{config.project_id}/{config.frontend_service}:latest"
+                config.frontend_memory = frontend.get('memory', config.frontend_memory)
+                config.frontend_cpu = frontend.get('cpu', config.frontend_cpu)
+                config.frontend_concurrency = frontend.get('concurrency', config.frontend_concurrency)
+                config.frontend_timeout = frontend.get('timeout', config.frontend_timeout)
+            
+            return config
+        except Exception as e:
+            print(f"{Colors.RED}Error loading config file: {e}{Colors.END}")
+            return cls(project_id="toms-gym", region="us-east1")  # Default config
 
 class DeploymentError(Exception):
     """Custom exception for deployment errors"""
@@ -623,43 +672,61 @@ class DeploymentManager:
             sys.exit(1)
 
 def main():
-    parser = argparse.ArgumentParser(description="Deploy Tom's Gym application")
-    parser.add_argument("--frontend-only", action="store_true", help="Deploy only the frontend")
-    parser.add_argument("--backend-only", action="store_true", help="Deploy only the backend")
-    parser.add_argument("--debug", action="store_true", help="Enable debug output")
-    parser.add_argument("--api-url", help="Set the API URL for the frontend (e.g., https://backend-url.run.app)")
-    parser.add_argument("--force-refresh", action="store_true", help="Force browser cache refresh by adding timestamp")
+    """Main function to parse arguments and run deployment."""
+    parser = argparse.ArgumentParser(description='Deploy Tom\'s Gym application to Cloud Run')
+    parser.add_argument('--frontend-only', action='store_true', help='Deploy only the frontend')
+    parser.add_argument('--backend-only', action='store_true', help='Deploy only the backend')
+    parser.add_argument('--debug', action='store_true', help='Enable debug output')
+    parser.add_argument('--api-url', type=str, help='Set the API URL for the frontend')
+    parser.add_argument('--force-refresh', action='store_true', help='Force browser cache refresh by adding a timestamp')
+    parser.add_argument('--config', type=str, default='deploy-config.json', help='Path to deployment configuration file')
     args = parser.parse_args()
-
-    # Determine deployment mode
-    if args.frontend_only:
-        mode = DeploymentMode.FRONTEND
+    
+    # Set deployment mode
+    if args.frontend_only and args.backend_only:
+        print(f"{Colors.RED}Error: Cannot specify both --frontend-only and --backend-only{Colors.END}")
+        sys.exit(1)
+    elif args.frontend_only:
+        mode = DeploymentMode.FRONTEND_ONLY
     elif args.backend_only:
-        mode = DeploymentMode.BACKEND
+        mode = DeploymentMode.BACKEND_ONLY
     else:
         mode = DeploymentMode.BOTH
-
-    # Create deployment manager and run deployment
-    config = DeploymentConfig()
-    manager = DeploymentManager(config, mode)
-    
-    # Set API URL if provided
-    if args.api_url:
-        manager.api_url = args.api_url
-    
-    # Force refresh if requested
-    if args.force_refresh:
-        manager.force_refresh = True
-    
-    # Print debug info if requested
+        
+    # Set debug mode
     if args.debug:
-        log("Debug mode enabled", Colors.YELLOW)
-        log(f"Deployment mode: {mode.value}", Colors.YELLOW)
+        os.environ['DEBUG'] = '1'
+        
+    # Load configuration
+    try:
+        if os.path.exists(args.config):
+            config = DeploymentConfig.from_file(args.config)
+        else:
+            print(f"{Colors.YELLOW}Warning: Config file {args.config} not found, using defaults{Colors.END}")
+            config = DeploymentConfig(project_id="toms-gym", region="us-east1")
+            
+        # Override config with command line arguments
         if args.api_url:
-            log(f"Using API URL: {args.api_url}", Colors.YELLOW)
-    
-    # Run the deployment
-    asyncio.run(manager.run())
+            config.api_url = args.api_url
+            
+        config.force_refresh = args.force_refresh
+        
+        # Create deployment manager and run deployment
+        manager = DeploymentManager(config, mode)
+        success = manager.deploy()
+        
+        if success:
+            print(f"\n{Colors.GREEN}🎉 Deployment completed successfully!{Colors.END}")
+            sys.exit(0)
+        else:
+            print(f"\n{Colors.RED}❌ Deployment failed!{Colors.END}")
+            sys.exit(1)
+    except Exception as e:
+        print(f"\n{Colors.RED}Error: {str(e)}{Colors.END}")
+        if args.debug:
+            import traceback
+            traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main() 
