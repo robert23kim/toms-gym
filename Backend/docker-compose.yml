@@ -39,10 +39,7 @@ services:
       - DATABASE_URL=postgresql://postgres:test@db:5432/toms_gym
       - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET_KEY=your-secret-key-here
-      - OAUTH_CLIENT_ID=your-client-id-here
-      - OAUTH_CLIENT_SECRET=your-client-secret-here
       - FRONTEND_URL=http://localhost:3000
-      - ENABLE_MOCK_AUTH=false
     ports:
       - "5000:5000"
     depends_on:

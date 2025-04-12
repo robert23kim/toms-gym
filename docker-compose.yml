@@ -12,16 +12,12 @@ services:
       - FLASK_ENV=development
       - GCS_BUCKET=jtr-lift-u-4ever-cool-bucket
       - APP_SECRET_KEY=development-secret-key
-      - OAUTH_CLIENT_ID=${OAUTH_CLIENT_ID:-test-client-id}
-      - OAUTH_CLIENT_SECRET=${OAUTH_CLIENT_SECRET:-test-client-secret}
-      - OAUTH_REDIRECT_URI=http://localhost:3000/auth/callback
       - FLASK_DEBUG=1
       - USE_MOCK_DB=true
       - DATABASE_URL=postgresql://postgres:test@db:5432/toms_gym_test
       - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET_KEY=dev-secret-key
       - FRONTEND_URL=http://localhost:3000
-      - ENABLE_MOCK_AUTH=false
       - TESTING=true
       - GCS_BUCKET_NAME=jtr-lift-u-4ever-cool-bucket
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/credentials.json
@@ -67,7 +63,7 @@ services:
     image: redis:7
     container_name: toms-gym-redis
     ports:
-      - "6380:6379"
+      - "6381:6379"
     volumes:
       - redis_data:/data
     healthcheck:
@@ -89,7 +85,6 @@ services:
     environment:
       - VITE_API_URL=http://localhost:5001
       - VITE_BUILD_TIMESTAMP=development
-      - VITE_ENABLE_MOCK_AUTH=false
       - PORT=80
     depends_on:
       - backend

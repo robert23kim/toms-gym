@@ -14,12 +14,6 @@ class Config:
     JWT_BLACKLIST_ENABLED = True
     JWT_BLACKLIST_TOKEN_CHECKS = ['access', 'refresh']
     
-    # OAuth settings
-    OAUTH_CLIENT_ID = os.environ.get('OAUTH_CLIENT_ID')
-    OAUTH_CLIENT_SECRET = os.environ.get('OAUTH_CLIENT_SECRET')
-    OAUTH_REDIRECT_URI = os.environ.get('OAUTH_REDIRECT_URI')
-    ALLOWED_EMAIL_DOMAINS = os.environ.get('ALLOWED_EMAIL_DOMAINS', '*').split(',')
-    
     # Security settings
     RATE_LIMIT_LOGIN = "100/day"  # 100 attempts per day per IP
     RATE_LIMIT_REGISTER = "10/day"  # 10 registrations per day per IP
@@ -39,45 +33,18 @@ class Config:
     @property
     def IS_PRODUCTION(self):
         return self.ENV == 'production'
-    
-    @property
-    def ENABLE_MOCK_AUTH(self):
-        """Only enable mock authentication in development or testing"""
-        return not self.IS_PRODUCTION
 
 class DevelopmentConfig(Config):
     """Development configuration"""
     DEBUG = True
-    
-    @property
-    def ENABLE_MOCK_AUTH(self):
-        return False
 
 class TestingConfig(Config):
     """Testing configuration"""
     TESTING = True
     DATABASE_URL = "sqlite:///test.db"
-    
-    @property
-    def ENABLE_MOCK_AUTH(self):
-        return False
 
 class ProductionConfig(Config):
     """Production configuration"""
-    @property
-    def OAUTH_CLIENT_ID(self):
-        client_id = os.environ.get('OAUTH_CLIENT_ID')
-        if not client_id:
-            raise ValueError("OAUTH_CLIENT_ID must be set in production")
-        return client_id
-    
-    @property
-    def OAUTH_CLIENT_SECRET(self):
-        client_secret = os.environ.get('OAUTH_CLIENT_SECRET')
-        if not client_secret:
-            raise ValueError("OAUTH_CLIENT_SECRET must be set in production")
-        return client_secret
-    
     @property
     def JWT_SECRET_KEY(self):
         key = os.environ.get('JWT_SECRET_KEY')

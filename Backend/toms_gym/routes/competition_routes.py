@@ -7,6 +7,8 @@ import datetime
 import urllib.parse
 import os
 import logging
+import json
+import uuid
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -73,9 +75,9 @@ def _get_video_data(blob):
         "competition_id": 1,
         "video_url": url,
         "participant_name": "Random Athlete",
-        "lift_type": "Squat",
+        "lift_type": "snatch",
         "weight": 100,
-        "success": True,
+        "status": "completed",
         "total_videos": len(_video_blobs_cache),
         "current_index": _current_video_index
     }
@@ -89,14 +91,25 @@ def get_competitions():
     """
     try:
         session = get_db_connection()
-        result = session.execute(sqlalchemy.text("SELECT * FROM Competition"))
-        results = [dict(row) for row in result]
+        result = session.execute(sqlalchemy.text("SELECT * FROM \"Competition\""))
+        # Explicitly convert each row to a dict to avoid conversion issues
+        results = []
+        for row in result:
+            row_dict = {}
+            for column, value in row._mapping.items():
+                # Handle special types that might not be JSON serializable
+                if isinstance(value, (datetime.datetime, datetime.date)):
+                    row_dict[column] = value.isoformat()
+                else:
+                    row_dict[column] = value
+            results.append(row_dict)
         session.close()
         return {"competitions": results}
     except Exception as e:
+        logger.error(f"Error fetching competitions: {str(e)}")
         return {"error": str(e)}, 500
 
-@competition_bp.route('/competitions/<int:competition_id>')
+@competition_bp.route('/competitions/<string:competition_id>')
 def get_competition_by_id(competition_id):
     """
     Endpoint that queries a single competition by ID.
@@ -104,19 +117,63 @@ def get_competition_by_id(competition_id):
     try:
         session = get_db_connection()
         result = session.execute(
-            sqlalchemy.text("SELECT * FROM Competition WHERE id = :id"),
+            sqlalchemy.text("SELECT * FROM \"Competition\" WHERE id = :id"),
             {"id": competition_id}
         ).fetchone()
-        session.close()
         
         if result is None:
             return {"error": "Competition not found"}, 404
             
-        return {"competition": dict(result)}
+        # Convert result to dict properly with safer approach
+        competition_data = {}
+        for key in result._mapping.keys():
+            competition_data[key] = result._mapping[key]
+        
+        # Try to extract metadata from description
+        try:
+            if competition_data.get('description') and ' - ' in competition_data['description']:
+                parts = competition_data['description'].split(' - ', 1)
+                if len(parts) == 2:
+                    location, metadata_json = parts
+                    try:
+                        metadata = json.loads(metadata_json)
+                        
+                        # Add the metadata fields directly to the competition data
+                        competition_data['location'] = location
+                        competition_data['lifttypes'] = metadata.get('lifttypes', [])
+                        competition_data['weightclasses'] = metadata.get('weightclasses', [])
+                        competition_data['gender'] = metadata.get('gender', 'M')
+                    except json.JSONDecodeError:
+                        # If JSON parsing fails, just use the description as location
+                        competition_data['location'] = competition_data.get('description', '')
+                        competition_data['lifttypes'] = []
+                        competition_data['weightclasses'] = []
+                        competition_data['gender'] = 'M'
+                else:
+                    competition_data['location'] = competition_data.get('description', '')
+                    competition_data['lifttypes'] = []
+                    competition_data['weightclasses'] = []
+                    competition_data['gender'] = 'M'
+            else:
+                # No metadata in description
+                competition_data['location'] = competition_data.get('description', '')
+                competition_data['lifttypes'] = []
+                competition_data['weightclasses'] = []
+                competition_data['gender'] = 'M'
+        except Exception as e:
+            logger.error(f"Error parsing competition metadata: {str(e)}")
+            competition_data['location'] = competition_data.get('description', '')
+            competition_data['lifttypes'] = []
+            competition_data['weightclasses'] = []
+            competition_data['gender'] = 'M'
+        
+        session.close()
+        return {"competition": competition_data}
     except Exception as e:
+        logger.error(f"Error fetching competition by ID: {str(e)}")
         return {"error": str(e)}, 500
 
-@competition_bp.route('/competitions/<int:competition_id>/participants')
+@competition_bp.route('/competitions/<string:competition_id>/participants')
 def get_competition_participants(competition_id):
     """
     Endpoint that queries all participants for a specific competition.
@@ -125,30 +182,52 @@ def get_competition_participants(competition_id):
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("""
-                SELECT u.userid, u.name, uc.weight_class,
-                       COALESCE(SUM(CASE WHEN a.attempt_result = 'true' THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
-                       json_agg(
-                           json_build_object(
-                               'lift_type', a.lift_type,
-                               'weight', a.weight_attempted,
-                               'success', a.attempt_result
-                           )
-                       ) as attempts
-                FROM UserCompetition uc
-                JOIN "User" u ON uc.userid = u.userid
-                LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
-                WHERE uc.competitionid = :competition_id
-                GROUP BY u.userid, u.name, uc.weight_class
+                SELECT u.id, u.name, uc.weight_class,
+                       COALESCE(SUM(CASE WHEN a.status = 'completed' THEN a.weight_kg ELSE 0 END), 0) as total_weight,
+                       CASE 
+                           WHEN COUNT(a.id) > 0 THEN 
+                               json_agg(
+                                   json_build_object(
+                                       'lift_type', a.lift_type,
+                                       'weight', a.weight_kg,
+                                       'status', a.status
+                                   )
+                               )
+                           ELSE '[]'::json
+                       END as attempts
+                FROM "UserCompetition" uc
+                JOIN "User" u ON uc.user_id = u.id
+                LEFT JOIN "Attempt" a ON uc.id = a.user_competition_id
+                WHERE uc.competition_id = :competition_id
+                GROUP BY u.id, u.name, uc.weight_class
             """),
             {"competition_id": competition_id}
         )
-        results = [dict(row) for row in result]
+        
+        # Safely convert rows to dicts
+        results = []
+        for row in result:
+            try:
+                row_dict = {}
+                for column, value in row._mapping.items():
+                    # Handle special cases for JSON field
+                    if column == 'attempts' and value is None:
+                        row_dict[column] = []
+                    else:
+                        row_dict[column] = value
+                results.append(row_dict)
+            except Exception as e:
+                logger.error(f"Error converting participant row to dict: {str(e)}")
+                # Skip this row if there's an error
+                continue
+                
         session.close()
         return {"participants": results}
     except Exception as e:
+        logger.error(f"Error fetching competition participants: {str(e)}")
         return {"error": str(e)}, 500
 
-@competition_bp.route('/competitions/<int:competition_id>/lifts')
+@competition_bp.route('/competitions/<string:competition_id>/lifts')
 def get_competition_lifts(competition_id):
     """
     Endpoint that queries all lifts for a specific competition.
@@ -157,12 +236,12 @@ def get_competition_lifts(competition_id):
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("""
-                SELECT a.attemptid as id, uc.userid as participant_id, uc.competitionid as competition_id,
-                       a.lift_type as type, a.weight_attempted as weight, a.attempt_result as success,
-                       a.video_link as video_url
-                FROM Attempts a
-                JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
-                WHERE uc.competitionid = :competition_id
+                SELECT a.id, uc.user_id as participant_id, uc.competition_id,
+                       a.lift_type, a.weight_kg as weight, a.status,
+                       a.video_url
+                FROM "Attempt" a
+                JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                WHERE uc.competition_id = :competition_id
             """),
             {"competition_id": competition_id}
         )
@@ -179,13 +258,40 @@ def create_competition():
     Expects JSON payload with competition details.
     """
     try:
-        data = request.json
+        request_data = request.json
+        
+        # Generate a UUID for the competition
+        competition_id = str(uuid.uuid4())
+        
+        # Map incoming fields to expected database fields
+        data = {
+            "id": competition_id,  # Add the generated UUID
+            "name": request_data.get("name"),
+            "description": request_data.get("description", request_data.get("location", "")),  # Use location as fallback
+            "start_date": request_data.get("start_date"),
+            "end_date": request_data.get("end_date"),
+            "status": request_data.get("status", "upcoming")  # Default status
+        }
+        
+        # Store additional metadata as JSON in the description if needed
+        if "lifttypes" in request_data or "weightclasses" in request_data or "gender" in request_data:
+            metadata = {
+                "lifttypes": request_data.get("lifttypes", []),
+                "weightclasses": request_data.get("weightclasses", []),
+                "gender": request_data.get("gender", "")
+            }
+            # Append metadata to description if description exists
+            if data["description"]:
+                data["description"] = f"{data['description']} - {json.dumps(metadata)}"
+            else:
+                data["description"] = json.dumps(metadata)
+        
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text(
                 """
-                INSERT INTO Competition (name, location, lifttypes, weightclasses, gender, start_date, end_date)
-                VALUES (:name, :location, :lifttypes, :weightclasses, :gender, :start_date, :end_date)
+                INSERT INTO "Competition" (id, name, description, start_date, end_date, status)
+                VALUES (:id, :name, :description, :start_date, :end_date, :status)
                 RETURNING id;
                 """
             ),
@@ -197,6 +303,7 @@ def create_competition():
 
         return {"message": "Competition created successfully!", "competition_id": inserted_id}, 201
     except Exception as e:
+        logger.error(f"Error creating competition: {str(e)}")
         return {"error": str(e)}, 500
 
 @competition_bp.route('/join_competition', methods=['POST'])
@@ -206,47 +313,69 @@ def join_competition():
     Expects JSON payload with user competition details.
     """
     try:
-        data = request.json
+        request_data = request.json
+        
+        # Generate a UUID for the user competition
+        usercomp_id = str(uuid.uuid4())
+        
+        # Prepare data with proper UUID format
+        data = {
+            "id": usercomp_id,
+            "user_id": request_data.get("user_id"),
+            "competition_id": request_data.get("competition_id"),
+            "weight_class": request_data.get("weight_class"),
+            "gender": request_data.get("gender")
+        }
+        
         insert_query = sqlalchemy.text(
             """
-            INSERT INTO UserCompetition (userid, competitionid, weight_class, gender, age, status)
-            VALUES (:userid, :competitionid, :weight_class, :gender, :age, :status)
-            RETURNING usercompetitionid;
+            INSERT INTO "UserCompetition" (id, user_id, competition_id, weight_class, gender)
+            VALUES (:id, :user_id, :competition_id, :weight_class, :gender)
+            RETURNING id;
             """
         )
 
-        with pool.connect() as conn:
-            result = conn.execute(insert_query, data)
+        session = get_db_connection()
+        try:
+            result = session.execute(insert_query, data)
             user_competition_id = result.fetchone()[0]
-            conn.commit()
-
-        return {"message": "Joined competition successfully!", "usercompetition_id": user_competition_id}, 201
+            session.commit()
+            
+            return {"message": "Joined competition successfully!", "usercompetition_id": str(user_competition_id)}, 201
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Database error joining competition: {str(e)}")
+            raise
+        finally:
+            session.close()
     except Exception as e:
+        logger.error(f"Error joining competition: {str(e)}")
         return {"error": str(e)}, 500
 
-@competition_bp.route('/competitions/<int:competition_id>/participants/<int:participant_id>/attempts/<int:attempt_id>')
+@competition_bp.route('/competitions/<string:competition_id>/participants/<string:participant_id>/attempts/<string:attempt_id>')
 def get_attempt_details(competition_id, participant_id, attempt_id):
     """
     Endpoint that queries details for a specific attempt including video URL.
     """
     try:
-        with pool.connect() as conn:
-            row = conn.execute(
+        session = get_db_connection()
+        try:
+            row = session.execute(
                 sqlalchemy.text("""
-                    SELECT a.attemptid as id, 
-                           uc.userid as participant_id, 
-                           uc.competitionid as competition_id,
+                    SELECT a.id, 
+                           uc.user_id as participant_id, 
+                           uc.competition_id,
                            u.name as participant_name,
                            a.lift_type, 
-                           a.weight_attempted as weight, 
-                           a.attempt_result as success,
-                           a.video_link as video_url
-                    FROM Attempts a
-                    JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
-                    JOIN "User" u ON uc.userid = u.userid
-                    WHERE uc.competitionid = :competition_id
-                    AND uc.userid = :participant_id
-                    AND a.attemptid = :attempt_id
+                           a.weight_kg as weight, 
+                           a.status,
+                           a.video_url
+                    FROM "Attempt" a
+                    JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                    JOIN "User" u ON uc.user_id = u.id
+                    WHERE uc.competition_id = :competition_id
+                    AND uc.user_id = :participant_id
+                    AND a.id = :attempt_id
                 """),
                 {
                     "competition_id": competition_id,
@@ -255,87 +384,74 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
                 }
             ).fetchone()
             
-            if row is None:
-                return {"error": "Attempt not found"}, 404
+            if not row:
+                return jsonify({"error": "Attempt not found"}), 404
                 
-            return {"attempt": row._asdict()}
+            # Convert row to dict
+            result = {}
+            for column, value in row._mapping.items():
+                # Handle non-JSON serializable types
+                if isinstance(value, (datetime.datetime, datetime.date)):
+                    result[column] = value.isoformat()
+                else:
+                    result[column] = value
+                    
+            return jsonify(result)
+        except Exception as e:
+            logger.error(f"Database error getting attempt details: {str(e)}")
+            raise
+        finally:
+            session.close()
     except Exception as e:
-        return {"error": str(e)}, 500
+        logger.error(f"Error getting attempt details: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @competition_bp.route('/random-video')
 def get_random_video():
     """
-    Endpoint that returns a random video from the GCS bucket.
+    Endpoint that returns a random video from the bucket
     """
+    global _current_video_index
     try:
-        global _current_video_index
-        is_mobile = 'mobile' in request.args or request.user_agent.platform in ['android', 'iphone', 'ipad']
-        lift_type_filter = request.args.get('lift_type')
-        
-        # Refresh video list if needed
+        # Get video blobs with caching
         video_blobs = _get_video_blobs()
         
         if not video_blobs:
-            return jsonify({"error": "No videos found in bucket"}), 404
-        
-        # Filter videos by lift type if requested
-        filtered_blobs = video_blobs
-        if lift_type_filter:
-            try:
-                # Connect to database to match videos with lift types
-                with pool.connect() as conn:
-                    # Get all video IDs with matching lift types
-                    query = sqlalchemy.text(
-                        "SELECT video_url FROM attempts WHERE lift_type = :lift_type"
-                    )
-                    
-                    result = conn.execute(query, {"lift_type": lift_type_filter}).fetchall()
-                    
-                    if result:
-                        video_urls = [row[0] for row in result]
-                        filtered_blobs = [blob for blob in video_blobs if any(url in blob.name for url in video_urls)]
-            except Exception as db_error:
-                # Log but don't fail completely, fall back to all videos
-                print(f"Database error when filtering videos: {db_error}")
-        
-        # If filtering resulted in no videos, fall back to all videos
-        if not filtered_blobs:
-            filtered_blobs = video_blobs
-        
-        # Select a random video and update current index
-        random_blob = random.choice(filtered_blobs)
-        _current_video_index = video_blobs.index(random_blob)
-        
-        # Add mobile-specific parameters if needed
-        video_data = _get_video_data(random_blob)
-        if is_mobile:
-            # Add cache control headers for mobile
-            video_data['cache_control'] = 'no-store, no-cache, must-revalidate'
+            return jsonify({"error": "No videos available"}), 404
             
-        return jsonify(video_data)
+        # Pick a random video
+        index = random.randint(0, len(video_blobs) - 1)
+        _current_video_index = index
+        blob = video_blobs[index]
+        
+        # Return the video data
+        return jsonify(_get_video_data(blob))
     except Exception as e:
-        print(f"Error in random-video endpoint: {str(e)}")
-        return jsonify({"error": str(e), "stack_trace": str(e.__traceback__)}), 500
+        logger.error(f"Error getting random video: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @competition_bp.route('/next-video')
 def get_next_video():
     """
-    Endpoint that returns the next video in sequence.
+    Endpoint that returns the next video in sequence
     """
+    global _current_video_index
     try:
-        global _current_video_index
+        # Get video blobs with caching
         video_blobs = _get_video_blobs()
         
         if not video_blobs:
-            return jsonify({"error": "No videos found in bucket"}), 404
-        
-        # Move to next video (with wraparound)
+            return jsonify({"error": "No videos available"}), 404
+            
+        # Move to next video
         _current_video_index = (_current_video_index + 1) % len(video_blobs)
-        next_blob = video_blobs[_current_video_index]
+        blob = video_blobs[_current_video_index]
         
-        return jsonify(_get_video_data(next_blob))
+        # Return the video data
+        return jsonify(_get_video_data(blob))
     except Exception as e:
-        return {"error": str(e)}, 500
+        logger.error(f"Error getting next video: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 @competition_bp.route('/video/<path:video_path>')
 def serve_video(video_path):

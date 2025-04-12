@@ -7,10 +7,11 @@ import datetime
 import urllib.parse
 import os
 import logging
+import uuid
 
 attempt_bp = Blueprint('attempt', __name__)
 
-@attempt_bp.route('/attempts/<int:attempt_id>')
+@attempt_bp.route('/attempts/<string:attempt_id>')
 def get_attempt(attempt_id):
     """
     Endpoint that queries a single attempt by ID.
@@ -18,7 +19,7 @@ def get_attempt(attempt_id):
     try:
         session = get_db_connection()
         result = session.execute(
-            sqlalchemy.text("SELECT * FROM Attempts WHERE attemptid = :id"),
+            sqlalchemy.text("SELECT * FROM \"Attempt\" WHERE id = :id"),
             {"id": attempt_id}
         ).fetchone()
         session.close()
@@ -36,13 +37,27 @@ def create_attempt():
     Endpoint to create a new attempt.
     """
     try:
-        data = request.json
+        request_data = request.json
+        
+        # Generate a UUID for the attempt
+        attempt_id = str(uuid.uuid4())
+        
+        # Map incoming fields
+        data = {
+            "id": attempt_id,
+            "user_competition_id": request_data.get("user_competition_id"),
+            "lift_type": request_data.get("lift_type"),
+            "weight_kg": request_data.get("weight_kg"),
+            "status": request_data.get("status", "pending"),
+            "video_url": request_data.get("video_url")
+        }
+        
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("""
-                INSERT INTO Attempts (usercompetitionid, lift_type, weight_attempted, attempt_result, video_link)
-                VALUES (:usercompetitionid, :lift_type, :weight_attempted, :attempt_result, :video_link)
-                RETURNING attemptid;
+                INSERT INTO "Attempt" (id, user_competition_id, lift_type, weight_kg, status, video_url)
+                VALUES (:id, :user_competition_id, :lift_type, :weight_kg, :status, :video_url)
+                RETURNING id;
             """),
             data
         )
@@ -54,25 +69,44 @@ def create_attempt():
     except Exception as e:
         return {"error": str(e)}, 500
 
-@attempt_bp.route('/attempts/<int:attempt_id>', methods=['PUT'])
+# Add an alias for submit_attempt that maps to create_attempt for compatibility with tests
+@attempt_bp.route('/submit_attempt', methods=['POST'])
+def submit_attempt():
+    """
+    Endpoint alias for creating a new attempt.
+    """
+    response, status_code = create_attempt()
+    # Adjust message for test compatibility if needed
+    if isinstance(response, dict) and "message" in response and response["message"] == "Attempt created successfully!":
+        response["message"] = "Attempt submitted successfully!"
+    
+    return response, status_code
+
+@attempt_bp.route('/attempts/<string:attempt_id>', methods=['PUT'])
 def update_attempt(attempt_id):
     """
     Endpoint to update an existing attempt.
     """
     try:
-        data = request.json
-        data['attempt_id'] = attempt_id
+        request_data = request.json
+        data = {
+            "attempt_id": attempt_id,
+            "lift_type": request_data.get("lift_type"),
+            "weight_kg": request_data.get("weight_kg"),
+            "status": request_data.get("status"),
+            "video_url": request_data.get("video_url")
+        }
         
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("""
-                UPDATE Attempts
+                UPDATE "Attempt"
                 SET lift_type = :lift_type,
-                    weight_attempted = :weight_attempted,
-                    attempt_result = :attempt_result,
-                    video_link = :video_link
-                WHERE attemptid = :attempt_id
-                RETURNING attemptid;
+                    weight_kg = :weight_kg,
+                    status = :status,
+                    video_url = :video_url
+                WHERE id = :attempt_id
+                RETURNING id;
             """),
             data
         )
@@ -87,7 +121,7 @@ def update_attempt(attempt_id):
     except Exception as e:
         return {"error": str(e)}, 500
 
-@attempt_bp.route('/attempts/<int:attempt_id>', methods=['DELETE'])
+@attempt_bp.route('/attempts/<string:attempt_id>', methods=['DELETE'])
 def delete_attempt(attempt_id):
     """
     Endpoint to delete an attempt.
@@ -95,7 +129,7 @@ def delete_attempt(attempt_id):
     try:
         session = get_db_connection()
         result = session.execute(
-            sqlalchemy.text("DELETE FROM Attempts WHERE attemptid = :id RETURNING attemptid;"),
+            sqlalchemy.text("DELETE FROM \"Attempt\" WHERE id = :id RETURNING id;"),
             {"id": attempt_id}
         )
         

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useAuth } from '../auth/AuthContext';
-import GoogleLoginButton from './GoogleLoginButton';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config';
 
@@ -14,13 +13,20 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
-    const { login: oauthLogin } = useAuth();
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const { handleLoginSuccess } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setError(null);
+        setSuccessMessage(null);
         setIsLoading(true);
+
+        // Debug the API URL
+        console.log('API URL:', API_URL);
+        console.log('API URL type:', typeof API_URL);
+        console.log('Environment variables:', import.meta.env);
 
         try {
             const response = await fetch(`${API_URL}/auth/login`, {
@@ -31,24 +37,34 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
                 body: JSON.stringify({ username, password }),
             });
 
+            // Debug the response
+            console.log('Response status:', response.status);
+            
             const data = await response.json();
+            console.log('Response data:', data);
 
             if (!response.ok) {
                 throw new Error(data.error || 'Login failed');
             }
 
-            // Store tokens
-            localStorage.setItem('auth_token', data.access_token);
-            localStorage.setItem('refresh_token', data.refresh_token);
-            localStorage.setItem('user_id', data.user_id);
+            setSuccessMessage('Login successful! Redirecting...');
+            
+            // Use the handleLoginSuccess method from AuthContext
+            await handleLoginSuccess(data.access_token, data.user_id);
+            console.log('Authentication state updated');
 
             if (onSuccess) {
                 onSuccess();
             }
-            navigate('/');
+            
+            // Short delay to show success message before redirect
+            setTimeout(() => {
+                navigate('/');
+            }, 1000);
         } catch (err) {
             const errorMessage = err instanceof Error ? err.message : 'Login failed';
             setError(errorMessage);
+            setPassword(''); // Clear password field on error
             if (onError) {
                 onError(errorMessage);
             }
@@ -60,6 +76,12 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
     return (
         <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
             <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
+            
+            {successMessage && (
+                <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
+                    {successMessage}
+                </div>
+            )}
             
             {error && (
                 <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
@@ -104,21 +126,6 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
                     >
                         {isLoading ? 'Logging in...' : 'Login'}
                     </button>
-                </div>
-
-                <div className="mt-4">
-                    <div className="relative">
-                        <div className="absolute inset-0 flex items-center">
-                            <div className="w-full border-t border-gray-300" />
-                        </div>
-                        <div className="relative flex justify-center text-sm">
-                            <span className="px-2 bg-white text-gray-500">Or continue with</span>
-                        </div>
-                    </div>
-
-                    <div className="mt-4">
-                        <GoogleLoginButton />
-                    </div>
                 </div>
 
                 <div className="text-center mt-4">

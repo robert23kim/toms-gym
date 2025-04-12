@@ -7,7 +7,7 @@ interface User {
   id: string;
   name: string;
   email: string;
-  google_id?: string;
+  username?: string;
 }
 
 interface AuthContextType {
@@ -15,8 +15,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  login: () => void;
-  handleOAuthCallback: (token: string, userId: string) => Promise<void>;
+  handleLoginSuccess: (token: string, userId: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -26,8 +25,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   error: null,
-  login: () => {},
-  handleOAuthCallback: async () => {},
+  handleLoginSuccess: async () => {},
   logout: () => {},
 });
 
@@ -61,13 +59,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
       
-      setUser(response.data.user);
+      setUser(response.data);
       setIsAuthenticated(true);
       setError(null);
     } catch (err) {
       console.error('Error fetching user data:', err);
       localStorage.removeItem('auth_token');
-      localStorage.removeItem('user_id');
+      localStorage.removeItem('userId');
       setError('Session expired. Please log in again.');
       setIsAuthenticated(false);
     } finally {
@@ -75,23 +73,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  // Start OAuth flow
-  const login = () => {
-    // Open Google OAuth page
-    window.location.href = `${API_URL}/auth/google/login`;
-  };
-
-  // Process OAuth callback
-  const handleOAuthCallback = async (token: string, userId: string) => {
+  // Handle successful password login
+  const handleLoginSuccess = async (token: string, userId: string) => {
     localStorage.setItem('auth_token', token);
-    localStorage.setItem('user_id', userId);
+    localStorage.setItem('userId', userId);
     await fetchUserData(token);
   };
 
   // Logout function
   const logout = () => {
     localStorage.removeItem('auth_token');
-    localStorage.removeItem('user_id');
+    localStorage.removeItem('userId');
     setUser(null);
     setIsAuthenticated(false);
     
@@ -105,8 +97,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     loading,
     error,
-    login,
-    handleOAuthCallback,
+    handleLoginSuccess,
     logout
   };
 

@@ -1,29 +1,63 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import GoogleLoginButton from './GoogleLoginButton';
+import axios from 'axios';
+import { API_URL } from '../config';
+import { useAuth } from '../auth/AuthContext';
 
 interface LoginProps {
   onClose: () => void;
-  onSubmit: (loginData: any) => void;
+  onSubmit: (loginData: any) => Promise<void>;
 }
 
 const Login: React.FC<LoginProps> = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
-    email: '',
+    username: '',
     password: '',
   });
 
   const [error, setError] = useState<string>('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState<string>('');
+  const { handleLoginSuccess } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
+    setSuccessMessage('');
+    setIsLoading(true);
+    
     try {
-      onSubmit(formData);
-      onClose();
-    } catch (err) {
+      // Direct API call to backend login endpoint
+      const response = await axios.post(
+        `${API_URL}/auth/login`,
+        formData
+      );
+      
+      if (response.status === 200) {
+        // Store auth token and user ID
+        localStorage.setItem('auth_token', response.data.access_token);
+        localStorage.setItem('userId', response.data.user_id);
+        
+        // Update auth context
+        await handleLoginSuccess(response.data.access_token, response.data.user_id);
+        
+        setSuccessMessage('Login successful!');
+        
+        // Short delay to show success message before closing
+        setTimeout(() => {
+          onClose();
+        }, 1000);
+      }
+    } catch (err: any) {
       console.error('Error logging in:', err);
-      setError('Invalid email or password. Please try again.');
+      setError(err.response?.data?.error || 'Invalid username or password. Please try again.');
+      setFormData(prev => ({
+        ...prev,
+        password: ''
+      }));
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -57,15 +91,16 @@ const Login: React.FC<LoginProps> = ({ onClose, onSubmit }) => {
 
         <h2 className="text-2xl font-semibold mb-6">Login</h2>
 
+        {successMessage && <div className="bg-green-100 text-green-700 p-3 rounded mb-4">{successMessage}</div>}
         {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1">Username</label>
             <input
-              type="email"
-              name="email"
-              value={formData.email}
+              type="text"
+              name="username"
+              value={formData.username}
               onChange={handleChange}
               required
               className="w-full px-3 py-2 rounded-md border border-border bg-background"
@@ -87,28 +122,21 @@ const Login: React.FC<LoginProps> = ({ onClose, onSubmit }) => {
           <div className="flex gap-3 mt-6">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors disabled:opacity-50"
             >
-              Login
+              {isLoading ? 'Logging in...' : 'Login'}
             </button>
             <button
               type="button"
               onClick={onClose}
-              className="flex-1 px-4 py-2 bg-secondary text-foreground rounded-md hover:bg-secondary/70 transition-colors"
+              disabled={isLoading}
+              className="flex-1 px-4 py-2 bg-secondary text-foreground rounded-md hover:bg-secondary/70 transition-colors disabled:opacity-50"
             >
               Cancel
             </button>
           </div>
         </form>
-
-        <div className="mt-6 pt-6 border-t border-border">
-          <div className="flex items-center justify-center mb-4">
-            <span className="text-muted-foreground text-sm">Or continue with</span>
-          </div>
-          <div className="flex justify-center">
-            <GoogleLoginButton className="w-full" />
-          </div>
-        </div>
       </motion.div>
     </motion.div>
   );

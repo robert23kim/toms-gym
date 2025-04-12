@@ -12,7 +12,7 @@ from toms_gym.routes.competition_routes import competition_bp
 from toms_gym.routes.user_routes import user_bp
 from toms_gym.routes.attempt_routes import attempt_bp
 from toms_gym.routes.upload_routes import upload_bp
-from toms_gym.routes.auth_routes import auth_bp, init_oauth
+from toms_gym.routes.auth_routes import auth_bp
 from toms_gym.config import get_config
 
 load_dotenv()
@@ -22,6 +22,9 @@ app = Flask(__name__)
 # Load configuration
 config = get_config()
 app.config.from_object(config)
+
+# Ensure JWT_SECRET_KEY is available in app config (for security.py)
+app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'test-secret-key')
 
 # Set custom JSON encoder
 app.json_encoder = CustomJSONEncoder
@@ -50,9 +53,6 @@ app.register_blueprint(user_bp)
 app.register_blueprint(attempt_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
-
-# Initialize OAuth
-init_oauth(app)
 
 @app.route('/health')
 def health():

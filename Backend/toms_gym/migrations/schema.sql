@@ -5,13 +5,13 @@
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
 -- Create enum types
-CREATE TYPE user_role AS ENUM ('admin', 'user', 'judge');
-CREATE TYPE user_status AS ENUM ('active', 'inactive', 'locked');
+CREATE TYPE user_role AS ENUM ('user', 'admin', 'moderator');
+CREATE TYPE user_status AS ENUM ('active', 'suspended', 'deleted');
 CREATE TYPE competition_status AS ENUM ('upcoming', 'in_progress', 'completed', 'cancelled');
 CREATE TYPE attempt_status AS ENUM ('pending', 'completed', 'failed');
-CREATE TYPE gender AS ENUM ('male', 'female', 'other');
-CREATE TYPE lift_type AS ENUM ('snatch', 'clean_and_jerk');
-CREATE TYPE weight_class AS ENUM ('56kg', '62kg', '69kg', '77kg', '85kg', '94kg', '105kg', 'plus_105kg');
+CREATE TYPE gender AS ENUM ('male', 'female', 'other', 'M', 'F');
+CREATE TYPE lift_type AS ENUM ('snatch', 'clean_and_jerk', 'Squat', 'Bench Press', 'Deadlift', 'Clean & Jerk', 'Power Clean', 'Push Press', 'Overhead Press');
+CREATE TYPE weight_class AS ENUM ('56kg', '59kg', '62kg', '66kg', '69kg', '74kg', '77kg', '83kg', '85kg', '93kg', '94kg', '105kg', '120kg', '120kg+', '+120kg', 'plus_105kg');
 CREATE TYPE auth_method AS ENUM ('google', 'password');
 
 -- Create User table with enhanced authentication fields

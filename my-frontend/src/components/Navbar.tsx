@@ -14,7 +14,7 @@ const Navbar: React.FC = () => {
   const [isCreateProfileOpen, setIsCreateProfileOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const location = useLocation();
-  const { isAuthenticated, user, logout } = useAuth();
+  const { isAuthenticated, user, logout, handleLoginSuccess } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,20 +35,28 @@ const Navbar: React.FC = () => {
   }, [location.pathname]);
 
   const handleCreateProfile = async (profileData: any) => {
+    console.log('API URL being used:', API_URL);
     try {
       const response = await axios.post(
-        `${API_URL}/create_user`,
+        `${API_URL}/auth/register`,
         {
           name: profileData.name,
           email: profileData.email,
-          gender: profileData.gender
+          password: profileData.password
         }
       );
 
       if (response.status === 201) {
-        // Store the user ID in localStorage
+        // Store the user ID and token for authentication
         localStorage.setItem('userId', response.data.user_id);
+        localStorage.setItem('auth_token', response.data.access_token);
         localStorage.setItem('isLoggedIn', 'true');
+        
+        // Call the handleLoginSuccess method to update the auth context
+        if (handleLoginSuccess) {
+          await handleLoginSuccess(response.data.access_token, response.data.user_id);
+        }
+        
         return true;
       }
     } catch (err) {
@@ -57,20 +65,18 @@ const Navbar: React.FC = () => {
     }
   };
 
-  const handleLogin = (loginData: any) => {
-    // For now, we'll just log the data
-    console.log('Logging in:', loginData);
-    // In the future, this will make an API call to login
-    localStorage.setItem('isLoggedIn', 'true');
+  // The handleLogin function is no longer needed as the Login component handles this directly
+  const handleLogin = async (loginData: any) => {
+    // This function is just a placeholder now as the Login component handles the API call
+    console.log('Login handled by Login component');
   };
 
   const links = [
     { href: "/", label: "Home" },
+    { href: "/about", label: "About" },
     { href: "/challenges", label: "Challenges" },
-    { href: "/athletes", label: "Athletes" },
     { href: "/leaderboard", label: "Leaderboard" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },
-    { href: "/about", label: "About" },
     { href: "/random-video", label: "Random Video", icon: <Play className="w-4 h-4" /> },
   ];
 
@@ -83,7 +89,7 @@ const Navbar: React.FC = () => {
             className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
           >
             <User size={18} />
-            <span>My Profile</span>
+            <span>{user?.name || 'My Profile'}</span>
           </Link>
           <button
             onClick={logout}
@@ -199,7 +205,7 @@ const Navbar: React.FC = () => {
                   className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
                 >
                   <User size={18} />
-                  <span>My Profile</span>
+                  <span>{user?.name || 'My Profile'}</span>
                 </Link>
                 <button
                   onClick={logout}

@@ -1,65 +1,80 @@
 # Build stage
-FROM python:3.11-slim as builder
+FROM python:3.10-slim AS build
 
 WORKDIR /app
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    gcc \
+    postgresql-client \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create and activate virtual environment
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Install dependencies
+# Copy and install requirements
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Development stage
-FROM builder as development
+FROM python:3.10-slim AS development
 
-# Install development dependencies
-RUN pip install --no-cache-dir \
-    flask-debugtoolbar \
-    pytest \
-    pytest-cov \
-    black \
-    flake8
-
-# Set development environment variables
-ENV FLASK_APP=toms_gym/app.py \
-    FLASK_ENV=development \
-    FLASK_DEBUG=1
-
-# Production stage
-FROM python:3.11-slim as production
-
-# Install system dependencies required for bcrypt
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    && rm -rf /var/lib/apt/lists/*
-
-# Copy virtual environment from builder
-COPY --from=builder /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Create non-root user
-RUN useradd -m -u 1000 appuser
-USER appuser
-
-# Set working directory
 WORKDIR /app
 
-# Copy application code
-COPY --chown=appuser:appuser . .
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set production environment variables
-ENV FLASK_APP=toms_gym/app.py \
-    FLASK_ENV=production \
-    FLASK_DEBUG=0 \
-    PORT=8080
+# Copy from build stage
+COPY --from=build /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+COPY --from=build /usr/local/bin/ /usr/local/bin/
+
+# Install additional development dependencies
+COPY requirements-dev.txt .
+RUN pip install --no-cache-dir -r requirements-dev.txt
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Copy the entrypoint script and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Copy application code
+COPY . .
+
+# Production stage
+FROM python:3.10-slim AS production
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy from build stage
+COPY --from=build /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+COPY --from=build /usr/local/bin/ /usr/local/bin/
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Copy the entrypoint script and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Copy application code
+COPY . .
 
 # Run the application
-CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "4", "toms_gym.app:app"]
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "toms_gym.wsgi:app"]
 
