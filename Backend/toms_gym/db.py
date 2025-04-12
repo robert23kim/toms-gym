@@ -1,5 +1,6 @@
 import sqlalchemy
 from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker, scoped_session
 import os
 import logging
 
@@ -14,7 +15,10 @@ DATABASE_URL = os.getenv('DATABASE_URL')
 if USE_MOCK_DB:
     logger.info(f"Using mock database with URL: {DATABASE_URL}")
     # SQLite connection
-    pool = create_engine(DATABASE_URL)
+    engine = create_engine(DATABASE_URL)
+elif DATABASE_URL:
+    logger.info(f"Using direct database connection with URL: {DATABASE_URL}")
+    engine = create_engine(DATABASE_URL)
 else:
     # Cloud SQL connection with connector
     try:
@@ -50,18 +54,33 @@ else:
                 logger.error(f"Database connection error: {str(e)}")
                 raise
                 
-        # Create a SQLAlchemy connection pool
-        pool = sqlalchemy.create_engine(
+        # Create a SQLAlchemy engine
+        engine = sqlalchemy.create_engine(
             "postgresql+pg8000://",  # DSN prefix
             creator=getconn,        # uses the getconn() function to connect
         )
-        logger.info("PostgreSQL connection pool created")
+        logger.info("PostgreSQL connection engine created")
     except Exception as e:
         logger.error(f"Error setting up database connection: {str(e)}")
         raise
 
+# Create a scoped session factory
+Session = scoped_session(sessionmaker(bind=engine))
+
 def get_db():
     """
-    Returns the database connection pool.
+    Returns the database engine.
     """
-    return pool 
+    return engine
+
+def get_db_connection():
+    """
+    Returns a database session.
+    This function is used by auth_routes.py.
+    """
+    try:
+        session = Session()
+        return session
+    except Exception as e:
+        logger.error(f"Error getting database session: {str(e)}")
+        raise 

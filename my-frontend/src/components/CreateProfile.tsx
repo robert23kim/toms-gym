@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Eye, EyeOff } from 'lucide-react';
+import axios from 'axios';
+import { API_URL } from '../config';
+import { useAuth } from '../auth/AuthContext';
 
 interface CreateProfileProps {
   onClose: () => void;
@@ -8,10 +11,12 @@ interface CreateProfileProps {
 }
 
 const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
+  const { handleLoginSuccess } = useAuth();
   const [formData, setFormData] = useState({
     name: 'John Doe',
     email: 'john.doe@example.com',
-    gender: 'M',
+    password: '',
+    confirmPassword: '',
     weight_class: '83kg',
     country: 'United States',
     bio: 'Powerlifting enthusiast looking to compete and improve!'
@@ -19,21 +24,47 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
 
   const [message, setMessage] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [loading, setLoading] = useState<boolean>(false);
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validate passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return;
+    }
+    
+    setLoading(true);
+    setError('');
+    setMessage('');
+    
     try {
-      const success = await onSubmit(formData);
-      if (success) {
-        setMessage('Profile created successfully!');
-        setTimeout(() => {
-          onClose();
-        }, 1500);
+      // Register the user using the auth endpoint
+      const response = await axios.post(`${API_URL}/auth/register`, {
+        name: formData.name,
+        email: formData.email,
+        password: formData.password
+      });
+      
+      // Handle successful registration
+      setMessage('Profile created successfully!');
+      
+      // Login the user automatically
+      if (response.data.access_token && response.data.user_id) {
+        handleLoginSuccess(response.data.access_token, response.data.user_id);
       }
+      
+      setTimeout(() => {
+        onClose();
+      }, 1500);
     } catch (err: any) {
       console.error('Error creating profile:', err);
       setError(err.response?.data?.error || 'Failed to create profile. Please try again.');
-      setMessage('');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -43,6 +74,14 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
       ...prev,
       [name]: value
     }));
+    
+    // Clear error when user starts typing in a field
+    if (error && (
+      (name === 'password' && formData.confirmPassword && value !== formData.confirmPassword) ||
+      (name === 'confirmPassword' && formData.password && value !== formData.password)
+    )) {
+      setError('');
+    }
   };
 
   return (
@@ -96,18 +135,49 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Gender</label>
-            <select
-              name="gender"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-              className="w-full px-3 py-2 rounded-md border border-border bg-background"
-            >
-              <option value="M">Male</option>
-              <option value="F">Female</option>
-              <option value="X">Other</option>
-            </select>
+            <label className="block text-sm font-medium mb-1">Password</label>
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                minLength={8}
+              />
+              <button 
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+                onClick={() => setShowPassword(!showPassword)}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              Password must be at least 8 characters and include an uppercase letter, lowercase letter, and number.
+            </p>
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Confirm Password</label>
+            <div className="relative">
+              <input
+                type={showConfirmPassword ? "text" : "password"}
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                required
+                className="w-full px-3 py-2 rounded-md border border-border bg-background"
+              />
+              <button 
+                type="button"
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              >
+                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <div>
@@ -156,9 +226,10 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           <div className="flex gap-3 mt-6">
             <button
               type="submit"
-              className="flex-1 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
+              disabled={loading}
+              className="flex-1 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors disabled:opacity-50"
             >
-              Create Profile
+              {loading ? 'Creating...' : 'Create Profile'}
             </button>
             <button
               type="button"

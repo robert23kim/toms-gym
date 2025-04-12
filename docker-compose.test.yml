@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backend-test:
+    build: 
+      context: ./Backend
+      target: development
+    environment:
+      - DATABASE_URL=postgresql://postgres:test@db-test:5432/toms_gym_test
+      - REDIS_URL=redis://redis-test:6379/0
+      - GCS_BUCKET=jtr-lift-u-4ever-cool-bucket
+      - JWT_SECRET=test_secret_key_for_dev_environment_only
+      - FLASK_ENV=testing
+      - TEST_MODE=true
+      - DEBUG=true
+      - PYTHONPATH=/app
+    volumes:
+      - ./Backend:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      db-test:
+        condition: service_healthy
+      redis-test:
+        condition: service_healthy
+    command: python -m flask run --host=0.0.0.0 --port=8080
+    networks:
+      - toms-gym-test-network
+
+  db-test:
+    image: postgres:15
+    container_name: toms-gym-db-test
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=toms_gym_test
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres-test-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+    networks:
+      - toms-gym-test-network
+
+  redis-test:
+    image: redis:7
+    container_name: toms-gym-redis-test
+    ports:
+      - "6389:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+    networks:
+      - toms-gym-test-network
+
+volumes:
+  postgres-test-data:
+    driver: local
+
+networks:
+  toms-gym-test-network:
+    external: true 

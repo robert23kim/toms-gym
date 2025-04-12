@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "rules": [
+    {
+      "name": "Require mobile tests before deployment",
+      "description": "Ensures mobile playback tests are run before deploying changes",
+      "event": "pre-deploy",
+      "match": {
+        "files": ["**/*.py", "**/*.tsx", "**/*.js", "**/*.html"]
+      },
+      "action": {
+        "type": "script",
+        "script": "#!/bin/bash\n\necho \"Running mobile video playback tests before deployment...\"\n\n# Create test results directory if it doesn't exist\nmkdir -p tests/test-results\n\n# Run the mobile tests\ncd tests && ./run-mobile-tests.sh\n\n# Check the exit code\nif [ $? -ne 0 ]; then\n  echo \"❌ Tests failed! Fix the issues before deploying.\"\n  exit 1\nfi\n\necho \"✅ Tests passed! Proceeding with deployment.\"\nexit 0\n"
+      }
+    },
+    {
+      "name": "Use Docker for local testing",
+      "description": "Run a local Docker container for testing instead of deploying",
+      "event": "deploy",
+      "match": {
+        "files": ["**/*.py", "**/*.tsx", "**/*.js"]
+      },
+      "action": {
+        "type": "script",
+        "script": "#!/bin/bash\n\necho \"🐳 Running local Docker test environment instead of deploying...\"\n\n# Define container names for easy reference\nBACKEND_CONTAINER=\"toms-gym-backend-test\"\nFRONTEND_CONTAINER=\"toms-gym-frontend-test\"\n\n# Check if Docker is installed\nif ! command -v docker &> /dev/null; then\n  echo \"❌ Docker is not installed. Please install Docker to use this feature.\"\n  exit 1\nfi\n\n# Function to clean up existing containers\ncleanup() {\n  echo \"Cleaning up existing test containers...\"\n  docker rm -f $BACKEND_CONTAINER $FRONTEND_CONTAINER 2>/dev/null || true\n}\n\n# Clean up on script exit\ntrap cleanup EXIT\n\n# Initial cleanup\ncleanup\n\n# Create Docker network for the containers to communicate\ndocker network create toms-gym-test-network 2>/dev/null || true\n\n# Build and run backend container\necho \"Building backend container...\"\ndocker build -t toms-gym-backend-test -f Backend/Dockerfile ./Backend\n\nif [ $? -ne 0 ]; then\n  echo \"❌ Backend build failed. Stopping tests.\"\n  exit 1\nfi\n\necho \"Starting backend container...\"\ndocker run -d --name $BACKEND_CONTAINER \\\n  --network toms-gym-test-network \\\n  -p 8080:8080 \\\n  -e \"DATABASE_URL=sqlite:///test.db\" \\\n  -e \"GCS_BUCKET=jtr-lift-u-4ever-cool-bucket\" \\\n  toms-gym-backend-test\n\nif [ $? -ne 0 ]; then\n  echo \"❌ Failed to start backend container. Stopping tests.\"\n  exit 1\nfi\n\n# Build and run frontend container\necho \"Building frontend container...\"\ndocker build -t toms-gym-frontend-test -f my-frontend/Dockerfile ./my-frontend \\\n  --build-arg API_URL=http://localhost:8080\n\nif [ $? -ne 0 ]; then\n  echo \"❌ Frontend build failed. Stopping tests.\"\n  exit 1\nfi\n\necho \"Starting frontend container...\"\ndocker run -d --name $FRONTEND_CONTAINER \\\n  --network toms-gym-test-network \\\n  -p 3000:80 \\\n  -e \"BACKEND_URL=http://$BACKEND_CONTAINER:8080\" \\\n  toms-gym-frontend-test\n\nif [ $? -ne 0 ]; then\n  echo \"❌ Failed to start frontend container. Stopping tests.\"\n  exit 1\nfi\n\necho \"✅ Local test environment started successfully!\"\necho \"Backend available at: http://localhost:8080\"\necho \"Frontend available at: http://localhost:3000\"\n\n# Wait for containers to be ready\necho \"Waiting for services to be ready...\"\nsleep 5\n\n# Run tests against the local containers\necho \"Running tests against local containers...\"\ncd tests\n\n# Run API tests\necho \"Testing backend API...\"\nAPI_URL=\"http://localhost:8080\" ./test-api.sh\n\n# Modify the mobile test to use local containers\nexport TEST_API_URL=\"http://localhost:8080\"\nexport TEST_FRONTEND_URL=\"http://localhost:3000\"\n./run-mobile-tests.sh\n\n# Keep containers running for manual testing if requested\nif [ \"$1\" == \"--keep\" ]; then\n  echo \"Test containers will remain running. Use 'docker rm -f $BACKEND_CONTAINER $FRONTEND_CONTAINER' to stop them.\"\n  exit 0\nfi\n\n# If we got here, tests completed\necho \"Tests completed - local test containers will be removed.\"\n"
+      }
+    },
+    {
+      "name": "Check open files before changes",
+      "description": "Always check files that are currently open before making changes",
+      "event": "pre-edit",
+      "match": {
+        "files": ["**/*"]
+      },
+      "action": {
+        "type": "script",
+        "script": "#!/bin/bash\n\n# Get list of open files\nOPEN_FILES=$(ls -1)\n\nif [ -n \"$OPEN_FILES\" ]; then\n  echo \"🔍 Checking open files before making changes...\"\n  for file in $OPEN_FILES; do\n    if [ -f \"$file\" ]; then\n      echo \"Checking $file...\"\n      # Add any specific checks here\n      # For now, just verify file exists and is readable\n      if [ ! -r \"$file\" ]; then\n        echo \"❌ Cannot read $file. Please check permissions.\"\n        exit 1\n      fi\n    fi\n  done\n  echo \"✅ All open files checked successfully.\"\nfi\n\nexit 0\n"
+      }
+    }
+  ]
+} 

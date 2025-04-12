@@ -164,3 +164,54 @@ npm update
 ## 📄 License
 
 Copyright © 2025 Tom's Gym
+
+## OAuth Authentication Setup
+
+Tom's Gym now supports Google OAuth authentication!
+
+### Configuration
+
+1. Set up a Google OAuth client:
+   - Go to the [Google Cloud Console](https://console.cloud.google.com/)
+   - Create a new project or use an existing one
+   - Navigate to "APIs & Services" > "Credentials"
+   - Click "Create Credentials" > "OAuth client ID"
+   - Set the Application type to "Web application"
+   - Add authorized redirect URIs: `http://localhost:9888/auth/callback` (for local development)
+   - Copy the Client ID and Client Secret
+
+2. Configure environment variables:
+   - Create a `.env` file in the project root or set these environment variables:
+   ```
+   OAUTH_CLIENT_ID=your_google_client_id
+   OAUTH_CLIENT_SECRET=your_google_client_secret
+   OAUTH_REDIRECT_URI=http://localhost:3000/auth/callback
+   APP_SECRET_KEY=your_secret_key
+   ```
+
+### Running with OAuth
+
+1. Start Docker on your machine
+
+2. Start the application with OAuth support:
+   ```
+   docker-compose up -d
+   ```
+
+3. Test the OAuth flow:
+   - Visit the frontend at http://localhost:3000
+   - Click "Login" and then "Sign in with Google"
+   - You'll be redirected to Google's authentication page
+   - After signing in, you'll be redirected back to the app
+
+### For Testing/Development
+
+For testing purposes, you can use the mock OAuth endpoint:
+
+```bash
+curl -X POST http://localhost:9888/auth/mock/callback \
+  -H "Content-Type: application/json" \
+  -d '{"email":"test@example.com","name":"Test User"}'
+```
+
+This will return a valid token that can be used for testing the authenticated endpoints.

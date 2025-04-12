@@ -7,30 +7,70 @@ services:
       dockerfile: Dockerfile
     container_name: toms-gym-backend
     ports:
-      - "9888:8080"
+      - "5001:5000"
     environment:
       - FLASK_ENV=development
+      - GCS_BUCKET=jtr-lift-u-4ever-cool-bucket
+      - APP_SECRET_KEY=development-secret-key
       - FLASK_DEBUG=1
-      - USE_MOCK_DB=false
-      - DB_INSTANCE=toms-gym:us-east1:my-db
-      - DB_USER=postgres
-      - DB_PASS=test
-      - DB_NAME=postgres
+      - USE_MOCK_DB=true
+      - DATABASE_URL=postgresql://postgres:test@db:5432/toms_gym_test
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=dev-secret-key
+      - FRONTEND_URL=http://localhost:3000
+      - TESTING=true
       - GCS_BUCKET_NAME=jtr-lift-u-4ever-cool-bucket
       - GOOGLE_APPLICATION_CREDENTIALS=/credentials/credentials.json
       - GOOGLE_CLOUD_PROJECT=toms-gym
-      - PORT=8080
+      - PORT=5000
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
     volumes:
       - ./Backend:/app
       - ./Backend/credentials.json:/credentials/credentials.json:ro
+      - ./tests:/app/tests
+    depends_on:
+      - db
+      - redis
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:5000/health"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 5s
+    restart: unless-stopped
+
+  db:
+    image: postgres:15
+    container_name: toms-gym-db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_DB=toms_gym_test
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./Backend/toms_gym/migrations:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7
+    container_name: toms-gym-redis
+    ports:
+      - "6381:6379"
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
     restart: unless-stopped
 
   frontend:
@@ -38,12 +78,12 @@ services:
       context: ./my-frontend
       dockerfile: Dockerfile
       args:
-        - API_URL=http://localhost:9888
+        - API_URL=http://localhost:5001
     container_name: toms-gym-frontend
     ports:
-      - "9081:80"
+      - "3000:80"
     environment:
-      - VITE_API_URL=http://localhost:9888
+      - VITE_API_URL=http://localhost:5001
       - VITE_BUILD_TIMESTAMP=development
       - PORT=80
     depends_on:
@@ -62,4 +102,8 @@ services:
 
 networks:
   default:
-    name: toms-gym-network 
+    name: toms-gym-network
+
+volumes:
+  postgres_data:
+  redis_data: 

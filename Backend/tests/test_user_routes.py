@@ -3,6 +3,9 @@ from flask import Flask
 from sqlalchemy import text
 from toms_gym.routes.user_routes import user_bp
 import time
+import uuid
+from datetime import datetime
+import bcrypt
 
 @pytest.fixture
 def test_client():
@@ -11,74 +14,40 @@ def test_client():
     app.register_blueprint(user_bp)
     return app.test_client()
 
-def test_create_user(test_client, db_connection):
-    """Test creating a new user"""
-    timestamp = int(time.time())
-    test_user = {
-        "gender": "M",
-        "name": "Test User",
-        "email": f"test{timestamp}@example.com"
-    }
-    
-    response = test_client.post('/create_user', json=test_user)
-    assert response.status_code == 201
-    data = response.get_json()
-    assert "user_id" in data
-    assert data["message"] == "User created successfully!"
-    
-    # Verify the user was actually created in the database
-    with db_connection.connect() as conn:
-        result = conn.execute(
-            text("SELECT * FROM \"User\" WHERE userid = :user_id"),
-            {"user_id": data["user_id"]}
-        ).fetchone()
-        assert result is not None
-        assert result.name == test_user["name"]
-        assert result.email == test_user["email"]
-        assert result.gender == test_user["gender"]
+def test_get_user_profile(client, db_session, test_auth_user_data):
+    """Test retrieving a user profile"""
+    # Create a user directly using the session for setup
+    hashed_password = bcrypt.hashpw(test_auth_user_data["password"].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    user_id = str(uuid.uuid4())
+    db_session.execute(
+        text("""
+            INSERT INTO "User" (id, username, email, password_hash, name, auth_method, created_at, status, role)
+            VALUES (:id, :username, :email, :password, :name, 'password', :created_at, 'active', 'user')
+        """),
+        {
+            "id": user_id,
+            "username": test_auth_user_data["username"],
+            "email": test_auth_user_data["email"],
+            "password": hashed_password,
+            "name": test_auth_user_data["name"],
+            "created_at": datetime.utcnow()
+        }
+    )
+    db_session.commit() # Commit the user creation
 
-def test_create_user_invalid_data(test_client):
-    """Test creating a user with invalid data"""
-    invalid_user = {
-        "name": "Test User"  # Missing required fields
-    }
-    
-    response = test_client.post('/create_user', json=invalid_user)
-    assert response.status_code == 400
-    data = response.get_json()
-    assert "error" in data
-    assert data["error"] == "Missing required fields"
-
-def test_get_user_profile(test_client, db_connection, test_user_data):
-    """Test getting a user's profile"""
-    # First create a test user
-    with db_connection.connect() as conn:
-        result = conn.execute(
-            text("INSERT INTO \"User\" (gender, name, email) VALUES (:gender, :name, :email) RETURNING userid"),
-            test_user_data
-        )
-        user_id = result.fetchone()[0]
-        conn.commit()
-    
-    response = test_client.get(f'/users/{user_id}')
-    data = response.get_json()
-    if response.status_code != 200:
-        print(f"Error response: {data}")
+    # Test getting the profile via API
+    response = client.get(f'/users/{user_id}')
     assert response.status_code == 200
-    
+    data = response.get_json()
+    assert data is not None
     assert "user" in data
-    assert "competitions" in data
-    assert "best_lifts" in data
-    assert "achievements" in data
-    
-    user = data["user"]
-    assert user["name"] == test_user_data["name"]
-    assert user["email"] == test_user_data["email"]
-    assert user["gender"] == test_user_data["gender"]
+    assert data["user"]["id"] == user_id
+    assert data["user"]["email"] == test_auth_user_data["email"]
 
-def test_get_nonexistent_user_profile(test_client):
-    """Test getting a profile for a non-existent user"""
-    response = test_client.get('/users/999999')
+def test_get_nonexistent_user_profile(client):
+    """Test retrieving a profile for a non-existent user"""
+    non_existent_id = str(uuid.uuid4())
+    response = client.get(f'/users/{non_existent_id}')
     assert response.status_code == 404
     data = response.get_json()
     assert "error" in data

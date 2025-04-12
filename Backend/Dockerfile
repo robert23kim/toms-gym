@@ -1,68 +1,80 @@
 # Build stage
-FROM python:3.11-slim as builder
+FROM python:3.10-slim AS build
 
-# Set working directory
 WORKDIR /app
 
 # Install build dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     build-essential \
+    gcc \
+    postgresql-client \
+    && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
-# Create and activate virtual environment
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Copy and install requirements
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy only requirements first to leverage Docker cache
-COPY requirements.txt setup.py ./
+# Development stage
+FROM python:3.10-slim AS development
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt gunicorn && \
-    pip install --no-cache-dir -e .
-
-# Copy application code
-COPY toms_gym/ toms_gym/
-COPY main.py .
-
-# Final stage
-FROM python:3.11-slim
-
-# Copy virtual environment from builder
-COPY --from=builder /opt/venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-# Set working directory
 WORKDIR /app
 
-# Copy only the necessary files from builder
-COPY --from=builder /app/toms_gym /app/toms_gym
-COPY --from=builder /app/main.py .
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-# Set environment variables
-ENV PORT=8080 \
-    FLASK_ENV=production \
-    PYTHONUNBUFFERED=1 \
-    PYTHONDONTWRITEBYTECODE=1
+# Copy from build stage
+COPY --from=build /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+COPY --from=build /usr/local/bin/ /usr/local/bin/
 
-EXPOSE 8080
+# Install additional development dependencies
+COPY requirements-dev.txt .
+RUN pip install --no-cache-dir -r requirements-dev.txt
 
-# Run as non-root user
-RUN useradd -m appuser && chown -R appuser:appuser /app
-USER appuser
+# Set Python path
+ENV PYTHONPATH=/app
 
-# Health check
-HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD curl -f http://localhost:${PORT}/ || exit 1
+# Copy the entrypoint script and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-# Command to run the application with gunicorn
-CMD exec gunicorn \
-    --bind :${PORT} \
-    --workers 2 \
-    --threads 8 \
-    --timeout 0 \
-    --worker-class gthread \
-    --worker-tmp-dir /dev/shm \
-    --access-logfile - \
-    --error-logfile - \
-    "toms_gym.app:app"
+# Set entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Copy application code
+COPY . .
+
+# Production stage
+FROM python:3.10-slim AS production
+
+WORKDIR /app
+
+# Install runtime dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    postgresql-client \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy from build stage
+COPY --from=build /usr/local/lib/python3.10/site-packages/ /usr/local/lib/python3.10/site-packages/
+COPY --from=build /usr/local/bin/ /usr/local/bin/
+
+# Set Python path
+ENV PYTHONPATH=/app
+
+# Copy the entrypoint script and make it executable
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set entrypoint
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+# Copy application code
+COPY . .
+
+# Run the application
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "toms_gym.wsgi:app"]
 

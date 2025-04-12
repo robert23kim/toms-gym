@@ -100,7 +100,7 @@ const ChallengeDetail: React.FC = () => {
 
         // Check if the current user has already joined
         if (userId) {
-          const hasUserJoined = participantsDataBackend.some((p: any) => p.userid === parseInt(userId));
+          const hasUserJoined = participantsDataBackend.some((p: any) => p.id === userId);
           setHasJoined(hasUserJoined);
         }
 
@@ -110,14 +110,10 @@ const ChallengeDetail: React.FC = () => {
           title: backendData.name,
           date: backendData.start_date,
           registrationDeadline: backendData.end_date,
-          location: backendData.location,
+          location: backendData.location || (backendData.description ? backendData.description.split(' - ')[0] : ""),
           description: backendData.description || "",
           status: determineStatus(backendData.start_date, backendData.end_date),
-          categories: [
-            ...(backendData.lifttypes || []),
-            ...(backendData.weightclasses || []),
-            backendData.gender === 'F' ? 'Women' : 'Men'
-          ],
+          categories: [],
           participants: participantsDataBackend.length,
           prizePool: {
             first: 1000,
@@ -126,6 +122,40 @@ const ChallengeDetail: React.FC = () => {
             total: 1750
           }
         };
+
+        // Add categories from metadata fields if available
+        if (backendData.lifttypes || backendData.weightclasses || backendData.gender) {
+          const categories = [
+            ...(backendData.lifttypes || []),
+            ...(backendData.weightclasses || []),
+            backendData.gender === 'F' ? 'Women' : 'Men'
+          ];
+          transformedChallenge.categories = categories;
+        } 
+        // Otherwise try to parse metadata from description field if it exists
+        else if (backendData.description && backendData.description.includes(' - ')) {
+          try {
+            // Extract the JSON part from the description
+            const metadataString = backendData.description.split(' - ')[1];
+            const metadata = JSON.parse(metadataString);
+            
+            // Add categories from metadata
+            const categories = [
+              ...(metadata.lifttypes || []),
+              ...(metadata.weightclasses || [])
+            ];
+            
+            if (metadata.gender) {
+              categories.push(metadata.gender === 'F' ? 'Women' : 'Men');
+            }
+            
+            transformedChallenge.categories = categories;
+          } catch (err) {
+            console.warn('Failed to parse competition metadata from description', err);
+            // Use empty categories if parsing fails
+            transformedChallenge.categories = [];
+          }
+        }
 
         setChallenge(transformedChallenge);
       } catch (err: any) {
@@ -173,12 +203,10 @@ const ChallengeDetail: React.FC = () => {
       await axios.post(
         `${COMPETITIONS_API_URL}/join_competition`,
         {
-          userid: parseInt(userId),
-          competitionid: id,
-          weight_class: "83kg", // This should be selected by the user
-          gender: "M", // This should come from user profile
-          age: 25, // This should come from user profile
-          status: "registered"
+          user_id: userId,
+          competition_id: id,
+          weight_class: "83kg",
+          gender: "M"
         }
       );
 
@@ -391,7 +419,7 @@ const ChallengeDetail: React.FC = () => {
                 </h2>
                 <div className="space-y-2">
                   {participants.slice(0, 5).map((participant) => (
-                    <div key={participant.userid} className="p-3 bg-card rounded-lg shadow">
+                    <div key={participant.id} className="p-3 bg-card rounded-lg shadow">
                       <div className="flex justify-between items-center mb-1">
                         <h4 className="text-lg font-semibold">{participant.name}</h4>
                         <span className="text-sm text-muted-foreground">{participant.weight_class}</span>
@@ -403,7 +431,7 @@ const ChallengeDetail: React.FC = () => {
                           <div 
                             key={index} 
                             className={`flex items-center text-sm rounded-full px-3 py-1 ${
-                              attempt.attempt_result === 'true' 
+                              attempt.status === 'completed' 
                                 ? 'bg-green-500/10 border border-green-500/20' 
                                 : 'bg-red-500/10 border border-red-500/20'
                             }`}
@@ -411,7 +439,7 @@ const ChallengeDetail: React.FC = () => {
                             <Link 
                               to={`/random-video?type=${attempt.lift_type}`}
                               className={`hover:underline ${
-                                attempt.attempt_result === 'true' 
+                                attempt.status === 'completed' 
                                   ? 'text-green-600 font-medium' 
                                   : 'text-red-600 line-through'
                               }`}
@@ -421,7 +449,7 @@ const ChallengeDetail: React.FC = () => {
                             <span className="mx-1 font-bold">{attempt.weight}kg</span>
                             {attempt.video_url && (
                               <Link
-                                to={`/challenges/${id}/participants/${participant.userid}/video/${index}`}
+                                to={`/challenges/${id}/participants/${participant.id}/video/${index}`}
                                 className="text-primary hover:underline text-xs ml-1"
                               >
                                 (watch)

@@ -11,6 +11,8 @@ import Leaderboard from "../pages/Leaderboard";
 import Store from '../pages/Store';
 import Profile from "../pages/Profile";
 import RandomVideo from "../pages/RandomVideo";
+import AuthCallback from "../pages/AuthCallback";
+import AuthError from "../pages/AuthError";
 
 export const routes: RouteObject[] = [
   {
@@ -60,6 +62,14 @@ export const routes: RouteObject[] = [
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/auth/callback",
+    element: <AuthCallback />,
+  },
+  {
+    path: "/auth/error",
+    element: <AuthError />,
   },
   {
     path: "*",

@@ -3,6 +3,7 @@ import pytest
 from flask import Flask
 from toms_gym.app import app
 from toms_gym.routes.competition_routes import competition_bp
+import uuid
 
 @pytest.fixture
 def test_client():
@@ -45,7 +46,9 @@ def test_get_competition_by_id(test_client, test_competition_data):
 
 def test_get_nonexistent_competition(test_client):
     """Test getting a non-existent competition"""
-    response = test_client.get('/competitions/999999')
+    # Use a valid UUID format that doesn't exist
+    non_existent_id = str(uuid.uuid4())
+    response = test_client.get(f'/competitions/{non_existent_id}')
     assert response.status_code == 404
     data = response.get_json()
     assert "error" in data
