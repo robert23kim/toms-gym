@@ -95,7 +95,7 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.95, opacity: 0 }}
-        className="bg-background rounded-xl shadow-lg w-full max-w-md p-6 relative"
+        className="bg-background rounded-xl shadow-lg w-full max-w-md p-6 relative max-h-[90vh] overflow-y-auto"
       >
         <button
           onClick={onClose}

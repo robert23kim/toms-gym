@@ -10,6 +10,10 @@ NC='\033[0m' # No Color
 BACKEND_CONTAINER="toms-gym-backend-local"
 BACKEND_PORT=8888
 
+# Get the project root directory (one level up from tests)
+PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+TESTS_DIR="${PROJECT_ROOT}/tests"
+
 echo -e "${BLUE}=== Setting up local backend for Android testing ===${NC}"
 
 # Cleanup function
@@ -61,7 +65,7 @@ fi
 
 # Build the backend container
 echo -e "\n${BLUE}Building backend Docker container...${NC}"
-docker build -t toms-gym-backend-local -f Backend/Dockerfile ./Backend
+cd "${PROJECT_ROOT}" && docker build -t toms-gym-backend-local -f Backend/Dockerfile ./Backend
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}❌ Backend build failed. Check the Docker build logs above.${NC}"
@@ -80,7 +84,8 @@ docker run -d --name $BACKEND_CONTAINER \
   -e "FLASK_ENV=development" \
   -e "FLASK_DEBUG=1" \
   -e "USE_MOCK_DB=true" \
-  toms-gym-backend-local
+  toms-gym-backend-local \
+  gunicorn -b 0.0.0.0:8080 toms_gym.app:app
 
 if [ $? -ne 0 ]; then
   echo -e "${RED}❌ Failed to start backend container.${NC}"
@@ -115,7 +120,11 @@ fi
 
 # Run Android tests against local backend
 echo -e "\n${BLUE}Running Android tests against local backend...${NC}"
-cd tests && TEST_API_URL="http://localhost:${BACKEND_PORT}" ./android-test.sh
+cd "${TESTS_DIR}" && TEST_API_URL="http://localhost:${BACKEND_PORT}" ./android-test.sh
+
+# Run mobile tests against local backend
+echo -e "\n${BLUE}Running mobile video playback tests against local backend...${NC}"
+TEST_API_URL="http://localhost:${BACKEND_PORT}" ./run-mobile-tests.sh
 
 # If --keep flag is used, keep the container running
 if [ "$1" == "--keep" ]; then

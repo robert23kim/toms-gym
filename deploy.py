@@ -505,7 +505,7 @@ class DeploymentManager:
             "--concurrency=80",
             "--timeout=3600",
             f"--service-account={self.config.service_account}",
-            f"--set-env-vars=FLASK_ENV=production,DB_INSTANCE={self.config.project_id}:{self.config.region}:my-db,DB_USER=postgres,DB_PASS={self.config.db_pass},DB_NAME=postgres,GCS_BUCKET_NAME={self.config.bucket_name}"
+            f"--set-env-vars=FLASK_ENV=production,DB_INSTANCE={self.config.project_id}:{self.config.region}:my-db,DB_USER=postgres,DB_PASS=test,DB_NAME=postgres,GCS_BUCKET_NAME={self.config.bucket_name},JWT_SECRET_KEY=your-secret-key-here,DATABASE_URL=postgresql://postgres:test@/postgres?host=/cloudsql/{self.config.project_id}:{self.config.region}:my-db"
         ]
         
         # Build and deploy

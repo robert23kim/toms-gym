@@ -504,9 +504,12 @@ def serve_video(video_path):
         # Check for range request
         range_header = request.headers.get('Range', None)
         
+        # Detect Android specifically
+        is_android = 'android' in request.user_agent.platform.lower() if request.user_agent.platform else False
+        
         # For mobile devices, range requests, or in development mode, stream the content directly
         if is_mobile or range_header or is_local_env:
-            logger.info(f"Streaming content directly (mobile={is_mobile}, range={bool(range_header)}, local={is_local_env})")
+            logger.info(f"Streaming content directly (mobile={is_mobile}, android={is_android}, range={bool(range_header)}, local={is_local_env})")
             
             # Get file size
             try:
@@ -588,17 +591,48 @@ def serve_video(video_path):
                     response.headers['Accept-Ranges'] = 'bytes'
             else:
                 # Download full file for non-range requests
-                content = blob.download_as_bytes()
-                response = Response(
-                    content,
-                    mimetype=content_type,
-                    content_type=content_type,
-                    direct_passthrough=True
-                )
-                # Ensure Content-Length is set correctly
-                content_length = len(content)
-                response.headers['Content-Length'] = str(content_length)
-                response.headers['Accept-Ranges'] = 'bytes'
+                try:
+                    # Check file size for MOV files since they might be problematic
+                    if clean_path.lower().endswith('.mov'):
+                        logger.info("Processing MOV file request")
+                        # Always reload to get accurate size
+                        blob.reload()
+                        file_size = blob.size
+                        
+                        # For all devices, use direct URL for large MOV files 
+                        if file_size > 20 * 1024 * 1024:  # More than 20MB
+                            logger.info(f"Large MOV file ({file_size/1024/1024:.2f}MB), redirecting to direct URL")
+                            direct_url = f"https://storage.googleapis.com/{GCS_BUCKET_NAME}/{clean_path}"
+                            return redirect(direct_url, code=302)
+                        else:
+                            logger.info(f"Small MOV file ({file_size/1024/1024:.2f}MB), streaming directly")
+                            content = blob.download_as_bytes()
+                    # Special handling for Android devices
+                    elif is_android:
+                        logger.info("Using special handling for Android device")
+                        # For Android, we keep default handling but add some protection
+                        content = blob.download_as_bytes()
+                    else:
+                        # Normal download for other cases
+                        content = blob.download_as_bytes()
+                    
+                    response = Response(
+                        content,
+                        mimetype=content_type,
+                        content_type=content_type,
+                        direct_passthrough=True
+                    )
+                    # Ensure Content-Length is set correctly
+                    content_length = len(content)
+                    response.headers['Content-Length'] = str(content_length)
+                    response.headers['Accept-Ranges'] = 'bytes'
+                    
+                except Exception as download_error:
+                    logger.error(f"Error downloading video: {str(download_error)}")
+                    # Fallback to direct URL if download fails
+                    logger.info("Falling back to direct GCS URL after download error")
+                    direct_url = f"https://storage.googleapis.com/{GCS_BUCKET_NAME}/{clean_path}"
+                    return redirect(direct_url, code=302)
             
             # Add common headers
             response.headers['Content-Type'] = content_type

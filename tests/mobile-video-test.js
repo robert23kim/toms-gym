@@ -14,7 +14,7 @@ const path = require('path');
 // Configuration
 const API_URL = 'https://my-python-backend-quyiiugyoq-ue.a.run.app';
 const FRONTEND_URL = 'https://my-frontend-quyiiugyoq-ue.a.run.app';
-const OUTPUT_DIR = path.join(__dirname, 'test-results');
+const OUTPUT_DIR = __dirname + '/test-results';
 
 // Create output directory if it doesn't exist
 if (!fs.existsSync(OUTPUT_DIR)) {
@@ -42,7 +42,7 @@ function log(message, type = 'info') {
   
   // Also write to log file
   fs.appendFileSync(
-    path.join(OUTPUT_DIR, 'test-log.txt'), 
+    OUTPUT_DIR + '/test-log.txt', 
     `[${timestamp}] [${type.toUpperCase()}] ${message}\n`
   );
 }
@@ -86,7 +86,7 @@ async function testRandomVideo(userAgentKey) {
     
     // Save response for analysis
     fs.writeFileSync(
-      path.join(OUTPUT_DIR, `random-video-${userAgentKey}.json`),
+      OUTPUT_DIR + `/random-video-${userAgentKey}.json`,
       JSON.stringify(result.data, null, 2)
     );
     
@@ -140,13 +140,37 @@ async function testVideoProxy(userAgentKey, videoPath) {
     } else {
       log(`Signed URL request failed: ${signedUrlResult.status}`, 'error');
     }
-  } else {
-    log(`Video proxy request failed or didn't redirect: ${result.status}`, 'error');
+  } 
+  // Handle direct streaming (no redirect)
+  else if (result.status === 200) {
+    log(`Direct video streaming successful with ${userAgentKey}`, 'success');
+    
+    // Check content type for video
+    const contentType = result.headers['content-type'];
+    const isVideoContent = contentType && 
+      (contentType.startsWith('video/') || contentType === 'application/octet-stream');
+    
+    if (isVideoContent) {
+      log(`Content-Type: ${contentType}`, 'success');
+      log(`Content-Length: ${result.headers['content-length'] || 'chunked'}`);
+      
+      // Check crucial headers for video streaming
+      const hasRangeHeader = 'accept-ranges' in result.headers;
+      log(`Has Accept-Ranges header: ${hasRangeHeader}`, hasRangeHeader ? 'success' : 'error');
+      
+      return true;
+    } else {
+      log(`Unexpected content type: ${contentType}`, 'error');
+      return false;
+    }
+  }
+  else {
+    log(`Video proxy request failed: ${result.status}`, 'error');
     
     // If we got a response, log it for debugging
     if (result.data) {
       fs.writeFileSync(
-        path.join(OUTPUT_DIR, `video-proxy-error-${userAgentKey}.json`),
+        OUTPUT_DIR + '/video-proxy-error-' + userAgentKey + '.json',
         JSON.stringify(result.data, null, 2)
       );
     }
@@ -245,7 +269,7 @@ async function runTests() {
   
   // Save results
   fs.writeFileSync(
-    path.join(OUTPUT_DIR, 'test-results.json'),
+    OUTPUT_DIR + '/test-results.json',
     JSON.stringify(results, null, 2)
   );
   

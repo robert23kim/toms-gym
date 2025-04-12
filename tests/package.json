@@ -1,0 +1,13 @@
+{
+  "name": "toms-gym-tests",
+  "version": "1.0.0",
+  "description": "Mobile emulation tests for Tom's Gym",
+  "main": "mobile-endpoint-test.js",
+  "scripts": {
+    "test": "node mobile-endpoint-test.js",
+    "video-test": "node mobile-video-test.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
+  }
+} 

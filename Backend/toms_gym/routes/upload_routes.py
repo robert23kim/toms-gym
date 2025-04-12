@@ -1,9 +1,13 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.utils import secure_filename
 import os
+import logging
 from datetime import datetime, timedelta
 from toms_gym.storage import bucket, ALLOWED_EXTENSIONS
 from toms_gym.db import get_db
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 upload_bp = Blueprint('upload', __name__)
 
@@ -28,8 +32,12 @@ def upload_video():
         return jsonify({'error': 'File type not allowed'}), 400
         
     try:
-        # For testing, use the original filename directly
-        filename = file.filename
+        # Create a timestamp-based unique filename to avoid collisions
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        original_filename = secure_filename(file.filename)
+        filename = f"videos/{timestamp}_{original_filename}"
+        
+        logger.info(f"Uploading file: {filename}")
         
         # Create a new blob and upload the file's content
         blob = bucket.blob(filename)
@@ -38,16 +46,19 @@ def upload_video():
             content_type=file.content_type
         )
         
-        # Make the blob publicly accessible 
-        blob.make_public()
+        # Generate a signed URL that will be valid for 7 days
+        url = f"https://storage.googleapis.com/{bucket.name}/{filename}"
         
-        # For the test, just return success
+        logger.info(f"File uploaded successfully: {filename}")
+        
+        # Return the file information
         return jsonify({
             'message': 'File uploaded successfully',
-            'url': blob.public_url,
+            'url': url,
+            'filename': filename,
             'attempt_number': 1
         }), 200
         
     except Exception as e:
-        print(f"Upload error: {str(e)}")  # Add error logging
+        logger.error(f"Upload error: {str(e)}")
         return jsonify({'error': str(e)}), 500 

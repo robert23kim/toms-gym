@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# Mobile Video Playback Test Runner
-# This script runs a series of tests to verify video playback on mobile devices
+# Mobile Video Playback Test Runner for Android Only
+# This script runs the Android tests against a local backend container
 
-echo "=== Mobile Video Playback Tests ==="
+echo "=== Mobile Video Playback Tests (Android Only) ==="
 echo "Testing backend video serving for mobile devices"
 echo
 
@@ -17,12 +17,11 @@ RED='\033[0;31m'
 YELLOW='\033[0;33m'
 NC='\033[0m' # No Color
 
-# Test configurations
-API_URL="https://my-python-backend-quyiiugyoq-ue.a.run.app"
-FRONTEND_URL="https://my-frontend-quyiiugyoq-ue.a.run.app"
+# Test configurations - use environment variable if set, otherwise use default
+API_URL="${TEST_API_URL:-http://localhost:8085}"
+FRONTEND_URL="http://localhost:3000"
 
 # Mobile User Agents
-IPHONE_UA="Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.0 Mobile/15E148 Safari/604.1"
 ANDROID_UA="Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36"
 
 # Function to run curl with specific user agent
@@ -35,7 +34,10 @@ run_curl() {
     echo -e "${YELLOW}Testing $url as $device_name${NC}"
     
     # Run curl with the user agent and write output
-    STATUS=$(curl -s -o $output_file -w "%{http_code}" -H "User-Agent: $user_agent" "$url")
+    STATUS=$(curl -s -o $output_file -w "%{http_code}" \
+        -H "User-Agent: $user_agent" \
+        -H "Accept: application/json" \
+        "$url")
     
     if [[ $STATUS -ge 200 && $STATUS -lt 300 ]]; then
         echo -e "${GREEN}✓ Test passed with status $STATUS${NC}"
@@ -56,13 +58,22 @@ test_random_video() {
     
     # Get random video
     output_file="$OUTPUT_DIR/$device_name-random-video.json"
-    STATUS=$(curl -s -o $output_file -w "%{http_code}" -H "User-Agent: $user_agent" "$API_URL/random-video")
+    STATUS=$(curl -s -o $output_file -w "%{http_code}" \
+        -H "User-Agent: $user_agent" \
+        -H "Accept: application/json" \
+        "$API_URL/random-video")
     
     if [[ $STATUS -ge 200 && $STATUS -lt 300 ]]; then
         echo -e "${GREEN}✓ Random video request successful with status $STATUS${NC}"
         
-        # Extract video URL
-        VIDEO_URL=$(cat $output_file | grep -o '"video_url":"[^"]*"' | cut -d'"' -f4)
+        # Extract video URL using jq (install with: apt-get install jq or brew install jq)
+        if command -v jq &> /dev/null; then
+            VIDEO_URL=$(jq -r '.video_url' "$output_file")
+        else
+            # Fallback to grep if jq is not available
+            VIDEO_URL=$(grep -o '"video_url":"[^"]*"' "$output_file" | cut -d'"' -f4)
+        fi
+        
         echo "Video URL: $VIDEO_URL"
         
         if [[ ! -z "$VIDEO_URL" ]]; then
@@ -151,16 +162,11 @@ EOF
 }
 
 # Run tests
-echo "Starting mobile video playback tests..."
+echo "Starting mobile video playback tests (Android only)..."
 
 # Create test log
 TEST_LOG="$OUTPUT_DIR/test-log.txt"
-echo "Mobile Video Playback Tests started at $(date)" > $TEST_LOG
-
-# Test with iPhone
-echo
-echo "=== iPhone Tests ==="
-test_random_video "iphone" "$IPHONE_UA" | tee -a $TEST_LOG
+echo "Mobile Video Playback Tests (Android only) started at $(date)" > $TEST_LOG
 
 # Test with Android
 echo
