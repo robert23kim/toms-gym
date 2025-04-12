@@ -1,36 +1,59 @@
 version: '3.8'
 
 services:
-  backend:
-    build: .
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: test
+      POSTGRES_DB: toms_gym
     ports:
-      - "5000:8080"
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
-      - DB_INSTANCE=toms-gym:us-east1:my-db
-      - DB_USER=postgres
-      - DB_PASS=test
-      - DB_NAME=postgres
-      - GCS_BUCKET_NAME=your-bucket-name
+      - "5432:5432"
     volumes:
-      - ./:/app
-      - ./credentials.json:/app/credentials.json:ro
-    restart: unless-stopped
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
-  test:
-    build: .
-    command: pytest -v
-    environment:
-      - GOOGLE_APPLICATION_CREDENTIALS=/app/credentials.json
-      - DB_INSTANCE=toms-gym:us-east1:my-db
-      - DB_USER=postgres
-      - DB_PASS=test
-      - DB_NAME=postgres
-      - GCS_BUCKET_NAME=your-bucket-name
-      - PYTHONPATH=/app
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
     volumes:
-      - ./:/app
-      - ./credentials.json:/app/credentials.json:ro
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - FLASK_APP=toms_gym.app
+      - FLASK_ENV=development
+      - DATABASE_URL=postgresql://postgres:test@db:5432/toms_gym
+      - REDIS_URL=redis://redis:6379/0
+      - JWT_SECRET_KEY=your-secret-key-here
+      - OAUTH_CLIENT_ID=your-client-id-here
+      - OAUTH_CLIENT_SECRET=your-client-secret-here
+      - FRONTEND_URL=http://localhost:3000
+      - ENABLE_MOCK_AUTH=false
+    ports:
+      - "5000:5000"
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    command: gunicorn --bind 0.0.0.0:5000 --workers 4 --threads 2 'toms_gym.app:app'
 
 volumes:
-  postgres_data: 
+  postgres_data:
+  redis_data: 

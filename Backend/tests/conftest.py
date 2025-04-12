@@ -1,12 +1,12 @@
 import pytest
 from sqlalchemy import text
-from toms_gym.db import pool
+from toms_gym.db import get_db_connection
 import time
 import random
 
 @pytest.fixture
 def db_connection():
-    return pool
+    return get_db_connection()
 
 @pytest.fixture
 def test_competition_data():

@@ -99,4 +99,14 @@
   .page-exit-active {
     @apply opacity-0 transition-opacity duration-300;
   }
+
+  /* Countdown animation */
+  @keyframes shrink {
+    from { width: 100%; }
+    to { width: 0%; }
+  }
+
+  .animate-shrink {
+    animation: shrink 5s linear forwards;
+  }
 }

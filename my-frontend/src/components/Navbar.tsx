@@ -6,22 +6,15 @@ import CreateProfile from "./CreateProfile";
 import Login from "./Login";
 import axios from "axios";
 import { API_URL } from "../config";
+import { useAuth } from "../auth/AuthContext";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCreateProfileOpen, setIsCreateProfileOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
-
-  // Check login state on component mount
-  useEffect(() => {
-    const loginState = localStorage.getItem('isLoggedIn');
-    if (loginState === 'true') {
-      setIsLoggedIn(true);
-    }
-  }, []);
+  const { isAuthenticated, user, logout } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,7 +49,6 @@ const Navbar: React.FC = () => {
         // Store the user ID in localStorage
         localStorage.setItem('userId', response.data.user_id);
         localStorage.setItem('isLoggedIn', 'true');
-        setIsLoggedIn(true);
         return true;
       }
     } catch (err) {
@@ -69,15 +61,7 @@ const Navbar: React.FC = () => {
     // For now, we'll just log the data
     console.log('Logging in:', loginData);
     // In the future, this will make an API call to login
-    setIsLoggedIn(true);
     localStorage.setItem('isLoggedIn', 'true');
-  };
-
-  const handleLogout = () => {
-    setIsLoggedIn(false);
-    localStorage.removeItem('isLoggedIn');
-    localStorage.removeItem('userId');
-    // In the future, this will make an API call to logout
   };
 
   const links = [
@@ -91,7 +75,7 @@ const Navbar: React.FC = () => {
   ];
 
   const AuthButton = () => {
-    if (isLoggedIn) {
+    if (isAuthenticated) {
       return (
         <div className="flex items-center gap-4">
           <Link
@@ -102,7 +86,7 @@ const Navbar: React.FC = () => {
             <span>My Profile</span>
           </Link>
           <button
-            onClick={handleLogout}
+            onClick={logout}
             className="flex items-center gap-2 px-3 py-2 text-accent hover:text-accent/90 transition-colors"
           >
             <LogOut size={18} />
@@ -208,7 +192,7 @@ const Navbar: React.FC = () => {
                 {item.label}
               </Link>
             ))}
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <>
                 <Link
                   to="/profile"
@@ -218,7 +202,7 @@ const Navbar: React.FC = () => {
                   <span>My Profile</span>
                 </Link>
                 <button
-                  onClick={handleLogout}
+                  onClick={logout}
                   className="w-full flex items-center gap-2 px-3 py-2 text-accent hover:text-accent/90 transition-colors"
                 >
                   <LogOut size={18} />

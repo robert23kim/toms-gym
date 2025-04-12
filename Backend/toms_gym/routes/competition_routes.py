@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify, Response, redirect
 import sqlalchemy
-from toms_gym.db import pool
+from toms_gym.db import get_db_connection, Session
 from google.cloud import storage
 import random
 import datetime
@@ -88,9 +88,10 @@ def get_competitions():
     Endpoint that queries all competitions.
     """
     try:
-        with pool.connect() as conn:
-            rows = conn.execute(sqlalchemy.text("SELECT * FROM Competition"))
-            results = [row._asdict() for row in rows]
+        session = get_db_connection()
+        result = session.execute(sqlalchemy.text("SELECT * FROM Competition"))
+        results = [dict(row) for row in result]
+        session.close()
         return {"competitions": results}
     except Exception as e:
         return {"error": str(e)}, 500
@@ -101,17 +102,17 @@ def get_competition_by_id(competition_id):
     Endpoint that queries a single competition by ID.
     """
     try:
-        with pool.connect() as conn:
-            row = conn.execute(
-                sqlalchemy.text("SELECT * FROM Competition WHERE id = :id"),
-                {"id": competition_id}
-            ).fetchone()
+        session = get_db_connection()
+        result = session.execute(
+            sqlalchemy.text("SELECT * FROM Competition WHERE id = :id"),
+            {"id": competition_id}
+        ).fetchone()
+        session.close()
+        
+        if result is None:
+            return {"error": "Competition not found"}, 404
             
-            if row is None:
-                return {"error": "Competition not found"}, 404
-                
-            result = row._asdict()
-            return {"competition": result}
+        return {"competition": dict(result)}
     except Exception as e:
         return {"error": str(e)}, 500
 
@@ -121,27 +122,28 @@ def get_competition_participants(competition_id):
     Endpoint that queries all participants for a specific competition.
     """
     try:
-        with pool.connect() as conn:
-            rows = conn.execute(
-                sqlalchemy.text("""
-                    SELECT u.userid, u.name, uc.weight_class,
-                           COALESCE(SUM(CASE WHEN a.attempt_result = 'true' THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
-                           json_agg(
-                               json_build_object(
-                                   'lift_type', a.lift_type,
-                                   'weight', a.weight_attempted,
-                                   'success', a.attempt_result
-                               )
-                           ) as attempts
-                    FROM UserCompetition uc
-                    JOIN \"User\" u ON uc.userid = u.userid
-                    LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
-                    WHERE uc.competitionid = :competition_id
-                    GROUP BY u.userid, u.name, uc.weight_class
-                """),
-                {"competition_id": competition_id}
-            )
-            results = [row._asdict() for row in rows]
+        session = get_db_connection()
+        result = session.execute(
+            sqlalchemy.text("""
+                SELECT u.userid, u.name, uc.weight_class,
+                       COALESCE(SUM(CASE WHEN a.attempt_result = 'true' THEN a.weight_attempted ELSE 0 END), 0) as total_weight,
+                       json_agg(
+                           json_build_object(
+                               'lift_type', a.lift_type,
+                               'weight', a.weight_attempted,
+                               'success', a.attempt_result
+                           )
+                       ) as attempts
+                FROM UserCompetition uc
+                JOIN "User" u ON uc.userid = u.userid
+                LEFT JOIN Attempts a ON uc.usercompetitionid = a.usercompetitionid
+                WHERE uc.competitionid = :competition_id
+                GROUP BY u.userid, u.name, uc.weight_class
+            """),
+            {"competition_id": competition_id}
+        )
+        results = [dict(row) for row in result]
+        session.close()
         return {"participants": results}
     except Exception as e:
         return {"error": str(e)}, 500
@@ -152,19 +154,20 @@ def get_competition_lifts(competition_id):
     Endpoint that queries all lifts for a specific competition.
     """
     try:
-        with pool.connect() as conn:
-            rows = conn.execute(
-                sqlalchemy.text("""
-                    SELECT a.attemptid as id, uc.userid as participant_id, uc.competitionid as competition_id,
-                           a.lift_type as type, a.weight_attempted as weight, a.attempt_result as success,
-                           a.video_link as video_url
-                    FROM Attempts a
-                    JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
-                    WHERE uc.competitionid = :competition_id
-                """),
-                {"competition_id": competition_id}
-            )
-            results = [row._asdict() for row in rows]
+        session = get_db_connection()
+        result = session.execute(
+            sqlalchemy.text("""
+                SELECT a.attemptid as id, uc.userid as participant_id, uc.competitionid as competition_id,
+                       a.lift_type as type, a.weight_attempted as weight, a.attempt_result as success,
+                       a.video_link as video_url
+                FROM Attempts a
+                JOIN UserCompetition uc ON a.usercompetitionid = uc.usercompetitionid
+                WHERE uc.competitionid = :competition_id
+            """),
+            {"competition_id": competition_id}
+        )
+        results = [dict(row) for row in result]
+        session.close()
         return {"lifts": results}
     except Exception as e:
         return {"error": str(e)}, 500
@@ -177,18 +180,20 @@ def create_competition():
     """
     try:
         data = request.json
-        insert_query = sqlalchemy.text(
-            """
-            INSERT INTO Competition (name, location, lifttypes, weightclasses, gender, start_date, end_date)
-            VALUES (:name, :location, :lifttypes, :weightclasses, :gender, :start_date, :end_date)
-            RETURNING id;
-            """
+        session = get_db_connection()
+        result = session.execute(
+            sqlalchemy.text(
+                """
+                INSERT INTO Competition (name, location, lifttypes, weightclasses, gender, start_date, end_date)
+                VALUES (:name, :location, :lifttypes, :weightclasses, :gender, :start_date, :end_date)
+                RETURNING id;
+                """
+            ),
+            data
         )
-
-        with pool.connect() as conn:
-            result = conn.execute(insert_query, data)
-            inserted_id = result.fetchone()[0]
-            conn.commit()
+        inserted_id = result.fetchone()[0]
+        session.commit()
+        session.close()
 
         return {"message": "Competition created successfully!", "competition_id": inserted_id}, 201
     except Exception as e:

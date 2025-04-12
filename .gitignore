@@ -180,6 +180,10 @@ Backend/toms_gym.egg-info/
 .docker/
 .cursorrules
 
+# Docker Compose overrides
+docker-compose.override.yml
+**/docker-compose.override.yml
+
 # Test results
 tests/test-results/
 **/test-results/

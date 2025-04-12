@@ -4,21 +4,37 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from dotenv import load_dotenv
 import datetime
+import secrets
+from toms_gym.utils.json_encoder import CustomJSONEncoder
 
 # Import route blueprints
 from toms_gym.routes.competition_routes import competition_bp
 from toms_gym.routes.user_routes import user_bp
 from toms_gym.routes.attempt_routes import attempt_bp
 from toms_gym.routes.upload_routes import upload_bp
+from toms_gym.routes.auth_routes import auth_bp, init_oauth
+from toms_gym.config import get_config
 
 load_dotenv()
 
 app = Flask(__name__)
+
+# Load configuration
+config = get_config()
+app.config.from_object(config)
+
+# Set custom JSON encoder
+app.json_encoder = CustomJSONEncoder
+
+# Basic configuration
+app.secret_key = os.environ.get('APP_SECRET_KEY', secrets.token_hex(16))
 app.config['UPLOAD_FOLDER'] = 'uploads'
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
+# Frontend URL for redirects
+app.config['FRONTEND_URL'] = os.environ.get('FRONTEND_URL', 'http://localhost:3000')
+
 # Configure CORS with more permissive settings
-# Update to allow all origins and expose all headers
 CORS(app, resources={
     r"/*": {
         "origins": ["*", "http://localhost:8085", "http://localhost:3000", "http://localhost:8080", "http://localhost:8082"],
@@ -33,6 +49,10 @@ app.register_blueprint(competition_bp)
 app.register_blueprint(user_bp)
 app.register_blueprint(attempt_bp)
 app.register_blueprint(upload_bp)
+app.register_blueprint(auth_bp, url_prefix='/auth')
+
+# Initialize OAuth
+init_oauth(app)
 
 @app.route('/health')
 def health():

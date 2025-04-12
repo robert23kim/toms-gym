@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
+import GoogleLoginButton from './GoogleLoginButton';
 
 interface LoginProps {
   onClose: () => void;
@@ -99,6 +100,15 @@ const Login: React.FC<LoginProps> = ({ onClose, onSubmit }) => {
             </button>
           </div>
         </form>
+
+        <div className="mt-6 pt-6 border-t border-border">
+          <div className="flex items-center justify-center mb-4">
+            <span className="text-muted-foreground text-sm">Or continue with</span>
+          </div>
+          <div className="flex justify-center">
+            <GoogleLoginButton className="w-full" />
+          </div>
+        </div>
       </motion.div>
     </motion.div>
   );
