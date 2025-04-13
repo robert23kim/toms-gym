@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, SkipBack, SkipForward, MessageSquare, ThumbsUp, ThumbsDown, BarChart2, Activity, Target, Award } from "lucide-react";
+import { PROD_API_URL } from "../config";
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -68,6 +69,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
   const touchStartTimeRef = useRef<number>(0);
   const touchPositionRef = useRef<{ x: number, y: number }>({ x: 0, y: 0 });
   const retryCountRef = useRef<number>(0);
+  const [processedVideoUrl, setProcessedVideoUrl] = useState<string>(videoUrl);
 
   useEffect(() => {
     // Reset error state when video URL changes
@@ -307,6 +309,34 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
     showControls();
   };
 
+  // Process video URL to replace localhost with PROD_API_URL for mobile 
+  useEffect(() => {
+    // Always replace localhost with production URL, regardless of device
+    let finalUrl = videoUrl;
+    
+    // Check for localhost with specific port pattern
+    if (videoUrl.includes('localhost:5001')) {
+      console.log('Replacing localhost:5001 URL with production URL');
+      
+      try {
+        // Extract just the path portion after the port
+        const urlParts = videoUrl.split('localhost:5001');
+        if (urlParts.length > 1) {
+          const path = urlParts[1]; // This gets /video/path?params
+          
+          // Create new URL with production base
+          finalUrl = `${PROD_API_URL}${path}`;
+          console.log('Original URL:', videoUrl);
+          console.log('Processed URL:', finalUrl);
+        }
+      } catch (err) {
+        console.error('Error processing video URL:', err);
+      }
+    }
+    
+    setProcessedVideoUrl(finalUrl);
+  }, [videoUrl]);
+
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
       <div className="lg:col-span-2">
@@ -358,7 +388,7 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
             
             <video
               ref={videoRef}
-              src={videoUrl}
+              src={processedVideoUrl}
               className="w-full h-full object-contain"
               onClick={togglePlay}
               playsInline
@@ -378,25 +408,27 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
                 }
               }}
               preload="metadata"
-              poster={videoUrl ? videoUrl + '?poster=true' : undefined}
+              poster={processedVideoUrl ? processedVideoUrl + '?poster=true' : undefined}
             />
             
-            {/* Play/Pause Overlay */}
-            <div 
-              className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-                isPlaying && !isControlsVisible ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              <button
-                onClick={togglePlay}
-                className="w-16 h-16 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-colors"
+            {/* Play/Pause Overlay - Only show on non-mobile devices */}
+            {!isMobileDevice && (
+              <div 
+                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+                  isPlaying && !isControlsVisible ? "opacity-0" : "opacity-100"
+                }`}
               >
-                {isPlaying ? <Pause size={32} /> : <Play size={32} />}
-              </button>
-            </div>
+                <button
+                  onClick={togglePlay}
+                  className="w-16 h-16 flex items-center justify-center rounded-full bg-black/30 backdrop-blur-sm text-white hover:bg-black/50 transition-colors"
+                >
+                  {isPlaying ? <Pause size={32} /> : <Play size={32} />}
+                </button>
+              </div>
+            )}
 
-            {/* Next Video Overlay */}
-            {onNextVideo && (
+            {/* Next Video Overlay - Only show on non-mobile devices */}
+            {onNextVideo && !isMobileDevice && (
               <div 
                 className={`absolute right-4 top-1/2 -translate-y-1/2 transition-opacity duration-300 ${
                   (isControlsVisible || !isPlaying) ? "opacity-100" : "opacity-0"
@@ -414,81 +446,83 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
               </div>
             )}
             
-            {/* Video Controls */}
-            <div 
-              className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300 ${
-                isPlaying && !isControlsVisible ? "opacity-0" : "opacity-100"
-              }`}
-            >
-              <div className="mb-2">
-                <input
-                  type="range"
-                  min="0"
-                  max="100"
-                  value={progress}
-                  onChange={handleProgressChange}
-                  className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent"
-                />
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-4">
-                  <button
-                    onClick={togglePlay}
-                    className="text-white hover:text-accent transition-colors"
-                  >
-                    {isPlaying ? <Pause size={20} /> : <Play size={20} />}
-                  </button>
-                  
-                  <div className="flex items-center space-x-2">
-                    <button
-                      onClick={skipBackward}
-                      className="text-white hover:text-accent transition-colors"
-                    >
-                      <SkipBack size={20} />
-                    </button>
-                    <button
-                      onClick={skipForward}
-                      className="text-white hover:text-accent transition-colors"
-                    >
-                      <SkipForward size={20} />
-                    </button>
-                  </div>
-                  
-                  <div className="text-sm text-white">
-                    {formatTime(currentTime)} / {formatTime(duration)}
-                  </div>
+            {/* Video Controls - Only show for non-mobile devices */}
+            {!useNativeControls && (
+              <div 
+                className={`absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent transition-opacity duration-300 ${
+                  isPlaying && !isControlsVisible ? "opacity-0" : "opacity-100"
+                }`}
+              >
+                <div className="mb-2">
+                  <input
+                    type="range"
+                    min="0"
+                    max="100"
+                    value={progress}
+                    onChange={handleProgressChange}
+                    className="w-full h-1 bg-white/20 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-accent"
+                  />
                 </div>
                 
-                <div className="flex items-center space-x-2">
-                  <div className="flex items-center space-x-1">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-4">
                     <button
-                      onClick={toggleMute}
+                      onClick={togglePlay}
                       className="text-white hover:text-accent transition-colors"
                     >
-                      {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                      {isPlaying ? <Pause size={20} /> : <Play size={20} />}
                     </button>
                     
-                    <input
-                      type="range"
-                      min="0"
-                      max="1"
-                      step="0.01"
-                      value={isMuted ? 0 : volume}
-                      onChange={handleVolumeChange}
-                      className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
-                    />
+                    <div className="flex items-center space-x-2">
+                      <button
+                        onClick={skipBackward}
+                        className="text-white hover:text-accent transition-colors"
+                      >
+                        <SkipBack size={20} />
+                      </button>
+                      <button
+                        onClick={skipForward}
+                        className="text-white hover:text-accent transition-colors"
+                      >
+                        <SkipForward size={20} />
+                      </button>
+                    </div>
+                    
+                    <div className="text-sm text-white">
+                      {formatTime(currentTime)} / {formatTime(duration)}
+                    </div>
                   </div>
                   
-                  <button
-                    onClick={toggleFullscreen}
-                    className="text-white hover:text-accent transition-colors"
-                  >
-                    {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
-                  </button>
+                  <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
+                      <button
+                        onClick={toggleMute}
+                        className="text-white hover:text-accent transition-colors"
+                      >
+                        {isMuted ? <VolumeX size={20} /> : <Volume2 size={20} />}
+                      </button>
+                      
+                      <input
+                        type="range"
+                        min="0"
+                        max="1"
+                        step="0.01"
+                        value={isMuted ? 0 : volume}
+                        onChange={handleVolumeChange}
+                        className="w-20 h-1 bg-white/20 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white"
+                      />
+                    </div>
+                    
+                    <button
+                      onClick={toggleFullscreen}
+                      className="text-white hover:text-accent transition-colors"
+                    >
+                      {isFullscreen ? <Minimize size={20} /> : <Maximize size={20} />}
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            )}
           </div>
 
           {/* Comments Section */}

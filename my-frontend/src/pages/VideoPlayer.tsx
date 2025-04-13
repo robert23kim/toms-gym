@@ -4,7 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize2, BarChart2, Activity, Target, Award } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
-import { API_URL } from "../config";
+import { API_URL, PROD_API_URL } from "../config";
 
 interface VideoData {
   id: number;
@@ -23,6 +23,36 @@ const VideoPlayer: React.FC = () => {
   const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
+  const [debugInfo, setDebugInfo] = useState({
+    apiUrl: API_URL,
+    productionUrl: PROD_API_URL,
+    userAgent: '',
+    isMobile: false
+  });
+  
+  // We still need device type info for video path transformation
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isLinux = /Linux|X11/i.test(navigator.userAgent);
+  const isLinuxDesktop = isLinux && !(/Mobile|Android/i.test(navigator.userAgent));
+  
+  // For device type info only (not API URL selection)
+  const isMobile = (
+    /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    /Mobile|Tablet|Touch/i.test(navigator.userAgent) ||
+    window.innerWidth < 768
+  );
+
+  useEffect(() => {
+    // Update debug info
+    setDebugInfo({
+      apiUrl: API_URL,
+      productionUrl: PROD_API_URL,
+      userAgent: navigator.userAgent.substring(0, 100), // Truncate for display
+      isMobile: isMobile
+    });
+  }, [isMobile]);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -30,11 +60,65 @@ const VideoPlayer: React.FC = () => {
         setLoading(true);
         setError(null);
         
+        console.log(`Using API URL for fetch: ${API_URL}`);
+        
         const response = await axios.get(`${API_URL}/competitions/${id}/participants/${participantId}/attempts/${videoId}`);
         console.log("Video data response:", response.data);
         
         if (response.data && response.data.attempt) {
-          setVideoData(response.data.attempt);
+          const videoDataResponse = response.data.attempt;
+          
+          // Process the video URL for mobile if needed
+          if (videoDataResponse.video_url) {
+            const originalUrl = videoDataResponse.video_url;
+            console.log("Original video URL:", originalUrl);
+            
+            // Process URL for mobile devices
+            let processedUrl = originalUrl;
+            
+            // Handle Google Storage URLs
+            if (originalUrl.includes('storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/')) {
+              // Extract video path
+              let videoPath = '';
+              if (originalUrl.includes('jtr-lift-u-4ever-cool-bucket/videos/')) {
+                videoPath = originalUrl.split('jtr-lift-u-4ever-cool-bucket/')[1];
+              } else {
+                // In case the URL format changes but still contains the bucket name
+                const bucketPart = originalUrl.indexOf('jtr-lift-u-4ever-cool-bucket/');
+                if (bucketPart >= 0) {
+                  videoPath = originalUrl.substring(bucketPart + 'jtr-lift-u-4ever-cool-bucket/'.length);
+                }
+              }
+              
+              if (videoPath) {
+                // ALWAYS use production URL for the video proxy (direct video access needs prod URL)
+                const videoProxyBaseUrl = PROD_API_URL;
+                
+                // Use the video proxy endpoint with explicit parameters
+                processedUrl = `${videoProxyBaseUrl}/video/${encodeURIComponent(videoPath)}?mobile=true&t=${new Date().getTime()}`;
+                
+                // Add device type for debugging and better handling on backend
+                let deviceType = 'desktop';
+                if (isAndroid) deviceType = 'android';
+                else if (isiOS) deviceType = 'ios';
+                else if (isLinuxDesktop) deviceType = 'linux';
+                
+                processedUrl += `&device=${deviceType}`;
+                console.log("Using proxy URL for device:", processedUrl);
+              } else {
+                // Add cache busting to direct URLs
+                const cacheBuster = `t=${new Date().getTime()}`;
+                processedUrl = originalUrl.includes('?') ? 
+                  `${originalUrl}&${cacheBuster}` : 
+                  `${originalUrl}?${cacheBuster}`;
+              }
+            }
+            
+            // Set the processed URL
+            setFinalVideoUrl(processedUrl);
+          }
+          
+          setVideoData(videoDataResponse);
         } else {
           setError("Video data not found");
         }
@@ -126,12 +210,13 @@ const VideoPlayer: React.FC = () => {
               </div>
 
               <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                {videoData.video_url ? (
+                {(finalVideoUrl || videoData.video_url) ? (
                   <video
-                    src={videoData.video_url}
+                    src={finalVideoUrl || videoData.video_url}
                     controls
                     className="w-full h-full"
                     autoPlay
+                    playsInline // For iOS compatibility
                   >
                     Your browser does not support the video tag.
                   </video>
@@ -141,6 +226,16 @@ const VideoPlayer: React.FC = () => {
                   </div>
                 )}
               </div>
+              
+              {/* Debug info for mobile */}
+              {isMobile && (
+                <div className="mt-4 p-2 text-xs bg-gray-100 rounded-md">
+                  <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+                  <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
+                  <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : 'Desktop')}</p>
+                  <p><strong>UA:</strong> {debugInfo.userAgent}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

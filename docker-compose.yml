@@ -25,6 +25,7 @@ services:
       - PORT=5000
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
+      - VIDEO_BASE_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app
     volumes:
       - ./Backend:/app
       - ./Backend/credentials.json:/credentials/credentials.json:ro

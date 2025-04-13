@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
+import { API_URL } from '../config';
 
 interface PasswordResetFormProps {
     onSuccess?: () => void;
@@ -53,7 +54,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ onSuccess,
         setIsLoading(true);
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/password-reset-request`, {
+            const response = await fetch(`${API_URL}/auth/password-reset-request`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -102,7 +103,7 @@ export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ onSuccess,
         setIsLoading(true);
 
         try {
-            const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/password-reset`, {
+            const response = await fetch(`${API_URL}/auth/password-reset`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

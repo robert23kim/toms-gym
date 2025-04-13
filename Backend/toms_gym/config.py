@@ -1,6 +1,10 @@
 import os
 import secrets
 from datetime import timedelta
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 class Config:
     """Base configuration class"""
@@ -22,13 +26,25 @@ class Config:
     PASSWORD_RESET_TIMEOUT = timedelta(hours=1)
     
     # Database settings
-    DATABASE_URL = os.environ.get('DATABASE_URL')
+    DATABASE_URL = os.environ.get('DATABASE_URL', 'sqlite:///toms_gym.db')
     USE_MOCK_DB = os.environ.get('USE_MOCK_DB', 'false').lower() == 'true'
     
     # Environment settings
     ENV = os.environ.get('FLASK_ENV', 'development')
     DEBUG = ENV == 'development'
     TESTING = ENV == 'testing'
+    
+    # GCS configuration
+    GCS_BUCKET_NAME = os.environ.get('GCS_BUCKET', 'jtr-lift-u-4ever-cool-bucket')
+    
+    # Configure video URLs
+    VIDEO_BASE_URL = os.environ.get(
+        'VIDEO_BASE_URL', 
+        'https://my-python-backend-quyiiugyoq-ue.a.run.app'
+    )
+    
+    # For localhost development, detect environment
+    LOCAL_DEV = ENV == 'development'
     
     @property
     def IS_PRODUCTION(self):

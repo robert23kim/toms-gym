@@ -7,10 +7,7 @@ import ChallengeCard from "../components/ChallengeCard";
 import CreateChallenge from "../components/CreateChallenge";
 import { Challenge } from "../lib/types";
 import axios from "axios";
-import { API_URL } from "../config";
-
-// Use the local API URL for competitions
-const COMPETITIONS_API_URL = API_URL;
+import { API_URL, COMPETITIONS_API_URL } from "../config";
 
 const Challenges = () => {
   const [activeFilter, setActiveFilter] = useState<'upcoming' | 'ongoing' | 'completed' | 'all'>("all");
@@ -33,9 +30,20 @@ const Challenges = () => {
     try {
       setLoading(true);
       setError(null);
+      console.log("Fetching challenges from:", `${COMPETITIONS_API_URL}/competitions`);
       const response = await axios.get(`${COMPETITIONS_API_URL}/competitions`);
+      console.log("API Response:", response.data);
       const dbChallenges = response.data.competitions;
 
+      if (!dbChallenges || !Array.isArray(dbChallenges)) {
+        console.error("Invalid challenges data received:", dbChallenges);
+        setError('Received invalid data from the server. Expected an array of challenges.');
+        setChallenges([]);
+        return;
+      }
+
+      console.log(`Transforming ${dbChallenges.length} challenges`);
+      
       // Transform the database challenges to match our frontend type
       const transformedChallenges = dbChallenges.map((challenge: any) => ({
         id: challenge.id,
@@ -60,10 +68,25 @@ const Challenges = () => {
         }
       }));
 
+      console.log(`Successfully transformed ${transformedChallenges.length} challenges`);
       setChallenges(transformedChallenges);
-    } catch (err) {
+    } catch (err: any) {
       console.error('Error fetching challenges:', err);
-      setError('Failed to load challenges. Please try again later.');
+      let errorMessage = 'Failed to load challenges. Please try again later.';
+      
+      if (err.response) {
+        console.error('API Error response:', err.response.status, err.response.data);
+        errorMessage = `Error ${err.response.status}: ${err.response.data?.error || err.response.statusText}`;
+      } else if (err.request) {
+        console.error('API Request error - no response received:', err.request);
+        errorMessage = 'Network error: No response from server. Please check your connection.';
+      } else {
+        console.error('Error message:', err.message);
+        errorMessage = `Error: ${err.message}`;
+      }
+      
+      setError(errorMessage);
+      setChallenges([]);
     } finally {
       setLoading(false);
     }

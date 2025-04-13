@@ -2,10 +2,11 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
-import { Calendar, MapPin, Trophy, Activity, Award, ArrowLeft, Users, BarChart2, User, Dumbbell } from "lucide-react";
+import { Calendar, MapPin, Trophy, Activity, Award, ArrowLeft, Users, BarChart2, User, Dumbbell, Play } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
+import { Link } from "react-router-dom";
 
 // Interfaces for API response data
 interface UserData {
@@ -45,11 +46,23 @@ interface Achievements {
   best_clean_and_jerk: number;
 }
 
+interface UploadedVideo {
+  attempt_id: string;
+  lift_type: string;
+  weight: number;
+  video_url: string;
+  created_at: string;
+  status: string;
+  competition_id: string;
+  competition_name: string;
+}
+
 interface ProfileData {
   user: UserData;
   competitions: Competition[];
   best_lifts: BestLift[];
   achievements: Achievements;
+  uploaded_videos?: UploadedVideo[];
 }
 
 const Profile = () => {
@@ -246,36 +259,128 @@ const Profile = () => {
           </div>
         </div>
 
+        {/* Uploaded Videos */}
+        {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 && (
+          <div className="bg-card rounded-xl p-6 shadow-sm mb-6">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Play className="text-accent" size={24} />
+                <h2 className="text-xl font-semibold">My Videos</h2>
+              </div>
+              <Link to="/random-video" className="text-accent hover:underline text-sm">
+                See all videos →
+              </Link>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {profileData.uploaded_videos.slice(0, 6).map((video) => (
+                <Link 
+                  key={video.attempt_id}
+                  to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
+                  className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
+                >
+                  <div className="aspect-video bg-muted relative">
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <Play className="w-12 h-12 text-accent/75" />
+                    </div>
+                  </div>
+                  <div className="p-3">
+                    <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
+                    <p className="text-sm text-muted-foreground">
+                      {new Date(video.created_at).toLocaleDateString()} • {video.competition_name}
+                    </p>
+                    <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
+                      video.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                      video.status === 'failed' ? 'bg-red-100 text-red-800' : 
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {video.status}
+                    </span>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Recent Competitions */}
         <div className="bg-card rounded-xl p-6 shadow-sm">
           <h2 className="text-xl font-semibold mb-4">Competition History</h2>
           <div className="space-y-4">
             {profileData.competitions.length > 0 ? (
-              profileData.competitions.map((competition) => (
-                <div
-                  key={competition.id}
-                  className="flex items-center justify-between p-4 bg-background rounded-lg"
-                >
-                  <div>
-                    <p className="font-medium">{competition.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {formatDate(competition.start_date)} • {competition.weight_class}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <span className={`px-2 py-1 rounded-full text-xs ${
-                      competition.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                      competition.status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {competition.status}
-                    </span>
-                    {competition.total_weight > 0 && (
-                      <p className="text-accent font-medium mt-1">{competition.total_weight}kg total</p>
+              profileData.competitions.map((competition) => {
+                // Find videos for this competition
+                const competitionVideos = profileData.uploaded_videos?.filter(
+                  video => video.competition_id === competition.id
+                ) || [];
+                
+                return (
+                  <div
+                    key={competition.id}
+                    className="flex flex-col p-4 bg-background rounded-lg"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <Link 
+                          to={`/competitions/${competition.id}`}
+                          className="font-medium hover:text-accent"
+                        >
+                          {competition.name}
+                        </Link>
+                        <p className="text-sm text-muted-foreground">
+                          {formatDate(competition.start_date)} • {competition.weight_class}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <span className={`px-2 py-1 rounded-full text-xs ${
+                          competition.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                          competition.status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 
+                          'bg-gray-100 text-gray-800'
+                        }`}>
+                          {competition.status}
+                        </span>
+                        {competition.total_weight > 0 && (
+                          <p className="text-accent font-medium mt-1">{competition.total_weight}kg total</p>
+                        )}
+                      </div>
+                    </div>
+                    
+                    {/* Videos for this competition */}
+                    {competitionVideos.length > 0 && (
+                      <div className="mt-3">
+                        <p className="text-sm font-medium mb-2">
+                          {competitionVideos.length} {competitionVideos.length === 1 ? 'video' : 'videos'} submitted:
+                        </p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          {competitionVideos.map((video) => (
+                            <Link 
+                              key={video.attempt_id}
+                              to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
+                              className="flex items-center p-2 bg-accent/5 rounded-md hover:bg-accent/10 transition-colors"
+                            >
+                              <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center mr-3">
+                                <Play size={16} className="text-accent" />
+                              </div>
+                              <div>
+                                <p className="font-medium text-sm">{video.lift_type} - {video.weight}kg</p>
+                                <p className="text-xs text-muted-foreground">
+                                  {new Date(video.created_at).toLocaleDateString()}
+                                </p>
+                              </div>
+                              <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
+                                video.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                video.status === 'failed' ? 'bg-red-100 text-red-800' : 
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {video.status}
+                              </span>
+                            </Link>
+                          ))}
+                        </div>
+                      </div>
                     )}
                   </div>
-                </div>
-              ))
+                );
+              })
             ) : (
               <p className="text-muted-foreground text-center py-4">No competitions yet</p>
             )}

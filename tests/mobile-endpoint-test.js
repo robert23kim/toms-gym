@@ -45,6 +45,20 @@ const MOBILE_DEVICES = {
     viewportWidth: 1024,
     viewportHeight: 1366,
     pixelRatio: 2
+  },
+  android10Chrome: {
+    name: 'Android 10 Chrome',
+    userAgent: 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Mobile Safari/537.36',
+    viewportWidth: 412,
+    viewportHeight: 915,
+    pixelRatio: 2.625
+  },
+  linuxChrome: {
+    name: 'Linux Chrome',
+    userAgent: 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/134.0.0.0 Safari/537.36',
+    viewportWidth: 1920,
+    viewportHeight: 1080,
+    pixelRatio: 1
   }
 };
 
@@ -248,31 +262,103 @@ async function testVideoProxy(videoUrl, device) {
 async function testFrontend(device) {
   log(`\n=== Testing Frontend as ${device.name} ===`);
   
-  // Test the homepage
-  const homeResult = await makeRequestAsMobileDevice(FRONTEND_URL, device);
+  const result = await makeRequestAsMobileDevice(FRONTEND_URL, device);
   
-  if (homeResult.success) {
+  if (result.success) {
     log('Successfully accessed frontend homepage', 'success');
     
-    // Check if we got HTML response
-    if (typeof homeResult.data === 'string' && homeResult.data.includes('<!DOCTYPE html>')) {
+    // Check if we received HTML
+    const contentType = result.headers['content-type'] || '';
+    if (contentType.includes('text/html')) {
       log('Received valid HTML from frontend', 'success');
-      
-      // Save the HTML for inspection
-      fs.writeFileSync(
-        path.join(OUTPUT_DIR, `${device.name.replace(/\s+/g, '-')}-frontend-home.html`),
-        homeResult.data
-      );
-      
       return true;
     } else {
-      log('Did not receive expected HTML from frontend', 'warning');
+      log(`Unexpected content type: ${contentType}`, 'warning');
     }
-  } else {
-    log(`Failed to access frontend: ${homeResult.status}`, 'error');
   }
   
   return false;
+}
+
+// Test challenge page access
+async function testChallengePage(device) {
+  log(`\n=== Testing Challenge Page as ${device.name} ===`);
+  
+  const result = await makeRequestAsMobileDevice(`${API_URL}/competitions`, device);
+  
+  if (result.success) {
+    log('Successfully accessed challenges endpoint', 'success');
+    
+    if (result.data && result.data.competitions) {
+      log(`Retrieved ${result.data.competitions.length} challenges`, 'success');
+      return result.data.competitions;
+    } else {
+      log('No challenges found in response', 'warning');
+    }
+  }
+  
+  return null;
+}
+
+// Test create challenge
+async function testCreateChallenge(device) {
+  log(`\n=== Testing Create Challenge as ${device.name} ===`);
+  
+  // Create challenge data
+  const challengeData = {
+    name: `Mobile Test Challenge ${new Date().toISOString()}`,
+    location: "Test Location",
+    lifttypes: ["snatch", "clean_and_jerk"],
+    weightclasses: ["56kg", "62kg", "69kg"],
+    gender: "M",
+    start_date: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0], // 7 days from now
+    end_date: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0] // 14 days from now
+  };
+  
+  // Make the POST request
+  const result = await makeRequestAsMobileDevice(
+    `${API_URL}/create_competition`, 
+    device,
+    'POST',
+    { 'Content-Type': 'application/json' },
+    challengeData
+  );
+  
+  if (result.success) {
+    log('Successfully created challenge', 'success');
+    log(`Challenge ID: ${result.data.competition_id}`, 'success');
+    
+    // Verify the challenge was created by fetching it
+    if (result.data && result.data.competition_id) {
+      const verifyResult = await makeRequestAsMobileDevice(
+        `${API_URL}/competitions/${result.data.competition_id}`, 
+        device
+      );
+      
+      if (verifyResult.success && verifyResult.data && verifyResult.data.competition) {
+        log('Successfully verified created challenge', 'success');
+        return {
+          created: true,
+          challengeId: result.data.competition_id,
+          challenge: verifyResult.data.competition
+        };
+      } else {
+        log('Failed to verify created challenge', 'error');
+      }
+    }
+    
+    return {
+      created: true,
+      challengeId: result.data.competition_id
+    };
+  }
+  
+  log('Failed to create challenge', 'error');
+  if (result.data && result.data.error) {
+    log(`Error: ${result.data.error}`, 'error');
+  }
+  
+  return { created: false };
 }
 
 // Create HTML report
@@ -351,6 +437,8 @@ function generateReport(results) {
           <th>Direct Video</th>
           <th>Video Proxy</th>
           <th>Frontend</th>
+          <th>Challenge Page</th>
+          <th>Create Challenge</th>
         </tr>
       </thead>
       <tbody>
@@ -363,6 +451,8 @@ function generateReport(results) {
               <td class="${deviceResult.directVideo ? 'success' : 'error'}">${deviceResult.directVideo ? '✓ Pass' : '✗ Fail'}</td>
               <td class="${deviceResult.videoProxy ? 'success' : 'error'}">${deviceResult.videoProxy ? '✓ Pass' : '✗ Fail'}</td>
               <td class="${deviceResult.frontend ? 'success' : 'error'}">${deviceResult.frontend ? '✓ Pass' : '✗ Fail'}</td>
+              <td class="${deviceResult.challengePage ? 'success' : 'error'}">${deviceResult.challengePage ? '✓ Pass' : '✗ Fail'}</td>
+              <td class="${deviceResult.createChallenge ? 'success' : 'error'}">${deviceResult.createChallenge ? '✓ Pass' : '✗ Fail'}</td>
             </tr>
           `;
         }).join('')}
@@ -399,7 +489,9 @@ async function runTests() {
       randomVideo: false,
       directVideo: false,
       videoProxy: false,
-      frontend: false
+      frontend: false,
+      challengePage: false,
+      createChallenge: false
     };
     
     log(`\n=== Testing with ${device.name} ===`);
@@ -418,6 +510,20 @@ async function runTests() {
       // Test video proxy
       results[deviceKey].videoProxy = await testVideoProxy(videoUrl, device);
     }
+    
+    // Test challenge page
+    const challenges = await testChallengePage(device);
+    results[deviceKey].challengePage = !!challenges;
+    
+    // Test create challenge - only on one device to avoid creating too many test challenges
+    if (deviceKey === 'iPhone') {
+      const createResult = await testCreateChallenge(device);
+      results[deviceKey].createChallenge = createResult.created;
+    } else {
+      // Skip challenge creation for other devices
+      log('Skipping challenge creation test for this device', 'info');
+      results[deviceKey].createChallenge = 'skipped';
+    }
   }
   
   // Generate report
@@ -427,7 +533,7 @@ async function runTests() {
   for (const [deviceKey, deviceResults] of Object.entries(results)) {
     log(`${MOBILE_DEVICES[deviceKey].name}:`);
     for (const [test, passed] of Object.entries(deviceResults)) {
-      log(`  ${test}: ${passed ? '✓ Pass' : '✗ Fail'}`, passed ? 'success' : 'error');
+      log(`  ${test}: ${passed === 'skipped' ? '⚪ Skipped' : passed ? '✓ Pass' : '✗ Fail'}`, passed === 'skipped' ? 'info' : passed ? 'success' : 'error');
     }
   }
   
@@ -438,4 +544,4 @@ async function runTests() {
 runTests().catch(error => {
   log(`Error running tests: ${error.message}`, 'error');
   process.exit(1);
-}); 
+});

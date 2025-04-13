@@ -66,6 +66,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({ onSuccess, onCancel }) =>
       };
 
       console.log('Sending data to backend:', backendData); // Debug log
+      console.log('Using API URL:', API_URL);
 
       const response = await axios.post(
         `${API_URL}/create_competition`,

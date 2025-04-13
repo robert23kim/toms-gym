@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { API_URL } from '../config';
+import { API_URL, PROD_API_URL } from '../config';
 import VideoPlayer from '../components/VideoPlayer';
 import { Button } from '../components/ui/button';
 import { SkipForward, Upload, Filter, X } from 'lucide-react';
@@ -30,25 +30,68 @@ const RandomVideo = () => {
   const [retryCount, setRetryCount] = useState(0);
   const [debugInfo, setDebugInfo] = useState({
     apiUrl: API_URL,
+    productionUrl: PROD_API_URL,
     envValue: import.meta.env.VITE_API_URL || 'not set',
-    errorDetails: ''
+    errorDetails: '',
+    isMobile: false,
+    userAgent: ''
   });
 
-  // Improved mobile detection
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // We still need device type info for video path transformation
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+  const isLinux = /Linux|X11/i.test(navigator.userAgent);
+  const isLinuxDesktop = isLinux && !(/Mobile|Android/i.test(navigator.userAgent));
+  
+  // Use navigator for device detection (only for device type info, not API URL)
+  const isMobile = (
+    /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    /Mobile|Tablet|Touch/i.test(navigator.userAgent) ||
+    window.innerWidth < 768
+  );
+
+  useEffect(() => {
+    // Update debug info with detailed mobile status
+    setDebugInfo(prev => ({
+      ...prev, 
+      isMobile: isMobile,
+      userAgent: navigator.userAgent.substring(0, 100) // Truncate for display
+    }));
+  }, [isMobile]);
 
   const fetchVideo = async (endpoint: string) => {
     try {
       setLoading(true);
-      let url = `${API_URL}/${endpoint}`;
+      
+      // Build URL with any needed query parameters
+      const params = new URLSearchParams();
       
       // Add lift type filter if provided
       if (liftTypeFilter) {
-        url += `?lift_type=${encodeURIComponent(liftTypeFilter)}`;
+        params.append('lift_type', liftTypeFilter);
       }
       
+      // Always add mobile flag for mobile devices to ensure backend knows
+      if (isMobile || isAndroid || isiOS || isLinuxDesktop) {
+        params.append('mobile', 'true');
+      }
+      
+      // Add timestamp to prevent caching
+      params.append('t', new Date().getTime().toString());
+      
+      // Construct final URL
+      const queryString = params.toString();
+      let url = `${API_URL}/${endpoint}${queryString ? `?${queryString}` : ''}`;
+      
       console.log('Fetching video from URL:', url);
-      setDebugInfo(prev => ({...prev, apiUrl: API_URL}));
+      console.log('Is mobile device?', isMobile);
+      console.log('Using API URL:', API_URL);
+      
+      setDebugInfo(prev => ({
+        ...prev, 
+        apiUrl: API_URL,
+        isMobile: isMobile
+      }));
       
       const response = await axios.get(url);
       console.log('Received response:', response.data);
@@ -59,6 +102,7 @@ const RandomVideo = () => {
       
       // Extract the original video URL
       const videoUrl = response.data.video_url;
+      console.log('Original video URL from response:', videoUrl);
       
       // Handle URL differently based on device and URL type
       let finalVideoUrl = videoUrl;
@@ -81,9 +125,23 @@ const RandomVideo = () => {
           // Log for debugging
           console.log(`Video path extracted: ${videoPath}`);
           
-          // Use our proxy endpoint with explicit mobile parameter
-          finalVideoUrl = `${API_URL}/video/${encodeURIComponent(videoPath)}?mobile=${isMobile}`;
+          // FORCE PRODUCTION URL - no conditions
+          const videoProxyBaseUrl = PROD_API_URL;
+          
+          // Use our proxy endpoint with explicit parameters
+          finalVideoUrl = `${videoProxyBaseUrl}/video/${encodeURIComponent(videoPath)}?mobile=true`;
           console.log(`Using proxy URL: ${finalVideoUrl}`);
+          
+          // Add cache busting parameter and device info for debugging
+          finalVideoUrl += `&t=${new Date().getTime()}`;
+          
+          // Determine device type
+          let deviceType = 'desktop';
+          if (isAndroid) deviceType = 'android';
+          else if (isiOS) deviceType = 'ios';
+          else if (isLinuxDesktop) deviceType = 'linux';
+          
+          finalVideoUrl += `&device=${deviceType}`;
         } else {
           // Fallback with alt=media and cache busting for Google Storage
           console.log('Could not extract video path, using fallback');
@@ -152,6 +210,10 @@ const RandomVideo = () => {
           <div className="bg-gray-100 p-4 rounded max-w-md">
             <h3 className="font-bold">Debug Info:</h3>
             <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
+            <p><strong>Is Mobile:</strong> {debugInfo.isMobile ? 'Yes' : 'No'}</p>
+            <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : 'Desktop')}</p>
+            <p><strong>User Agent:</strong> {debugInfo.userAgent}</p>
             <p><strong>ENV Value:</strong> {debugInfo.envValue}</p>
           </div>
         </div>
@@ -165,6 +227,10 @@ const RandomVideo = () => {
           <div className="bg-gray-100 p-4 rounded max-w-md mb-4">
             <h3 className="font-bold">Debug Info:</h3>
             <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
+            <p><strong>Is Mobile:</strong> {debugInfo.isMobile ? 'Yes' : 'No'}</p>
+            <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : 'Desktop')}</p>
+            <p><strong>User Agent:</strong> {debugInfo.userAgent}</p>
             <p><strong>ENV Value:</strong> {debugInfo.envValue}</p>
             <p><strong>Error Details:</strong> {debugInfo.errorDetails}</p>
           </div>
@@ -182,6 +248,10 @@ const RandomVideo = () => {
           <div className="bg-gray-100 p-4 rounded max-w-md">
             <h3 className="font-bold">Debug Info:</h3>
             <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+            <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
+            <p><strong>Is Mobile:</strong> {debugInfo.isMobile ? 'Yes' : 'No'}</p>
+            <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : 'Desktop')}</p>
+            <p><strong>User Agent:</strong> {debugInfo.userAgent}</p>
             <p><strong>ENV Value:</strong> {debugInfo.envValue}</p>
           </div>
         </div>

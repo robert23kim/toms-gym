@@ -5,9 +5,14 @@
   "main": "mobile-endpoint-test.js",
   "scripts": {
     "test": "node mobile-endpoint-test.js",
+    "test:browser": "node mobile-browser-test.js",
+    "test:browser:show": "node mobile-browser-test.js --show-browser",
+    "test:local": "node mobile-browser-test.js --local",
     "video-test": "node mobile-video-test.js"
   },
   "dependencies": {
-    "axios": "^1.6.7"
+    "axios": "^1.6.7",
+    "fs-extra": "^11.3.0",
+    "puppeteer": "^22.15.0"
   }
-} 
+}

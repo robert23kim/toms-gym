@@ -245,12 +245,57 @@ def get_user_profile(user_id):
             session.close()
         except Exception as e:
             logger.error(f"Error fetching achievements: {str(e)}")
+        
+        # Get user's uploaded videos
+        uploaded_videos = []
+        try:
+            session = get_db_connection()
+            videos = session.execute(
+                sqlalchemy.text("""
+                    SELECT a.id as attempt_id, 
+                           a.lift_type, 
+                           a.weight_kg as weight,
+                           a.video_url,
+                           a.created_at,
+                           a.status,
+                           c.id as competition_id,
+                           c.name as competition_name
+                    FROM "Attempt" a
+                    JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                    JOIN "Competition" c ON uc.competition_id = c.id
+                    WHERE uc.user_id = :user_id
+                    AND a.video_url IS NOT NULL
+                    ORDER BY a.created_at DESC
+                    LIMIT 10
+                """),
+                {"user_id": user_id}
+            ).fetchall()
+            
+            # Convert to dicts
+            try:
+                for row in videos:
+                    video_dict = {}
+                    for key in row._mapping.keys():
+                        value = row._mapping[key]
+                        # Handle non-serializable types
+                        if isinstance(value, (datetime.datetime, datetime.date)):
+                            video_dict[key] = value.isoformat()
+                        else:
+                            video_dict[key] = value
+                    uploaded_videos.append(video_dict)
+            except Exception as e:
+                logger.error(f"Error processing videos: {str(e)}")
+            
+            session.close()
+        except Exception as e:
+            logger.error(f"Error fetching videos: {str(e)}")
             
         return jsonify({
             "user": user_data,
             "competitions": competitions_list,
             "best_lifts": best_lifts_list,
-            "achievements": achievements_dict
+            "achievements": achievements_dict,
+            "uploaded_videos": uploaded_videos
         })
     except Exception as e:
         import traceback

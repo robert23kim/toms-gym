@@ -40,6 +40,7 @@ services:
       - REDIS_URL=redis://redis:6379/0
       - JWT_SECRET_KEY=your-secret-key-here
       - FRONTEND_URL=http://localhost:3000
+      - VIDEO_BASE_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app
     ports:
       - "5000:5000"
     depends_on:
