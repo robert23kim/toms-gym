@@ -13,10 +13,10 @@ RUN npm ci --no-audit --prefer-offline
 # Copy the rest of the application files
 COPY . .
 
-# Build the React app in development mode explicitly
-ENV NODE_ENV=development
-ARG VITE_API_URL=http://localhost:5001
-RUN echo "VITE_API_URL=$VITE_API_URL" > .env.local
+# Build the React app 
+ENV NODE_ENV=production
+
+RUN rm -f .env.local .env.development.local
 RUN npm run build
 
 # Use lightweight Nginx image for serving static files
