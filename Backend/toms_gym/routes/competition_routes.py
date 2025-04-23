@@ -12,6 +12,7 @@ import uuid
 from toms_gym.config import Config
 import time
 import string
+import traceback  # Add this import for detailed stack traces
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -191,6 +192,7 @@ def get_competition_by_id(competition_id):
     Endpoint that queries a single competition by ID.
     """
     try:
+        logger.info(f"Fetching competition with ID: {competition_id}")
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("SELECT * FROM \"Competition\" WHERE id = :id"),
@@ -198,20 +200,28 @@ def get_competition_by_id(competition_id):
         ).fetchone()
         
         if result is None:
+            logger.warning(f"Competition not found with ID: {competition_id}")
             return {"error": "Competition not found"}, 404
             
+        # Log successful query
+        logger.info(f"Found competition with ID: {competition_id}, name: {result._mapping.get('name', 'unknown')}")
+        
         # Convert result to dict properly with safer approach
         competition_data = {}
         for key in result._mapping.keys():
             competition_data[key] = result._mapping[key]
+            # Log column types for debugging
+            logger.debug(f"Column {key}: value={result._mapping[key]}, type={type(result._mapping[key])}")
         
         # Try to extract metadata from description
         try:
             if competition_data.get('description') and ' - ' in competition_data['description']:
+                logger.debug(f"Parsing description with metadata: {competition_data['description']}")
                 parts = competition_data['description'].split(' - ', 1)
                 if len(parts) == 2:
                     location, metadata_json = parts
                     try:
+                        logger.debug(f"Attempting to parse JSON metadata: {metadata_json}")
                         metadata = json.loads(metadata_json)
                         
                         # Add the metadata fields directly to the competition data
@@ -219,35 +229,50 @@ def get_competition_by_id(competition_id):
                         competition_data['lifttypes'] = metadata.get('lifttypes', [])
                         competition_data['weightclasses'] = metadata.get('weightclasses', [])
                         competition_data['gender'] = metadata.get('gender', 'M')
-                    except json.JSONDecodeError:
+                        logger.debug(f"Successfully parsed metadata: {metadata}")
+                    except json.JSONDecodeError as json_err:
                         # If JSON parsing fails, just use the description as location
+                        logger.error(f"JSON parsing error in competition metadata: {str(json_err)}, metadata string: '{metadata_json}'")
                         competition_data['location'] = competition_data.get('description', '')
                         competition_data['lifttypes'] = []
                         competition_data['weightclasses'] = []
                         competition_data['gender'] = 'M'
                 else:
+                    logger.debug(f"Description doesn't contain metadata in expected format: {competition_data['description']}")
                     competition_data['location'] = competition_data.get('description', '')
                     competition_data['lifttypes'] = []
                     competition_data['weightclasses'] = []
                     competition_data['gender'] = 'M'
             else:
                 # No metadata in description
+                logger.debug(f"No metadata in description: {competition_data.get('description', 'None')}")
                 competition_data['location'] = competition_data.get('description', '')
                 competition_data['lifttypes'] = []
                 competition_data['weightclasses'] = []
                 competition_data['gender'] = 'M'
         except Exception as e:
-            logger.error(f"Error parsing competition metadata: {str(e)}")
+            logger.error(f"Error parsing competition metadata: {str(e)}, traceback: {traceback.format_exc()}")
             competition_data['location'] = competition_data.get('description', '')
             competition_data['lifttypes'] = []
             competition_data['weightclasses'] = []
             competition_data['gender'] = 'M'
         
         session.close()
+        logger.info(f"Successfully processed competition data for ID: {competition_id}")
         return {"competition": competition_data}
     except Exception as e:
+        error_details = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "traceback": traceback.format_exc(),
+            "competition_id": competition_id,
+            "request_path": request.path,
+            "request_args": dict(request.args),
+            "request_headers": {k: v for k, v in request.headers.items()},
+        }
         logger.error(f"Error fetching competition by ID: {str(e)}")
-        return {"error": str(e)}, 500
+        logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
 
 @competition_bp.route('/competitions/<string:competition_id>/participants')
 def get_competition_participants(competition_id):
@@ -255,6 +280,7 @@ def get_competition_participants(competition_id):
     Endpoint that queries all participants for a specific competition.
     """
     try:
+        logger.info(f"Fetching participants for competition ID: {competition_id}")
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("""
@@ -300,8 +326,16 @@ def get_competition_participants(competition_id):
         session.close()
         return {"participants": results}
     except Exception as e:
+        error_details = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "traceback": traceback.format_exc(),
+            "competition_id": competition_id,
+            "request_path": request.path,
+        }
         logger.error(f"Error fetching competition participants: {str(e)}")
-        return {"error": str(e)}, 500
+        logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
 
 @competition_bp.route('/competitions/<string:competition_id>/lifts')
 def get_competition_lifts(competition_id):
@@ -309,6 +343,7 @@ def get_competition_lifts(competition_id):
     Endpoint that queries all lifts for a specific competition.
     """
     try:
+        logger.info(f"Fetching lifts for competition ID: {competition_id}")
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("""
@@ -321,11 +356,33 @@ def get_competition_lifts(competition_id):
             """),
             {"competition_id": competition_id}
         )
-        results = [dict(row) for row in result]
+        
+        # Safer conversion from Row objects to dictionaries
+        results = []
+        for row in result:
+            row_dict = {}
+            for column, value in row._mapping.items():
+                # Handle special types that might not be JSON serializable
+                if isinstance(value, (datetime.datetime, datetime.date)):
+                    row_dict[column] = value.isoformat()
+                else:
+                    row_dict[column] = value
+            results.append(row_dict)
+            
         session.close()
+        logger.info(f"Successfully fetched {len(results)} lifts for competition {competition_id}")
         return {"lifts": results}
     except Exception as e:
-        return {"error": str(e)}, 500
+        error_details = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "traceback": traceback.format_exc(),
+            "competition_id": competition_id,
+            "request_path": request.path,
+        }
+        logger.error(f"Error fetching competition lifts: {str(e)}")
+        logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
 
 @competition_bp.route('/create_competition', methods=['POST'])
 def create_competition():
@@ -434,6 +491,7 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
     Endpoint that queries details for a specific attempt including video URL.
     """
     try:
+        logger.info(f"Fetching attempt details: competition_id={competition_id}, participant_id={participant_id}, attempt_id={attempt_id}")
         session = get_db_connection()
         try:
             row = session.execute(
@@ -461,6 +519,7 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
             ).fetchone()
             
             if not row:
+                logger.warning(f"Attempt not found: competition_id={competition_id}, participant_id={participant_id}, attempt_id={attempt_id}")
                 return jsonify({"error": "Attempt not found"}), 404
                 
             # Convert row to dict
@@ -471,16 +530,49 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
                     result[column] = value.isoformat()
                 else:
                     result[column] = value
-                    
+                
+            # Process video URL if available
+            if result.get('video_url'):
+                logger.info(f"Original video URL: {result['video_url']}")
+                
+                # Ensure the URL is properly formatted
+                video_url = result['video_url']
+                
+                # Detect if mobile client
+                is_mobile = is_mobile_device(request)
+                
+                # Transform URL for client device
+                if is_mobile:
+                    logger.info(f"Mobile device detected, transforming URL")
+                    video_url = transform_video_url(video_url)
+                    result['video_url'] = video_url
+                
+                logger.info(f"Final video URL: {result['video_url']}")
+            else:
+                logger.warning(f"No video URL found for attempt: {attempt_id}")
+            
+            logger.info(f"Successfully retrieved attempt details for {attempt_id}")
             return jsonify(result)
         except Exception as e:
-            logger.error(f"Database error getting attempt details: {str(e)}")
+            logger.error(f"Database error getting attempt details: {str(e)}, traceback: {traceback.format_exc()}")
             raise
         finally:
             session.close()
     except Exception as e:
+        error_details = {
+            "error_type": type(e).__name__,
+            "error_message": str(e),
+            "traceback": traceback.format_exc(),
+            "competition_id": competition_id,
+            "participant_id": participant_id,
+            "attempt_id": attempt_id,
+            "request_path": request.path,
+            "request_args": dict(request.args),
+            "request_headers": {k: v for k, v in request.headers.items()},
+        }
         logger.error(f"Error getting attempt details: {str(e)}")
-        return jsonify({"error": str(e)}), 500
+        logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        return jsonify({"error": f"Server error: {type(e).__name__} - {str(e)}"}), 500
 
 @competition_bp.route('/random-video')
 def get_random_video():
@@ -630,6 +722,11 @@ def serve_video(video_path):
             response.headers['X-Content-Type-Options'] = 'nosniff'
             response.headers['Content-Disposition'] = f'inline; filename="{clean_path.split("/")[-1]}"'
             logger.info(f"Adding {'Android' if is_android else 'Linux'}-specific headers for compatibility")
+        
+        # Add extra debug info in the headers
+        response.headers['X-Video-Path'] = clean_path
+        response.headers['X-Content-Type-Detected'] = content_type
+        response.headers['X-Device-Type'] = 'mobile' if is_mobile else 'desktop'
         
         return response
                 

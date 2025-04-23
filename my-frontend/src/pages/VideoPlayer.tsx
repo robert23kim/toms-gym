@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize2, BarChart2, Activity, Target, Award } from "lucide-react";
@@ -30,6 +30,9 @@ const VideoPlayer: React.FC = () => {
     userAgent: '',
     isMobile: false
   });
+  const [isVideoLoaded, setIsVideoLoaded] = useState(false);
+  const [videoLoadError, setVideoLoadError] = useState<string | null>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   
   // We still need device type info for video path transformation
   const isAndroid = /Android/i.test(navigator.userAgent);
@@ -59,14 +62,20 @@ const VideoPlayer: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
+        setVideoLoadError(null);
         
         console.log(`Using API URL for fetch: ${API_URL}`);
         
         const response = await axios.get(`${API_URL}/competitions/${id}/participants/${participantId}/attempts/${videoId}`);
         console.log("Video data response:", response.data);
         
-        if (response.data && response.data.attempt) {
-          const videoDataResponse = response.data.attempt;
+        if (response.data) {
+          let videoDataResponse = response.data;
+
+          // Check if the response has an attempt property or is the attempt itself
+          if (response.data.attempt) {
+            videoDataResponse = response.data.attempt;
+          }
           
           // Process the video URL for mobile if needed
           if (videoDataResponse.video_url) {
@@ -77,7 +86,7 @@ const VideoPlayer: React.FC = () => {
             let processedUrl = originalUrl;
             
             // Handle Google Storage URLs
-            if (originalUrl.includes('storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/')) {
+            if (originalUrl.includes('storage.googleapis.com')) {
               // Extract video path
               let videoPath = '';
               if (originalUrl.includes('jtr-lift-u-4ever-cool-bucket/videos/')) {
@@ -94,7 +103,9 @@ const VideoPlayer: React.FC = () => {
                 // ALWAYS use production URL for the video proxy (direct video access needs prod URL)
                 const videoProxyBaseUrl = PROD_API_URL;
                 
-                // Use the video proxy endpoint with explicit parameters
+                console.log("Video path extracted:", videoPath);
+                
+                // Use the video proxy endpoint with explicit parameters - FORCE proxy usage
                 processedUrl = `${videoProxyBaseUrl}/video/${encodeURIComponent(videoPath)}?mobile=true&t=${new Date().getTime()}`;
                 
                 // Add device type for debugging and better handling on backend
@@ -106,16 +117,32 @@ const VideoPlayer: React.FC = () => {
                 processedUrl += `&device=${deviceType}`;
                 console.log("Using proxy URL for device:", processedUrl);
               } else {
-                // Add cache busting to direct URLs
-                const cacheBuster = `t=${new Date().getTime()}`;
-                processedUrl = originalUrl.includes('?') ? 
-                  `${originalUrl}&${cacheBuster}` : 
-                  `${originalUrl}?${cacheBuster}`;
+                console.warn("Could not extract video path from URL:", originalUrl);
+                // Still try to use the proxy with the filename
+                const videoProxyBaseUrl = PROD_API_URL;
+                const filename = originalUrl.split('/').pop();
+                if (filename) {
+                  processedUrl = `${videoProxyBaseUrl}/video/videos/${encodeURIComponent(filename)}?mobile=true&t=${new Date().getTime()}`;
+                  console.log("Fallback to proxy URL with filename:", processedUrl);
+                } else {
+                  // Add cache busting to direct URLs as last resort
+                  const cacheBuster = `t=${new Date().getTime()}`;
+                  processedUrl = originalUrl.includes('?') ? 
+                    `${originalUrl}&${cacheBuster}` : 
+                    `${originalUrl}?${cacheBuster}`;
+                  console.log("Using direct URL with cache busting:", processedUrl);
+                }
               }
+            } else {
+              console.log("URL is not from Google Storage, using as is:", originalUrl);
             }
             
             // Set the processed URL
             setFinalVideoUrl(processedUrl);
+            console.log("Final video URL set to:", processedUrl);
+          } else {
+            console.error("No video URL found in the response data", videoDataResponse);
+            setVideoLoadError("No video URL available in the server response");
           }
           
           setVideoData(videoDataResponse);
@@ -132,6 +159,42 @@ const VideoPlayer: React.FC = () => {
 
     fetchVideoData();
   }, [id, participantId, videoId]);
+
+  // Add event handlers for video element
+  const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
+    const videoElement = e.currentTarget;
+    console.error("Video error:", videoElement.error);
+    let errorMessage = "Unknown video playback error";
+    
+    if (videoElement.error) {
+      switch (videoElement.error.code) {
+        case 1:
+          errorMessage = "Video loading aborted";
+          break;
+        case 2:
+          errorMessage = "Network error occurred while loading video";
+          break;
+        case 3:
+          errorMessage = "Video decoding failed - format may be unsupported";
+          break;
+        case 4:
+          errorMessage = "Video format not supported by your browser";
+          break;
+        default:
+          errorMessage = `Error code: ${videoElement.error.code}`;
+      }
+    }
+    
+    console.error("Video error details:", errorMessage);
+    setVideoLoadError(errorMessage);
+    setIsVideoLoaded(false);
+  };
+  
+  const handleVideoLoad = () => {
+    console.log("Video loaded successfully");
+    setIsVideoLoaded(true);
+    setVideoLoadError(null);
+  };
 
   if (loading) {
     return (
@@ -210,16 +273,29 @@ const VideoPlayer: React.FC = () => {
               </div>
 
               <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                {(finalVideoUrl || videoData.video_url) ? (
-                  <video
-                    src={finalVideoUrl || videoData.video_url}
-                    controls
-                    className="w-full h-full"
-                    autoPlay
-                    playsInline // For iOS compatibility
-                  >
-                    Your browser does not support the video tag.
-                  </video>
+                {(finalVideoUrl || (videoData && videoData.video_url)) ? (
+                  <>
+                    <video
+                      ref={videoRef}
+                      src={finalVideoUrl || (videoData && videoData.video_url)}
+                      controls
+                      className="w-full h-full"
+                      autoPlay
+                      playsInline // For iOS compatibility
+                      onError={handleVideoError}
+                      onLoadedData={handleVideoLoad}
+                      onLoadedMetadata={() => console.log("Video metadata loaded successfully")}
+                      onCanPlay={() => console.log("Video can play now")}
+                    >
+                      Your browser does not support the video tag.
+                    </video>
+                    {videoLoadError && (
+                      <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+                        <p><strong>Error loading video:</strong> {videoLoadError}</p>
+                        <p className="text-sm mt-1">Try refreshing the page or check your internet connection.</p>
+                      </div>
+                    )}
+                  </>
                 ) : (
                   <div className="flex items-center justify-center h-full text-muted-foreground">
                     No video available
@@ -227,15 +303,28 @@ const VideoPlayer: React.FC = () => {
                 )}
               </div>
               
-              {/* Debug info for mobile */}
-              {isMobile && (
-                <div className="mt-4 p-2 text-xs bg-gray-100 rounded-md">
-                  <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
-                  <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
-                  <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : 'Desktop')}</p>
-                  <p><strong>UA:</strong> {debugInfo.userAgent}</p>
-                </div>
-              )}
+              {/* Debug info */}
+              <div className="mt-4 p-2 text-xs bg-gray-100 rounded-md">
+                <details>
+                  <summary className="cursor-pointer font-medium">Debug Info (click to expand)</summary>
+                  <div className="mt-2 space-y-1">
+                    <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
+                    <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
+                    <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : (isLinux ? 'Linux' : 'Desktop'))}</p>
+                    <p><strong>Is Mobile:</strong> {isMobile ? 'Yes' : 'No'}</p>
+                    <p><strong>UA:</strong> {debugInfo.userAgent}</p>
+                    <p><strong>Original URL:</strong> {videoData?.video_url || 'N/A'}</p>
+                    <p><strong>Processed URL:</strong> {finalVideoUrl || 'N/A'}</p>
+                    <p><strong>Video Loaded:</strong> {isVideoLoaded ? 'Yes' : 'No'}</p>
+                    {videoRef.current && (
+                      <>
+                        <p><strong>Video Ready State:</strong> {videoRef.current.readyState}</p>
+                        <p><strong>Network State:</strong> {videoRef.current.networkState}</p>
+                      </>
+                    )}
+                  </div>
+                </details>
+              </div>
             </div>
           </div>
         </div>
