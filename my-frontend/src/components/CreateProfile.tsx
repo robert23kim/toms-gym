@@ -31,7 +31,7 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate passwords match
+    // Validate passwords match - THIS IS THE ONLY VALIDATION WE WANT
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -111,7 +111,7 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
         {message && <div className="bg-green-100 text-green-700 p-3 rounded mb-4">{message}</div>}
         {error && <div className="bg-red-100 text-red-700 p-3 rounded mb-4">{error}</div>}
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>
             <input
