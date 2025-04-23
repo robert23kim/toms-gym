@@ -6,6 +6,7 @@ import axios from "axios";
 import { Challenge } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
+import VideoGallery from "../components/VideoGallery";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -524,43 +525,26 @@ const ChallengeDetail: React.FC = () => {
               </h2>
 
               {participants.some(p => p.attempts?.some(a => a.video_url)) ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {participants.flatMap(participant => 
+                <VideoGallery 
+                  videos={participants.flatMap(participant => 
                     (participant.attempts || [])
                       .filter(attempt => attempt.video_url)
-                      .map((attempt, index) => (
-                        <Link 
-                          key={`${participant.id}-${attempt.id || index}`}
-                          to={`/video-player/${id}/${participant.id}/${attempt.id}`}
-                          className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
-                        >
-                          <div className="aspect-video bg-muted relative">
-                            <div className="absolute inset-0 flex items-center justify-center">
-                              <Play className="w-12 h-12 text-accent/75" />
-                            </div>
-                          </div>
-                          <div className="p-3">
-                            <div className="flex justify-between items-start">
-                              <h3 className="font-medium">{participant.name}</h3>
-                              <span className={`px-2 py-0.5 text-xs rounded-full ${
-                                attempt.status === 'completed' 
-                                  ? 'bg-green-100 text-green-800' 
-                                  : 'bg-gray-100 text-gray-800'
-                              }`}>
-                                {attempt.status}
-                              </span>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {attempt.lift_type} - {attempt.weight}kg
-                            </p>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              {attempt.timestamp ? new Date(attempt.timestamp).toLocaleDateString() : "Recent"}
-                            </p>
-                          </div>
-                        </Link>
-                      ))
+                      .map(attempt => ({
+                        attempt_id: attempt.id.toString(),
+                        user_id: participant.id,
+                        competition_id: id || '',
+                        lift_type: attempt.lift_type,
+                        weight: attempt.weight,
+                        video_url: attempt.video_url || '',
+                        status: attempt.status,
+                        created_at: attempt.timestamp || new Date().toISOString(),
+                        competition_name: challenge?.title || ''
+                      }))
                   ).slice(0, 6)}
-                </div>
+                  maxVideos={6}
+                  showCompetitionName={false}
+                  gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+                />
               ) : (
                 <div className="text-center py-8 text-muted-foreground">
                   <div className="mb-4">

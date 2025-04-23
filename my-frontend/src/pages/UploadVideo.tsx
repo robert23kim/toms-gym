@@ -139,19 +139,28 @@ const UploadVideo: React.FC = () => {
         },
       });
 
+      console.log("Upload response:", response.data);
+
       if (response.data.url) {
         // Store attempt_id in localStorage if needed for later reference
         if (response.data.attempt_id) {
           console.log("Attempt created with ID:", response.data.attempt_id);
           // Optionally store the last uploaded attempt ID
           localStorage.setItem('last_attempt_id', response.data.attempt_id);
+          
+          toast({
+            title: "Upload Successful!",
+            description: "Your lift has been submitted and linked to your profile. You can view it in your profile page.",
+            duration: 5000,
+          });
+        } else {
+          console.warn("No attempt_id received in the response");
+          toast({
+            title: "Upload Successful",
+            description: "Video was uploaded but may not be fully linked to your profile. Please contact support if you don't see it in your profile.",
+            duration: 5000,
+          });
         }
-        
-        toast({
-          title: "Upload Successful!",
-          description: "Your lift has been submitted and linked to your profile. You can view it in your profile page.",
-          duration: 5000,
-        });
         
         // Navigate back to appropriate page
         if (id) {
@@ -159,10 +168,33 @@ const UploadVideo: React.FC = () => {
         } else {
           navigate('/random-video');
         }
+      } else {
+        console.error("No URL in the response:", response.data);
+        setError("Upload completed but no video URL was returned");
       }
     } catch (err: any) {
-      console.error("Upload error:", err.response?.data);
-      setError(err.response?.data?.error || "Failed to upload video");
+      console.error("Upload error:", err);
+      
+      if (err.response) {
+        console.error("Response error data:", err.response.data);
+        console.error("Response status:", err.response.status);
+        console.error("Response headers:", err.response.headers);
+        
+        // More descriptive error message
+        let errorMsg = "Upload failed";
+        if (err.response.data && err.response.data.error) {
+          errorMsg = `${errorMsg}: ${err.response.data.error}`;
+        } else if (err.response.status) {
+          errorMsg = `${errorMsg} with status ${err.response.status}`;
+        }
+        setError(errorMsg);
+      } else if (err.request) {
+        console.error("Request error - no response received:", err.request);
+        setError("No response received from server. Please check your connection.");
+      } else {
+        console.error("Error setting up request:", err.message);
+        setError(`Error: ${err.message}`);
+      }
     } finally {
       setIsUploading(false);
     }

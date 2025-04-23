@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useCallback } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import { Calendar, MapPin, Trophy, Activity, Award, ArrowLeft, Users, BarChart2, User, Dumbbell, Play } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
-import { Link } from "react-router-dom";
+import VideoGallery from '../components/VideoGallery';
 
 // Interfaces for API response data
 interface UserData {
@@ -302,68 +302,23 @@ const Profile = () => {
                         </span>
                       </div>
                       
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {competitionVideos.slice(0, 3).map((video) => (
-                          <Link 
-                            key={video.attempt_id}
-                            to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
-                            className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
-                          >
-                            <div className="aspect-video bg-muted relative">
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <Play className="w-12 h-12 text-accent/75" />
-                              </div>
-                            </div>
-                            <div className="p-3">
-                              <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
-                              <p className="text-sm text-muted-foreground">
-                                {new Date(video.created_at).toLocaleDateString()}
-                              </p>
-                              <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
-                                video.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                                video.status === 'failed' ? 'bg-red-100 text-red-800' : 
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {video.status}
-                              </span>
-                            </div>
-                          </Link>
-                        ))}
-                      </div>
+                      <VideoGallery 
+                        videos={competitionVideos}
+                        maxVideos={3}
+                        showCompetitionName={false}
+                        userId={profileData.user.id}
+                      />
                     </div>
                   );
                 });
               } else {
                 // Standard display for videos from a single competition or unaffiliated videos
                 return (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {profileData.uploaded_videos.slice(0, 6).map((video) => (
-                      <Link 
-                        key={video.attempt_id}
-                        to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
-                        className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
-                      >
-                        <div className="aspect-video bg-muted relative">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <Play className="w-12 h-12 text-accent/75" />
-                          </div>
-                        </div>
-                        <div className="p-3">
-                          <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(video.created_at).toLocaleDateString()} • {video.competition_name}
-                          </p>
-                          <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
-                            video.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                            video.status === 'failed' ? 'bg-red-100 text-red-800' : 
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {video.status}
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
+                  <VideoGallery 
+                    videos={profileData.uploaded_videos}
+                    maxVideos={6}
+                    userId={profileData.user.id}
+                  />
                 );
               }
             })()}

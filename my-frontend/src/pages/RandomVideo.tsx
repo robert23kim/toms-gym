@@ -6,6 +6,7 @@ import { Button } from '../components/ui/button';
 import { SkipForward, Upload, Filter, X, Play, Trophy } from 'lucide-react';
 import Layout from '../components/Layout';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
+import VideoGallery from '../components/VideoGallery';
 
 interface CompetitionVideos {
   competition_id: string;
@@ -411,46 +412,27 @@ const RandomVideo = () => {
                     </span>
                   </div>
                   
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {competition.videos.slice(0, 3).map(video => (
-                      <Link 
-                        key={video.attempt_id}
-                        to={`/video-player/${competition.competition_id}/${video.user_id}/${video.attempt_id}`}
-                        className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02] shadow-sm"
-                      >
-                        <div className="aspect-video bg-muted relative">
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <Play className="w-12 h-12 text-accent/75" />
-                          </div>
-                        </div>
-                        <div className="p-4">
-                          <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
-                          <p className="text-sm text-muted-foreground">
-                            {new Date(video.created_at).toLocaleDateString()}
-                          </p>
-                          <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
-                            video.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                            video.status === 'failed' ? 'bg-red-100 text-red-800' : 
-                            'bg-gray-100 text-gray-800'
-                          }`}>
-                            {video.status}
-                          </span>
-                        </div>
-                      </Link>
-                    ))}
-                    
-                    {competition.videos.length > 3 && (
-                      <Link 
-                        to={`/competitions/${competition.competition_id}`}
-                        className="bg-muted/30 rounded-lg flex items-center justify-center aspect-video hover:bg-muted/50 transition-colors col-span-1"
-                      >
-                        <div className="text-center">
-                          <p className="text-lg font-medium">View {competition.videos.length - 3} more</p>
-                          <p className="text-sm text-muted-foreground">from this competition</p>
-                        </div>
-                      </Link>
-                    )}
-                  </div>
+                  <VideoGallery 
+                    videos={competition.videos.map(video => ({
+                      ...video,
+                      competition_id: competition.competition_id,
+                      competition_name: competition.competition_name
+                    }))}
+                    maxVideos={3}
+                    showCompetitionName={false}
+                  />
+                  
+                  {competition.videos.length > 3 && (
+                    <Link 
+                      to={`/competitions/${competition.competition_id}`}
+                      className="bg-muted/30 rounded-lg flex items-center justify-center aspect-video hover:bg-muted/50 transition-colors col-span-1"
+                    >
+                      <div className="text-center">
+                        <p className="text-lg font-medium">View {competition.videos.length - 3} more</p>
+                        <p className="text-sm text-muted-foreground">from this competition</p>
+                      </div>
+                    </Link>
+                  )}
                 </div>
               ))}
             </div>
