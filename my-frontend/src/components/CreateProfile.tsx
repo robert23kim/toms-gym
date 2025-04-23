@@ -15,8 +15,8 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     name: 'John Doe',
     email: 'john.doe@example.com',
-    password: '',
-    confirmPassword: '',
+    password: 'Password123',
+    confirmPassword: 'Password123',
     weight_class: '83kg',
     country: 'United States',
     bio: 'Powerlifting enthusiast looking to compete and improve!'
@@ -31,7 +31,7 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Validate passwords match - THIS IS THE ONLY VALIDATION WE WANT
+    // Validate passwords match - this is the only validation we keep
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
@@ -64,7 +64,10 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
       }, 1500);
     } catch (err: any) {
       console.error('Error creating profile:', err);
-      setError(err.response?.data?.error || 'Failed to create profile. Please try again.');
+      // Show all error messages, including password-related ones
+      const errorMsg = err.response?.data?.error || 'Failed to create profile. Please try again.';
+      console.log('Full error message:', errorMsg);
+      setError(errorMsg);
     } finally {
       setLoading(false);
     }
@@ -77,11 +80,8 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
       [name]: value
     }));
     
-    // Clear error when user starts typing in a field
-    if (error && (
-      (name === 'password' && formData.confirmPassword && value !== formData.confirmPassword) ||
-      (name === 'confirmPassword' && formData.password && value !== formData.password)
-    )) {
+    // Clear any errors when changing password fields
+    if (name === 'password' || name === 'confirmPassword') {
       setError('');
     }
   };

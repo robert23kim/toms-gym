@@ -212,12 +212,12 @@ const ChallengeDetail: React.FC = () => {
       
       // Get appropriate weight class and gender from challenge metadata if available
       let weightClass = selectedWeightClass || "83kg"; // Use selected or default
-      let gender = "M"; // Default
+      let gender = "male"; // Default to male instead of "M"
       
       if (challenge?.categories && challenge.categories.length > 0) {
         // Set gender based on whether 'Women' is in the categories
         if (challenge.categories.includes('Women')) {
-          gender = "F";
+          gender = "female"; // Use female instead of "F"
         }
       }
       

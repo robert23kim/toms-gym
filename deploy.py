@@ -408,6 +408,22 @@ class DeploymentManager:
                     else:
                         self.log(f"⚠️  {role_name} assignment yielded a warning, continuing...", Colors.YELLOW)
                         self._roles_checked.add(role)
+        
+        # Add specific bucket permissions
+        self.log("🪣 Setting up GCS bucket permissions...", Colors.BLUE)
+        try:
+            # Grant storage.objects.create permission to the specific bucket
+            await self.run_command([
+                "gsutil", "iam", "ch", 
+                f"serviceAccount:{self.config.service_account}:roles/storage.objectAdmin",
+                f"gs://{self.config.bucket_name}"
+            ], show_output=True)
+            self.log(f"✓ Added storage.objectAdmin role for bucket {self.config.bucket_name}", Colors.GREEN)
+        except Exception as e:
+            if "already has role" in str(e):
+                self.log(f"ℹ️  Bucket permissions already granted, continuing...", Colors.YELLOW)
+            else:
+                self.log(f"⚠️  Error setting bucket permissions: {str(e)}", Colors.RED)
 
     async def get_service_image(self, service: str) -> str:
         """Get the current image of a deployed service"""
