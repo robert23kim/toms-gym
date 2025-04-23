@@ -377,7 +377,7 @@ const Profile = () => {
                           {competitionVideos.map((video) => (
                             <Link 
                               key={video.attempt_id}
-                              to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
+                              to={`/challenges/${video.competition_id}/participants/${profileData.user.id}/video/${video.attempt_id}`}
                               className="flex items-center p-2 bg-accent/5 rounded-md hover:bg-accent/10 transition-colors"
                             >
                               <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center mr-3">

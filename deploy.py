@@ -536,6 +536,34 @@ class DeploymentManager:
         # Verify deployment
         if not await self.verify_deployment(self.config.backend_service, new_image):
             raise DeploymentError("Backend deployment verification failed")
+            
+        # Route traffic to the latest revision
+        self.log("Routing traffic to the latest backend revision...", Colors.YELLOW)
+        await self.route_traffic_to_latest(self.config.backend_service)
+
+    async def route_traffic_to_latest(self, service: str):
+        """Route 100% of traffic to the latest revision of a service"""
+        spinner = None
+        if service == self.config.backend_service:
+            spinner = self.backend_spinner
+            spinner.update_progress("[3/3] Routing traffic to latest revision")
+        elif service == self.config.frontend_service:
+            spinner = self.frontend_spinner
+            spinner.update_progress("[3/3] Routing traffic to latest revision")
+        
+        try:
+            result = await self.run_command([
+                "gcloud", "run", "services", "update-traffic", service,
+                "--platform", "managed",
+                "--region", self.config.region,
+                "--to-latest"
+            ])
+            
+            self.log(f"✅ Successfully routed 100% traffic to latest revision of {service}", Colors.GREEN)
+            return True
+        except Exception as e:
+            self.log(f"❌ Failed to route traffic to latest revision of {service}: {e}", Colors.RED)
+            return False
 
     async def deploy_frontend(self):
         """Deploy the frontend to Cloud Run"""
@@ -594,6 +622,10 @@ class DeploymentManager:
         # Verify deployment
         if not await self.verify_deployment(self.config.frontend_service, new_image):
             raise DeploymentError("Frontend deployment verification failed")
+            
+        # Route traffic to the latest revision
+        self.log("Routing traffic to the latest frontend revision...", Colors.BLUE)
+        await self.route_traffic_to_latest(self.config.frontend_service)
 
     async def get_service_url(self, service: str) -> str:
         """Get the URL of a deployed service"""

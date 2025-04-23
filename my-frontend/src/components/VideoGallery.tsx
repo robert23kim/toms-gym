@@ -53,7 +53,7 @@ const VideoGallery: React.FC<VideoGalleryProps> = ({
         {videos.slice(0, maxVideos).map((video) => (
           <Link 
             key={video.attempt_id}
-            to={`/video-player/${video.competition_id}/${video.user_id || userId}/${video.attempt_id}`}
+            to={`/challenges/${video.competition_id}/participants/${video.user_id || userId}/video/${video.attempt_id}`}
             className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02] shadow-sm"
           >
             <div className="aspect-video bg-muted relative">

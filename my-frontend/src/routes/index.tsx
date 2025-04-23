@@ -13,6 +13,13 @@ import Profile from "../pages/Profile";
 import RandomVideo from "../pages/RandomVideo";
 import AuthCallback from "../pages/AuthCallback";
 import AuthError from "../pages/AuthError";
+import { Navigate, useParams } from "react-router-dom";
+
+// Redirect component for backward compatibility
+const VideoPlayerRedirect = () => {
+  const { id, participantId, videoId } = useParams();
+  return <Navigate to={`/challenges/${id}/participants/${participantId}/video/${videoId}`} replace />;
+};
 
 export const routes: RouteObject[] = [
   {
@@ -38,6 +45,10 @@ export const routes: RouteObject[] = [
   {
     path: "/challenges/:id/participants/:participantId/video/:videoId",
     element: <VideoPlayer />,
+  },
+  {
+    path: "/video-player/:id/:participantId/:videoId",
+    element: <VideoPlayerRedirect />,
   },
   {
     path: "/random-video",

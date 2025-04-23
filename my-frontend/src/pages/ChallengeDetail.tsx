@@ -12,19 +12,32 @@ import VideoGallery from "../components/VideoGallery";
 const COMPETITIONS_API_URL = API_URL;
 
 interface Attempt {
-  id: number;
-  participant_id: number;
-  type: string;
+  id: string;
+  participant_id: string;
+  lift_type: string;
   weight: number;
-  success: boolean;
+  status: string;
   video_url: string | null;
-  timestamp: string;
+  timestamp?: string;
+}
+
+interface VideoData {
+  attempt_id: string;
+  user_id: string;
+  lift_type: string;
+  weight: number;
+  status: string;
+  video_url: string;
+  created_at: string;
+  competition_id: string;
+  competition_name?: string;
 }
 
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
+  const [videoData, setVideoData] = useState<VideoData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
@@ -42,13 +55,39 @@ const ChallengeDetail: React.FC = () => {
         const userId = localStorage.getItem('userId');
         
         // Fetch challenge, participants, and check if user has joined
-        const [challengeData, participantsData] = await Promise.all([
+        const [challengeData, participantsData, liftsData] = await Promise.all([
           axios.get(`${COMPETITIONS_API_URL}/competitions/${id}`),
-          axios.get(`${COMPETITIONS_API_URL}/competitions/${id}/participants`)
+          axios.get(`${COMPETITIONS_API_URL}/competitions/${id}/participants`),
+          axios.get(`${COMPETITIONS_API_URL}/competitions/${id}/lifts`)
         ]);
 
         const backendData = challengeData.data.competition;
         const participantsDataBackend = participantsData.data.participants || [];
+        const liftsDataBackend = liftsData.data.lifts || [];
+        
+        // Store the lifts/attempts with full data including video URLs
+        setAttempts(liftsDataBackend);
+        
+        // Process video data for the gallery
+        const processedVideoData: VideoData[] = liftsDataBackend
+          .filter(lift => lift.video_url) // Only include lifts with videos
+          .map(lift => ({
+            attempt_id: lift.id.toString(),
+            user_id: lift.participant_id,
+            lift_type: lift.lift_type,
+            weight: lift.weight,
+            status: lift.status,
+            video_url: lift.video_url,
+            created_at: lift.timestamp || new Date().toISOString(),
+            competition_id: id || '',
+            competition_name: backendData.name
+          }));
+        
+        setVideoData(processedVideoData);
+        
+        // Debug logging
+        console.log("Processed video data:", processedVideoData);
+        
         setParticipants(participantsDataBackend);
 
         // Check if the current user has already joined
@@ -466,7 +505,7 @@ const ChallengeDetail: React.FC = () => {
                             <span className="mx-1 font-bold">{attempt.weight}kg</span>
                             {attempt.video_url && (
                               <Link
-                                to={`/video-player/${id}/${participant.id}/${attempt.id}`}
+                                to={`/challenges/${id}/participants/${participant.id}/video/${attempt.id}`}
                                 className="text-primary hover:underline text-xs ml-1"
                               >
                                 (watch video)
@@ -516,54 +555,41 @@ const ChallengeDetail: React.FC = () => {
             </div>
           </div>
 
-          {/* Recent Videos Section */}
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
-            <div className="p-6 sm:p-8">
-              <h2 className="text-xl font-semibold mb-4 flex items-center">
-                <Play className="mr-2" size={20} />
-                Recent Challenge Videos
-              </h2>
-
-              {participants.some(p => p.attempts?.some(a => a.video_url)) ? (
-                <VideoGallery 
-                  videos={participants.flatMap(participant => 
-                    (participant.attempts || [])
-                      .filter(attempt => attempt.video_url)
-                      .map(attempt => ({
-                        attempt_id: attempt.id.toString(),
-                        user_id: participant.id,
-                        competition_id: id || '',
-                        lift_type: attempt.lift_type,
-                        weight: attempt.weight,
-                        video_url: attempt.video_url || '',
-                        status: attempt.status,
-                        created_at: attempt.timestamp || new Date().toISOString(),
-                        competition_name: challenge?.title || ''
-                      }))
-                  ).slice(0, 6)}
-                  maxVideos={6}
-                  showCompetitionName={false}
-                  gridClassName="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-                />
-              ) : (
-                <div className="text-center py-8 text-muted-foreground">
-                  <div className="mb-4">
-                    <Play className="w-12 h-12 mx-auto text-muted-foreground/50" />
-                  </div>
-                  <p>No videos have been uploaded to this challenge yet.</p>
-                  {hasJoined && (
-                    <p className="mt-2">
-                      <Link
-                        to={`/challenges/${id}/upload`}
-                        className="text-accent hover:underline"
-                      >
-                        Be the first to upload a video →
-                      </Link>
-                    </p>
-                  )}
-                </div>
-              )}
-            </div>
+          {/* Recent Challenge Videos */}
+          <div className="mt-12">
+            <h3 className="text-2xl font-bold mb-6">Recent Challenge Videos</h3>
+            
+            {videoData.length > 0 ? (
+              <VideoGallery 
+                videos={videoData}
+                title=""
+                emptyMessage="No videos uploaded yet for this challenge"
+                maxVideos={6}
+              />
+            ) : hasJoined ? (
+              <div className="bg-gray-100 p-8 rounded-lg text-center">
+                <p className="text-gray-700 mb-4">No videos have been uploaded yet. Be the first to upload your attempt!</p>
+                <Link
+                  to={`/challenges/${id}/upload`}
+                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
+                >
+                  <Play className="w-5 h-5 mr-2" />
+                  Upload Your Video
+                </Link>
+              </div>
+            ) : (
+              <div className="bg-gray-100 p-8 rounded-lg text-center">
+                <p className="text-gray-700 mb-4">Join this challenge to upload your lifting videos!</p>
+                <button
+                  onClick={handleJoinChallenge}
+                  disabled={isJoining}
+                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
+                >
+                  <CheckCircle2 className="w-5 h-5 mr-2" />
+                  {isJoining ? "Joining..." : "Join Challenge"}
+                </button>
+              </div>
+            )}
           </div>
         </div>
       </motion.div>
