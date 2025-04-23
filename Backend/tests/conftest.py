@@ -13,6 +13,7 @@ import bcrypt
 import subprocess
 import sys
 from pathlib import Path
+from unittest.mock import MagicMock
 
 # Import the actual app instance and session factory
 from toms_gym.app import app as application # Rename to avoid conflict
@@ -269,8 +270,8 @@ def auth_app():
     app.config['JWT_SECRET'] = 'test-secret-key'
     app.config['JWT_SECRET_KEY'] = 'test-secret-key' 
     app.config['JWT_ALGORITHM'] = 'HS256'
-    app.config['JWT_EXPIRE_HOURS'] = 24
-    app.config['JWT_REFRESH_DAYS'] = 30
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = timedelta(days=7)  # Updated to match production
+    app.config['JWT_REFRESH_TOKEN_EXPIRES'] = timedelta(days=90)  # Updated to match production
     app.config['DEBUG'] = True
     
     # Copy over any database connection settings from main app
@@ -405,15 +406,22 @@ def auth_db_cleanup():
 @pytest.fixture
 def generate_auth_token():
     """Generate a JWT token for testing"""
-    def _generate_token(user_id, token_type='access', expire_hours=1):
+    def _generate_token(user_id, token_type='access', expire_days=None):
         secret = 'test-secret-key'
         now = datetime.utcnow()
         
-        if expire_hours > 0:
-            exp = now + timedelta(hours=expire_hours)
+        # Set defaults based on token type
+        if expire_days is None:
+            if token_type == 'access':
+                expire_days = 7  # Default access token lifetime: 7 days
+            else:
+                expire_days = 90  # Default refresh token lifetime: 90 days
+        
+        if expire_days > 0:
+            exp = now + timedelta(days=expire_days)
         else:
             # For expired tokens (testing)
-            exp = now + timedelta(hours=expire_hours)
+            exp = now + timedelta(days=expire_days)
         
         token_id = str(uuid.uuid4())
         payload = {
@@ -425,7 +433,47 @@ def generate_auth_token():
         }
         
         token = jwt.encode(payload, secret, algorithm='HS256')
-        print(f"Generated {token_type} token for user {user_id}: {token[:20]}...")
+        print(f"Generated {token_type} token for user {user_id}: {token[:20]}... (expires in {expire_days} days)")
         return token
     
-    return _generate_token 
+    return _generate_token
+
+@pytest.fixture(scope='session', autouse=True)
+def mock_redis():
+    """Mock Redis client for all tests to avoid Redis connection failures."""
+    from toms_gym.security import redis_client
+    
+    # Create a mock Redis client
+    mock_client = MagicMock()
+    
+    # Configure the mock to return expected values for common Redis operations
+    # lpush: Used for logging auth events
+    mock_client.lpush.return_value = 1
+    
+    # get: Used for token blacklist checks and rate limiting
+    mock_client.get.return_value = None  # Default to None (token not blacklisted)
+    
+    # setex: Used for token blacklisting and rate limiting
+    mock_client.setex.return_value = True
+    
+    # incr: Used for failed login tracking
+    mock_client.incr.return_value = 1
+    
+    # delete: Used to clear failed login attempts
+    mock_client.delete.return_value = 1
+    
+    # expire: Used to set expiry on keys
+    mock_client.expire.return_value = True
+    
+    # Store the original Redis client
+    original_redis = redis_client
+    
+    # Replace with our mock
+    import toms_gym.security
+    toms_gym.security.redis_client = mock_client
+    
+    # Yield control to tests
+    yield mock_client
+    
+    # Restore the original client after tests complete (optional)
+    toms_gym.security.redis_client = original_redis 

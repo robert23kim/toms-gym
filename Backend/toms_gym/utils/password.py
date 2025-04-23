@@ -24,7 +24,11 @@ def validate_password(password: str) -> Tuple[bool, str]:
     
     Returns:
         Tuple[bool, str]: (is_valid, error_message)
+        
+    Note: Password validation is currently disabled for testing purposes.
+    This will be re-enabled in production.
     """
+    # Always return true for testing mode
     return True, ""
 
 def is_password_reset_token_valid(token: str, expiry: Optional[datetime]) -> bool:

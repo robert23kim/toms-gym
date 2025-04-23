@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { API_URL } from '../config';
+import { getAccessToken, getRefreshToken, getUserId, setTokens, clearTokens } from './tokenUtils';
 
 // Define types
 interface User {
@@ -15,7 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
-  handleLoginSuccess: (token: string, userId: string) => Promise<void>;
+  handleLoginSuccess: (accessToken: string, refreshToken: string, userId: string) => Promise<void>;
   logout: () => void;
 }
 
@@ -41,13 +42,47 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Check if user is already authenticated on mount
   useEffect(() => {
-    const token = localStorage.getItem('auth_token');
-    if (token) {
+    const token = getAccessToken();
+    const userId = getUserId();
+    
+    if (token && userId) {
       fetchUserData(token);
     } else {
-      setLoading(false);
+      // Try to use refresh token if available
+      const refreshToken = getRefreshToken();
+      if (refreshToken) {
+        refreshAccessToken(refreshToken);
+      } else {
+        setLoading(false);
+      }
     }
   }, []);
+
+  // Function to refresh the access token using refresh token
+  const refreshAccessToken = async (refreshToken: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.post(`${API_URL}/auth/refresh`, {}, {
+        headers: {
+          Authorization: `Bearer ${refreshToken}`
+        }
+      });
+      
+      const { access_token, user_id } = response.data;
+      
+      // Update tokens, keeping the same refresh token
+      setTokens(access_token, refreshToken, user_id);
+      
+      // Fetch user data with new access token
+      await fetchUserData(access_token);
+    } catch (err) {
+      console.error('Error refreshing token:', err);
+      clearTokens();
+      setError('Session expired. Please log in again.');
+      setIsAuthenticated(false);
+      setLoading(false);
+    }
+  };
 
   // Function to fetch user data using token
   const fetchUserData = async (token: string) => {
@@ -64,26 +99,42 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setError(null);
     } catch (err) {
       console.error('Error fetching user data:', err);
-      localStorage.removeItem('auth_token');
-      localStorage.removeItem('userId');
-      setError('Session expired. Please log in again.');
-      setIsAuthenticated(false);
+      
+      // Try to use refresh token if available
+      const refreshToken = getRefreshToken();
+      if (refreshToken) {
+        refreshAccessToken(refreshToken);
+      } else {
+        clearTokens();
+        setError('Session expired. Please log in again.');
+        setIsAuthenticated(false);
+      }
     } finally {
       setLoading(false);
     }
   };
 
   // Handle successful password login
-  const handleLoginSuccess = async (token: string, userId: string) => {
-    localStorage.setItem('auth_token', token);
-    localStorage.setItem('userId', userId);
-    await fetchUserData(token);
+  const handleLoginSuccess = async (accessToken: string, refreshToken: string, userId: string) => {
+    setTokens(accessToken, refreshToken, userId);
+    await fetchUserData(accessToken);
   };
 
   // Logout function
   const logout = () => {
-    localStorage.removeItem('auth_token');
-    localStorage.removeItem('userId');
+    // Call the logout API to blacklist the token if needed
+    const token = getAccessToken();
+    if (token) {
+      axios.post(`${API_URL}/auth/logout`, {}, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }).catch(err => {
+        console.error('Error during logout:', err);
+      });
+    }
+    
+    clearTokens();
     setUser(null);
     setIsAuthenticated(false);
     

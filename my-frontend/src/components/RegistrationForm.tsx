@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config';
+import { setTokens } from '../auth/tokenUtils';
+import { useAuth } from '../auth/AuthContext';
 
 interface RegistrationFormProps {
     onSuccess?: () => void;
@@ -18,6 +20,7 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess, o
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
+    const { handleLoginSuccess } = useAuth();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -65,10 +68,13 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess, o
                 throw new Error(data.error || 'Registration failed');
             }
 
-            // Store tokens
-            localStorage.setItem('auth_token', data.access_token);
-            localStorage.setItem('refresh_token', data.refresh_token);
-            localStorage.setItem('user_id', data.user_id);
+            // Use auth context to handle login after successful registration
+            if (data.access_token && data.refresh_token && data.user_id) {
+                await handleLoginSuccess(data.access_token, data.refresh_token, data.user_id);
+            } else {
+                // Fallback if refresh token is not provided
+                setTokens(data.access_token, data.access_token, data.user_id);
+            }
 
             if (onSuccess) {
                 onSuccess();

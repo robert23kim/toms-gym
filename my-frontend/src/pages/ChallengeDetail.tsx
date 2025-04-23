@@ -79,6 +79,7 @@ const ChallengeDetail: React.FC = () => {
   const [joinError, setJoinError] = useState<string | null>(null);
   const [participants, setParticipants] = useState<any[]>([]);
   const [hasJoined, setHasJoined] = useState(false);
+  const [selectedWeightClass, setSelectedWeightClass] = useState<string>("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -179,6 +180,15 @@ const ChallengeDetail: React.FC = () => {
     fetchData();
   }, [id]);
 
+  useEffect(() => {
+    if (challenge?.categories) {
+      const weightClasses = challenge.categories.filter(cat => cat.includes('kg'));
+      if (weightClasses.length > 0) {
+        setSelectedWeightClass(weightClasses[0]);
+      }
+    }
+  }, [challenge]);
+
   const determineStatus = (startDate: string, endDate: string): "upcoming" | "ongoing" | "completed" => {
     const now = new Date();
     const start = new Date(startDate);
@@ -200,13 +210,24 @@ const ChallengeDetail: React.FC = () => {
         return;
       }
       
+      // Get appropriate weight class and gender from challenge metadata if available
+      let weightClass = selectedWeightClass || "83kg"; // Use selected or default
+      let gender = "M"; // Default
+      
+      if (challenge?.categories && challenge.categories.length > 0) {
+        // Set gender based on whether 'Women' is in the categories
+        if (challenge.categories.includes('Women')) {
+          gender = "F";
+        }
+      }
+      
       await axios.post(
         `${COMPETITIONS_API_URL}/join_competition`,
         {
           user_id: userId,
           competition_id: id,
-          weight_class: "83kg",
-          gender: "M"
+          weight_class: weightClass,
+          gender: gender
         }
       );
 
@@ -322,14 +343,34 @@ const ChallengeDetail: React.FC = () => {
               {/* Join Challenge Button - Moved outside the header */}
               {!hasJoined && (
                 <div className="mb-6">
-                  {challenge?.status === "upcoming" ? (
+                  {challenge?.status === "upcoming" || challenge?.status === "ongoing" ? (
                     <>
+                      <div className="mb-4">
+                        <label htmlFor="weight-class" className="block text-sm font-medium mb-1">
+                          Select Your Weight Class
+                        </label>
+                        <select
+                          id="weight-class"
+                          value={selectedWeightClass}
+                          onChange={(e) => setSelectedWeightClass(e.target.value)}
+                          className="w-full p-2 rounded-md border border-input bg-card text-sm"
+                          required
+                        >
+                          {challenge.categories
+                            .filter(cat => cat.includes('kg'))
+                            .map(weightClass => (
+                              <option key={weightClass} value={weightClass}>
+                                {weightClass}
+                              </option>
+                            ))}
+                        </select>
+                      </div>
                       <button
                         onClick={handleJoinChallenge}
-                        disabled={isJoining}
+                        disabled={isJoining || !selectedWeightClass}
                         className={`w-full sm:w-auto sm:px-8 py-3 px-4 rounded-lg bg-green-500 text-white font-medium 
                           shadow-sm transition-all hover:bg-green-600 hover:shadow
-                          ${isJoining ? 'opacity-50 cursor-not-allowed' : 'hover:translate-y-[-1px]'}`}
+                          ${(isJoining || !selectedWeightClass) ? 'opacity-50 cursor-not-allowed' : 'hover:translate-y-[-1px]'}`}
                       >
                         {isJoining ? 'Joining...' : 'Join Challenge'}
                       </button>
@@ -370,13 +411,19 @@ const ChallengeDetail: React.FC = () => {
 
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Description</h2>
-                <p className="text-muted-foreground">{challenge.description}</p>
+                <p className="text-muted-foreground">
+                  {challenge.description.includes(' - ') 
+                    ? challenge.description.split(' - ')[0] 
+                    : challenge.description}
+                </p>
               </div>
 
               <div className="mb-6">
                 <h2 className="text-xl font-semibold mb-2">Categories</h2>
                 <div className="flex flex-wrap gap-2">
-                  {challenge.categories.map((category) => (
+                  {challenge.categories
+                    .filter(category => !category.includes('kg') && category !== 'Men' && category !== 'Women')
+                    .map((category) => (
                     <span
                       key={category}
                       className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
@@ -384,6 +431,26 @@ const ChallengeDetail: React.FC = () => {
                       {category}
                     </span>
                   ))}
+                </div>
+              </div>
+
+              {/* Weight Classes Section */}
+              <div className="mb-6">
+                <h2 className="text-xl font-semibold mb-2">Weight Classes</h2>
+                <div className="flex flex-wrap gap-2">
+                  {challenge.categories
+                    .filter(category => category.includes('kg'))
+                    .map((weightClass) => (
+                    <span
+                      key={weightClass}
+                      className="px-3 py-1 bg-blue-500/10 text-blue-500 rounded-full text-sm"
+                    >
+                      {weightClass}
+                    </span>
+                  ))}
+                </div>
+                <div className="mt-2 text-sm text-muted-foreground">
+                  Gender: {challenge.categories.includes('Women') ? 'Women' : 'Men'}
                 </div>
               </div>
 

@@ -124,6 +124,18 @@ def test_token_refresh(auth_client, create_auth_user, generate_auth_token):
     assert "access_token" in data
     assert "user_id" in data
     assert data["user_id"] == user_id
+    
+    # Verify token lifetimes by decoding
+    access_token = data["access_token"]
+    decoded = jwt.decode(access_token, options={"verify_signature": False})
+    
+    # Calculate expected expiration (approximately)
+    now = datetime.utcnow()
+    expected_exp = now + timedelta(days=7)
+    token_exp = datetime.utcfromtimestamp(decoded["exp"])
+    
+    # Allow for a small difference due to test execution time
+    assert abs((token_exp - expected_exp).total_seconds()) < 60, "Access token expiration should be around 7 days"
 
 def test_invalid_login(auth_client, test_auth_user_data, create_auth_user):
     """Test login with invalid credentials"""
@@ -178,7 +190,7 @@ def test_token_validation(auth_client, create_auth_user, generate_auth_token):
     assert response.status_code == 401
     
     # Scenario 3: Expired token should fail
-    expired_token = generate_auth_token(user_id, expire_hours=-2)  # Token expired 2 hours ago
+    expired_token = generate_auth_token(user_id, expire_days=-2)  # Token expired 2 days ago
     response = auth_client.get(
         '/auth/user',
         headers={"Authorization": f"Bearer {expired_token}"}

@@ -33,8 +33,8 @@ auth_bp = Blueprint('auth', __name__)
 logger = logging.getLogger(__name__)
 
 # JWT Config - Use current_app.config to align with security.py
-JWT_ACCESS_TOKEN_EXPIRES = timedelta(hours=1)
-JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+JWT_ACCESS_TOKEN_EXPIRES = timedelta(days=7)
+JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=90)
 
 def get_jwt_secret_key():
     """Helper to get JWT secret key from app config or env vars"""

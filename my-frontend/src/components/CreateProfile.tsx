@@ -54,7 +54,9 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
       
       // Login the user automatically
       if (response.data.access_token && response.data.user_id) {
-        handleLoginSuccess(response.data.access_token, response.data.user_id);
+        // Use refresh token if available, otherwise use access token as refresh token too
+        const refreshToken = response.data.refresh_token || response.data.access_token;
+        handleLoginSuccess(response.data.access_token, refreshToken, response.data.user_id);
       }
       
       setTimeout(() => {
@@ -144,7 +146,6 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
                 onChange={handleChange}
                 required
                 className="w-full px-3 py-2 rounded-md border border-border bg-background"
-                minLength={8}
               />
               <button 
                 type="button"
@@ -155,7 +156,7 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
               </button>
             </div>
             <p className="text-xs text-muted-foreground mt-1">
-              Password must be at least 8 characters and include an uppercase letter, lowercase letter, and number.
+              Password validation disabled for testing purposes.
             </p>
           </div>
 

@@ -49,8 +49,8 @@ export const LoginForm: React.FC<LoginFormProps> = ({ onSuccess, onError }) => {
 
             setSuccessMessage('Login successful! Redirecting...');
             
-            // Use the handleLoginSuccess method from AuthContext
-            await handleLoginSuccess(data.access_token, data.user_id);
+            // Use the handleLoginSuccess method from AuthContext with all tokens
+            await handleLoginSuccess(data.access_token, data.refresh_token, data.user_id);
             console.log('Authentication state updated');
 
             if (onSuccess) {
