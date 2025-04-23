@@ -12,13 +12,69 @@ import os
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-# Initialize Redis for rate limiting and token blacklist
-redis_client = redis.from_url(
-    os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
-)
+# Initialize Redis for rate limiting and token blacklist - with graceful fallback
+redis_client = None
+try:
+    redis_client = redis.from_url(
+        os.environ.get('REDIS_URL', 'redis://localhost:6379/0')
+    )
+    # Test connection
+    redis_client.ping()
+    logger.info("Redis connection established successfully")
+except (redis.ConnectionError, redis.RedisError) as e:
+    logger.warning(f"Redis connection failed: {str(e)}. Using in-memory fallback for development.")
+    # Use in-memory fallback for development
+    redis_client = None
+
+# In-memory cache for development when Redis is not available
+class InMemoryCache:
+    def __init__(self):
+        self.cache = {}
+        self.expiry = {}
+    
+    def get(self, key):
+        self._cleanup()
+        return self.cache.get(key)
+    
+    def setex(self, key, ttl, value):
+        self.cache[key] = value
+        self.expiry[key] = datetime.now(timezone.utc).timestamp() + ttl
+    
+    def incr(self, key):
+        self._cleanup()
+        if key not in self.cache:
+            self.cache[key] = 0
+        self.cache[key] += 1
+        return self.cache[key]
+    
+    def delete(self, key):
+        if key in self.cache:
+            del self.cache[key]
+        if key in self.expiry:
+            del self.expiry[key]
+    
+    def lpush(self, key, value):
+        if key not in self.cache:
+            self.cache[key] = []
+        self.cache[key].insert(0, value)
+    
+    def expire(self, key, ttl):
+        if key in self.cache:
+            self.expiry[key] = datetime.now(timezone.utc).timestamp() + ttl
+    
+    def _cleanup(self):
+        now = datetime.now(timezone.utc).timestamp()
+        expired = [k for k, v in self.expiry.items() if v <= now]
+        for key in expired:
+            self.delete(key)
+
+# If Redis is not available, use in-memory cache
+if redis_client is None:
+    logger.info("Using in-memory cache for rate limiting and token management")
+    redis_client = InMemoryCache()
 
 class RateLimiter:
-    """Rate limiting implementation using Redis"""
+    """Rate limiting implementation using Redis or in-memory cache"""
     
     @staticmethod
     def get_rate_limit_key(endpoint: str, identifier: str) -> str:
@@ -40,20 +96,24 @@ class RateLimiter:
     @classmethod
     def is_rate_limited(cls, endpoint: str, identifier: str, limit: str) -> bool:
         """Check if the request is rate limited"""
-        key = cls.get_rate_limit_key(endpoint, identifier)
-        count, period = cls.parse_limit(limit)
-        
-        current = redis_client.get(key)
-        if not current:
-            redis_client.setex(key, period, 1)
+        try:
+            key = cls.get_rate_limit_key(endpoint, identifier)
+            count, period = cls.parse_limit(limit)
+            
+            current = redis_client.get(key)
+            if not current:
+                redis_client.setex(key, period, 1)
+                return False
+            
+            current = int(current)
+            if current >= count:
+                return True
+            
+            redis_client.incr(key)
             return False
-        
-        current = int(current)
-        if current >= count:
-            return True
-        
-        redis_client.incr(key)
-        return False
+        except Exception as e:
+            logger.error(f"Rate limiting error (will continue): {str(e)}")
+            return False  # If anything fails, don't rate limit
 
 def rate_limit(limit: str):
     """Rate limiting decorator"""
@@ -77,12 +137,19 @@ class TokenBlacklist:
     @staticmethod
     def add_to_blacklist(token: str, expires_in: int) -> None:
         """Add a token to the blacklist"""
-        redis_client.setex(f"blacklist:{token}", expires_in, 1)
+        try:
+            redis_client.setex(f"blacklist:{token}", expires_in, 1)
+        except Exception as e:
+            logger.error(f"Error adding token to blacklist: {str(e)}")
     
     @staticmethod
     def is_blacklisted(token: str) -> bool:
         """Check if a token is blacklisted"""
-        return bool(redis_client.get(f"blacklist:{token}"))
+        try:
+            return bool(redis_client.get(f"blacklist:{token}"))
+        except Exception as e:
+            logger.error(f"Error checking blacklist: {str(e)}")
+            return False  # If Redis fails, assume token is valid
 
 class SecurityAudit:
     """Security audit logging"""
@@ -101,15 +168,18 @@ class SecurityAudit:
             'user_id': user_id,
             'success': success,
             'ip_address': request.remote_addr,
-            'user_agent': request.user_agent.string,
+            'user_agent': request.user_agent.string if request.user_agent else None,
             'details': details or {}
         }
         logger.info(f"Auth event: {json.dumps(event)}")
         
         # Store in Redis for potential security analysis
-        key = f"auth_events:{datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
-        redis_client.lpush(key, json.dumps(event))
-        redis_client.expire(key, 86400 * 30)  # Keep for 30 days
+        try:
+            key = f"auth_events:{datetime.now(timezone.utc).strftime('%Y-%m-%d')}"
+            redis_client.lpush(key, json.dumps(event))
+            redis_client.expire(key, 86400 * 30)  # Keep for 30 days
+        except Exception as e:
+            logger.error(f"Error logging auth event to Redis: {str(e)}")
 
 class FailedLoginTracker:
     """Track failed login attempts"""
@@ -122,30 +192,41 @@ class FailedLoginTracker:
     @classmethod
     def record_failed_attempt(cls, identifier: str) -> int:
         """Record a failed login attempt and return total attempts"""
-        key = cls.get_attempts_key(identifier)
-        current = redis_client.get(key)
-        
-        if not current:
-            redis_client.setex(
-                key,
-                current_app.config['ACCOUNT_LOCKOUT_DURATION'].total_seconds(),
-                1
-            )
-            return 1
-        
-        return redis_client.incr(key)
+        try:
+            key = cls.get_attempts_key(identifier)
+            current = redis_client.get(key)
+            
+            if not current:
+                redis_client.setex(
+                    key,
+                    current_app.config['ACCOUNT_LOCKOUT_DURATION'].total_seconds(),
+                    1
+                )
+                return 1
+            
+            return redis_client.incr(key)
+        except Exception as e:
+            logger.error(f"Error recording failed login attempt: {str(e)}")
+            return 0  # Return 0 to prevent lockout if Redis fails
     
     @classmethod
     def clear_attempts(cls, identifier: str) -> None:
         """Clear failed login attempts"""
-        redis_client.delete(cls.get_attempts_key(identifier))
+        try:
+            redis_client.delete(cls.get_attempts_key(identifier))
+        except Exception as e:
+            logger.error(f"Error clearing login attempts: {str(e)}")
     
     @classmethod
     def is_account_locked(cls, identifier: str) -> bool:
         """Check if account is locked due to too many failed attempts"""
-        key = cls.get_attempts_key(identifier)
-        attempts = redis_client.get(key)
-        return attempts and int(attempts) >= current_app.config['FAILED_LOGIN_ATTEMPTS']
+        try:
+            key = cls.get_attempts_key(identifier)
+            attempts = redis_client.get(key)
+            return attempts and int(attempts) >= current_app.config['FAILED_LOGIN_ATTEMPTS']
+        except Exception as e:
+            logger.error(f"Error checking account lock status: {str(e)}")
+            return False  # If Redis fails, don't lock accounts
 
 def require_auth(f):
     """Authentication decorator"""
