@@ -140,9 +140,16 @@ const UploadVideo: React.FC = () => {
       });
 
       if (response.data.url) {
+        // Store attempt_id in localStorage if needed for later reference
+        if (response.data.attempt_id) {
+          console.log("Attempt created with ID:", response.data.attempt_id);
+          // Optionally store the last uploaded attempt ID
+          localStorage.setItem('last_attempt_id', response.data.attempt_id);
+        }
+        
         toast({
           title: "Upload Successful!",
-          description: "Your lift has been submitted for review.",
+          description: "Your lift has been submitted and linked to your profile. You can view it in your profile page.",
           duration: 5000,
         });
         

@@ -6,6 +6,7 @@ from dotenv import load_dotenv
 import datetime
 import secrets
 from toms_gym.utils.json_encoder import CustomJSONEncoder
+import logging
 
 # Import route blueprints
 from toms_gym.routes.competition_routes import competition_bp
@@ -13,9 +14,13 @@ from toms_gym.routes.user_routes import user_bp
 from toms_gym.routes.attempt_routes import attempt_bp
 from toms_gym.routes.upload_routes import upload_bp
 from toms_gym.routes.auth_routes import auth_bp
-from toms_gym.config import get_config
+from toms_gym.config import get_config, Config
 
 load_dotenv()
+
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
@@ -66,6 +71,12 @@ def health():
 @app.route('/')
 def hello():
     return "Hello from Toms Gym!"
+
+@app.after_request
+def after_request(response):
+    # Log request info
+    logger.info(f"Request: {request.method} {request.path}")
+    return response
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)

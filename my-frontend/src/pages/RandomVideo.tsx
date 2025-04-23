@@ -3,9 +3,23 @@ import axios from 'axios';
 import { API_URL, PROD_API_URL } from '../config';
 import VideoPlayer from '../components/VideoPlayer';
 import { Button } from '../components/ui/button';
-import { SkipForward, Upload, Filter, X } from 'lucide-react';
+import { SkipForward, Upload, Filter, X, Play, Trophy } from 'lucide-react';
 import Layout from '../components/Layout';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+
+interface CompetitionVideos {
+  competition_id: string;
+  competition_name: string;
+  videos: Array<{
+    attempt_id: string;
+    user_id: string;
+    lift_type: string;
+    weight: number;
+    status: string;
+    created_at: string;
+    video_url: string;
+  }>;
+}
 
 const RandomVideo = () => {
   const navigate = useNavigate();
@@ -36,6 +50,8 @@ const RandomVideo = () => {
     isMobile: false,
     userAgent: ''
   });
+  const [allVideos, setAllVideos] = useState<CompetitionVideos[]>([]);
+  const [loadingAllVideos, setLoadingAllVideos] = useState(true);
 
   // We still need device type info for video path transformation
   const isAndroid = /Android/i.test(navigator.userAgent);
@@ -58,6 +74,59 @@ const RandomVideo = () => {
       userAgent: navigator.userAgent.substring(0, 100) // Truncate for display
     }));
   }, [isMobile]);
+
+  // Fetch all videos from all competitions
+  const fetchAllVideos = async () => {
+    try {
+      setLoadingAllVideos(true);
+      
+      // Get list of all competitions first
+      const competitionsResponse = await axios.get(`${API_URL}/competitions`);
+      const competitions = competitionsResponse.data.competitions || [];
+      
+      // For each competition, get participants with videos
+      const competitionVideos: CompetitionVideos[] = [];
+      
+      for (const competition of competitions) {
+        const participantsResponse = await axios.get(`${API_URL}/competitions/${competition.id}/participants`);
+        const participants = participantsResponse.data.participants || [];
+        
+        // Collect all videos from all participants
+        const videos = [];
+        for (const participant of participants) {
+          // Filter for attempts that have video_url
+          for (const attempt of (participant.attempts || [])) {
+            if (attempt.video_url) {
+              videos.push({
+                attempt_id: attempt.id,
+                user_id: participant.id,
+                lift_type: attempt.lift_type,
+                weight: attempt.weight,
+                status: attempt.status,
+                created_at: attempt.created_at || new Date().toISOString(),
+                video_url: attempt.video_url
+              });
+            }
+          }
+        }
+        
+        // Only add competitions that have videos
+        if (videos.length > 0) {
+          competitionVideos.push({
+            competition_id: competition.id,
+            competition_name: competition.name,
+            videos
+          });
+        }
+      }
+      
+      setAllVideos(competitionVideos);
+    } catch (err) {
+      console.error('Error fetching all videos:', err);
+    } finally {
+      setLoadingAllVideos(false);
+    }
+  };
 
   const fetchVideo = async (endpoint: string) => {
     try {
@@ -183,6 +252,7 @@ const RandomVideo = () => {
 
   useEffect(() => {
     fetchVideo('random-video');
+    fetchAllVideos(); // Fetch all videos when component mounts
   }, [liftTypeFilter]); // Re-fetch when the filter changes
 
   const handleRetry = () => {
@@ -259,46 +329,133 @@ const RandomVideo = () => {
     }
 
     return (
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="mb-8">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold">Random Video</h1>
-              {liftTypeFilter && (
-                <div className="flex items-center mt-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
-                  <Filter className="w-3 h-3 mr-1" />
-                  <span>Filtered by: {liftTypeFilter}</span>
-                  <button 
-                    onClick={clearFilter}
-                    className="ml-2 p-1 hover:bg-primary/20 rounded-full"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
-                </div>
-              )}
-              <p className="text-muted-foreground mt-2">
-                {videoData.participant_name} - {videoData.lift_type} @ {videoData.weight}kg
-              </p>
-              <p className="text-sm text-muted-foreground mt-1">
-                Video {videoData.current_index + 1} of {videoData.total_videos}
-              </p>
+      <div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="mb-8">
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold">Random Video</h1>
+                {liftTypeFilter && (
+                  <div className="flex items-center mt-2 bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                    <Filter className="w-3 h-3 mr-1" />
+                    <span>Filtered by: {liftTypeFilter}</span>
+                    <button 
+                      onClick={clearFilter}
+                      className="ml-2 p-1 hover:bg-primary/20 rounded-full"
+                    >
+                      <X className="w-3 h-3" />
+                    </button>
+                  </div>
+                )}
+                <p className="text-muted-foreground mt-2">
+                  {videoData.participant_name} - {videoData.lift_type} @ {videoData.weight}kg
+                </p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Video {videoData.current_index + 1} of {videoData.total_videos}
+                </p>
+              </div>
+              <Button 
+                variant="outline" 
+                size="lg"
+                onClick={handleUploadClick}
+                className="flex items-center gap-2"
+              >
+                <Upload className="h-4 w-4" />
+                Upload Video
+              </Button>
             </div>
-            <Button 
-              variant="outline" 
-              size="lg"
-              onClick={handleUploadClick}
-              className="flex items-center gap-2"
-            >
-              <Upload className="h-4 w-4" />
-              Upload Video
-            </Button>
           </div>
+          <VideoPlayer
+            videoUrl={videoData.video_url}
+            title={`${videoData.participant_name} - ${videoData.lift_type} @ ${videoData.weight}kg`}
+            onNextVideo={handleNextVideo}
+          />
         </div>
-        <VideoPlayer
-          videoUrl={videoData.video_url}
-          title={`${videoData.participant_name} - ${videoData.lift_type} @ ${videoData.weight}kg`}
-          onNextVideo={handleNextVideo}
-        />
+        
+        {/* All Videos Section */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mb-8">
+          <div className="flex items-center gap-3 mb-8">
+            <Trophy className="text-accent" size={24} />
+            <h2 className="text-2xl font-bold">Browse All Videos</h2>
+          </div>
+          
+          {loadingAllVideos ? (
+            <div className="flex justify-center items-center py-12">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent"></div>
+            </div>
+          ) : allVideos.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <p>No videos available from competitions yet.</p>
+              <Button 
+                variant="outline" 
+                className="mt-4"
+                onClick={handleUploadClick}
+              >
+                Upload the first video
+              </Button>
+            </div>
+          ) : (
+            <div className="space-y-12">
+              {allVideos.map(competition => (
+                <div key={competition.competition_id} className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <Link 
+                      to={`/competitions/${competition.competition_id}`}
+                      className="text-xl font-semibold flex items-center gap-2 hover:text-accent transition-colors"
+                    >
+                      <Trophy className="h-5 w-5" />
+                      {competition.competition_name}
+                    </Link>
+                    <span className="text-sm text-muted-foreground">
+                      {competition.videos.length} {competition.videos.length === 1 ? 'video' : 'videos'}
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {competition.videos.slice(0, 3).map(video => (
+                      <Link 
+                        key={video.attempt_id}
+                        to={`/video-player/${competition.competition_id}/${video.user_id}/${video.attempt_id}`}
+                        className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02] shadow-sm"
+                      >
+                        <div className="aspect-video bg-muted relative">
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Play className="w-12 h-12 text-accent/75" />
+                          </div>
+                        </div>
+                        <div className="p-4">
+                          <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(video.created_at).toLocaleDateString()}
+                          </p>
+                          <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
+                            video.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                            video.status === 'failed' ? 'bg-red-100 text-red-800' : 
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {video.status}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
+                    
+                    {competition.videos.length > 3 && (
+                      <Link 
+                        to={`/competitions/${competition.competition_id}`}
+                        className="bg-muted/30 rounded-lg flex items-center justify-center aspect-video hover:bg-muted/50 transition-colors col-span-1"
+                      >
+                        <div className="text-center">
+                          <p className="text-lg font-medium">View {competition.videos.length - 3} more</p>
+                          <p className="text-sm text-muted-foreground">from this competition</p>
+                        </div>
+                      </Link>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     );
   };

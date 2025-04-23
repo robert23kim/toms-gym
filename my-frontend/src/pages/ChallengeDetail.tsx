@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, Users, Clock, Trophy, Dumbbell, CheckCircle2, XCircle, ArrowRight } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Clock, Trophy, Dumbbell, CheckCircle2, XCircle, ArrowRight, Play } from "lucide-react";
 import axios from "axios";
 import { Challenge } from "../lib/types";
 import Layout from "../components/Layout";
@@ -20,59 +20,10 @@ interface Attempt {
   timestamp: string;
 }
 
-// Mock attempts data
-const mockAttempts: Attempt[] = [
-  {
-    id: 1,
-    participant_id: 1,
-    type: "Squat",
-    weight: 225,
-    success: true,
-    video_url: "https://example.com/video1",
-    timestamp: "2024-03-20T10:30:00Z"
-  },
-  {
-    id: 2,
-    participant_id: 2,
-    type: "Bench Press",
-    weight: 180,
-    success: true,
-    video_url: "https://example.com/video2",
-    timestamp: "2024-03-20T11:15:00Z"
-  },
-  {
-    id: 3,
-    participant_id: 3,
-    type: "Deadlift",
-    weight: 275,
-    success: false,
-    video_url: null,
-    timestamp: "2024-03-20T12:00:00Z"
-  },
-  {
-    id: 4,
-    participant_id: 1,
-    type: "Squat",
-    weight: 235,
-    success: true,
-    video_url: "https://example.com/video4",
-    timestamp: "2024-03-20T13:45:00Z"
-  },
-  {
-    id: 5,
-    participant_id: 2,
-    type: "Bench Press",
-    weight: 185,
-    success: true,
-    video_url: "https://example.com/video5",
-    timestamp: "2024-03-20T14:30:00Z"
-  }
-];
-
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [challenge, setChallenge] = useState<Challenge | null>(null);
-  const [attempts] = useState<Attempt[]>(mockAttempts);
+  const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isJoining, setIsJoining] = useState(false);
@@ -503,23 +454,21 @@ const ChallengeDetail: React.FC = () => {
                                 : 'bg-red-500/10 border border-red-500/20'
                             }`}
                           >
-                            <Link 
-                              to={`/random-video?type=${attempt.lift_type}`}
-                              className={`hover:underline ${
-                                attempt.status === 'completed' 
-                                  ? 'text-green-600 font-medium' 
-                                  : 'text-red-600 line-through'
+                            <span className={`${
+                              attempt.status === 'completed' 
+                                ? 'text-green-600 font-medium' 
+                                : 'text-red-600 line-through'
                               }`}
                             >
                               {attempt.lift_type}
-                            </Link>
+                            </span>
                             <span className="mx-1 font-bold">{attempt.weight}kg</span>
                             {attempt.video_url && (
                               <Link
-                                to={`/challenges/${id}/participants/${participant.id}/video/${index}`}
+                                to={`/video-player/${id}/${participant.id}/${attempt.id}`}
                                 className="text-primary hover:underline text-xs ml-1"
                               >
-                                (watch)
+                                (watch video)
                               </Link>
                             )}
                           </div>
@@ -563,6 +512,73 @@ const ChallengeDetail: React.FC = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Recent Videos Section */}
+          <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
+            <div className="p-6 sm:p-8">
+              <h2 className="text-xl font-semibold mb-4 flex items-center">
+                <Play className="mr-2" size={20} />
+                Recent Challenge Videos
+              </h2>
+
+              {participants.some(p => p.attempts?.some(a => a.video_url)) ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {participants.flatMap(participant => 
+                    (participant.attempts || [])
+                      .filter(attempt => attempt.video_url)
+                      .map((attempt, index) => (
+                        <Link 
+                          key={`${participant.id}-${attempt.id || index}`}
+                          to={`/video-player/${id}/${participant.id}/${attempt.id}`}
+                          className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
+                        >
+                          <div className="aspect-video bg-muted relative">
+                            <div className="absolute inset-0 flex items-center justify-center">
+                              <Play className="w-12 h-12 text-accent/75" />
+                            </div>
+                          </div>
+                          <div className="p-3">
+                            <div className="flex justify-between items-start">
+                              <h3 className="font-medium">{participant.name}</h3>
+                              <span className={`px-2 py-0.5 text-xs rounded-full ${
+                                attempt.status === 'completed' 
+                                  ? 'bg-green-100 text-green-800' 
+                                  : 'bg-gray-100 text-gray-800'
+                              }`}>
+                                {attempt.status}
+                              </span>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              {attempt.lift_type} - {attempt.weight}kg
+                            </p>
+                            <p className="text-xs text-muted-foreground mt-1">
+                              {attempt.timestamp ? new Date(attempt.timestamp).toLocaleDateString() : "Recent"}
+                            </p>
+                          </div>
+                        </Link>
+                      ))
+                  ).slice(0, 6)}
+                </div>
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <div className="mb-4">
+                    <Play className="w-12 h-12 mx-auto text-muted-foreground/50" />
+                  </div>
+                  <p>No videos have been uploaded to this challenge yet.</p>
+                  {hasJoined && (
+                    <p className="mt-2">
+                      <Link
+                        to={`/challenges/${id}/upload`}
+                        className="text-accent hover:underline"
+                      >
+                        Be the first to upload a video →
+                      </Link>
+                    </p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

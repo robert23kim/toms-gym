@@ -271,34 +271,102 @@ const Profile = () => {
                 See all videos →
               </Link>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {profileData.uploaded_videos.slice(0, 6).map((video) => (
-                <Link 
-                  key={video.attempt_id}
-                  to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
-                  className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
-                >
-                  <div className="aspect-video bg-muted relative">
-                    <div className="absolute inset-0 flex items-center justify-center">
-                      <Play className="w-12 h-12 text-accent/75" />
+
+            {/* Group videos by competition if from multiple competitions */}
+            {(() => {
+              // Check if videos are from multiple competitions
+              const uniqueCompetitions = [...new Set(profileData.uploaded_videos?.map(video => video.competition_id))];
+              
+              if (uniqueCompetitions.length > 1) {
+                // Group videos by competition
+                return uniqueCompetitions.map(competitionId => {
+                  const competitionVideos = profileData.uploaded_videos?.filter(
+                    video => video.competition_id === competitionId
+                  ) || [];
+                  
+                  if (competitionVideos.length === 0) return null;
+                  
+                  const competitionName = competitionVideos[0].competition_name;
+                  
+                  return (
+                    <div key={competitionId} className="mb-6 last:mb-0">
+                      <div className="flex items-center justify-between mb-2">
+                        <Link 
+                          to={`/competitions/${competitionId}`} 
+                          className="text-lg font-medium hover:text-accent"
+                        >
+                          {competitionName}
+                        </Link>
+                        <span className="text-sm text-muted-foreground">
+                          {competitionVideos.length} {competitionVideos.length === 1 ? 'video' : 'videos'}
+                        </span>
+                      </div>
+                      
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {competitionVideos.slice(0, 3).map((video) => (
+                          <Link 
+                            key={video.attempt_id}
+                            to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
+                            className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
+                          >
+                            <div className="aspect-video bg-muted relative">
+                              <div className="absolute inset-0 flex items-center justify-center">
+                                <Play className="w-12 h-12 text-accent/75" />
+                              </div>
+                            </div>
+                            <div className="p-3">
+                              <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
+                              <p className="text-sm text-muted-foreground">
+                                {new Date(video.created_at).toLocaleDateString()}
+                              </p>
+                              <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
+                                video.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                                video.status === 'failed' ? 'bg-red-100 text-red-800' : 
+                                'bg-gray-100 text-gray-800'
+                              }`}>
+                                {video.status}
+                              </span>
+                            </div>
+                          </Link>
+                        ))}
+                      </div>
                     </div>
+                  );
+                });
+              } else {
+                // Standard display for videos from a single competition or unaffiliated videos
+                return (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {profileData.uploaded_videos.slice(0, 6).map((video) => (
+                      <Link 
+                        key={video.attempt_id}
+                        to={`/video-player/${video.competition_id}/${profileData.user.id}/${video.attempt_id}`}
+                        className="bg-background rounded-lg overflow-hidden transition-all hover:scale-[1.02] focus:scale-[1.02]"
+                      >
+                        <div className="aspect-video bg-muted relative">
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <Play className="w-12 h-12 text-accent/75" />
+                          </div>
+                        </div>
+                        <div className="p-3">
+                          <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(video.created_at).toLocaleDateString()} • {video.competition_name}
+                          </p>
+                          <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
+                            video.status === 'completed' ? 'bg-green-100 text-green-800' : 
+                            video.status === 'failed' ? 'bg-red-100 text-red-800' : 
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {video.status}
+                          </span>
+                        </div>
+                      </Link>
+                    ))}
                   </div>
-                  <div className="p-3">
-                    <h3 className="font-medium">{video.lift_type} - {video.weight}kg</h3>
-                    <p className="text-sm text-muted-foreground">
-                      {new Date(video.created_at).toLocaleDateString()} • {video.competition_name}
-                    </p>
-                    <span className={`mt-2 inline-block px-2 py-0.5 rounded-full text-xs ${
-                      video.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                      video.status === 'failed' ? 'bg-red-100 text-red-800' : 
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {video.status}
-                    </span>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                );
+              }
+            })()}
           </div>
         )}
 
