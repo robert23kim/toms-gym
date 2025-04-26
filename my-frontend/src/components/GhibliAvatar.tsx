@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { getGhibliAvatar } from '../lib/api';
 
@@ -15,6 +15,8 @@ const GhibliAvatar: React.FC<GhibliAvatarProps> = ({
   size = 'md',
   className = ''
 }) => {
+  const [imageError, setImageError] = useState(false);
+  
   // Get initials from name
   const initials = name
     ? name
@@ -40,8 +42,18 @@ const GhibliAvatar: React.FC<GhibliAvatarProps> = ({
 
   return (
     <Avatar className={`${sizeClass} ${className}`}>
-      <AvatarImage src={avatarUrl} alt={name || 'Avatar'} />
-      <AvatarFallback>{initials}</AvatarFallback>
+      {!imageError && (
+        <AvatarImage 
+          src={avatarUrl} 
+          alt={name || 'Avatar'} 
+          onError={() => setImageError(true)}
+        />
+      )}
+      <AvatarFallback
+        className="bg-accent/10 text-accent font-medium"
+      >
+        {initials}
+      </AvatarFallback>
     </Avatar>
   );
 };

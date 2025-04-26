@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import { Participant } from '../lib/types';
 import { getCompetitions } from '../lib/api';
+import GhibliAvatar from '../components/GhibliAvatar';
 
 type LiftCategory = 'squat' | 'bench' | 'deadlift' | 'total';
 
@@ -182,10 +183,10 @@ const Leaderboard = () => {
                         </td>
                         <td className="px-6 py-4">
                           <div className="flex items-center gap-3">
-                            <img
-                              src={participant.avatar}
-                              alt={participant.name}
-                              className="w-10 h-10 rounded-full"
+                            <GhibliAvatar
+                              id={participant.id}
+                              name={participant.name}
+                              size="md"
                             />
                             <span className="font-medium">{participant.name}</span>
                           </div>

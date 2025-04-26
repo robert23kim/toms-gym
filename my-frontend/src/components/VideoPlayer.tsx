@@ -558,11 +558,22 @@ const VideoPlayer: React.FC<VideoPlayerProps> = ({ videoUrl, title, onNextVideo 
             <div className="space-y-6">
               {comments.map((comment) => (
                 <div key={comment.id} className="flex gap-4">
-                  <img
-                    src={comment.avatar}
-                    alt={comment.user}
-                    className="w-10 h-10 rounded-full"
-                  />
+                  <div className="w-10 h-10 rounded-full bg-accent/10 overflow-hidden flex-shrink-0">
+                    <img
+                      src={comment.avatar}
+                      alt={comment.user}
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // On error, replace with a colored background with initials
+                        e.currentTarget.style.display = 'none';
+                        e.currentTarget.parentElement.innerHTML = `
+                          <div class="w-full h-full flex items-center justify-center bg-accent/10 text-accent font-medium">
+                            ${comment.user.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase()}
+                          </div>
+                        `;
+                      }}
+                    />
+                  </div>
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="font-medium">{comment.user}</span>

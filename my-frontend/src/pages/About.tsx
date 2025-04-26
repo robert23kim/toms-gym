@@ -1,8 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { getGhibliAvatar } from "../lib/api";
+import GhibliAvatar from "../components/GhibliAvatar";
 
 const About = () => {
   return (
@@ -93,29 +92,28 @@ const About = () => {
                 name: "Tom Oka",
                 role: "Founder & CEO",
                 bio: "Experienced software engineer and powerlifting enthusiast with a vision to revolutionize online competitions.",
-                avatar: getGhibliAvatar("tom-oka"),
-                initials: "TO"
+                id: "tom-oka",
               },
               {
                 name: "Rob Kim",
                 role: "Head of Technology",
                 bio: "Technical leader with a passion for building scalable platforms that connect athletes worldwide.",
-                avatar: getGhibliAvatar("rob-kim"),
-                initials: "RK"
+                id: "rob-kim",
               },
               {
                 name: "Jess Hum",
                 role: "Chief Strategy Officer",
                 bio: "Former competitive lifter focused on building an inclusive and supportive community of athletes.",
-                avatar: getGhibliAvatar("jess-hum"),
-                initials: "JH"
+                id: "jess-hum",
               }
             ].map((member) => (
               <div key={member.name} className="flex flex-col items-center text-center p-4 glass rounded-lg">
-                <Avatar className="w-24 h-24 mb-4">
-                  <AvatarImage src={member.avatar} alt={member.name} />
-                  <AvatarFallback>{member.initials}</AvatarFallback>
-                </Avatar>
+                <GhibliAvatar
+                  id={member.id}
+                  name={member.name}
+                  size="xl"
+                  className="mb-4"
+                />
                 <h3 className="font-medium text-lg">{member.name}</h3>
                 <p className="text-sm text-accent mb-2">{member.role}</p>
                 <p className="text-sm text-muted-foreground">{member.bio}</p>

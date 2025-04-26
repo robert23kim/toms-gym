@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Participant } from '../lib/types';
 import { Play } from 'lucide-react';
 import { getTopLifts } from '../lib/api';
+import GhibliAvatar from './GhibliAvatar';
 
 const TopLifts = () => {
   const [topLifts, setTopLifts] = useState<Record<string, any[]>>({
@@ -79,16 +80,17 @@ const TopLifts = () => {
                           transition={{ duration: 0.3, delay: categoryIndex * 0.1 + index * 0.1 }}
                         >
                           <div className="relative flex-shrink-0">
-                            <img
-                              src={lifter.avatar}
-                              alt={lifter.name}
-                              className="w-8 h-8 rounded-full"
+                            <GhibliAvatar
+                              id={lifter.id}
+                              name={lifter.name}
+                              size="sm"
+                              className="relative"
                             />
                             <span className={`absolute -top-1 -right-1 w-4 h-4 flex items-center justify-center rounded-full text-xs font-bold ${
                               index === 0 ? 'bg-yellow-400' :
                               index === 1 ? 'bg-gray-300' :
                               'bg-amber-600'
-                            } text-white`}>
+                            } text-white z-10`}>
                               {index + 1}
                             </span>
                           </div>
