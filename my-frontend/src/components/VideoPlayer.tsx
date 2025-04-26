@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Play, Pause, Volume2, VolumeX, Maximize, Minimize, SkipBack, SkipForward, MessageSquare, ThumbsUp, ThumbsDown, BarChart2, Activity, Target, Award } from "lucide-react";
 import { PROD_API_URL } from "../config";
+import { getGhibliAvatar } from '../lib/api';
 
 interface VideoPlayerProps {
   videoUrl: string;
@@ -22,7 +23,7 @@ const mockComments: Comment[] = [
   {
     id: 1,
     user: "John Smith",
-    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop",
+    avatar: getGhibliAvatar(1),
     content: "Great form on that squat! The depth was perfect.",
     timestamp: "2 hours ago",
     likes: 12,
@@ -31,7 +32,7 @@ const mockComments: Comment[] = [
   {
     id: 2,
     user: "Sarah Johnson",
-    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&h=100&fit=crop",
+    avatar: getGhibliAvatar(2),
     content: "The bar path was a bit forward on the way up. Try to keep it more vertical.",
     timestamp: "1 hour ago",
     likes: 8,
@@ -40,7 +41,7 @@ const mockComments: Comment[] = [
   {
     id: 3,
     user: "Mike Wilson",
-    avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop",
+    avatar: getGhibliAvatar(3),
     content: "Impressive weight! What's your training program like?",
     timestamp: "30 minutes ago",
     likes: 15,

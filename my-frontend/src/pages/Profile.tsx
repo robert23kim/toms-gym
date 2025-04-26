@@ -7,6 +7,7 @@ import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
 import VideoGallery from '../components/VideoGallery';
+import GhibliAvatar from '../components/GhibliAvatar';
 
 // Interfaces for API response data
 interface UserData {
@@ -192,9 +193,11 @@ const Profile = () => {
         {/* Profile Header */}
         <div className="bg-card rounded-xl p-6 mb-6 shadow-sm">
           <div className="flex items-center gap-6">
-            <div className="w-24 h-24 rounded-full bg-accent/10 flex items-center justify-center">
-              <User size={48} className="text-accent" />
-            </div>
+            <GhibliAvatar 
+              id={profileData.user.id} 
+              name={profileData.user.name} 
+              size="xl"
+            />
             <div>
               <h1 className="text-3xl font-bold mb-2">{profileData.user.name}</h1>
               <p className="text-muted-foreground">{profileData.user.email}</p>

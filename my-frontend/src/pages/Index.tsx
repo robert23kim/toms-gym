@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
@@ -6,49 +6,28 @@ import ChallengeCard from "../components/ChallengeCard";
 import Layout from "../components/Layout";
 import TopLifts from "../components/TopLifts";
 import { Challenge } from "../lib/types";
+import { getFeaturedChallenges } from "../lib/api";
 
 const Index = () => {
   const [activeFilter, setActiveFilter] = useState<"all" | "upcoming" | "ongoing" | "completed">("all");
+  const [featuredChallenges, setFeaturedChallenges] = useState<Challenge[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Mock data for featured challenges
-  const featuredChallenges: Challenge[] = [
-    {
-      id: 1,
-      title: "Summer Powerlifting Championship",
-      date: "2024-07-15",
-      registrationDeadline: "2024-07-01",
-      location: "New York, NY",
-      description: "Join us for the biggest powerlifting event of the summer!",
-      image: "https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      status: "upcoming",
-      categories: ["Powerlifting", "Open"],
-      participants: 0,
-      prizePool: {
-        first: 1000,
-        second: 500,
-        third: 250,
-        total: 1750
+  useEffect(() => {
+    const fetchChallenges = async () => {
+      try {
+        setLoading(true);
+        const challenges = await getFeaturedChallenges(2);
+        setFeaturedChallenges(challenges);
+      } catch (error) {
+        console.error("Error fetching featured challenges:", error);
+      } finally {
+        setLoading(false);
       }
-    },
-    {
-      id: 2,
-      title: "Women's Weightlifting Open",
-      date: "2024-06-20",
-      registrationDeadline: "2024-06-05",
-      location: "Los Angeles, CA",
-      description: "A celebration of women's strength and athleticism.",
-      image: "https://images.unsplash.com/photo-1571019614242-c5c5dee9f50b?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
-      status: "upcoming",
-      categories: ["Weightlifting", "Women"],
-      participants: 0,
-      prizePool: {
-        first: 800,
-        second: 400,
-        third: 200,
-        total: 1400
-      }
-    }
-  ];
+    };
+
+    fetchChallenges();
+  }, []);
 
   const filteredChallenges = activeFilter === "all" 
     ? featuredChallenges 
@@ -142,7 +121,14 @@ const Index = () => {
               </div>
               
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                {filteredChallenges.length > 0 ? (
+                {loading ? (
+                  <div className="col-span-full py-16 text-center">
+                    <div className="flex justify-center">
+                      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div>
+                    </div>
+                    <p className="mt-4 text-lg text-muted-foreground">Loading challenges...</p>
+                  </div>
+                ) : filteredChallenges.length > 0 ? (
                   filteredChallenges.map((challenge, index) => (
                     <ChallengeCard key={challenge.id} challenge={challenge} index={index} />
                   ))
@@ -224,30 +210,52 @@ const Index = () => {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <div className="space-y-6">
-                <div className="flex items-center justify-center gap-4">
-                  <div className="text-4xl">🏋️‍♂️</div>
-                  <div className="text-left">
-                    <h3 className="text-xl font-semibold">Summer Powerlifting Championship</h3>
-                    <p className="text-muted-foreground">July 15, 2024 • Prize Pool: $1,750</p>
+              {loading ? (
+                <div className="py-8 text-center">
+                  <div className="flex justify-center">
+                    <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div>
+                  </div>
+                  <p className="mt-4 text-muted-foreground">Loading challenges...</p>
+                </div>
+              ) : featuredChallenges.length > 0 ? (
+                <div className="space-y-6">
+                  {featuredChallenges.slice(0, 2).map((challenge, index) => (
+                    <div key={challenge.id} className="flex items-center justify-center gap-4">
+                      <div className="text-4xl">{index === 0 ? "🏋️‍♂️" : "💪"}</div>
+                      <div className="text-left">
+                        <h3 className="text-xl font-semibold">{challenge.title}</h3>
+                        <p className="text-muted-foreground">
+                          {new Date(challenge.date).toLocaleDateString('en-US', { 
+                            month: 'long', 
+                            day: 'numeric', 
+                            year: 'numeric' 
+                          })} • Prize Pool: ${challenge.prizePool.total.toLocaleString()}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  <div className="pt-4">
+                    <Link
+                      to="/challenges"
+                      className="inline-block px-8 py-4 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift text-lg"
+                    >
+                      Sign Up for a Challenge
+                    </Link>
                   </div>
                 </div>
-                <div className="flex items-center justify-center gap-4">
-                  <div className="text-4xl">💪</div>
-                  <div className="text-left">
-                    <h3 className="text-xl font-semibold">Women's Weightlifting Open</h3>
-                    <p className="text-muted-foreground">June 20, 2024 • Prize Pool: $1,400</p>
+              ) : (
+                <div className="py-8 text-center">
+                  <p className="text-muted-foreground">No upcoming challenges found.</p>
+                  <div className="pt-4">
+                    <Link
+                      to="/challenges"
+                      className="inline-block px-8 py-4 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift text-lg"
+                    >
+                      View All Challenges
+                    </Link>
                   </div>
                 </div>
-                <div className="pt-4">
-                  <Link
-                    to="/challenges"
-                    className="inline-block px-8 py-4 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift text-lg"
-                  >
-                    Sign Up for a Challenge
-                  </Link>
-                </div>
-              </div>
+              )}
             </motion.div>
           </section>
         </div>

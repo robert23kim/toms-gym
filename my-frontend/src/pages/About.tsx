@@ -2,6 +2,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { getGhibliAvatar } from "../lib/api";
 
 const About = () => {
   return (
@@ -92,21 +93,21 @@ const About = () => {
                 name: "Tom Oka",
                 role: "Founder & CEO",
                 bio: "Experienced software engineer and powerlifting enthusiast with a vision to revolutionize online competitions.",
-                avatar: "https://images.unsplash.com/photo-1581092795360-fd1ca04f0952",
+                avatar: getGhibliAvatar("tom-oka"),
                 initials: "TO"
               },
               {
                 name: "Rob Kim",
                 role: "Head of Technology",
                 bio: "Technical leader with a passion for building scalable platforms that connect athletes worldwide.",
-                avatar: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
+                avatar: getGhibliAvatar("rob-kim"),
                 initials: "RK"
               },
               {
                 name: "Jess Hum",
                 role: "Chief Strategy Officer",
                 bio: "Former competitive lifter focused on building an inclusive and supportive community of athletes.",
-                avatar: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+                avatar: getGhibliAvatar("jess-hum"),
                 initials: "JH"
               }
             ].map((member) => (

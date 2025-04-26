@@ -1,8 +1,8 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
-import { competitions } from '../lib/data';
 import { Participant } from '../lib/types';
+import { getCompetitions } from '../lib/api';
 
 type LiftCategory = 'squat' | 'bench' | 'deadlift' | 'total';
 
@@ -10,29 +10,49 @@ const Leaderboard = () => {
   const [activeCategory, setActiveCategory] = useState<LiftCategory>('total');
   const [selectedWeightClass, setSelectedWeightClass] = useState<string>('all');
   const [selectedLocation, setSelectedLocation] = useState<string>('all');
+  const [allParticipants, setAllParticipants] = useState<(Participant & { location: string })[]>([]);
+  const [locations, setLocations] = useState<string[]>([]);
+  const [weightClasses, setWeightClasses] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Get all participants and their locations
-  const { allParticipants, locations } = useMemo(() => {
-    const participants = competitions.flatMap(c => 
-      c.participants.map(p => ({
-        ...p,
-        location: c.location // Add competition location to participant
-      }))
-    );
-    
-    const uniqueLocations = Array.from(
-      new Set(competitions.map(c => c.location))
-    ).sort();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const competitions = await getCompetitions();
+        
+        // Get all participants and their locations
+        const participants = competitions.flatMap(c => 
+          c.participants.map(p => ({
+            ...p,
+            location: c.location // Add competition location to participant
+          }))
+        );
+        
+        setAllParticipants(participants);
+        
+        // Extract unique locations
+        const uniqueLocations = Array.from(
+          new Set(competitions.map(c => c.location))
+        ).sort();
+        
+        setLocations(uniqueLocations);
+        
+        // Extract unique weight classes
+        const uniqueWeightClasses = Array.from(
+          new Set(participants.map(p => p.weightClass))
+        ).sort();
+        
+        setWeightClasses(uniqueWeightClasses);
+      } catch (error) {
+        console.error('Error fetching competitions:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-    return { allParticipants: participants, locations: uniqueLocations };
+    fetchData();
   }, []);
-
-  // Get all unique weight classes
-  const weightClasses = useMemo(() => 
-    Array.from(
-      new Set(allParticipants.map(p => p.weightClass))
-    ).sort()
-  , [allParticipants]);
 
   // Filter and sort participants based on active category, weight class, and location
   const getFilteredAndSortedParticipants = () => {
@@ -123,57 +143,66 @@ const Leaderboard = () => {
         </div>
 
         <div className="glass rounded-lg overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="bg-secondary/50">
-                  <th className="px-6 py-4 text-left">Rank</th>
-                  <th className="px-6 py-4 text-left">Athlete</th>
-                  <th className="px-6 py-4 text-left">Weight Class</th>
-                  <th className="px-6 py-4 text-left">Country</th>
-                  <th className="px-6 py-4 text-left">Location</th>
-                  <th className="px-6 py-4 text-right">Best {activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {sortedParticipants.map((participant, index) => {
-                  const bestLift = activeCategory === 'total'
-                    ? participant.totalWeight
-                    : participant.attempts?.[activeCategory]?.reduce((max, current) => Math.max(max, current), 0);
+          {loading ? (
+            <div className="py-16 text-center">
+              <div className="flex justify-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-accent"></div>
+              </div>
+              <p className="mt-4 text-lg text-muted-foreground">Loading leaderboard data...</p>
+            </div>
+          ) : (
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-secondary/50">
+                    <th className="px-6 py-4 text-left">Rank</th>
+                    <th className="px-6 py-4 text-left">Athlete</th>
+                    <th className="px-6 py-4 text-left">Weight Class</th>
+                    <th className="px-6 py-4 text-left">Country</th>
+                    <th className="px-6 py-4 text-left">Location</th>
+                    <th className="px-6 py-4 text-right">Best {activeCategory.charAt(0).toUpperCase() + activeCategory.slice(1)}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {sortedParticipants.map((participant, index) => {
+                    const bestLift = activeCategory === 'total'
+                      ? participant.totalWeight
+                      : participant.attempts?.[activeCategory]?.reduce((max, current) => Math.max(max, current), 0);
 
-                  return (
-                    <motion.tr
-                      key={participant.id}
-                      className="border-t border-border hover:bg-secondary/20"
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3, delay: index * 0.05 }}
-                    >
-                      <td className="px-6 py-4">
-                        <span className="font-medium">{index + 1}</span>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-3">
-                          <img
-                            src={participant.avatar}
-                            alt={participant.name}
-                            className="w-10 h-10 rounded-full"
-                          />
-                          <span className="font-medium">{participant.name}</span>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">{participant.weightClass}</td>
-                      <td className="px-6 py-4">{participant.country}</td>
-                      <td className="px-6 py-4">{participant.location}</td>
-                      <td className="px-6 py-4 text-right font-medium">
-                        {bestLift ? `${bestLift}kg` : 'N/A'}
-                      </td>
-                    </motion.tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                    return (
+                      <motion.tr
+                        key={participant.id}
+                        className="border-t border-border hover:bg-secondary/20"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                      >
+                        <td className="px-6 py-4">
+                          <span className="font-medium">{index + 1}</span>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="flex items-center gap-3">
+                            <img
+                              src={participant.avatar}
+                              alt={participant.name}
+                              className="w-10 h-10 rounded-full"
+                            />
+                            <span className="font-medium">{participant.name}</span>
+                          </div>
+                        </td>
+                        <td className="px-6 py-4">{participant.weightClass}</td>
+                        <td className="px-6 py-4">{participant.country}</td>
+                        <td className="px-6 py-4">{participant.location}</td>
+                        <td className="px-6 py-4 text-right font-medium">
+                          {bestLift ? `${bestLift}kg` : 'N/A'}
+                        </td>
+                      </motion.tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       </section>
     </Layout>
