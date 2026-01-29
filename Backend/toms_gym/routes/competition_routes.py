@@ -439,6 +439,91 @@ def create_competition():
         logger.error(f"Error creating competition: {str(e)}")
         return {"error": str(e)}, 500
 
+@competition_bp.route('/competitions/<string:competition_id>', methods=['DELETE'])
+def delete_competition(competition_id):
+    """
+    Endpoint to delete a competition by ID.
+    This will cascade delete all associated UserCompetitions and Attempts.
+    """
+    try:
+        logger.info(f"Deleting competition with ID: {competition_id}")
+        session = get_db_connection()
+        
+        # First check if the competition exists
+        result = session.execute(
+            sqlalchemy.text("SELECT id, name FROM \"Competition\" WHERE id = :id"),
+            {"id": competition_id}
+        ).fetchone()
+        
+        if result is None:
+            session.close()
+            logger.warning(f"Competition not found with ID: {competition_id}")
+            return {"error": "Competition not found"}, 404
+        
+        competition_name = result._mapping.get('name', 'unknown')
+        
+        # Delete the competition (cascades to UserCompetition and Attempt)
+        session.execute(
+            sqlalchemy.text("DELETE FROM \"Competition\" WHERE id = :id"),
+            {"id": competition_id}
+        )
+        session.commit()
+        session.close()
+        
+        logger.info(f"Successfully deleted competition: {competition_name} (ID: {competition_id})")
+        return {"message": f"Competition '{competition_name}' deleted successfully", "competition_id": competition_id}, 200
+    except Exception as e:
+        logger.error(f"Error deleting competition: {str(e)}")
+        return {"error": str(e)}, 500
+
+@competition_bp.route('/competitions/cleanup', methods=['DELETE'])
+def cleanup_competitions():
+    """
+    Endpoint to delete all competitions except the default one (ID '1').
+    This will cascade delete all associated UserCompetitions and Attempts.
+    Query params:
+        - keep_id: ID of the competition to keep (default: '1')
+    """
+    try:
+        keep_id = request.args.get('keep_id', '1')
+        logger.info(f"Cleaning up competitions, keeping ID: {keep_id}")
+        session = get_db_connection()
+        
+        # First get all competitions that will be deleted
+        result = session.execute(
+            sqlalchemy.text("SELECT id, name FROM \"Competition\" WHERE id != :keep_id"),
+            {"keep_id": keep_id}
+        )
+        
+        competitions_to_delete = []
+        for row in result:
+            competitions_to_delete.append({
+                "id": row._mapping.get('id'),
+                "name": row._mapping.get('name')
+            })
+        
+        if not competitions_to_delete:
+            session.close()
+            return {"message": "No competitions to delete", "deleted": []}, 200
+        
+        # Delete all competitions except the one to keep
+        session.execute(
+            sqlalchemy.text("DELETE FROM \"Competition\" WHERE id != :keep_id"),
+            {"keep_id": keep_id}
+        )
+        session.commit()
+        session.close()
+        
+        logger.info(f"Successfully deleted {len(competitions_to_delete)} competitions")
+        return {
+            "message": f"Deleted {len(competitions_to_delete)} competitions, kept ID: {keep_id}",
+            "deleted": competitions_to_delete,
+            "kept_id": keep_id
+        }, 200
+    except Exception as e:
+        logger.error(f"Error cleaning up competitions: {str(e)}")
+        return {"error": str(e)}, 500
+
 @competition_bp.route('/join_competition', methods=['POST'])
 def join_competition():
     """

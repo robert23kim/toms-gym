@@ -87,9 +87,9 @@ const VideoPlayer: React.FC = () => {
             
             // Handle Google Storage URLs
             if (originalUrl.includes('storage.googleapis.com')) {
-              // Extract video path
+              // Extract video path - get everything after the bucket name
               let videoPath = '';
-              if (originalUrl.includes('jtr-lift-u-4ever-cool-bucket/videos/')) {
+              if (originalUrl.includes('jtr-lift-u-4ever-cool-bucket/')) {
                 videoPath = originalUrl.split('jtr-lift-u-4ever-cool-bucket/')[1];
               } else {
                 // In case the URL format changes but still contains the bucket name
@@ -105,8 +105,18 @@ const VideoPlayer: React.FC = () => {
                 
                 console.log("Video path extracted:", videoPath);
                 
+                // Extract just the filename (without 'videos/' prefix) to avoid encoding issues
+                // The backend will add the 'videos/' prefix automatically if needed
+                let pathToSend = videoPath;
+                if (videoPath.startsWith('videos/')) {
+                  pathToSend = videoPath.substring('videos/'.length);
+                }
+                
+                // Encode the filename/path to handle special characters
+                const encodedPath = encodeURIComponent(pathToSend);
+                
                 // Use the video proxy endpoint with explicit parameters - FORCE proxy usage
-                processedUrl = `${videoProxyBaseUrl}/video/${encodeURIComponent(videoPath)}?mobile=true&t=${new Date().getTime()}`;
+                processedUrl = `${videoProxyBaseUrl}/video/${encodedPath}?mobile=true&t=${new Date().getTime()}`;
                 
                 // Add device type for debugging and better handling on backend
                 let deviceType = 'desktop';

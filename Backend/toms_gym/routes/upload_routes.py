@@ -80,9 +80,21 @@ def upload_video():
         
         # Create a new blob and upload the file's content
         blob = bucket.blob(filename)
+        content_type = file.content_type
+        if not content_type or content_type == 'application/octet-stream':
+            ext = original_filename.rsplit('.', 1)[-1].lower()
+            content_type_map = {
+                'mp4': 'video/mp4',
+                'mov': 'video/quicktime',
+                'avi': 'video/x-msvideo',
+                'mkv': 'video/x-matroska',
+                'webm': 'video/webm',
+            }
+            content_type = content_type_map.get(ext, content_type or 'application/octet-stream')
+            logger.info(f"Inferred content type for upload: {content_type} (ext={ext})")
         blob.upload_from_string(
             file.read(),
-            content_type=file.content_type
+            content_type=content_type
         )
         
         # Generate a URL for the file

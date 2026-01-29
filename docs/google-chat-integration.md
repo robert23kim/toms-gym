@@ -8,16 +8,21 @@ This document describes the integration between Google Chat and Tom's Gym that a
 
 ---
 
-## ⭐ Recommended Approach: Email Forwarding
+## ⭐ Recommended Approach: Email Forwarding (Implemented ✅)
 
 **For most users, the email forwarding approach is recommended.** It works with personal Gmail accounts, is reliable, and requires no complex API setup.
 
 **See: [google-chat-email-integration.md](./google-chat-email-integration.md)**
 
+**Status:** ✅ Implemented and tested (January 2026)
+
+**Upload Email:** `t30gupload@gmail.com`
+
 Quick summary:
-1. User posts in Chat: `t30g 185kg Squat` + video
-2. User forwards the message to `uploads@yourdomain.com`
-3. Backend processes the email and uploads the video
+1. User posts in Chat: `t30g 100kg Snatch` + video
+2. User forwards the message to `t30gupload@gmail.com`
+3. Backend processes the email and uploads the video to GCS
+4. User receives confirmation email with link to the uploaded video
 
 This document covers alternative approaches including the full Chat API integration (requires Google Workspace).
 

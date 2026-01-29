@@ -19,6 +19,8 @@ import tempfile
 import logging
 import threading
 import time
+import hashlib
+import uuid
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 from email.header import decode_header
@@ -45,6 +47,12 @@ EMAIL_SMTP_SERVER = os.environ.get('EMAIL_SMTP_SERVER', 'smtp.gmail.com')
 EMAIL_SMTP_PORT = int(os.environ.get('EMAIL_SMTP_PORT', '587'))
 EMAIL_SEND_CONFIRMATIONS = os.environ.get('EMAIL_SEND_CONFIRMATIONS', 'true').lower() == 'true'
 BACKEND_URL = os.environ.get('BACKEND_URL', 'http://localhost:8080')
+DEFAULT_FRONTEND_URL = os.environ.get('DEFAULT_FRONTEND_URL', 'https://my-frontend-quyiiugyoq-ue.a.run.app')
+EMAIL_DEDUPE_WINDOW_MINUTES = int(os.environ.get('EMAIL_DEDUPE_WINDOW_MINUTES', '30'))
+
+# Confirmation email metadata
+CONFIRMATION_HEADER_KEY = 'X-Toms-Gym-Email'
+CONFIRMATION_HEADER_VALUE = 'confirmation'
 
 # Supported video MIME types
 VIDEO_MIME_TYPES = {
@@ -214,6 +222,139 @@ def extract_original_sender(body: str, forwarder_email: str) -> str:
     return forwarder_email
 
 
+def _get_frontend_base() -> str:
+    frontend_url = (os.environ.get('FRONTEND_URL', '') or '').strip()
+    if not frontend_url or 'localhost' in frontend_url or '127.0.0.1' in frontend_url:
+        frontend_url = (os.environ.get('PROD_FRONTEND_URL', '') or '').strip()
+    if not frontend_url:
+        frontend_url = DEFAULT_FRONTEND_URL
+    return frontend_url.rstrip('/')
+
+
+def _ensure_email_dedupe_table(session):
+    import sqlalchemy
+    session.execute(sqlalchemy.text("""
+        CREATE TABLE IF NOT EXISTS "EmailProcessingLog" (
+            id UUID PRIMARY KEY,
+            message_id TEXT UNIQUE,
+            fingerprint TEXT UNIQUE,
+            status TEXT NOT NULL,
+            error TEXT,
+            created_at TIMESTAMP NOT NULL,
+            updated_at TIMESTAMP NOT NULL
+        )
+    """))
+    session.commit()
+
+
+def _compute_email_fingerprint(from_email: str, subject: str, date: str, body: str) -> str:
+    payload = f"{from_email}|{subject}|{date}|{body[:500]}"
+    return hashlib.sha256(payload.encode('utf-8', errors='replace')).hexdigest()
+
+
+def _reserve_email_processing(
+    message_id: Optional[str],
+    fingerprint: str,
+) -> Tuple[bool, Optional[str]]:
+    """
+    Reserve processing for an email. Returns (should_process, record_id).
+    """
+    import sqlalchemy
+    session = None
+    try:
+        session = get_db_connection()
+        _ensure_email_dedupe_table(session)
+
+        query = """
+            SELECT id, status, updated_at
+            FROM "EmailProcessingLog"
+            WHERE (:message_id IS NOT NULL AND message_id = :message_id)
+               OR (:message_id IS NULL AND fingerprint = :fingerprint)
+               OR (:message_id IS NOT NULL AND fingerprint = :fingerprint)
+            LIMIT 1
+        """
+        row = session.execute(
+            sqlalchemy.text(query),
+            {"message_id": message_id, "fingerprint": fingerprint}
+        ).fetchone()
+
+        now = datetime.utcnow()
+        if row:
+            record_id, status, updated_at = row
+            if status == "succeeded":
+                return False, str(record_id)
+
+            if status == "processing" and updated_at:
+                age_seconds = (now - updated_at).total_seconds()
+                if age_seconds < EMAIL_DEDUPE_WINDOW_MINUTES * 60:
+                    return False, str(record_id)
+
+            session.execute(
+                sqlalchemy.text("""
+                    UPDATE "EmailProcessingLog"
+                    SET status = :status, error = NULL, updated_at = :updated_at
+                    WHERE id = :id
+                """),
+                {"id": record_id, "status": "processing", "updated_at": now}
+            )
+            session.commit()
+            return True, str(record_id)
+
+        record_id = str(uuid.uuid4())
+        session.execute(
+            sqlalchemy.text("""
+                INSERT INTO "EmailProcessingLog"
+                    (id, message_id, fingerprint, status, error, created_at, updated_at)
+                VALUES
+                    (:id, :message_id, :fingerprint, :status, NULL, :created_at, :updated_at)
+            """),
+            {
+                "id": record_id,
+                "message_id": message_id,
+                "fingerprint": fingerprint,
+                "status": "processing",
+                "created_at": now,
+                "updated_at": now,
+            }
+        )
+        session.commit()
+        return True, record_id
+    except Exception as e:
+        logger.error(f"Error reserving email processing: {e}")
+        return True, None
+    finally:
+        if session:
+            session.close()
+
+
+def _update_email_processing_status(record_id: Optional[str], status: str, error: Optional[str] = None):
+    if not record_id:
+        return
+    import sqlalchemy
+    session = None
+    try:
+        session = get_db_connection()
+        session.execute(
+            sqlalchemy.text("""
+                UPDATE "EmailProcessingLog"
+                SET status = :status, error = :error, updated_at = :updated_at
+                WHERE id = :id
+            """),
+            {
+                "id": record_id,
+                "status": status,
+                "error": error,
+                "updated_at": datetime.utcnow(),
+            }
+        )
+        session.commit()
+    except Exception as e:
+        logger.error(f"Error updating email processing status: {e}")
+    finally:
+        if session:
+            session.close()
+
+
 def get_video_attachments(msg: email.message.Message) -> list:
     """Extract video attachments from an email message."""
     attachments = []
@@ -358,22 +499,31 @@ def send_confirmation_email(
         msg = MIMEMultipart()
         msg['From'] = EMAIL_USERNAME
         msg['To'] = to_email
+        msg[CONFIRMATION_HEADER_KEY] = CONFIRMATION_HEADER_VALUE
+        msg['Auto-Submitted'] = 'auto-generated'
         
         if success:
             msg['Subject'] = "✅ Tom's Gym - Video Uploaded Successfully"
             video_url = details.get('video_url', '')
+            competition_id = details.get('competition_id')
+            user_id = details.get('user_id')
+            attempt_id = details.get('attempt_id')
+            frontend_base = _get_frontend_base()
+            app_link = None
+            if competition_id and user_id and attempt_id:
+                app_link = f"{frontend_base}/challenges/{competition_id}/participants/{user_id}/video/{attempt_id}"
             body = f"""
 Your video has been uploaded to Tom's Gym!
 
 Details:
 - Weight: {details.get('weight_kg', 'N/A')} kg
 - Lift Type: {details.get('lift_type', 'N/A')}
-- Attempt ID: {details.get('attempt_id', 'N/A')}
+- Attempt ID: {attempt_id or 'N/A'}
 
 🎬 Watch your video:
 {video_url}
 
-View your lift in the app: {os.environ.get('FRONTEND_URL', 'https://tomsgym.com')}
+View your lift in the app: {app_link or frontend_base}
 
 Thanks for sharing your lift! 💪
 """
@@ -385,7 +535,7 @@ We couldn't process your video upload.
 Error: {error_message or 'Unknown error'}
 
 Please check:
-1. Your message contains the "t30g" tag with weight (e.g., "t30g 185kg Squat")
+1. Your message contains the upload tag with weight (e.g., "TAG 185kg Squat" where TAG = t-30-g without dashes)
 2. A video file is attached
 3. You're registered at Tom's Gym with this email address
 
@@ -418,8 +568,41 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
     
     logger.info(f"Processing email from {forwarder_email}")
     
-    # Get email body
+    # Check confirmation/auto-generated markers before doing any heavy parsing
+    subject = decode_email_header(msg.get('Subject', ''))
+    auto_submitted = (msg.get('Auto-Submitted', '') or '').lower()
+    precedence = (msg.get('Precedence', '') or '').lower()
+    custom_header = (msg.get(CONFIRMATION_HEADER_KEY, '') or '').lower()
+
+    if custom_header == CONFIRMATION_HEADER_VALUE:
+        logger.info("Skipping confirmation email (custom header)")
+        return True, "Skipped confirmation email"
+    if auto_submitted and auto_submitted != 'no':
+        logger.info(f"Skipping auto-submitted email (Auto-Submitted={auto_submitted})")
+        return True, "Skipped auto-submitted email"
+    if precedence in {'auto_reply', 'bulk', 'junk', 'list'}:
+        logger.info(f"Skipping auto-reply email (Precedence={precedence})")
+        return True, "Skipped auto-reply email"
+    if forwarder_email and forwarder_email.lower() == EMAIL_USERNAME.lower():
+        logger.info(f"Self-sent email detected. Subject: '{subject}'")
+        # Only skip if it's clearly a confirmation email (has our emoji markers)
+        if "✅ Tom's Gym" in subject or "❌ Tom's Gym" in subject:
+            logger.info("Skipping confirmation email from self (subject markers)")
+            return True, "Skipped confirmation email"
+        logger.info("Processing self-sent email - subject does NOT have confirmation markers")
+
+    # Get email body after filtering
     body = get_email_body(msg)
+
+    # Dedupe to prevent reprocessing the same email
+    raw_message_id = decode_email_header(msg.get('Message-ID', '')).strip()
+    message_id = raw_message_id.strip('<>').strip() if raw_message_id else None
+    date_header = decode_email_header(msg.get('Date', ''))
+    fingerprint = _compute_email_fingerprint(forwarder_email, subject, date_header, body)
+    should_process, record_id = _reserve_email_processing(message_id, fingerprint)
+    if not should_process:
+        logger.info("Skipping duplicate email (dedupe)")
+        return True, "Skipped duplicate email"
     
     # Parse t30g tag
     metadata = parse_t30g_message(body)
@@ -427,6 +610,7 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
         error = "No t30g tag found in message"
         logger.warning(error)
         send_confirmation_email(forwarder_email, False, {}, error)
+        _update_email_processing_status(record_id, "failed", error)
         return False, error
     
     logger.info(f"Found t30g tag: {metadata['weight_kg']}kg {metadata['lift_type']}")
@@ -437,6 +621,7 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
         error = "No video attachment found"
         logger.warning(error)
         send_confirmation_email(forwarder_email, False, metadata, error)
+        _update_email_processing_status(record_id, "failed", error)
         return False, error
     
     # Use the first video attachment
@@ -486,14 +671,17 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
             **metadata,
             'attempt_id': result.get('attempt_id'),
             'video_url': result.get('url'),
+            'competition_id': competition_id,
+            'user_id': user_id,
         })
-        
+        _update_email_processing_status(record_id, "succeeded")
         return True, f"Upload successful: {result.get('attempt_id')}"
     
     except Exception as e:
         error = f"Upload failed: {str(e)}"
         logger.error(error)
         send_confirmation_email(forwarder_email, False, metadata, error)
+        _update_email_processing_status(record_id, "failed", error)
         return False, error
 
 
@@ -535,8 +723,8 @@ def check_inbox():
         
         for msg_id in message_ids:
             try:
-                # Fetch the message
-                status, data = mail.fetch(msg_id, '(RFC822)')
+                # Fetch the message without marking it as read
+                status, data = mail.fetch(msg_id, '(BODY.PEEK[])')
                 if status != 'OK':
                     continue
                 
@@ -554,8 +742,9 @@ def check_inbox():
                     results['errors'].append(message)
                     stats['errors_today'] += 1
                 
-                # Mark as read (already done by FETCH, but ensure it)
-                mail.store(msg_id, '+FLAGS', '\\Seen')
+                # Mark as read only after successful processing
+                if success:
+                    mail.store(msg_id, '+FLAGS', '\\Seen')
             
             except Exception as e:
                 logger.error(f"Error processing message {msg_id}: {e}")
@@ -654,6 +843,47 @@ def reset_stats():
     stats['emails_processed_today'] = 0
     stats['errors_today'] = 0
     return jsonify({'status': 'reset'})
+
+
+@email_upload_bp.route('/admin/activate-competition/<competition_id>', methods=['POST'])
+def activate_competition(competition_id):
+    """Activate a competition by setting its status to 'in_progress'."""
+    from toms_gym.db import get_db_connection
+    import sqlalchemy
+    
+    session = get_db_connection()
+    try:
+        # Update competition status
+        result = session.execute(
+            sqlalchemy.text('''
+                UPDATE "Competition" 
+                SET status = 'in_progress' 
+                WHERE id = :competition_id
+                RETURNING id, name, status
+            '''),
+            {'competition_id': competition_id}
+        )
+        row = result.fetchone()
+        session.commit()
+        
+        if row:
+            return jsonify({
+                'success': True,
+                'competition': {
+                    'id': str(row[0]),
+                    'name': row[1],
+                    'status': row[2],
+                }
+            })
+        else:
+            return jsonify({'error': 'Competition not found'}), 404
+            
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error activating competition: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()
 
 
 def start_background_processor():

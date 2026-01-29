@@ -508,6 +508,34 @@ class DeploymentManager:
             "Backend/"
         ]
         
+        # Build environment variables string
+        # Get email app password from environment or use empty string
+        email_app_password = os.environ.get('EMAIL_APP_PASSWORD', '')
+        
+        env_vars = [
+            "FLASK_ENV=production",
+            f"DB_INSTANCE={self.config.project_id}:{self.config.region}:my-db",
+            "DB_USER=postgres",
+            "DB_PASS=test",
+            "DB_NAME=postgres",
+            f"GCS_BUCKET_NAME={self.config.bucket_name}",
+            "JWT_SECRET_KEY=your-secret-key-here",
+            f"DATABASE_URL=postgresql://postgres:test@/postgres?host=/cloudsql/{self.config.project_id}:{self.config.region}:my-db",
+            # Email upload integration
+            "EMAIL_UPLOAD_ENABLED=true",
+            "EMAIL_IMAP_SERVER=imap.gmail.com",
+            "EMAIL_IMAP_PORT=993",
+            "EMAIL_USERNAME=t30gupload@gmail.com",
+            f"EMAIL_PASSWORD={email_app_password}",
+            "EMAIL_POLL_INTERVAL=30",
+            "EMAIL_SMTP_SERVER=smtp.gmail.com",
+            "EMAIL_SMTP_PORT=587",
+            "EMAIL_SEND_CONFIRMATIONS=true",
+            "BACKEND_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app",
+            "FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
+            "PROD_FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
+        ]
+        
         # Deploy commands
         deploy_commands = [
             "gcloud", "run", "deploy", self.config.backend_service,
@@ -521,7 +549,7 @@ class DeploymentManager:
             "--concurrency=80",
             "--timeout=3600",
             f"--service-account={self.config.service_account}",
-            f"--set-env-vars=FLASK_ENV=production,DB_INSTANCE={self.config.project_id}:{self.config.region}:my-db,DB_USER=postgres,DB_PASS=test,DB_NAME=postgres,GCS_BUCKET_NAME={self.config.bucket_name},JWT_SECRET_KEY=your-secret-key-here,DATABASE_URL=postgresql://postgres:test@/postgres?host=/cloudsql/{self.config.project_id}:{self.config.region}:my-db"
+            f"--set-env-vars={','.join(env_vars)}"
         ]
         
         # Build and deploy

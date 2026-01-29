@@ -195,11 +195,18 @@ const RandomVideo = () => {
           // Log for debugging
           console.log(`Video path extracted: ${videoPath}`);
           
+          // Extract just the filename (without 'videos/' prefix) to avoid encoding issues
+          // The backend will add the 'videos/' prefix automatically if needed
+          let pathToSend = videoPath;
+          if (videoPath.startsWith('videos/')) {
+            pathToSend = videoPath.substring('videos/'.length);
+          }
+          
           // FORCE PRODUCTION URL - no conditions
           const videoProxyBaseUrl = PROD_API_URL;
           
           // Use our proxy endpoint with explicit parameters
-          finalVideoUrl = `${videoProxyBaseUrl}/video/${encodeURIComponent(videoPath)}?mobile=true`;
+          finalVideoUrl = `${videoProxyBaseUrl}/video/${encodeURIComponent(pathToSend)}?mobile=true`;
           console.log(`Using proxy URL: ${finalVideoUrl}`);
           
           // Add cache busting parameter and device info for debugging
