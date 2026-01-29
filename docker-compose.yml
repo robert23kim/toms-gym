@@ -26,6 +26,17 @@ services:
       - PYTHONUNBUFFERED=1
       - PYTHONDONTWRITEBYTECODE=1
       - VIDEO_BASE_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app
+      # Email Upload Integration
+      - EMAIL_UPLOAD_ENABLED=true
+      - EMAIL_IMAP_SERVER=imap.gmail.com
+      - EMAIL_IMAP_PORT=993
+      - EMAIL_USERNAME=t30gupload@gmail.com
+      - EMAIL_PASSWORD=${EMAIL_APP_PASSWORD:-changeme}
+      - EMAIL_POLL_INTERVAL=30
+      - EMAIL_SMTP_SERVER=smtp.gmail.com
+      - EMAIL_SMTP_PORT=587
+      - EMAIL_SEND_CONFIRMATIONS=true
+      - BACKEND_URL=http://localhost:5000
     volumes:
       - ./Backend:/app
       - ./Backend/credentials.json:/credentials/credentials.json:ro

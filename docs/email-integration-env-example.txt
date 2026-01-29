@@ -1,0 +1,67 @@
+# Email Upload Integration - Environment Variables
+# Copy these to your Backend/.env file and fill in the values
+
+# ===========================================
+# Email Upload Processing
+# ===========================================
+
+# Enable/disable email upload processing
+EMAIL_UPLOAD_ENABLED=true
+
+# IMAP server settings (for reading incoming emails)
+EMAIL_IMAP_SERVER=imap.gmail.com
+EMAIL_IMAP_PORT=993
+
+# Email account credentials
+# For Gmail: Use an App Password, not your regular password
+# Generate at: https://myaccount.google.com/apppasswords
+EMAIL_USERNAME=your.uploads.email@gmail.com
+EMAIL_PASSWORD=abcdefghijklmnop
+
+# How often to check for new emails (in seconds)
+EMAIL_POLL_INTERVAL=30
+
+# SMTP server settings (for sending confirmation emails)
+EMAIL_SMTP_SERVER=smtp.gmail.com
+EMAIL_SMTP_PORT=587
+
+# Whether to send confirmation emails to users
+EMAIL_SEND_CONFIRMATIONS=true
+
+# Backend URL for internal API calls
+# The email processor calls /upload to process videos
+BACKEND_URL=http://localhost:8080
+
+# ===========================================
+# Gmail Setup Instructions
+# ===========================================
+# 
+# 1. Create or use a Gmail account for uploads
+#    Example: tomsgym.uploads@gmail.com
+#
+# 2. Enable 2-Factor Authentication:
+#    https://myaccount.google.com/security
+#
+# 3. Generate an App Password:
+#    https://myaccount.google.com/apppasswords
+#    - Select app: Mail
+#    - Select device: Other (name it "Tom's Gym Backend")
+#    - Copy the 16-character password (remove spaces)
+#
+# 4. Enable IMAP:
+#    Gmail Settings → See all settings → Forwarding and POP/IMAP
+#    → Enable IMAP → Save
+#
+# 5. Set EMAIL_PASSWORD to the App Password (no spaces)
+#
+# ===========================================
+# Testing
+# ===========================================
+#
+# 1. Start the backend with these env vars set
+# 2. Check health: curl http://localhost:8080/integrations/email/health
+# 3. Send a test email to your uploads address with:
+#    - Body containing: t30g 100kg Squat
+#    - A video attachment
+# 4. Check logs for processing
+# 5. Manually trigger check: curl -X POST http://localhost:8080/integrations/email/check

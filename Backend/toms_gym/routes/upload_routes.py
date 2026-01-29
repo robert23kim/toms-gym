@@ -126,7 +126,7 @@ def upload_video():
                     {"user_id": user_id}
                 ).fetchone()
                 
-                weight_class = "83kg"  # Default weight class
+                weight_class = "85kg"  # Default weight class
                 if weight_class_result:
                     weight_class = weight_class_result[0]
                     logger.info(f"Using weight class from previous competition: {weight_class}")

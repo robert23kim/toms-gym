@@ -16,6 +16,9 @@ from toms_gym.routes.upload_routes import upload_bp
 from toms_gym.routes.auth_routes import auth_bp
 from toms_gym.config import get_config, Config
 
+# Import integrations
+from toms_gym.integrations.email_upload import email_upload_bp, start_background_processor
+
 load_dotenv()
 
 # Set up logging
@@ -58,6 +61,10 @@ app.register_blueprint(user_bp)
 app.register_blueprint(attempt_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(email_upload_bp, url_prefix='/integrations')
+
+# Start email processor if enabled
+start_background_processor()
 
 @app.route('/health')
 def health():

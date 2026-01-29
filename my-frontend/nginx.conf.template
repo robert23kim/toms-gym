@@ -2,6 +2,11 @@ server {
     listen ${PORT};
     server_name _;
     
+    # Redirect www to apex domain (e.g., www.t30g.com -> t30g.com)
+    if ($host ~* ^www\.(?<apex>.*)$) {
+        return 301 https://$apex$request_uri;
+    }
+
     # Add cache control headers to prevent caching of HTML files
     location / {
         root /usr/share/nginx/html;
