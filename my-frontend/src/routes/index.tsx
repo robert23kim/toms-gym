@@ -4,6 +4,7 @@ import Challenges from "../pages/Challenges";
 import Athletes from "../pages/Athletes";
 import About from "../pages/About";
 import ChallengeDetail from "../pages/ChallengeDetail";
+import ChallengeVideos from "../pages/ChallengeVideos";
 import VideoPlayer from "../pages/VideoPlayer";
 import UploadVideo from "../pages/UploadVideo";
 import NotFound from "../pages/NotFound";
@@ -33,6 +34,10 @@ export const routes: RouteObject[] = [
   {
     path: "/challenges/:id",
     element: <ChallengeDetail />,
+  },
+  {
+    path: "/challenges/:id/videos",
+    element: <ChallengeVideos />,
   },
   {
     path: "/challenges/:id/upload",

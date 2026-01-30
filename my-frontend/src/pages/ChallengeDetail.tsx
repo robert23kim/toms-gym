@@ -45,6 +45,36 @@ const ChallengeDetail: React.FC = () => {
   const [participants, setParticipants] = useState<any[]>([]);
   const [hasJoined, setHasJoined] = useState(false);
   const [selectedWeightClass, setSelectedWeightClass] = useState<string>("");
+  const [challengeName, setChallengeName] = useState<string>("");
+
+  // Function to fetch videos - can be called to refresh after deletion
+  const fetchVideos = async () => {
+    try {
+      const liftsResponse = await axios.get(`${COMPETITIONS_API_URL}/competitions/${id}/lifts`);
+      const liftsDataBackend = liftsResponse.data.lifts || [];
+      
+      setAttempts(liftsDataBackend);
+      
+      const processedVideoData: VideoData[] = liftsDataBackend
+        .filter((lift: any) => lift.video_url)
+        .map((lift: any) => ({
+          attempt_id: lift.id.toString(),
+          user_id: lift.participant_id,
+          lift_type: lift.lift_type,
+          weight: lift.weight,
+          status: lift.status,
+          video_url: lift.video_url,
+          created_at: lift.timestamp || new Date().toISOString(),
+          competition_id: id || '',
+          competition_name: challengeName
+        }));
+      
+      setVideoData(processedVideoData);
+      console.log("Refreshed video data:", processedVideoData);
+    } catch (err) {
+      console.error("Error fetching videos:", err);
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -65,13 +95,16 @@ const ChallengeDetail: React.FC = () => {
         const participantsDataBackend = participantsData.data.participants || [];
         const liftsDataBackend = liftsData.data.lifts || [];
         
+        // Store challenge name for video refresh
+        setChallengeName(backendData.name);
+        
         // Store the lifts/attempts with full data including video URLs
         setAttempts(liftsDataBackend);
         
         // Process video data for the gallery
         const processedVideoData: VideoData[] = liftsDataBackend
-          .filter(lift => lift.video_url) // Only include lifts with videos
-          .map(lift => ({
+          .filter((lift: any) => lift.video_url) // Only include lifts with videos
+          .map((lift: any) => ({
             attempt_id: lift.id.toString(),
             user_id: lift.participant_id,
             lift_type: lift.lift_type,
@@ -557,7 +590,18 @@ const ChallengeDetail: React.FC = () => {
 
           {/* Recent Challenge Videos */}
           <div className="mt-12">
-            <h3 className="text-2xl font-bold mb-6">Recent Challenge Videos</h3>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-2xl font-bold">Recent Challenge Videos</h3>
+              {videoData.length > 0 && (
+                <Link
+                  to={`/challenges/${id}/videos`}
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
+                >
+                  See All Videos
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              )}
+            </div>
             
             {videoData.length > 0 ? (
               <VideoGallery 
@@ -565,6 +609,7 @@ const ChallengeDetail: React.FC = () => {
                 title=""
                 emptyMessage="No videos uploaded yet for this challenge"
                 maxVideos={6}
+                onVideoDeleted={fetchVideos}
               />
             ) : hasJoined ? (
               <div className="bg-gray-100 p-8 rounded-lg text-center">

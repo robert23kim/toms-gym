@@ -604,16 +604,18 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
         logger.info("Skipping duplicate email (dedupe)")
         return True, "Skipped duplicate email"
     
-    # Parse t30g tag
+    # Parse t30g tag (optional - use defaults if not found)
     metadata = parse_t30g_message(body)
     if not metadata:
-        error = "No t30g tag found in message"
-        logger.warning(error)
-        send_confirmation_email(forwarder_email, False, {}, error)
-        _update_email_processing_status(record_id, "failed", error)
-        return False, error
-    
-    logger.info(f"Found t30g tag: {metadata['weight_kg']}kg {metadata['lift_type']}")
+        # Use reasonable defaults when no t30g tag found
+        metadata = {
+            'weight_kg': 90,  # Default weight (user can update later)
+            'lift_type': 'Squat',  # Default lift type
+            'raw_text': body,
+        }
+        logger.info("No t30g tag found, using defaults: 90kg Squat")
+    else:
+        logger.info(f"Found t30g tag: {metadata['weight_kg']}kg {metadata['lift_type']}")
     
     # Get video attachments
     attachments = get_video_attachments(msg)

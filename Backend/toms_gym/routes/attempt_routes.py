@@ -10,32 +10,52 @@ import logging
 import uuid
 
 attempt_bp = Blueprint('attempt', __name__)
+logger = logging.getLogger(__name__)
+
+def is_valid_uuid(val):
+    """Check if a string is a valid UUID."""
+    try:
+        uuid.UUID(str(val))
+        return True
+    except (ValueError, AttributeError):
+        return False
 
 @attempt_bp.route('/attempts/<string:attempt_id>')
 def get_attempt(attempt_id):
     """
     Endpoint that queries a single attempt by ID.
     """
+    session = None
     try:
+        # Validate UUID format
+        if not is_valid_uuid(attempt_id):
+            return {"error": "Invalid attempt ID format"}, 400
+            
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("SELECT * FROM \"Attempt\" WHERE id = :id"),
             {"id": attempt_id}
         ).fetchone()
-        session.close()
         
         if result is None:
             return {"error": "Attempt not found"}, 404
             
         return {"attempt": dict(result)}
     except Exception as e:
+        logger.error(f"Error getting attempt: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @attempt_bp.route('/attempts', methods=['POST'])
 def create_attempt():
     """
     Endpoint to create a new attempt.
     """
+    session = None
     try:
         request_data = request.json
         
@@ -63,11 +83,16 @@ def create_attempt():
         )
         attempt_id = result.fetchone()[0]
         session.commit()
-        session.close()
         
         return {"message": "Attempt created successfully!", "attempt_id": attempt_id}, 201
     except Exception as e:
+        logger.error(f"Error creating attempt: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 # Add an alias for submit_attempt that maps to create_attempt for compatibility with tests
 @attempt_bp.route('/submit_attempt', methods=['POST'])
@@ -87,7 +112,12 @@ def update_attempt(attempt_id):
     """
     Endpoint to update an existing attempt.
     """
+    session = None
     try:
+        # Validate UUID format
+        if not is_valid_uuid(attempt_id):
+            return {"error": "Invalid attempt ID format"}, 400
+            
         request_data = request.json
         data = {
             "attempt_id": attempt_id,
@@ -112,21 +142,30 @@ def update_attempt(attempt_id):
         )
         
         if result.rowcount == 0:
-            session.close()
             return {"error": "Attempt not found"}, 404
             
         session.commit()
-        session.close()
         return {"message": "Attempt updated successfully!"}, 200
     except Exception as e:
+        logger.error(f"Error updating attempt: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @attempt_bp.route('/attempts/<string:attempt_id>', methods=['DELETE'])
 def delete_attempt(attempt_id):
     """
     Endpoint to delete an attempt.
     """
+    session = None
     try:
+        # Validate UUID format
+        if not is_valid_uuid(attempt_id):
+            return {"error": "Invalid attempt ID format"}, 400
+            
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("DELETE FROM \"Attempt\" WHERE id = :id RETURNING id;"),
@@ -134,11 +173,15 @@ def delete_attempt(attempt_id):
         )
         
         if result.rowcount == 0:
-            session.close()
             return {"error": "Attempt not found"}, 404
             
         session.commit()
-        session.close()
         return {"message": "Attempt deleted successfully!"}, 200
     except Exception as e:
-        return {"error": str(e)}, 500 
+        logger.error(f"Error deleting attempt: {str(e)}")
+        if session:
+            session.rollback()
+        return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close() 

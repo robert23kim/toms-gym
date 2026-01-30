@@ -166,6 +166,7 @@ def get_competitions():
     """
     Endpoint that queries all competitions.
     """
+    session = None
     try:
         session = get_db_connection()
         result = session.execute(sqlalchemy.text("SELECT * FROM \"Competition\""))
@@ -180,17 +181,22 @@ def get_competitions():
                 else:
                     row_dict[column] = value
             results.append(row_dict)
-        session.close()
         return {"competitions": results}
     except Exception as e:
         logger.error(f"Error fetching competitions: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/competitions/<string:competition_id>')
 def get_competition_by_id(competition_id):
     """
     Endpoint that queries a single competition by ID.
     """
+    session = None
     try:
         logger.info(f"Fetching competition with ID: {competition_id}")
         session = get_db_connection()
@@ -257,7 +263,6 @@ def get_competition_by_id(competition_id):
             competition_data['weightclasses'] = []
             competition_data['gender'] = 'M'
         
-        session.close()
         logger.info(f"Successfully processed competition data for ID: {competition_id}")
         return {"competition": competition_data}
     except Exception as e:
@@ -272,13 +277,19 @@ def get_competition_by_id(competition_id):
         }
         logger.error(f"Error fetching competition by ID: {str(e)}")
         logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        if session:
+            session.rollback()
         return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/competitions/<string:competition_id>/participants')
 def get_competition_participants(competition_id):
     """
     Endpoint that queries all participants for a specific competition.
     """
+    session = None
     try:
         logger.info(f"Fetching participants for competition ID: {competition_id}")
         session = get_db_connection()
@@ -323,7 +334,6 @@ def get_competition_participants(competition_id):
                 # Skip this row if there's an error
                 continue
                 
-        session.close()
         return {"participants": results}
     except Exception as e:
         error_details = {
@@ -335,13 +345,19 @@ def get_competition_participants(competition_id):
         }
         logger.error(f"Error fetching competition participants: {str(e)}")
         logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        if session:
+            session.rollback()
         return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/competitions/<string:competition_id>/lifts')
 def get_competition_lifts(competition_id):
     """
     Endpoint that queries all lifts for a specific competition.
     """
+    session = None
     try:
         logger.info(f"Fetching lifts for competition ID: {competition_id}")
         session = get_db_connection()
@@ -369,7 +385,6 @@ def get_competition_lifts(competition_id):
                     row_dict[column] = value
             results.append(row_dict)
             
-        session.close()
         logger.info(f"Successfully fetched {len(results)} lifts for competition {competition_id}")
         return {"lifts": results}
     except Exception as e:
@@ -382,7 +397,12 @@ def get_competition_lifts(competition_id):
         }
         logger.error(f"Error fetching competition lifts: {str(e)}")
         logger.error(f"Detailed error info: {json.dumps(error_details, default=str)}")
+        if session:
+            session.rollback()
         return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/create_competition', methods=['POST'])
 def create_competition():
@@ -390,6 +410,7 @@ def create_competition():
     Endpoint to insert a new competition entry.
     Expects JSON payload with competition details.
     """
+    session = None
     try:
         request_data = request.json
         
@@ -432,12 +453,16 @@ def create_competition():
         )
         inserted_id = result.fetchone()[0]
         session.commit()
-        session.close()
 
         return {"message": "Competition created successfully!", "competition_id": inserted_id}, 201
     except Exception as e:
         logger.error(f"Error creating competition: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/competitions/<string:competition_id>', methods=['DELETE'])
 def delete_competition(competition_id):
@@ -445,6 +470,7 @@ def delete_competition(competition_id):
     Endpoint to delete a competition by ID.
     This will cascade delete all associated UserCompetitions and Attempts.
     """
+    session = None
     try:
         logger.info(f"Deleting competition with ID: {competition_id}")
         session = get_db_connection()
@@ -456,7 +482,6 @@ def delete_competition(competition_id):
         ).fetchone()
         
         if result is None:
-            session.close()
             logger.warning(f"Competition not found with ID: {competition_id}")
             return {"error": "Competition not found"}, 404
         
@@ -468,13 +493,17 @@ def delete_competition(competition_id):
             {"id": competition_id}
         )
         session.commit()
-        session.close()
         
         logger.info(f"Successfully deleted competition: {competition_name} (ID: {competition_id})")
         return {"message": f"Competition '{competition_name}' deleted successfully", "competition_id": competition_id}, 200
     except Exception as e:
         logger.error(f"Error deleting competition: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/competitions/cleanup', methods=['DELETE'])
 def cleanup_competitions():
@@ -484,6 +513,7 @@ def cleanup_competitions():
     Query params:
         - keep_id: ID of the competition to keep (default: '1')
     """
+    session = None
     try:
         keep_id = request.args.get('keep_id', '1')
         logger.info(f"Cleaning up competitions, keeping ID: {keep_id}")
@@ -503,7 +533,6 @@ def cleanup_competitions():
             })
         
         if not competitions_to_delete:
-            session.close()
             return {"message": "No competitions to delete", "deleted": []}, 200
         
         # Delete all competitions except the one to keep
@@ -512,7 +541,6 @@ def cleanup_competitions():
             {"keep_id": keep_id}
         )
         session.commit()
-        session.close()
         
         logger.info(f"Successfully deleted {len(competitions_to_delete)} competitions")
         return {
@@ -522,7 +550,12 @@ def cleanup_competitions():
         }, 200
     except Exception as e:
         logger.error(f"Error cleaning up competitions: {str(e)}")
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @competition_bp.route('/join_competition', methods=['POST'])
 def join_competition():
