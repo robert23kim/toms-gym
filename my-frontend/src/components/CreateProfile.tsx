@@ -13,13 +13,13 @@ interface CreateProfileProps {
 const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const { handleLoginSuccess } = useAuth();
   const [formData, setFormData] = useState({
-    name: 'John Doe',
-    email: 'john.doe@example.com',
-    password: 'Password123',
-    confirmPassword: 'Password123',
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
     weight_class: '83kg',
     country: 'United States',
-    bio: 'Powerlifting enthusiast looking to compete and improve!'
+    bio: ''
   });
 
   const [message, setMessage] = useState<string>('');
@@ -27,27 +27,34 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState<boolean>(false);
+  const [wantsPassword, setWantsPassword] = useState<boolean>(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate passwords match - this is the only validation we keep
-    if (formData.password !== formData.confirmPassword) {
+
+    // Validate passwords match if password is being set
+    if (wantsPassword && formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     setLoading(true);
     setError('');
     setMessage('');
-    
+
     try {
-      // Register the user using the auth endpoint
-      const response = await axios.post(`${API_URL}/auth/register`, {
+      // Register the user using the auth endpoint (password optional)
+      const registerData: { name: string; email: string; password?: string } = {
         name: formData.name,
         email: formData.email,
-        password: formData.password
-      });
+      };
+
+      // Only include password if user wants one
+      if (wantsPassword && formData.password) {
+        registerData.password = formData.password;
+      }
+
+      const response = await axios.post(`${API_URL}/auth/register`, registerData);
       
       // Handle successful registration
       setMessage('Profile created successfully!');
@@ -137,49 +144,63 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
-            <div className="relative">
+            <label className="flex items-center gap-2 cursor-pointer">
               <input
-                type={showPassword ? "text" : "password"}
-                name="password"
-                value={formData.password}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                type="checkbox"
+                checked={wantsPassword}
+                onChange={(e) => setWantsPassword(e.target.checked)}
+                className="rounded border-border"
               />
-              <button 
-                type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-                onClick={() => setShowPassword(!showPassword)}
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
+              <span className="text-sm font-medium">Set a password (optional)</span>
+            </label>
             <p className="text-xs text-muted-foreground mt-1">
-              Password validation disabled for testing purposes.
+              You can upload videos without a password. Set one if you want extra security.
             </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Confirm Password</label>
-            <div className="relative">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                name="confirmPassword"
-                value={formData.confirmPassword}
-                onChange={handleChange}
-                required
-                className="w-full px-3 py-2 rounded-md border border-border bg-background"
-              />
-              <button 
-                type="button"
-                className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
-                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-              >
-                {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
-            </div>
-          </div>
+          {wantsPassword && (
+            <>
+              <div>
+                <label className="block text-sm font-medium mb-1">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    name="password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium mb-1">Confirm Password</label>
+                <div className="relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    name="confirmPassword"
+                    value={formData.confirmPassword}
+                    onChange={handleChange}
+                    className="w-full px-3 py-2 rounded-md border border-border bg-background"
+                  />
+                  <button
+                    type="button"
+                    className="absolute right-2 top-1/2 -translate-y-1/2 text-muted-foreground"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
 
           <div>
             <label className="block text-sm font-medium mb-1">Weight Class</label>

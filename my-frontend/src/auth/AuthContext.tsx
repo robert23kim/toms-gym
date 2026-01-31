@@ -16,6 +16,7 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   error: string | null;
+  hasLocalUserId: boolean;  // For passwordless users
   handleLoginSuccess: (accessToken: string, refreshToken: string, userId: string) => Promise<void>;
   logout: () => void;
 }
@@ -26,6 +27,7 @@ const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   error: null,
+  hasLocalUserId: false,
   handleLoginSuccess: async () => {},
   logout: () => {},
 });
@@ -39,12 +41,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasLocalUserId, setHasLocalUserId] = useState(false);
 
   // Check if user is already authenticated on mount
   useEffect(() => {
     const token = getAccessToken();
     const userId = getUserId();
-    
+
+    // Check for passwordless user (userId but no token)
+    if (userId && !token) {
+      setHasLocalUserId(true);
+      setLoading(false);
+      return;
+    }
+
     if (token && userId) {
       fetchUserData(token);
     } else {
@@ -148,6 +158,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     user,
     loading,
     error,
+    hasLocalUserId,
     handleLoginSuccess,
     logout
   };

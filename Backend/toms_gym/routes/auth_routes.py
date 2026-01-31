@@ -336,45 +336,48 @@ def create_access_token(user_id, expires_delta=None):
 
 @auth_bp.route('/register', methods=['POST'])
 def register():
-    """Register a new user with username/password credentials"""
+    """Register a new user with username/password credentials (password optional)"""
     session = None
     try:
         data = request.get_json()
-        required_fields = ['email', 'password', 'name']
-        
+        required_fields = ['email', 'name']
+
         if not all(field in data for field in required_fields):
-            return jsonify({"error": "Missing required fields"}), 400
-        
+            return jsonify({"error": "Missing required fields (email and name are required)"}), 400
+
         # Get database connection
         session = get_db_connection()
-        
+
         # Start a fresh transaction
         session.rollback()  # Reset any previous transaction state
-        
+
         # Check if user exists by email or username
         username = data.get('username', data['email'])  # Use email as username if not provided
         result = session.execute(
             text('SELECT id FROM "User" WHERE email = :email'),
             {"email": data['email']}
         ).fetchone()
-        
+
         if result:
             return jsonify({"error": "User already exists"}), 409
-        
-        # Validate password
-        is_valid, password_error = validate_password(data['password'])
-        if not is_valid:
-            return jsonify({"error": password_error}), 400
-        
-        # Hash password
-        hashed_password = hash_password(data['password'])
-        
+
+        # Password is optional - only validate and hash if provided
+        hashed_password = None
+        if data.get('password'):
+            # Validate password
+            is_valid, password_error = validate_password(data['password'])
+            if not is_valid:
+                return jsonify({"error": password_error}), 400
+
+            # Hash password
+            hashed_password = hash_password(data['password'])
+
         # Create new user with UUID
         user_id = str(uuid.uuid4())
         result = session.execute(
             text("""
                 INSERT INTO "User" (id, username, email, password_hash, name, auth_method, created_at, status, role)
-                VALUES (:id, :username, :email, :password, :name, 'password', :created_at, 'active', 'user')
+                VALUES (:id, :username, :email, :password, :name, :auth_method, :created_at, 'active', 'user')
                 RETURNING id;
             """),
             {
@@ -383,26 +386,27 @@ def register():
                 "email": data['email'],
                 "password": hashed_password,
                 "name": data['name'],
+                "auth_method": 'password' if hashed_password else 'passwordless',
                 "created_at": datetime.datetime.utcnow()
             }
         )
-        
+
         db_user_id = result.fetchone()[0]
         # Convert UUID to string if needed
         user_id_str = str(db_user_id)
         session.commit()
-        
-        # Generate access token
+
+        # Generate access token (even for passwordless users)
         access_token = create_access_token(user_id_str)
-        
+
         # Log successful registration
         SecurityAudit.log_auth_event(
             'user_registered',
             user_id=user_id_str,
             success=True,
-            details={'auth_method': 'password'}
+            details={'auth_method': 'password' if hashed_password else 'passwordless'}
         )
-        
+
         return jsonify({
             "message": "Registration successful",
             "user_id": user_id_str,

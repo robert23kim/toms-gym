@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X, Dumbbell, ShoppingBag, UserPlus, LogIn, LogOut, User, Play } from "lucide-react";
+import { Menu, X, Dumbbell, ShoppingBag, UserPlus, LogIn, LogOut, User, Play, Search } from "lucide-react";
 import CreateProfile from "./CreateProfile";
 import Login from "./Login";
+import FindProfile from "./FindProfile";
 import axios from "axios";
 import { API_URL } from "../config";
 import { useAuth } from "../auth/AuthContext";
@@ -13,8 +14,20 @@ const Navbar: React.FC = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isCreateProfileOpen, setIsCreateProfileOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
+  const [isFindProfileOpen, setIsFindProfileOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout, handleLoginSuccess } = useAuth();
+
+  // Check if user has a userId in localStorage (passwordless user)
+  const hasLocalUserId = !!localStorage.getItem('userId');
+  const localUserId = localStorage.getItem('userId');
+
+  // Handler for passwordless users to "forget" their session
+  const handleForgetMe = () => {
+    localStorage.removeItem('userId');
+    localStorage.removeItem('last_attempt_id');
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -81,6 +94,7 @@ const Navbar: React.FC = () => {
   ];
 
   const AuthButton = () => {
+    // Fully authenticated user (with password)
     if (isAuthenticated) {
       return (
         <div className="flex items-center gap-4">
@@ -102,8 +116,39 @@ const Navbar: React.FC = () => {
       );
     }
 
+    // Passwordless user (has userId in localStorage but no auth token)
+    if (hasLocalUserId && localUserId) {
+      return (
+        <div className="flex items-center gap-4">
+          <Link
+            to={`/profile/${localUserId}`}
+            className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
+          >
+            <User size={18} />
+            <span>My Profile</span>
+          </Link>
+          <button
+            onClick={handleForgetMe}
+            className="flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
+            title="Clear your local session"
+          >
+            <X size={18} />
+            <span>Forget Me</span>
+          </button>
+        </div>
+      );
+    }
+
+    // Not logged in
     return (
       <div className="flex items-center gap-4">
+        <button
+          onClick={() => setIsFindProfileOpen(true)}
+          className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
+        >
+          <Search size={18} />
+          <span>Find Profile</span>
+        </button>
         <button
           onClick={() => setIsLoginOpen(true)}
           className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
@@ -215,8 +260,32 @@ const Navbar: React.FC = () => {
                   <span>Logout</span>
                 </button>
               </>
+            ) : hasLocalUserId && localUserId ? (
+              <>
+                <Link
+                  to={`/profile/${localUserId}`}
+                  className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
+                >
+                  <User size={18} />
+                  <span>My Profile</span>
+                </Link>
+                <button
+                  onClick={handleForgetMe}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <X size={18} />
+                  <span>Forget Me</span>
+                </button>
+              </>
             ) : (
               <>
+                <button
+                  onClick={() => setIsFindProfileOpen(true)}
+                  className="w-full flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
+                >
+                  <Search size={18} />
+                  <span>Find Profile</span>
+                </button>
                 <button
                   onClick={() => setIsLoginOpen(true)}
                   className="w-full flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
@@ -250,6 +319,13 @@ const Navbar: React.FC = () => {
         <Login
           onClose={() => setIsLoginOpen(false)}
           onSubmit={handleLogin}
+        />
+      )}
+
+      {/* Find Profile Modal */}
+      {isFindProfileOpen && (
+        <FindProfile
+          onClose={() => setIsFindProfileOpen(false)}
         />
       )}
     </>

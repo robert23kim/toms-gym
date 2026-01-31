@@ -268,7 +268,8 @@ def upload_video():
                 'url': video_url,
                 'filename': filename,
                 'attempt_id': attempt_id,
-                'user_competition_id': user_competition_id
+                'user_competition_id': user_competition_id,
+                'user_id': str(user_id)
             }), 200
             
         except Exception as e:

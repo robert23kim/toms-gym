@@ -90,12 +90,8 @@ const Profile = () => {
       
       console.log(`Fetching profile data for user ID: ${userId}`);
       
-      // Fetch user profile data from the API
-      const response = await axios.get(`${API_URL}/users/${userId}/profile`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('auth_token')}`
-        }
-      });
+      // Fetch user profile data from the API (no auth required)
+      const response = await axios.get(`${API_URL}/users/${userId}/profile`);
       
       console.log('Profile response:', response.data);
       setProfileData(response.data);
@@ -109,9 +105,12 @@ const Profile = () => {
   }, [id]);
   
   useEffect(() => {
-    // Only fetch profile data if user is authenticated or an ID is provided
-    if (!authLoading && (isAuthenticated || id)) {
-      fetchProfileData();
+    // Fetch profile data if an ID is provided or userId is in localStorage
+    if (!authLoading) {
+      const userId = id || localStorage.getItem('userId');
+      if (userId || isAuthenticated) {
+        fetchProfileData();
+      }
     }
   }, [id, isAuthenticated, authLoading, fetchProfileData]);
 
@@ -156,10 +155,23 @@ const Profile = () => {
     );
   }
 
-  if (!isAuthenticated && !id) {
-    // Redirect to login if not authenticated and no specific profile ID
-    navigate('/');
-    return null;
+  // Check if we have any way to identify a user (via URL, localStorage, or auth)
+  const hasUserId = id || localStorage.getItem('userId');
+  if (!isAuthenticated && !hasUserId) {
+    // Show a message with option to find profile by email
+    return (
+      <Layout>
+        <div className="flex flex-col justify-center items-center h-[60vh]">
+          <p className="text-muted-foreground mb-4">No profile found. Upload a video to create your profile!</p>
+          <Link
+            to="/upload"
+            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+          >
+            Upload a Video
+          </Link>
+        </div>
+      </Layout>
+    );
   }
 
   if (!profileData) {
@@ -263,70 +275,46 @@ const Profile = () => {
         </div>
 
         {/* Uploaded Videos */}
-        {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 && (
-          <div className="bg-card rounded-xl p-6 shadow-sm mb-6">
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-3">
-                <Play className="text-accent" size={24} />
-                <h2 className="text-xl font-semibold">My Videos</h2>
-              </div>
-              <Link to="/random-video" className="text-accent hover:underline text-sm">
-                See all videos →
+        <div className="bg-card rounded-xl p-6 shadow-sm mb-6">
+          <div className="flex items-center justify-between mb-4">
+            <div className="flex items-center gap-3">
+              <Play className="text-accent" size={24} />
+              <h2 className="text-xl font-semibold">My Videos</h2>
+              {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 && (
+                <span className="text-sm text-muted-foreground">
+                  ({profileData.uploaded_videos.length} {profileData.uploaded_videos.length === 1 ? 'video' : 'videos'})
+                </span>
+              )}
+            </div>
+            <Link to="/upload" className="text-accent hover:underline text-sm">
+              Upload new video →
+            </Link>
+          </div>
+
+          {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 ? (
+            <VideoGallery
+              videos={profileData.uploaded_videos.map(video => ({
+                ...video,
+                user_id: profileData.user.id
+              }))}
+              maxVideos={100}
+              showCompetitionName={true}
+              userId={profileData.user.id}
+              showDeleteButton={false}
+            />
+          ) : (
+            <div className="text-center py-8">
+              <p className="text-muted-foreground mb-4">No videos uploaded yet</p>
+              <Link
+                to="/upload"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
+              >
+                <Play size={18} />
+                Upload Your First Video
               </Link>
             </div>
-
-            {/* Group videos by competition if from multiple competitions */}
-            {(() => {
-              // Check if videos are from multiple competitions
-              const uniqueCompetitions = [...new Set(profileData.uploaded_videos?.map(video => video.competition_id))];
-              
-              if (uniqueCompetitions.length > 1) {
-                // Group videos by competition
-                return uniqueCompetitions.map(competitionId => {
-                  const competitionVideos = profileData.uploaded_videos?.filter(
-                    video => video.competition_id === competitionId
-                  ) || [];
-                  
-                  if (competitionVideos.length === 0) return null;
-                  
-                  const competitionName = competitionVideos[0].competition_name;
-                  
-                  return (
-                    <div key={competitionId} className="mb-6 last:mb-0">
-                      <div className="flex items-center justify-between mb-2">
-                        <Link 
-                          to={`/competitions/${competitionId}`} 
-                          className="text-lg font-medium hover:text-accent"
-                        >
-                          {competitionName}
-                        </Link>
-                        <span className="text-sm text-muted-foreground">
-                          {competitionVideos.length} {competitionVideos.length === 1 ? 'video' : 'videos'}
-                        </span>
-                      </div>
-                      
-                      <VideoGallery 
-                        videos={competitionVideos}
-                        maxVideos={3}
-                        showCompetitionName={false}
-                        userId={profileData.user.id}
-                      />
-                    </div>
-                  );
-                });
-              } else {
-                // Standard display for videos from a single competition or unaffiliated videos
-                return (
-                  <VideoGallery 
-                    videos={profileData.uploaded_videos}
-                    maxVideos={6}
-                    userId={profileData.user.id}
-                  />
-                );
-              }
-            })()}
-          </div>
-        )}
+          )}
+        </div>
 
         {/* Recent Competitions */}
         <div className="bg-card rounded-xl p-6 shadow-sm">

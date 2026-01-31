@@ -11,6 +11,28 @@ import uuid
 
 user_bp = Blueprint('user', __name__)
 
+@user_bp.route('/users/by-email/<path:email>')
+def get_user_by_email(email):
+    """Find user profile by email address"""
+    try:
+        session = get_db_connection()
+        result = session.execute(
+            sqlalchemy.text('SELECT id, name, email FROM "User" WHERE email = :email'),
+            {"email": email}
+        ).fetchone()
+        session.close()
+
+        if not result:
+            return jsonify({"error": "No user found with that email"}), 404
+
+        return jsonify({
+            "id": str(result[0]),
+            "name": result[1],
+            "email": result[2]
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 @user_bp.route('/users/<string:user_id>')
 def get_user(user_id):
     """

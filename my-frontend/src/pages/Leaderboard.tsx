@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import Layout from '../components/Layout';
 import { Participant } from '../lib/types';
 import { getCompetitions } from '../lib/api';
@@ -182,14 +183,17 @@ const Leaderboard = () => {
                           <span className="font-medium">{index + 1}</span>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="flex items-center gap-3">
+                          <Link
+                            to={`/profile/${participant.id}`}
+                            className="flex items-center gap-3 hover:text-accent transition-colors"
+                          >
                             <GhibliAvatar
                               id={participant.id}
                               name={participant.name}
                               size="md"
                             />
-                            <span className="font-medium">{participant.name}</span>
-                          </div>
+                            <span className="font-medium hover:underline">{participant.name}</span>
+                          </Link>
                         </td>
                         <td className="px-6 py-4">{participant.weightClass}</td>
                         <td className="px-6 py-4">{participant.country}</td>

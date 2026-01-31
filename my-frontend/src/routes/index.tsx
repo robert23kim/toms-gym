@@ -80,6 +80,10 @@ export const routes: RouteObject[] = [
     element: <Profile />,
   },
   {
+    path: "/profile/:id",
+    element: <Profile />,
+  },
+  {
     path: "/auth/callback",
     element: <AuthCallback />,
   },

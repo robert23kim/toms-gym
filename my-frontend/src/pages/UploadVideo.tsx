@@ -26,6 +26,8 @@ const UploadVideo: React.FC = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
+  const [email, setEmail] = useState<string>("");
+  const [uploadSuccess, setUploadSuccess] = useState<{ userId: string } | null>(null);
 
   // Default weights for each lift type
   const defaultWeights = {
@@ -113,13 +115,18 @@ const UploadVideo: React.FC = () => {
       }
       formData.append('weight', weightValue.toString());
       
-      // Ensure user_id is a string
+      // Check for user_id or email
       const userId = localStorage.getItem('userId');
-      if (!userId) {
-        setError("User ID not found. Please log in again.");
+      if (!userId && !email) {
+        setError("Please enter your email address to upload.");
         return;
       }
-      formData.append('user_id', userId);
+
+      if (userId) {
+        formData.append('user_id', userId);
+      } else {
+        formData.append('email', email);
+      }
       
       // For direct uploads, use a default competition_id
       // For challenge uploads, use the provided id
@@ -129,7 +136,8 @@ const UploadVideo: React.FC = () => {
       console.log("Sending form data:", {
         lift_type: liftType,
         weight: weightValue.toString(),
-        user_id: userId,
+        user_id: userId || '(via email)',
+        email: userId ? undefined : email,
         competition_id: competitionId
       });
 
@@ -142,15 +150,24 @@ const UploadVideo: React.FC = () => {
       console.log("Upload response:", response.data);
 
       if (response.data.url) {
+        // Store user_id in localStorage for future uploads (especially for email-based uploads)
+        if (response.data.user_id) {
+          localStorage.setItem('userId', response.data.user_id);
+          console.log("Stored user_id:", response.data.user_id);
+        }
+
         // Store attempt_id in localStorage if needed for later reference
         if (response.data.attempt_id) {
           console.log("Attempt created with ID:", response.data.attempt_id);
-          // Optionally store the last uploaded attempt ID
           localStorage.setItem('last_attempt_id', response.data.attempt_id);
-          
+
+          // Show success with link to profile
+          const returnedUserId = response.data.user_id;
+          setUploadSuccess({ userId: returnedUserId });
+
           toast({
             title: "Upload Successful!",
-            description: "Your lift has been submitted and linked to your profile. You can view it in your profile page.",
+            description: "Your lift has been submitted. View your profile to see all your uploads.",
             duration: 5000,
           });
         } else {
@@ -160,40 +177,40 @@ const UploadVideo: React.FC = () => {
             description: "Video was uploaded but may not be fully linked to your profile. Please contact support if you don't see it in your profile.",
             duration: 5000,
           });
-        }
-        
-        // Navigate back to appropriate page
-        if (id) {
-          navigate(`/challenges/${id}`);
-        } else {
-          navigate('/random-video');
+
+          // Navigate back to appropriate page
+          if (id) {
+            navigate(`/challenges/${id}`);
+          } else {
+            navigate('/random-video');
+          }
         }
       } else {
         console.error("No URL in the response:", response.data);
         setError("Upload completed but no video URL was returned");
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error("Upload error:", err);
-      
-      if (err.response) {
-        console.error("Response error data:", err.response.data);
-        console.error("Response status:", err.response.status);
-        console.error("Response headers:", err.response.headers);
-        
-        // More descriptive error message
+      const axiosErr = err as { response?: { data?: { error?: string }; status?: number; headers?: unknown }; request?: unknown; message?: string };
+
+      if (axiosErr.response) {
+        console.error("Response error data:", axiosErr.response.data);
+        console.error("Response status:", axiosErr.response.status);
+        console.error("Response headers:", axiosErr.response.headers);
+
         let errorMsg = "Upload failed";
-        if (err.response.data && err.response.data.error) {
-          errorMsg = `${errorMsg}: ${err.response.data.error}`;
-        } else if (err.response.status) {
-          errorMsg = `${errorMsg} with status ${err.response.status}`;
+        if (axiosErr.response.data && axiosErr.response.data.error) {
+          errorMsg = `${errorMsg}: ${axiosErr.response.data.error}`;
+        } else if (axiosErr.response.status) {
+          errorMsg = `${errorMsg} with status ${axiosErr.response.status}`;
         }
         setError(errorMsg);
-      } else if (err.request) {
-        console.error("Request error - no response received:", err.request);
+      } else if (axiosErr.request) {
+        console.error("Request error - no response received:", axiosErr.request);
         setError("No response received from server. Please check your connection.");
       } else {
-        console.error("Error setting up request:", err.message);
-        setError(`Error: ${err.message}`);
+        console.error("Error setting up request:", axiosErr.message);
+        setError(`Error: ${axiosErr.message}`);
       }
     } finally {
       setIsUploading(false);
@@ -235,7 +252,46 @@ const UploadVideo: React.FC = () => {
                 <h1 className="text-2xl font-bold">Upload Your Lift</h1>
               </div>
 
+              {uploadSuccess ? (
+                <div className="text-center py-8">
+                  <div className="mb-4 text-green-500 text-lg font-semibold">Upload Successful!</div>
+                  <p className="text-muted-foreground mb-6">Your lift has been submitted and linked to your profile.</p>
+                  <div className="flex flex-col gap-3">
+                    <Link
+                      to={`/profile/${uploadSuccess.userId}`}
+                      className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
+                    >
+                      View Your Profile
+                    </Link>
+                    <button
+                      onClick={() => {
+                        setUploadSuccess(null);
+                        setSelectedFile(null);
+                      }}
+                      className="w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90"
+                    >
+                      Upload Another Video
+                    </button>
+                  </div>
+                </div>
+              ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
+                {!localStorage.getItem('userId') && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Email Address</label>
+                    <input
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      placeholder="Enter your email to link this upload"
+                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                    <p className="text-xs text-muted-foreground mt-1">
+                      No account needed! Your video will be linked to this email.
+                    </p>
+                  </div>
+                )}
+
                 <div>
                   <label className="block text-sm font-medium mb-2">Lift Type</label>
                   <select
@@ -294,6 +350,7 @@ const UploadVideo: React.FC = () => {
                   {isUploading ? "Uploading..." : "Upload Video"}
                 </button>
               </form>
+              )}
             </div>
           </div>
         </div>
