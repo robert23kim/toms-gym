@@ -236,6 +236,8 @@ docker-compose.override.yml
 .coverage
 htmlcov/
 tests/test-results/
+tests/e2e-venv/
+tests/fixtures/test_video.mp4
 
 # Logs
 logs/

@@ -21,6 +21,30 @@ from toms_gym.integrations.email_upload import email_upload_bp, start_background
 
 load_dotenv()
 
+def run_startup_migrations():
+    """Run any pending database migrations on startup"""
+    try:
+        from toms_gym.db import get_db_connection
+        import sqlalchemy
+        session = get_db_connection()
+
+        # Add 'Bicep Curl' to lift_type enum if not exists
+        try:
+            session.execute(sqlalchemy.text("ALTER TYPE lift_type ADD VALUE IF NOT EXISTS 'Bicep Curl'"))
+            session.commit()
+            logging.info("Added 'Bicep Curl' to lift_type enum")
+        except Exception as e:
+            session.rollback()
+            # Ignore if already exists or other non-critical errors
+            logging.info(f"Enum migration note: {e}")
+        finally:
+            session.close()
+    except Exception as e:
+        logging.warning(f"Startup migration skipped: {e}")
+
+# Run migrations
+run_startup_migrations()
+
 # Set up logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)

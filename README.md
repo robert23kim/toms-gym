@@ -31,9 +31,9 @@ docker-compose logs -f
 ```
 
 This will start:
-- Backend API on http://localhost:8888
-- Frontend on http://localhost:8081
-- Test server on http://localhost:8000
+- Backend API on http://localhost:5001
+- Frontend on http://localhost:3000
+- Test server on http://localhost:8002
 
 ### Manual Setup (Alternative)
 
@@ -70,7 +70,7 @@ cd my-frontend
 npm install
 
 # Create .env.development file with:
-echo "VITE_API_URL=http://localhost:8888" > .env.development
+echo "VITE_API_URL=http://localhost:5001" > .env.development
 
 # Start development server
 npm run dev
@@ -163,7 +163,7 @@ npm update
 
 ## 📄 License
 
-Copyright © 2025 Tom's Gym
+Copyright © 2026 Tom's Gym
 
 ## OAuth Authentication Setup
 
@@ -177,7 +177,7 @@ Tom's Gym now supports Google OAuth authentication!
    - Navigate to "APIs & Services" > "Credentials"
    - Click "Create Credentials" > "OAuth client ID"
    - Set the Application type to "Web application"
-   - Add authorized redirect URIs: `http://localhost:9888/auth/callback` (for local development)
+   - Add authorized redirect URIs: `http://localhost:5001/auth/callback` (for local development)
    - Copy the Client ID and Client Secret
 
 2. Configure environment variables:
@@ -185,7 +185,7 @@ Tom's Gym now supports Google OAuth authentication!
    ```
    OAUTH_CLIENT_ID=your_google_client_id
    OAUTH_CLIENT_SECRET=your_google_client_secret
-   OAUTH_REDIRECT_URI=http://localhost:3000/auth/callback
+   OAUTH_REDIRECT_URI=http://localhost:5001/auth/callback
    APP_SECRET_KEY=your_secret_key
    ```
 
@@ -209,7 +209,7 @@ Tom's Gym now supports Google OAuth authentication!
 For testing purposes, you can use the mock OAuth endpoint:
 
 ```bash
-curl -X POST http://localhost:9888/auth/mock/callback \
+curl -X POST http://localhost:5001/auth/mock/callback \
   -H "Content-Type: application/json" \
   -d '{"email":"test@example.com","name":"Test User"}'
 ```

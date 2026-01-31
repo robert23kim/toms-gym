@@ -258,70 +258,97 @@ def _reserve_email_processing(
 ) -> Tuple[bool, Optional[str]]:
     """
     Reserve processing for an email. Returns (should_process, record_id).
+    
+    Uses INSERT ... ON CONFLICT to atomically prevent race conditions where
+    two processors try to reserve the same email simultaneously.
     """
+    from toms_gym.db import get_db_connection
     import sqlalchemy
     session = None
     try:
         session = get_db_connection()
         _ensure_email_dedupe_table(session)
 
-        query = """
-            SELECT id, status, updated_at
-            FROM "EmailProcessingLog"
-            WHERE (:message_id IS NOT NULL AND message_id = :message_id)
-               OR (:message_id IS NULL AND fingerprint = :fingerprint)
-               OR (:message_id IS NOT NULL AND fingerprint = :fingerprint)
-            LIMIT 1
-        """
-        row = session.execute(
-            sqlalchemy.text(query),
-            {"message_id": message_id, "fingerprint": fingerprint}
-        ).fetchone()
-
         now = datetime.utcnow()
-        if row:
-            record_id, status, updated_at = row
-            if status == "succeeded":
-                return False, str(record_id)
-
-            if status == "processing" and updated_at:
-                age_seconds = (now - updated_at).total_seconds()
-                if age_seconds < EMAIL_DEDUPE_WINDOW_MINUTES * 60:
-                    return False, str(record_id)
-
-            session.execute(
-                sqlalchemy.text("""
-                    UPDATE "EmailProcessingLog"
-                    SET status = :status, error = NULL, updated_at = :updated_at
-                    WHERE id = :id
-                """),
-                {"id": record_id, "status": "processing", "updated_at": now}
-            )
-            session.commit()
-            return True, str(record_id)
-
         record_id = str(uuid.uuid4())
-        session.execute(
+        
+        # Use INSERT ... ON CONFLICT to atomically try to reserve processing
+        # If fingerprint already exists, this does nothing and returns no rows
+        # If fingerprint is new, this inserts and returns the new row
+        insert_result = session.execute(
             sqlalchemy.text("""
                 INSERT INTO "EmailProcessingLog"
                     (id, message_id, fingerprint, status, error, created_at, updated_at)
                 VALUES
-                    (:id, :message_id, :fingerprint, :status, NULL, :created_at, :updated_at)
+                    (:id, :message_id, :fingerprint, 'processing', NULL, :created_at, :updated_at)
+                ON CONFLICT (fingerprint) DO NOTHING
+                RETURNING id
             """),
             {
                 "id": record_id,
                 "message_id": message_id,
                 "fingerprint": fingerprint,
-                "status": "processing",
                 "created_at": now,
                 "updated_at": now,
             }
         )
+        
+        inserted_row = insert_result.fetchone()
         session.commit()
-        return True, record_id
+        
+        if inserted_row:
+            # We successfully reserved this email for processing
+            logger.info(f"Reserved email for processing: {fingerprint[:16]}...")
+            return True, record_id
+        
+        # Fingerprint already exists - check if we should reprocess
+        query = """
+            SELECT id, status, updated_at
+            FROM "EmailProcessingLog"
+            WHERE fingerprint = :fingerprint
+            LIMIT 1
+        """
+        row = session.execute(
+            sqlalchemy.text(query),
+            {"fingerprint": fingerprint}
+        ).fetchone()
+
+        if row:
+            existing_id, status, updated_at = row
+            
+            # Already succeeded - don't reprocess
+            if status == "succeeded":
+                logger.info(f"Skipping already-succeeded email: {fingerprint[:16]}...")
+                return False, str(existing_id)
+
+            # Still processing within the dedupe window - don't reprocess
+            if status == "processing" and updated_at:
+                age_seconds = (now - updated_at).total_seconds()
+                if age_seconds < EMAIL_DEDUPE_WINDOW_MINUTES * 60:
+                    logger.info(f"Skipping email still being processed: {fingerprint[:16]}...")
+                    return False, str(existing_id)
+
+            # Failed or stale processing - allow retry
+            session.execute(
+                sqlalchemy.text("""
+                    UPDATE "EmailProcessingLog"
+                    SET status = 'processing', error = NULL, updated_at = :updated_at
+                    WHERE id = :id
+                """),
+                {"id": existing_id, "updated_at": now}
+            )
+            session.commit()
+            logger.info(f"Retrying previously failed email: {fingerprint[:16]}...")
+            return True, str(existing_id)
+
+        # Shouldn't reach here, but if we do, skip to be safe
+        logger.warning(f"Unexpected state in email dedupe for {fingerprint[:16]}...")
+        return False, None
+        
     except Exception as e:
         logger.error(f"Error reserving email processing: {e}")
-        return True, None
+        # On error, default to NOT processing to prevent duplicates
+        return False, None
     finally:
         if session:
             session.close()
@@ -411,23 +438,179 @@ def lookup_user_by_email(email_address: str) -> Optional[str]:
         session.close()
 
 
-def get_active_competition() -> Optional[str]:
-    """Get the ID of the currently active competition."""
+def create_user_from_email(email_address: str) -> Optional[str]:
+    """
+    Create a new user from an email address.
+    
+    This is used when a user uploads via email but doesn't have an account yet.
+    The user is created with minimal info and can update their profile later.
+    
+    Returns the new user ID if successful, None otherwise.
+    """
     from toms_gym.db import get_db_connection
     import sqlalchemy
     
     session = get_db_connection()
     try:
+        # Generate a UUID for the new user
+        user_id = str(uuid.uuid4())
+        
+        # Extract name from email (use part before @)
+        name = email_address.split('@')[0]
+        # Clean up the name (replace dots/underscores with spaces, capitalize)
+        name = name.replace('.', ' ').replace('_', ' ').title()
+        
+        # Use email as username
+        username = email_address.lower()
+        
+        # Create the user with minimal info
+        result = session.execute(
+            sqlalchemy.text("""
+                INSERT INTO "User" (id, username, email, name, auth_method, created_at, status, role)
+                VALUES (:id, :username, :email, :name, 'email', :created_at, 'active', 'user')
+                RETURNING id
+            """),
+            {
+                "id": user_id,
+                "username": username,
+                "email": email_address.lower(),
+                "name": name,
+                "created_at": datetime.utcnow()
+            }
+        )
+        
+        db_user_id = result.fetchone()[0]
+        session.commit()
+        
+        logger.info(f"Created new user from email: {email_address} (ID: {db_user_id})")
+        return str(db_user_id)
+        
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error creating user from email: {e}")
+        return None
+    finally:
+        session.close()
+
+
+def add_user_to_competition(user_id: str, competition_id: str) -> Optional[str]:
+    """
+    Add a user to a competition by creating a UserCompetition record.
+    
+    Returns the UserCompetition ID if successful, None otherwise.
+    """
+    from toms_gym.db import get_db_connection
+    import sqlalchemy
+    
+    session = get_db_connection()
+    try:
+        # Check if user is already in the competition
+        existing = session.execute(
+            sqlalchemy.text('''
+                SELECT id FROM "UserCompetition" 
+                WHERE user_id = :user_id AND competition_id = :competition_id
+            '''),
+            {'user_id': user_id, 'competition_id': competition_id}
+        ).fetchone()
+        
+        if existing:
+            logger.info(f"User {user_id} already in competition {competition_id}")
+            return str(existing[0])
+        
+        # Generate UUID for the UserCompetition
+        usercomp_id = str(uuid.uuid4())
+        
+        # Default values for new participants
+        default_weight_class = "85kg"
+        default_gender = "male"
+        
+        # Create the UserCompetition record
+        result = session.execute(
+            sqlalchemy.text("""
+                INSERT INTO "UserCompetition" (id, user_id, competition_id, weight_class, gender)
+                VALUES (:id, :user_id, :competition_id, :weight_class, :gender)
+                RETURNING id
+            """),
+            {
+                "id": usercomp_id,
+                "user_id": user_id,
+                "competition_id": competition_id,
+                "weight_class": default_weight_class,
+                "gender": default_gender
+            }
+        )
+        
+        db_usercomp_id = result.fetchone()[0]
+        session.commit()
+        
+        logger.info(f"Added user {user_id} to competition {competition_id} (UserCompetition ID: {db_usercomp_id})")
+        return str(db_usercomp_id)
+        
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error adding user to competition: {e}")
+        return None
+    finally:
+        session.close()
+
+
+def get_active_competition() -> Optional[str]:
+    """Get the ID of the currently active competition."""
+    result = get_active_competition_with_details()
+    return result['id'] if result else None
+
+
+def get_active_competition_with_details() -> Optional[Dict[str, Any]]:
+    """
+    Get the ID and default lift type of the currently active competition.
+    
+    Returns:
+        Dict with 'id' and 'default_lift_type', or None if no active competition
+    """
+    from toms_gym.db import get_db_connection
+    import sqlalchemy
+    import json
+    
+    session = get_db_connection()
+    try:
         result = session.execute(
             sqlalchemy.text('''
-                SELECT id FROM "Competition" 
+                SELECT id, description FROM "Competition" 
                 WHERE status = 'in_progress' 
                 ORDER BY start_date DESC 
                 LIMIT 1
             ''')
         ).fetchone()
         
-        return str(result[0]) if result else None
+        if not result:
+            return None
+        
+        competition_id = str(result[0])
+        description = result[1] or ''
+        
+        # Default lift type fallback
+        default_lift_type = 'Squat'
+        
+        # Try to extract lift types from competition metadata in description
+        # Format: "Location - {\"lifttypes\": [\"Squat\", \"Bench\"], ...}"
+        if ' - ' in description:
+            try:
+                parts = description.split(' - ', 1)
+                if len(parts) == 2:
+                    metadata_json = parts[1]
+                    metadata = json.loads(metadata_json)
+                    lifttypes = metadata.get('lifttypes', [])
+                    if lifttypes and len(lifttypes) > 0:
+                        # Use the first lift type as the default
+                        default_lift_type = lifttypes[0]
+                        logger.info(f"Competition default lift type from metadata: {default_lift_type}")
+            except (json.JSONDecodeError, Exception) as e:
+                logger.debug(f"Could not parse competition metadata for default lift type: {e}")
+        
+        return {
+            'id': competition_id,
+            'default_lift_type': default_lift_type,
+        }
     except Exception as e:
         logger.error(f"Error getting active competition: {e}")
         return None
@@ -604,16 +787,27 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
         logger.info("Skipping duplicate email (dedupe)")
         return True, "Skipped duplicate email"
     
-    # Parse t30g tag (optional - use defaults if not found)
+    # Get active competition first (needed for default lift type and user creation flow)
+    competition_details = get_active_competition_with_details()
+    if not competition_details:
+        error = "No active competition found"
+        logger.warning(error)
+        send_confirmation_email(forwarder_email, False, {}, error)
+        return False, error
+    
+    competition_id = competition_details['id']
+    default_lift_type = competition_details['default_lift_type']
+    
+    # Parse t30g tag (optional - use competition defaults if not found)
     metadata = parse_t30g_message(body)
     if not metadata:
-        # Use reasonable defaults when no t30g tag found
+        # Use competition defaults when no t30g tag found
         metadata = {
             'weight_kg': 90,  # Default weight (user can update later)
-            'lift_type': 'Squat',  # Default lift type
+            'lift_type': default_lift_type,  # Use competition's default lift type
             'raw_text': body,
         }
-        logger.info("No t30g tag found, using defaults: 90kg Squat")
+        logger.info(f"No t30g tag found, using competition defaults: 90kg {default_lift_type}")
     else:
         logger.info(f"Found t30g tag: {metadata['weight_kg']}kg {metadata['lift_type']}")
     
@@ -640,19 +834,29 @@ def process_email(msg: email.message.Message, msg_id: str) -> Tuple[bool, str]:
         # Fallback to forwarder
         user_id = lookup_user_by_email(forwarder_email)
     
+    # If user still not found, auto-create them and add to competition
     if not user_id:
-        error = f"User not found for email {user_email}. Please register at Tom's Gym first."
-        logger.warning(error)
-        send_confirmation_email(forwarder_email, False, metadata, error)
-        return False, error
-    
-    # Get active competition
-    competition_id = get_active_competition()
-    if not competition_id:
-        error = "No active competition found"
-        logger.warning(error)
-        send_confirmation_email(forwarder_email, False, metadata, error)
-        return False, error
+        logger.info(f"User not found for email {user_email}, auto-creating account...")
+        
+        # Try to create user from the original sender email first
+        user_id = create_user_from_email(user_email)
+        if not user_id:
+            # If that fails, try with forwarder email
+            logger.info(f"Trying forwarder email {forwarder_email}...")
+            user_id = create_user_from_email(forwarder_email)
+        
+        if not user_id:
+            error = f"Failed to create user account for {user_email}. Please try again or register manually."
+            logger.error(error)
+            send_confirmation_email(forwarder_email, False, metadata, error)
+            return False, error
+        
+        # Add the newly created user to the active competition
+        usercomp_id = add_user_to_competition(user_id, competition_id)
+        if not usercomp_id:
+            logger.warning(f"Failed to add user {user_id} to competition {competition_id}, but continuing with upload...")
+        else:
+            logger.info(f"Auto-created user and added to competition: user_id={user_id}, competition_id={competition_id}")
     
     # Upload video
     try:

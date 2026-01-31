@@ -39,7 +39,8 @@ This document outlines the OAuth implementation for Tom's Gym application.
 
 1. **JWT Security**
    - Tokens are signed with a secret key
-   - Short expiration time (24 hours)
+   - Access token expiration: 7 days
+   - Refresh token expiration: 90 days
    - HTTPS is required in production
 
 2. **OAuth Security**
@@ -75,18 +76,27 @@ This document outlines the OAuth implementation for Tom's Gym application.
    - Enable HTTPS for all authentication traffic
    - Set appropriate CORS headers
 
+## Implemented Security Features
+
+The following security features are now implemented:
+
+1. **Token Management**
+   - Refresh tokens (90-day expiration)
+   - Token blacklisting for logout/revocation
+   - JWT-based stateless authentication
+
+2. **Rate Limiting**
+   - Login attempts: 100/day per IP
+   - Registration attempts: 10/day per IP
+   - Account lockout after 5 failed login attempts (15-minute duration)
+
 ## Future Improvements
 
 1. **Additional OAuth Providers**
    - Implement Facebook, GitHub, Apple login
    - Unified provider interface
 
-2. **Enhanced Security**
-   - Refresh tokens
-   - Token revocation API
-   - Rate limiting for authentication attempts
-
-3. **User Management**
+2. **User Management**
    - Account linking (connect multiple OAuth providers)
    - Profile management with OAuth data sync
-   - Role-based access control 
+   - Role-based access control

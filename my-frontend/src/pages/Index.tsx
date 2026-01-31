@@ -1,17 +1,80 @@
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect, useCallback } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
+import Autoplay from "embla-carousel-autoplay";
 import ChallengeCard from "../components/ChallengeCard";
 import Layout from "../components/Layout";
 import TopLifts from "../components/TopLifts";
 import { Challenge } from "../lib/types";
 import { getFeaturedChallenges } from "../lib/api";
 
+const heroSlides = [
+  {
+    heading: "Online Lifting Challenges for Everyone",
+    subheading: "Compete from anywhere in the world, showcase your strength, and connect with the global lifting community.",
+    cta: "Browse Challenges",
+    ctaLink: "/challenges",
+    image: "https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1469&auto=format&fit=crop"
+  },
+  {
+    heading: "Test Your Strength Against the Best",
+    subheading: "Join competitions featuring athletes from around the globe. Submit your lifts and climb the leaderboard.",
+    cta: "View Leaderboards",
+    ctaLink: "/challenges",
+    image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop"
+  },
+  {
+    heading: "Win Prizes & Recognition",
+    subheading: "Compete for cash prizes, exclusive merchandise, and bragging rights in our monthly challenges.",
+    cta: "See Prize Pools",
+    ctaLink: "/challenges",
+    image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1374&auto=format&fit=crop"
+  },
+  {
+    heading: "All Skill Levels Welcome",
+    subheading: "From beginners to elite powerlifters, find challenges tailored to your weight class and experience.",
+    cta: "Find Your Challenge",
+    ctaLink: "/challenges",
+    image: "https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=1470&auto=format&fit=crop"
+  },
+  {
+    heading: "Record. Submit. Compete.",
+    subheading: "Film your lifts from home or your local gym. Our judges review every submission.",
+    cta: "How It Works",
+    ctaLink: "#how-it-works",
+    image: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=1470&auto=format&fit=crop"
+  }
+];
+
 const Index = () => {
   const [activeFilter, setActiveFilter] = useState<"all" | "upcoming" | "ongoing" | "completed">("all");
   const [featuredChallenges, setFeaturedChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [
+    Autoplay({ delay: 5000, stopOnInteraction: false })
+  ]);
+
+  const onSelect = useCallback(() => {
+    if (!emblaApi) return;
+    setSelectedIndex(emblaApi.selectedScrollSnap());
+  }, [emblaApi]);
+
+  useEffect(() => {
+    if (!emblaApi) return;
+    emblaApi.on('select', onSelect);
+    onSelect();
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi, onSelect]);
+
+  const scrollTo = useCallback((index: number) => {
+    if (emblaApi) emblaApi.scrollTo(index);
+  }, [emblaApi]);
 
   useEffect(() => {
     const fetchChallenges = async () => {
@@ -38,52 +101,88 @@ const Index = () => {
       <div className="flex flex-col lg:flex-row gap-8">
         <div className="flex-1">
           <section className="mb-20">
-            <motion.div 
+            <motion.div
               className="relative overflow-hidden rounded-2xl glass-dark shadow-lg mb-16"
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <div className="absolute inset-0 z-0">
-                <img
-                  src="https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1469&auto=format&fit=crop"
-                  alt="Hero background"
-                  className="w-full h-full object-cover object-center opacity-70"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/40"></div>
+              <div className="overflow-hidden" ref={emblaRef}>
+                <div className="flex">
+                  {heroSlides.map((slide, index) => (
+                    <div key={index} className="flex-[0_0_100%] min-w-0 relative">
+                      <div className="absolute inset-0 z-0">
+                        <img
+                          src={slide.image}
+                          alt={`Hero background ${index + 1}`}
+                          className="w-full h-full object-cover object-center opacity-70"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-r from-black/80 to-black/40"></div>
+                      </div>
+
+                      <div className="relative z-10 px-6 py-20 md:py-32 max-w-4xl">
+                        <AnimatePresence mode="wait">
+                          {selectedIndex === index && (
+                            <>
+                              <motion.h1
+                                key={`heading-${index}`}
+                                className="text-4xl md:text-5xl font-bold text-white mb-4"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
+                              >
+                                {slide.heading}
+                              </motion.h1>
+
+                              <motion.p
+                                key={`subheading-${index}`}
+                                className="text-xl text-white/90 mb-8 max-w-2xl"
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
+                              >
+                                {slide.subheading}
+                              </motion.p>
+
+                              <motion.div
+                                key={`cta-${index}`}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+                              >
+                                <Link
+                                  to={slide.ctaLink}
+                                  className="inline-block px-6 py-3 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift"
+                                >
+                                  {slide.cta}
+                                </Link>
+                              </motion.div>
+                            </>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
-              
-              <div className="relative z-10 px-6 py-20 md:py-32 max-w-4xl">
-                <motion.h1 
-                  className="text-4xl md:text-5xl font-bold text-white mb-4"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-                >
-                  Online Lifting Challenges for Everyone
-                </motion.h1>
-                
-                <motion.p 
-                  className="text-xl text-white/90 mb-8 max-w-2xl"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-                >
-                  Compete from anywhere in the world, showcase your strength, and connect with the global lifting community.
-                </motion.p>
-                
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
-                >
-                  <Link 
-                    to="/challenges"
-                    className="inline-block px-6 py-3 bg-accent text-white font-medium rounded-md shadow-lg hover:bg-accent/90 transition-all hover-lift"
-                  >
-                    Browse Challenges
-                  </Link>
-                </motion.div>
+
+              {/* Navigation dots */}
+              <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2 z-20">
+                {heroSlides.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => scrollTo(index)}
+                    className={`w-2.5 h-2.5 rounded-full transition-all ${
+                      selectedIndex === index
+                        ? 'bg-white scale-125'
+                        : 'bg-white/50 hover:bg-white/75'
+                    }`}
+                    aria-label={`Go to slide ${index + 1}`}
+                  />
+                ))}
               </div>
             </motion.div>
             

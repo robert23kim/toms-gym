@@ -168,7 +168,7 @@ import requests
 SCOPES = ['https://www.googleapis.com/auth/gmail.readonly']
 
 # Tom's Gym backend URL
-BACKEND_URL = 'http://localhost:8080'
+BACKEND_URL = 'http://localhost:5001'
 
 # Polling interval (seconds)
 POLL_INTERVAL = 30
@@ -410,7 +410,7 @@ import re
 import requests
 
 CHAT_SPACE_URL = 'https://mail.google.com/mail/u/0/#chat/space/AAAAHS28PSg'
-BACKEND_URL = 'http://localhost:8080'
+BACKEND_URL = 'http://localhost:5001'
 
 def parse_t30g(text):
     """Parse t30g tag from message text."""
@@ -1099,14 +1099,14 @@ The tag `t30g` must appear in the message (case-insensitive).
 
 ### Supported Lift Types
 
-| Input (case-insensitive) | Maps to |
-|--------------------------|---------|
+| Input (case-insensitive) | Maps to (Database Value) |
+|--------------------------|--------------------------|
 | `squat`, `sq` | Squat |
-| `bench`, `bp` | Bench |
+| `bench`, `bp` | Bench Press |
 | `deadlift`, `dl` | Deadlift |
-| `snatch`, `sn` | Snatch |
-| `clean`, `c&j`, `cj`, `cleanandjerk` | Clean |
-| `overhead`, `ohp`, `press` | Overhead |
+| `snatch`, `sn` | snatch |
+| `clean`, `c&j`, `cj`, `cleanandjerk` | Clean & Jerk |
+| `overhead`, `ohp`, `press` | Overhead Press |
 
 ### Examples
 

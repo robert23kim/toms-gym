@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, Users, Clock, Trophy, Dumbbell, CheckCircle2, XCircle, ArrowRight, Play } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Clock, Trophy, Dumbbell, CheckCircle2, XCircle, ArrowRight, Play, Upload } from "lucide-react";
 import axios from "axios";
 import { Challenge } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import VideoGallery from "../components/VideoGallery";
+import { useToast } from "../components/ui/use-toast";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -35,6 +36,7 @@ interface VideoData {
 
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const { toast } = useToast();
   const [challenge, setChallenge] = useState<Challenge | null>(null);
   const [attempts, setAttempts] = useState<Attempt[]>([]);
   const [videoData, setVideoData] = useState<VideoData[]>([]);
@@ -46,6 +48,98 @@ const ChallengeDetail: React.FC = () => {
   const [hasJoined, setHasJoined] = useState(false);
   const [selectedWeightClass, setSelectedWeightClass] = useState<string>("");
   const [challengeName, setChallengeName] = useState<string>("");
+
+  // Upload form state
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [liftType, setLiftType] = useState<string>("Squat");
+  const [weight, setWeight] = useState<string>("60");
+  const [email, setEmail] = useState<string>("");
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Default weights for each lift type
+  const defaultWeights: Record<string, string> = {
+    "Squat": "60",
+    "Bench": "40",
+    "Deadlift": "80",
+    "BicepCurl": "15"
+  };
+
+  // Handle file selection
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setSelectedFile(file);
+      setUploadError(null);
+    }
+  };
+
+  // Handle lift type change
+  const handleLiftTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const newLiftType = e.target.value;
+    setLiftType(newLiftType);
+    setWeight(defaultWeights[newLiftType] || "60");
+  };
+
+  // Handle video upload
+  const handleUploadSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!selectedFile) {
+      setUploadError("Please select a video file");
+      return;
+    }
+
+    if (!email) {
+      setUploadError("Please enter your email address");
+      return;
+    }
+
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const formData = new FormData();
+      formData.append('video', selectedFile);
+      formData.append('lift_type', liftType);
+      formData.append('weight', weight);
+      formData.append('email', email);
+      formData.append('competition_id', id || '1');
+
+      const response = await axios.post(`${API_URL}/upload`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      if (response.data.url) {
+        toast({
+          title: "Upload Successful!",
+          description: "Your lift has been submitted to this challenge.",
+          duration: 5000,
+        });
+
+        // Reset form
+        setSelectedFile(null);
+        setUploadError(null);
+
+        // Refresh videos to show the new upload
+        await fetchVideos();
+
+        // Update hasJoined status
+        setHasJoined(true);
+      }
+    } catch (err: any) {
+      console.error("Upload error:", err);
+      let errorMsg = "Upload failed. Please try again.";
+      if (err.response?.data?.error) {
+        errorMsg = err.response.data.error;
+      }
+      setUploadError(errorMsg);
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   // Function to fetch videos - can be called to refresh after deletion
   const fetchVideos = async () => {
@@ -364,53 +458,99 @@ const ChallengeDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* Join Challenge Button - Moved outside the header */}
-              {!hasJoined && (
-                <div className="mb-6">
-                  {challenge?.status === "upcoming" || challenge?.status === "ongoing" ? (
-                    <>
-                      <div className="mb-4">
-                        <label htmlFor="weight-class" className="block text-sm font-medium mb-1">
-                          Select Your Weight Class
-                        </label>
+              {/* Upload Video Form */}
+              {(challenge?.status === "upcoming" || challenge?.status === "ongoing") && (
+                <div className="mb-6 bg-blue-500/5 rounded-lg p-6 border border-blue-500/10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-blue-500/10 rounded-lg">
+                      <Upload className="w-5 h-5 text-blue-500" />
+                    </div>
+                    <h2 className="text-xl font-semibold">Upload Your Lift</h2>
+                  </div>
+
+                  <form onSubmit={handleUploadSubmit} className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Your Email</label>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="Enter your email"
+                        required
+                        className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Lift Type</label>
                         <select
-                          id="weight-class"
-                          value={selectedWeightClass}
-                          onChange={(e) => setSelectedWeightClass(e.target.value)}
-                          className="w-full p-2 rounded-md border border-input bg-card text-sm"
-                          required
+                          value={liftType}
+                          onChange={handleLiftTypeChange}
+                          className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                         >
-                          {challenge.categories
-                            .filter(cat => cat.includes('kg'))
-                            .map(weightClass => (
-                              <option key={weightClass} value={weightClass}>
-                                {weightClass}
-                              </option>
-                            ))}
+                          <option value="Squat">Squat</option>
+                          <option value="Bench">Bench Press</option>
+                          <option value="Deadlift">Deadlift</option>
+                          <option value="BicepCurl">Bicep Curl</option>
                         </select>
                       </div>
-                      <button
-                        onClick={handleJoinChallenge}
-                        disabled={isJoining || !selectedWeightClass}
-                        className={`w-full sm:w-auto sm:px-8 py-3 px-4 rounded-lg bg-green-500 text-white font-medium 
-                          shadow-sm transition-all hover:bg-green-600 hover:shadow
-                          ${(isJoining || !selectedWeightClass) ? 'opacity-50 cursor-not-allowed' : 'hover:translate-y-[-1px]'}`}
-                      >
-                        {isJoining ? 'Joining...' : 'Join Challenge'}
-                      </button>
-                      {joinError && (
-                        <p className="mt-2 text-sm text-red-500">{joinError}</p>
-                      )}
-                    </>
-                  ) : challenge?.status === "completed" ? (
-                    <div className="text-center text-muted-foreground">
-                      This challenge has ended
+
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+                        <input
+                          type="number"
+                          value={weight}
+                          onChange={(e) => setWeight(e.target.value)}
+                          placeholder="Enter weight"
+                          min="1"
+                          className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                        />
+                      </div>
                     </div>
-                  ) : (
-                    <div className="text-center text-muted-foreground">
-                      Registration is closed
+
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Video</label>
+                      <div className="border-2 border-dashed border-input rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
+                        <input
+                          type="file"
+                          accept="video/*"
+                          onChange={handleFileSelect}
+                          className="hidden"
+                          id="challenge-video-upload"
+                        />
+                        <label
+                          htmlFor="challenge-video-upload"
+                          className="cursor-pointer flex flex-col items-center"
+                        >
+                          <Dumbbell className="w-6 h-6 text-muted-foreground mb-2" />
+                          <span className="text-sm text-muted-foreground">
+                            {selectedFile ? selectedFile.name : "Click to select a video file"}
+                          </span>
+                        </label>
+                      </div>
                     </div>
-                  )}
+
+                    {uploadError && (
+                      <div className="text-red-500 text-sm">{uploadError}</div>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={isUploading || !selectedFile}
+                      className={`w-full py-3 px-4 rounded-lg bg-blue-500 text-white font-medium
+                        shadow-sm transition-all hover:bg-blue-600 hover:shadow
+                        ${(isUploading || !selectedFile) ? 'opacity-50 cursor-not-allowed' : 'hover:translate-y-[-1px]'}`}
+                    >
+                      {isUploading ? 'Uploading...' : 'Upload Video'}
+                    </button>
+                  </form>
+                </div>
+              )}
+
+              {challenge?.status === "completed" && (
+                <div className="mb-6 text-center text-muted-foreground p-4 bg-gray-100 rounded-lg">
+                  This challenge has ended
                 </div>
               )}
 
@@ -478,29 +618,6 @@ const ChallengeDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* Upload Video Call to Action */}
-              {hasJoined && (
-                <div className="mb-8 bg-blue-500/5 rounded-lg p-6 border border-blue-500/10">
-                  <div className="flex items-start gap-4">
-                    <div className="p-3 bg-blue-500/10 rounded-lg">
-                      <Dumbbell className="w-6 h-6 text-blue-500" />
-                    </div>
-                    <div className="flex-1">
-                      <h2 className="text-xl font-semibold mb-2">Submit Your Lift</h2>
-                      <p className="text-muted-foreground mb-4">
-                        Ready to showcase your strength? Upload a video of your lift to participate in the challenge.
-                      </p>
-                      <Link
-                        to={`/challenges/${id}/upload`}
-                        className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition-colors"
-                      >
-                        Upload Video
-                        <ArrowRight className="w-4 h-4" />
-                      </Link>
-                    </div>
-                  </div>
-                </div>
-              )}
 
               {/* Participants Section */}
               <div className="mb-6">
@@ -604,35 +721,17 @@ const ChallengeDetail: React.FC = () => {
             </div>
             
             {videoData.length > 0 ? (
-              <VideoGallery 
+              <VideoGallery
                 videos={videoData}
                 title=""
                 emptyMessage="No videos uploaded yet for this challenge"
                 maxVideos={6}
                 onVideoDeleted={fetchVideos}
               />
-            ) : hasJoined ? (
-              <div className="bg-gray-100 p-8 rounded-lg text-center">
-                <p className="text-gray-700 mb-4">No videos have been uploaded yet. Be the first to upload your attempt!</p>
-                <Link
-                  to={`/challenges/${id}/upload`}
-                  className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
-                >
-                  <Play className="w-5 h-5 mr-2" />
-                  Upload Your Video
-                </Link>
-              </div>
             ) : (
-              <div className="bg-gray-100 p-8 rounded-lg text-center">
-                <p className="text-gray-700 mb-4">Join this challenge to upload your lifting videos!</p>
-                <button
-                  onClick={handleJoinChallenge}
-                  disabled={isJoining}
-                  className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md inline-flex items-center transition-colors"
-                >
-                  <CheckCircle2 className="w-5 h-5 mr-2" />
-                  {isJoining ? "Joining..." : "Join Challenge"}
-                </button>
+              <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
+                <p className="text-gray-700 dark:text-gray-300 mb-4">No videos have been uploaded yet. Be the first to upload your attempt!</p>
+                <p className="text-sm text-muted-foreground">Use the upload form above to submit your lift.</p>
               </div>
             )}
           </div>

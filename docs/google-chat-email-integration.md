@@ -158,7 +158,7 @@ EMAIL_SMTP_PORT=587
 EMAIL_SEND_CONFIRMATIONS=true
 
 # Backend URL for internal API calls
-BACKEND_URL=http://localhost:8080
+BACKEND_URL=http://localhost:5001
 
 # Frontend URL for email links
 FRONTEND_URL=https://tomsgym.com
@@ -376,7 +376,7 @@ Email processing logs to `email_upload.log`:
 ### Health Check Endpoint
 
 ```bash
-curl http://localhost:8080/integrations/email/health
+curl http://localhost:5001/integrations/email/health
 ```
 
 Returns:
@@ -394,7 +394,7 @@ Returns:
 Trigger a manual inbox check:
 
 ```bash
-curl -X POST http://localhost:8080/integrations/email/check
+curl -X POST http://localhost:5001/integrations/email/check
 ```
 
 ---
@@ -452,13 +452,13 @@ The following workflow has been verified end-to-end:
 
 ```bash
 # Check health
-curl http://localhost:8080/integrations/email/health
+curl http://localhost:5001/integrations/email/health
 
 # Manually trigger inbox check
-curl -X POST http://localhost:8080/integrations/email/check
+curl -X POST http://localhost:5001/integrations/email/check
 
 # Reset stats
-curl -X POST http://localhost:8080/integrations/email/stats/reset
+curl -X POST http://localhost:5001/integrations/email/stats/reset
 ```
 
 ### Test Without Real Email
@@ -466,7 +466,7 @@ curl -X POST http://localhost:8080/integrations/email/stats/reset
 Use the test endpoint:
 
 ```bash
-curl -X POST http://localhost:8080/integrations/email/test \
+curl -X POST http://localhost:5001/integrations/email/test \
   -H "Content-Type: application/json" \
   -d '{
     "from": "test@example.com",
@@ -483,9 +483,13 @@ curl -X POST http://localhost:8080/integrations/email/test \
 
 The Tom's Gym database uses PostgreSQL enums for `lift_type` and `weight_class`. When testing locally, you may encounter errors if the enum values don't match:
 
-**Lift Type Enum (production may differ):**
-- `snatch`
-- `clean_and_jerk`
+**Supported Lift Types (database values):**
+- `Squat`
+- `Bench Press` (mapped from "Bench" in email)
+- `Deadlift`
+- `Clean & Jerk` (mapped from "Clean" in email)
+- `snatch` (mapped from "Snatch" in email)
+- `Overhead Press` (mapped from "Overhead" in email)
 
 **Weight Class Enum:**
 - `56kg`, `62kg`, `69kg`, `77kg`, `85kg`, `94kg`, `105kg`, `105kg+` (men)
@@ -493,7 +497,7 @@ The Tom's Gym database uses PostgreSQL enums for `lift_type` and `weight_class`.
 
 **Common Errors:**
 
-1. **Invalid lift_type**: If using a test database with limited enums, use `Snatch` or `Clean` in test messages instead of `Squat`/`Deadlift`.
+1. **Invalid lift_type**: Ensure the lift type in your message maps to one of the supported database values.
 
 2. **Invalid weight_class**: The default weight class in `upload_routes.py` is `85kg`. Ensure this exists in your database enum.
 

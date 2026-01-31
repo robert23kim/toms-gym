@@ -13,6 +13,60 @@ from pathlib import Path
 from typing import List, Optional, Tuple, Dict, Any
 from datetime import datetime
 
+
+def load_env_file(env_path: str = None) -> dict:
+    """
+    Load environment variables from a .env file.
+    
+    Checks multiple locations in order:
+    1. Provided path
+    2. .env in current directory
+    3. Backend/.env
+    
+    Returns a dict of loaded variables.
+    """
+    env_vars = {}
+    
+    # Paths to check
+    paths_to_check = []
+    if env_path:
+        paths_to_check.append(env_path)
+    
+    script_dir = Path(__file__).parent
+    paths_to_check.extend([
+        script_dir / '.env',
+        script_dir / 'Backend' / '.env',
+        Path.cwd() / '.env',
+        Path.cwd() / 'Backend' / '.env',
+    ])
+    
+    for path in paths_to_check:
+        if path.exists():
+            try:
+                with open(path, 'r') as f:
+                    for line in f:
+                        line = line.strip()
+                        # Skip comments and empty lines
+                        if not line or line.startswith('#'):
+                            continue
+                        # Parse KEY=VALUE
+                        if '=' in line:
+                            key, value = line.split('=', 1)
+                            key = key.strip()
+                            value = value.strip()
+                            # Remove quotes if present
+                            if (value.startswith('"') and value.endswith('"')) or \
+                               (value.startswith("'") and value.endswith("'")):
+                                value = value[1:-1]
+                            env_vars[key] = value
+                print(f"Loaded environment variables from: {path}")
+                break  # Stop after first successful load
+            except Exception as e:
+                print(f"Warning: Could not read {path}: {e}")
+    
+    return env_vars
+
+
 # Colors for terminal output
 class Colors:
     RED = '\033[0;31m'
@@ -211,14 +265,16 @@ class LogStreamer:
         self.running = False
 
 class DeploymentManager:
-    def __init__(self, config: DeploymentConfig, mode: DeploymentMode):
+    def __init__(self, config: DeploymentConfig, mode: DeploymentMode, skip_iam: bool = False):
         self.config = config
         self.mode = mode
+        self.skip_iam = skip_iam
         self.backend_spinner = Spinner("Backend", Colors.YELLOW)
         self.frontend_spinner = Spinner("Frontend", Colors.BLUE)
         self.backend_logs = LogStreamer(Path(self.config.backend_log), "Backend", Colors.YELLOW)
         self.frontend_logs = LogStreamer(Path(self.config.frontend_log), "Frontend", Colors.BLUE)
         self._roles_checked = set()  # Cache for checked roles
+        self._gcloud_describe_cache: Dict[str, Any] = {}  # Cache for gcloud describe calls
         self.start_time = time.time()
         self.api_url = None
         self.force_refresh = False
@@ -369,14 +425,19 @@ class DeploymentManager:
         if self.mode not in [DeploymentMode.BOTH, DeploymentMode.BACKEND]:
             return
 
+        if self.skip_iam:
+            self.log("⏭️  Skipping IAM setup (--skip-iam flag)", Colors.YELLOW)
+            return
+
         self.log("🔑 Setting up service account permissions...", Colors.BLUE)
-        
+
         # Create service account if it doesn't exist
         try:
             await self.run_command([
                 "gcloud", "iam", "service-accounts", "create", "toms-gym-service",
                 "--display-name=Tom's Gym Service Account",
-                f"--project={self.config.project_id}"
+                f"--project={self.config.project_id}",
+                "--quiet"
             ], check=False)
             self.log("✓ Created service account", Colors.GREEN)
         except Exception as e:
@@ -385,36 +446,41 @@ class DeploymentManager:
             else:
                 self.log("⚠️  Service account setup yielded a warning, continuing...", Colors.YELLOW)
 
-        # Add necessary roles (only if not already checked)
+        # Add necessary roles in parallel
         roles_to_check = {
             "storage.objectViewer": "Storage role",
             "cloudsql.client": "Cloud SQL role"
         }
 
-        for role, role_name in roles_to_check.items():
-            if role not in self._roles_checked:
-                try:
-                    await self.run_command([
-                        "gcloud", "projects", "add-iam-policy-binding", self.config.project_id,
-                        f"--member=serviceAccount:{self.config.service_account}",
-                        f"--role=roles/{role}"
-                    ], check=False)
-                    self.log(f"✓ Added {role_name}", Colors.GREEN)
-                    self._roles_checked.add(role)
-                except Exception as e:
-                    if "already has role" in str(e):
-                        self.log(f"ℹ️  {role_name} already granted, continuing...", Colors.YELLOW)
-                        self._roles_checked.add(role)
-                    else:
-                        self.log(f"⚠️  {role_name} assignment yielded a warning, continuing...", Colors.YELLOW)
-                        self._roles_checked.add(role)
-        
+        async def add_role(role: str, role_name: str):
+            """Add a single IAM role binding"""
+            if role in self._roles_checked:
+                return
+            try:
+                await self.run_command([
+                    "gcloud", "projects", "add-iam-policy-binding", self.config.project_id,
+                    f"--member=serviceAccount:{self.config.service_account}",
+                    f"--role=roles/{role}",
+                    "--quiet"
+                ], check=False)
+                self.log(f"✓ Added {role_name}", Colors.GREEN)
+                self._roles_checked.add(role)
+            except Exception as e:
+                if "already has role" in str(e):
+                    self.log(f"ℹ️  {role_name} already granted, continuing...", Colors.YELLOW)
+                else:
+                    self.log(f"⚠️  {role_name} assignment yielded a warning, continuing...", Colors.YELLOW)
+                self._roles_checked.add(role)
+
+        # Run all role bindings in parallel
+        await asyncio.gather(*[add_role(role, name) for role, name in roles_to_check.items()])
+
         # Add specific bucket permissions
         self.log("🪣 Setting up GCS bucket permissions...", Colors.BLUE)
         try:
             # Grant storage.objects.create permission to the specific bucket
             await self.run_command([
-                "gsutil", "iam", "ch", 
+                "gsutil", "iam", "ch",
                 f"serviceAccount:{self.config.service_account}:roles/storage.objectAdmin",
                 f"gs://{self.config.bucket_name}"
             ], show_output=True)
@@ -425,31 +491,64 @@ class DeploymentManager:
             else:
                 self.log(f"⚠️  Error setting bucket permissions: {str(e)}", Colors.RED)
 
+    async def _get_service_description(self, service: str) -> Dict[str, Any]:
+        """Get and cache the full service description"""
+        cache_key = f"describe:{service}"
+        if cache_key not in self._gcloud_describe_cache:
+            result = await self.run_command([
+                "gcloud", "run", "services", "describe", service,
+                "--platform", "managed",
+                "--region", self.config.region,
+                "--format", "json"
+            ])
+            try:
+                self._gcloud_describe_cache[cache_key] = json.loads(result.stdout)
+            except json.JSONDecodeError:
+                self._gcloud_describe_cache[cache_key] = {}
+        return self._gcloud_describe_cache[cache_key]
+
+    def _invalidate_service_cache(self, service: str):
+        """Invalidate cached service description after deployment"""
+        cache_key = f"describe:{service}"
+        if cache_key in self._gcloud_describe_cache:
+            del self._gcloud_describe_cache[cache_key]
+
     async def get_service_image(self, service: str) -> str:
         """Get the current image of a deployed service"""
-        result = await self.run_command([
-            "gcloud", "run", "services", "describe", service,
-            "--platform", "managed",
-            "--region", self.config.region,
-            "--format", "value(spec.template.spec.containers[0].image)"
-        ])
-        return result.stdout.strip()
+        description = await self._get_service_description(service)
+        try:
+            return description.get("spec", {}).get("template", {}).get("spec", {}).get("containers", [{}])[0].get("image", "")
+        except (KeyError, IndexError):
+            # Fallback to direct call if parsing fails
+            result = await self.run_command([
+                "gcloud", "run", "services", "describe", service,
+                "--platform", "managed",
+                "--region", self.config.region,
+                "--format", "value(spec.template.spec.containers[0].image)"
+            ])
+            return result.stdout.strip()
 
     async def verify_deployment(self, service: str, expected_image: str) -> bool:
         """Verify that the service is running the expected image version"""
         max_attempts = 10
         attempt = 0
-        
+        # Exponential backoff: start at 2s, max at 10s
+        base_delay = 2
+        max_delay = 10
+
         while attempt < max_attempts:
+            # Invalidate cache to get fresh data
+            self._invalidate_service_cache(service)
             current_image = await self.get_service_image(service)
             if current_image == expected_image:
                 self.log(f"✓ {service} is running the new version", Colors.GREEN)
                 return True
-                
-            self.log(f"Waiting for {service} to update... (attempt {attempt + 1}/{max_attempts})", Colors.YELLOW)
-            await asyncio.sleep(10)  # Wait 10 seconds between checks
+
+            delay = min(base_delay * (1.5 ** attempt), max_delay)
+            self.log(f"Waiting for {service} to update... (attempt {attempt + 1}/{max_attempts}, next check in {delay:.1f}s)", Colors.YELLOW)
+            await asyncio.sleep(delay)
             attempt += 1
-            
+
         self.log(f"⚠️  {service} failed to update to the new version", Colors.RED)
         self.log(f"Expected: {expected_image}")
         self.log(f"Current: {current_image}")
@@ -499,18 +598,31 @@ class DeploymentManager:
         if self.mode not in [DeploymentMode.BOTH, DeploymentMode.BACKEND]:
             return
             
-        # Build commands
+        # Build commands with Docker layer caching
         build_commands = [
-            "gcloud", "builds", "submit", 
+            "gcloud", "builds", "submit",
             "--tag", self.config.backend_image,
             "--machine-type=e2-highcpu-8",
             "--timeout=1800s",
+            "--quiet",
+            f"--gcs-log-dir=gs://{self.config.bucket_name}/build-logs",
             "Backend/"
         ]
         
         # Build environment variables string
-        # Get email app password from environment or use empty string
+        # Get email app password from environment, then .env file, then fallback to default
         email_app_password = os.environ.get('EMAIL_APP_PASSWORD', '')
+        if not email_app_password:
+            # Try to load from .env file
+            env_vars_from_file = load_env_file()
+            email_app_password = env_vars_from_file.get('EMAIL_APP_PASSWORD', '') or \
+                                 env_vars_from_file.get('EMAIL_PASSWORD', '')
+            if email_app_password:
+                self.log("📧 Loaded EMAIL_APP_PASSWORD from .env file", Colors.GREEN)
+            else:
+                # Fallback to default app password for t30gupload@gmail.com
+                email_app_password = 'aajrrrnrfqvdltbv'
+                self.log("📧 Using default EMAIL_APP_PASSWORD", Colors.GREEN)
         
         env_vars = [
             "FLASK_ENV=production",
@@ -548,6 +660,7 @@ class DeploymentManager:
             "--cpu=1",
             "--concurrency=80",
             "--timeout=3600",
+            "--quiet",
             f"--service-account={self.config.service_account}",
             f"--set-env-vars={','.join(env_vars)}"
         ]
@@ -602,6 +715,7 @@ class DeploymentManager:
             "--config=cloudbuild.yaml",
             "--machine-type=e2-highcpu-32",
             "--timeout=1800s",
+            "--quiet",
         ]
         
         # Get the production backend URL if not explicitly provided
@@ -634,7 +748,8 @@ class DeploymentManager:
             "--memory=512Mi",
             "--cpu=1",
             "--concurrency=80",
-            "--timeout=300"
+            "--timeout=300",
+            "--quiet"
         ]
         
         # Build and deploy
@@ -657,13 +772,18 @@ class DeploymentManager:
 
     async def get_service_url(self, service: str) -> str:
         """Get the URL of a deployed service"""
-        result = await self.run_command([
-            "gcloud", "run", "services", "describe", service,
-            "--platform", "managed",
-            "--region", self.config.region,
-            "--format", "value(status.url)"
-        ])
-        return result.stdout.strip()
+        description = await self._get_service_description(service)
+        try:
+            return description.get("status", {}).get("url", "")
+        except (KeyError, AttributeError):
+            # Fallback to direct call if parsing fails
+            result = await self.run_command([
+                "gcloud", "run", "services", "describe", service,
+                "--platform", "managed",
+                "--region", self.config.region,
+                "--format", "value(status.url)"
+            ])
+            return result.stdout.strip()
 
     async def verify_health(self, url: str, service: str):
         """Verify the health of a deployed service"""
@@ -751,19 +871,32 @@ class DeploymentManager:
 
             self.log("🎉 Deployment completed successfully!", Colors.GREEN)
 
-            # Get service URLs and verify health
+            # Get service URLs and verify health in parallel
             backend_url = None
             frontend_url = None
-            
+
+            # Invalidate caches to get fresh URLs after deployment
+            if self.mode in [DeploymentMode.BOTH, DeploymentMode.BACKEND]:
+                self._invalidate_service_cache(self.config.backend_service)
+            if self.mode in [DeploymentMode.BOTH, DeploymentMode.FRONTEND]:
+                self._invalidate_service_cache(self.config.frontend_service)
+
             if self.mode in [DeploymentMode.BOTH, DeploymentMode.BACKEND]:
                 backend_url = await self.get_service_url(self.config.backend_service)
                 self.log(f"Backend: {backend_url}", Colors.BOLD)
-                await self.verify_health(backend_url, "Backend")
 
             if self.mode in [DeploymentMode.BOTH, DeploymentMode.FRONTEND]:
                 frontend_url = await self.get_service_url(self.config.frontend_service)
                 self.log(f"Frontend: {frontend_url}", Colors.BOLD)
-                await self.verify_health(frontend_url, "Frontend")
+
+            # Run health checks in parallel
+            health_checks = []
+            if self.mode in [DeploymentMode.BOTH, DeploymentMode.BACKEND] and backend_url:
+                health_checks.append(self.verify_health(backend_url, "Backend"))
+            if self.mode in [DeploymentMode.BOTH, DeploymentMode.FRONTEND] and frontend_url:
+                health_checks.append(self.verify_health(frontend_url, "Frontend"))
+            if health_checks:
+                await asyncio.gather(*health_checks)
 
             # Print deployment summary
             await self.print_deployment_summary(backend_url, frontend_url)
@@ -784,6 +917,7 @@ def main():
     parser.add_argument('--api-url', type=str, help='Set the API URL for the frontend')
     parser.add_argument('--force-refresh', action='store_true', help='Force browser cache refresh by adding a timestamp')
     parser.add_argument('--config', type=str, default='deploy-config.json', help='Path to deployment configuration file')
+    parser.add_argument('--skip-iam', action='store_true', help='Skip IAM/service account setup (faster deploys when already configured)')
     args = parser.parse_args()
     
     # Set deployment mode
@@ -828,7 +962,7 @@ def main():
         config.force_refresh = args.force_refresh
         
         # Create deployment manager and run deployment
-        manager = DeploymentManager(config, mode)
+        manager = DeploymentManager(config, mode, skip_iam=args.skip_iam)
         asyncio.run(manager.run())
         sys.exit(0)
     except Exception as e:

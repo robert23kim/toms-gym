@@ -34,19 +34,21 @@ def upload_video():
         
     file = request.files['video']
     competition_id = request.form.get('competition_id', '1')  # Default to '1' if not provided
-    user_id = request.form.get('user_id', '1')  # Default to '1' if not provided
+    user_id = request.form.get('user_id')  # No default - may come from email lookup
+    email = request.form.get('email')  # New: email-based upload
     lift_type = request.form.get('lift_type', 'snatch')  # Default to 'snatch' if not provided
     weight = request.form.get('weight', '0')  # Default to '0' if not provided
-    
+
     # Log received data
-    logger.info(f"Received data - competition_id: {competition_id}, user_id: {user_id}")
+    logger.info(f"Received data - competition_id: {competition_id}, user_id: {user_id}, email: {email}")
     logger.info(f"Received data - lift_type: {lift_type}, weight: {weight}")
     
     # Convert frontend lift_type to database enum values
     lift_type_mapping = {
-        "Squat": "Squat", 
+        "Squat": "Squat",
         "Bench": "Bench Press",  # "Bench" from frontend becomes "Bench Press" for database
         "Deadlift": "Deadlift",
+        "BicepCurl": "Bicep Curl",
         "Clean": "Clean & Jerk",
         "Snatch": "snatch",
         "Overhead": "Overhead Press"
@@ -65,7 +67,51 @@ def upload_video():
     if not allowed_file(file.filename):
         logger.error(f"File type not allowed: {file.filename}")
         return jsonify({'error': 'File type not allowed'}), 400
-    
+
+    # Handle email-based upload: find or create user by email
+    if email and not user_id:
+        logger.info(f"Email-based upload: looking up user by email {email}")
+        session = get_db_connection()
+        try:
+            # Find existing user by email
+            user_result = session.execute(
+                sqlalchemy.text('SELECT id FROM "User" WHERE email = :email'),
+                {"email": email}
+            ).fetchone()
+
+            if user_result:
+                user_id = user_result[0]
+                logger.info(f"Found existing user with ID: {user_id}")
+            else:
+                # Create minimal user record
+                user_id = str(uuid.uuid4())
+                logger.info(f"Creating new user with ID: {user_id} for email: {email}")
+                session.execute(
+                    sqlalchemy.text('''
+                        INSERT INTO "User" (id, email, name, username, auth_method, status, role, created_at)
+                        VALUES (:id, :email, :name, :username, 'password', 'active', 'user', NOW())
+                    '''),
+                    {
+                        "id": user_id,
+                        "email": email,
+                        "name": email.split('@')[0],  # Use email prefix as name
+                        "username": email
+                    }
+                )
+                session.commit()
+                logger.info(f"Created new guest user with ID: {user_id}")
+        except Exception as e:
+            session.rollback()
+            logger.error(f"Error finding/creating user by email: {str(e)}")
+            return jsonify({'error': f'Failed to process email: {str(e)}'}), 500
+        finally:
+            session.close()
+
+    # Fallback to default user_id if neither email nor user_id provided
+    if not user_id:
+        user_id = '1'
+        logger.info("No email or user_id provided, using default user_id: 1")
+
     video_url = None
     attempt_id = None
     user_competition_id = None
