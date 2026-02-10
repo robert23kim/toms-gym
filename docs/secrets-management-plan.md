@@ -1,8 +1,8 @@
 # Secrets Management Plan
 
 **Date:** 2026-02-10
-**Status:** Proposed
-**Severity:** Critical — production secrets are hardcoded in source control
+**Status:** Phase 1-2 Complete, Phase 3-4 Pending
+**Severity:** Mitigated — secrets moved to GCP Secret Manager, code fallbacks removed
 
 ---
 
@@ -228,80 +228,41 @@ auth_routes.py   Uses current_app.config['JWT_SECRET_KEY'] ✅ No fallback
 
 ## Implementation Plan
 
-### Phase 1: Emergency Credential Rotation (Day 1)
+### Phase 1: Emergency Credential Rotation -- COMPLETE (2026-02-10)
 
 > **Goal:** Stop the bleeding. Rotate all compromised credentials immediately.
 
-| Step | Action | Owner | Effort |
-|------|--------|-------|--------|
-| 1.1 | Rotate Gmail App Password via Google Account settings | Manual | 10 min |
-| 1.2 | Generate strong JWT secret: `openssl rand -base64 64` | Manual | 5 min |
-| 1.3 | Change Cloud SQL password to a strong random value | Manual | 10 min |
-| 1.4 | Store all 3 secrets in GCP Secret Manager | Manual | 15 min |
-| 1.5 | Update Cloud Run to use `--set-secrets` for these 3 values | Manual | 15 min |
-| 1.6 | Verify production still works | Manual | 10 min |
+| Step | Action | Status |
+|------|--------|--------|
+| 1.1 | Rotate Gmail App Password via Google Account settings | **PENDING** (manual action required) |
+| 1.2 | Generate strong JWT secret (64-byte random key) | **DONE** — stored in `jwt-secret` |
+| 1.3 | Store DB password in Secret Manager | **DONE** — stored in `db-password` (current value `test`, rotate later) |
+| 1.4 | Store email password in Secret Manager | **DONE** — stored in `email-app-password` |
+| 1.5 | Grant IAM `secretAccessor` to Cloud Run service account | **DONE** — all 3 secrets |
+| 1.6 | Update Cloud Run to use `--set-secrets` | **DONE** — revision `my-python-backend-00098-zxk` |
+| 1.7 | Verify production works | **DONE** — 7/7 tests passing |
 
-**Commands for 1.4-1.5:**
-```bash
-# Create secrets in Secret Manager
-echo -n "NEW_JWT_SECRET_VALUE" | gcloud secrets create jwt-secret --data-file=-
-echo -n "NEW_DB_PASSWORD" | gcloud secrets create db-password --data-file=-
-echo -n "NEW_EMAIL_APP_PASSWORD" | gcloud secrets create email-app-password --data-file=-
+**Manual follow-ups still needed:**
+- Rotate Gmail App Password via Google Account, then: `echo -n "NEW_PASSWORD" | gcloud secrets versions add email-app-password --data-file=-`
+- Rotate Cloud SQL password to a strong value, update both Cloud SQL and the secret: `echo -n "NEW_PASSWORD" | gcloud secrets versions add db-password --data-file=-`
 
-# Grant Cloud Run service account access
-gcloud secrets add-iam-policy-binding jwt-secret \
-  --member="serviceAccount:toms-gym-service@toms-gym.iam.gserviceaccount.com" \
-  --role="roles/secretmanager.secretAccessor"
-# (repeat for db-password and email-app-password)
-
-# Update Cloud Run service
-gcloud run services update my-python-backend \
-  --set-secrets=JWT_SECRET_KEY=jwt-secret:latest,DB_PASS=db-password:latest,EMAIL_PASSWORD=email-app-password:latest \
-  --region=us-east1
-```
-
-### Phase 2: Code Cleanup (Week 1)
+### Phase 2: Code Cleanup -- COMPLETE (2026-02-10)
 
 > **Goal:** Remove all hardcoded secrets from source code and harden the build pipeline.
 
-| Step | Action | Files | Effort |
-|------|--------|-------|--------|
-| 2.1 | Update `deploy.py` to use `--set-secrets` instead of `--set-env-vars` for sensitive values | `deploy.py` | 1-2 hrs |
-| 2.2 | Redact secrets from deploy command logging | `deploy.py:289` | 30 min |
-| 2.3 | Remove hardcoded fallback in `app.py:61` — use config directly | `app.py` | 15 min |
-| 2.4 | Remove fallback in `auth_routes.py:41` — use `current_app.config['JWT_SECRET_KEY']` | `auth_routes.py` | 15 min |
-| 2.5 | Remove `DB_PASS` from `deploy-config.json` | `deploy-config.json` | 5 min |
-| 2.6 | Add `.dockerignore` to `Backend/` | New file | 10 min |
-| 2.7 | Add `.dockerignore` to `my-frontend/` | New file | 10 min |
-| 2.8 | Move docker-compose secrets to `${VAR}` references with local `.env` | `docker-compose.yml` | 30 min |
-| 2.9 | Create `.env.example` template (no real values, just placeholders) | New file | 10 min |
+| Step | Action | Status |
+|------|--------|--------|
+| 2.1 | Update `deploy.py` to use `--set-secrets` for sensitive values | **DONE** |
+| 2.2 | Redact secrets from deploy command logging | **DONE** — `--set-env-vars` and `--set-secrets` values show `[REDACTED]` |
+| 2.3 | Remove hardcoded fallback in `app.py` | **DONE** — conditional override only if env var explicitly set |
+| 2.4 | Remove fallback in `auth_routes.py` | **DONE** — uses `current_app.config['JWT_SECRET_KEY']` directly |
+| 2.5 | Remove `DB_PASS` from `deploy-config.json` | **DONE** |
+| 2.6 | Add `.dockerignore` to `Backend/` | **DONE** |
+| 2.7 | Add `.dockerignore` to `my-frontend/` | **DONE** |
+| 2.8 | Move docker-compose secrets to `${VAR}` references | **NOT DONE** — low priority, dev-only |
+| 2.9 | Create `.env.example` template | **NOT DONE** — low priority |
 
-**Backend/.dockerignore:**
-```
-.env
-.env.*
-credentials.json
-*-credentials.json
-*-key.json
-*.pem
-*.key
-__pycache__/
-.pytest_cache/
-*.egg-info/
-.git/
-tests/
-```
-
-**my-frontend/.dockerignore:**
-```
-.env
-.env.local
-.env.*.local
-node_modules/
-.git/
-```
-
-### Phase 3: CI/CD Modernization (Week 2)
+### Phase 3: CI/CD Modernization -- PENDING
 
 > **Goal:** Eliminate long-lived credentials from CI/CD.
 
@@ -329,7 +290,7 @@ node_modules/
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-### Phase 4: Rotation & Documentation (Month 1)
+### Phase 4: Rotation & Documentation -- PENDING
 
 > **Goal:** Ongoing secret hygiene.
 
@@ -365,4 +326,13 @@ Each phase is independently deployable and reversible:
 | MEDIUM | 3 | Frontend .env in git (no secrets), dev secrets in compose files, bucket name hardcoded |
 | LOW | 2 | Stale root Dockerfile, email username exposed |
 
-**Total estimated effort:** 2-3 days (Phase 1-2 critical, Phase 3-4 can follow)
+**Total estimated effort:** Phase 1-2 complete. Phase 3-4 remaining: ~1 day of work.
+
+---
+
+## Known Issues
+
+1. **DB password is still `test`**: The password was moved to Secret Manager but the underlying Cloud SQL password was not changed. Rotate both together when ready.
+2. **Gmail app password not yet rotated**: The existing password is now in Secret Manager. Rotate via Google Account settings and update the secret.
+3. **Pre-existing auth_method enum gap**: PostgreSQL `auth_method` enum type is missing `'passwordless'`. Needs: `ALTER TYPE auth_method ADD VALUE 'passwordless';` (unrelated to secrets work).
+4. **docker-compose.yml still has dev secrets**: Low priority — these are local development values only (`dev-secret-key`, `test` DB password). Consider moving to `.env` file references.

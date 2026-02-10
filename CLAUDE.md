@@ -72,6 +72,31 @@ The app supports **optional authentication**. Users can upload videos and create
 1. Register via `/auth/register` with password
 2. Or create profile with "Set a password (optional)" checkbox
 
+## Secrets Management
+
+Production secrets are stored in **GCP Secret Manager** and injected into Cloud Run at runtime via `--set-secrets`. See `docs/secrets-management-plan.md` for the full audit and migration plan.
+
+### GCP Secret Manager Secrets
+| Secret Name | Used For | Env Var |
+|-------------|----------|---------|
+| `jwt-secret` | JWT token signing | `JWT_SECRET_KEY` |
+| `db-password` | Cloud SQL authentication | `DB_PASS` |
+| `email-app-password` | Gmail SMTP/IMAP | `EMAIL_PASSWORD` |
+
+### Key Rules
+- **Never hardcode secrets** in source code, deploy scripts, or config files
+- `deploy.py` uses `--set-secrets` for sensitive values and `--set-env-vars` for non-sensitive config
+- Deploy command logging redacts `--set-env-vars` and `--set-secrets` values
+- Flask app has **no fallback defaults** for secrets in production — missing secrets cause a startup error
+- `.dockerignore` files in `Backend/` and `my-frontend/` exclude `.env`, credentials, and key files
+
+### Updating a Secret
+```bash
+echo -n "NEW_VALUE" | gcloud secrets versions add SECRET_NAME --data-file=- --project=toms-gym
+# Then trigger a new Cloud Run revision to pick it up:
+gcloud run services update my-python-backend --region=us-east1 --set-secrets=JWT_SECRET_KEY=jwt-secret:latest,DB_PASS=db-password:latest,EMAIL_PASSWORD=email-app-password:latest
+```
+
 ## Agent Personas
 
 Custom agent personas are defined in `.claude/agents/`. When spawning a team, read these files first to understand the available roles and their constraints:
