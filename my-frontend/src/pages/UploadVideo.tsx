@@ -182,7 +182,7 @@ const UploadVideo: React.FC = () => {
           if (id) {
             navigate(`/challenges/${id}`);
           } else {
-            navigate('/random-video');
+            navigate('/');
           }
         }
       } else {
@@ -235,11 +235,11 @@ const UploadVideo: React.FC = () => {
             </Link>
           ) : (
             <Link
-              to="/random-video"
+              to="/"
               className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
             >
               <ArrowLeft className="mr-2" size={16} />
-              Back to Videos
+              Back to Home
             </Link>
           )}
 

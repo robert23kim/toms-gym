@@ -52,7 +52,7 @@ const Challenges = () => {
         registrationDeadline: challenge.end_date,
         location: challenge.location,
         description: challenge.description || '',
-        image: challenge.image || 'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3',
+        image: challenge.image || 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1469&auto=format&fit=crop',
         status: determineStatus(challenge.start_date, challenge.end_date),
         categories: [
           ...(challenge.lifttypes || []),

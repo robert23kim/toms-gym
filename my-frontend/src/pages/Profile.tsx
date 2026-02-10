@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
-import { Calendar, MapPin, Trophy, Activity, Award, ArrowLeft, Users, BarChart2, User, Dumbbell, Play } from "lucide-react";
+import { Calendar, MapPin, Trophy, Activity, Award, ArrowLeft, Users, BarChart2, User, Dumbbell, Play, TrendingUp } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
@@ -272,6 +272,23 @@ const Profile = () => {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Weekly Lifts Tracker Link */}
+        <div className="mb-6">
+          <Link
+            to={`/profile/${profileData.user.id}/weekly-lifts`}
+            className="flex items-center justify-between bg-card rounded-xl p-4 shadow-sm hover:bg-secondary/50 transition-colors"
+          >
+            <div className="flex items-center gap-3">
+              <TrendingUp className="text-accent" size={24} />
+              <div>
+                <h2 className="text-lg font-semibold">Track Weekly Lifts</h2>
+                <p className="text-sm text-muted-foreground">Log your weekly max bench, squat, deadlift & more</p>
+              </div>
+            </div>
+            <ArrowLeft size={20} className="rotate-180 text-muted-foreground" />
+          </Link>
         </div>
 
         {/* Uploaded Videos */}

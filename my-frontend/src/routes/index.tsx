@@ -11,7 +11,7 @@ import NotFound from "../pages/NotFound";
 import Leaderboard from "../pages/Leaderboard";
 import Store from '../pages/Store';
 import Profile from "../pages/Profile";
-import RandomVideo from "../pages/RandomVideo";
+import WeeklyLifts from "../pages/WeeklyLifts";
 import AuthCallback from "../pages/AuthCallback";
 import AuthError from "../pages/AuthError";
 import { Navigate, useParams } from "react-router-dom";
@@ -56,10 +56,6 @@ export const routes: RouteObject[] = [
     element: <VideoPlayerRedirect />,
   },
   {
-    path: "/random-video",
-    element: <RandomVideo />,
-  },
-  {
     path: "/athletes",
     element: <Athletes />,
   },
@@ -82,6 +78,10 @@ export const routes: RouteObject[] = [
   {
     path: "/profile/:id",
     element: <Profile />,
+  },
+  {
+    path: "/profile/:id/weekly-lifts",
+    element: <WeeklyLifts />,
   },
   {
     path: "/auth/callback",

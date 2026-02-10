@@ -14,6 +14,8 @@ from toms_gym.routes.user_routes import user_bp
 from toms_gym.routes.attempt_routes import attempt_bp
 from toms_gym.routes.upload_routes import upload_bp
 from toms_gym.routes.auth_routes import auth_bp
+from toms_gym.routes.admin_routes import admin_bp
+from toms_gym.routes.weekly_lifts_routes import weekly_lifts_bp
 from toms_gym.config import get_config, Config
 
 # Import integrations
@@ -55,8 +57,9 @@ app = Flask(__name__)
 config = get_config()
 app.config.from_object(config)
 
-# Ensure JWT_SECRET_KEY is available in app config (for security.py)
-app.config['JWT_SECRET_KEY'] = os.environ.get('JWT_SECRET_KEY', 'test-secret-key')
+# Override JWT_SECRET_KEY from env if explicitly set (otherwise config default is used)
+if os.environ.get('JWT_SECRET_KEY'):
+    app.config['JWT_SECRET_KEY'] = os.environ['JWT_SECRET_KEY']
 
 # Set custom JSON encoder
 app.json_encoder = CustomJSONEncoder
@@ -85,6 +88,8 @@ app.register_blueprint(user_bp)
 app.register_blueprint(attempt_bp)
 app.register_blueprint(upload_bp)
 app.register_blueprint(auth_bp, url_prefix='/auth')
+app.register_blueprint(admin_bp)
+app.register_blueprint(weekly_lifts_bp)
 app.register_blueprint(email_upload_bp, url_prefix='/integrations')
 
 # Start email processor if enabled

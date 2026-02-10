@@ -1,5 +1,4 @@
 from flask import Blueprint, request, jsonify, current_app
-import os
 import json
 import sqlalchemy
 from sqlalchemy.sql import text
@@ -38,7 +37,7 @@ JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=90)
 
 def get_jwt_secret_key():
     """Helper to get JWT secret key from app config or env vars"""
-    return current_app.config.get('JWT_SECRET_KEY', os.getenv('JWT_SECRET_KEY', 'dev-secret-key'))
+    return current_app.config['JWT_SECRET_KEY']
 
 def generate_token(user_id: str, token_type: str = 'access') -> tuple[str, datetime.datetime]:
     """Generate JWT token for user"""

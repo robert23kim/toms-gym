@@ -142,4 +142,28 @@ BEGIN
     DELETE FROM "UserSession" WHERE expires_at < CURRENT_TIMESTAMP;
     DELETE FROM "TokenBlacklist" WHERE expires_at < CURRENT_TIMESTAMP;
 END;
-$$ LANGUAGE plpgsql; 
+$$ LANGUAGE plpgsql;
+
+-- Create enum for weekly lift types
+CREATE TYPE weekly_lift_type AS ENUM ('bench', 'squat', 'deadlift', 'sitting_press');
+
+-- Create WeeklyMaxLift table for tracking weekly max lifts
+CREATE TABLE IF NOT EXISTS "WeeklyMaxLift" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+    week_start_date DATE NOT NULL,  -- Always Monday of the week
+    lift_type weekly_lift_type NOT NULL,
+    weight_lbs DECIMAL(5,1) NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE(user_id, week_start_date, lift_type)
+);
+
+CREATE INDEX idx_weekly_max_lift_user_id ON "WeeklyMaxLift"(user_id);
+CREATE INDEX idx_weekly_max_lift_user_week ON "WeeklyMaxLift"(user_id, week_start_date);
+
+-- Create trigger for updating WeeklyMaxLift timestamps
+CREATE TRIGGER update_weekly_max_lift_updated_at
+    BEFORE UPDATE ON "WeeklyMaxLift"
+    FOR EACH ROW
+    EXECUTE FUNCTION update_updated_at_column(); 

@@ -72,6 +72,30 @@ The app supports **optional authentication**. Users can upload videos and create
 1. Register via `/auth/register` with password
 2. Or create profile with "Set a password (optional)" checkbox
 
+## Agent Personas
+
+Custom agent personas are defined in `.claude/agents/`. When spawning a team, read these files first to understand the available roles and their constraints:
+**Note:** Always spin up a manager agent when starting a team.
+**Note:** When a team is requested, spin up all available personas at the beginning.
+
+- **manager** — Delegates tasks, reviews work, produces executive summaries. Cannot edit code.
+- **creative** — Rapid prototyping and experimentation. Full tool access.
+- **doer** — Heads-down implementer. Takes a task and drives it to completion autonomously. Full tool access.
+- **qa** — Regression testing and edge case verification. Cannot edit production code.
+- **architect** — Designs system boundaries, trade-offs, and migration plans. Cannot edit code.
+- **reviewer** — Code review for correctness, regressions, and missing tests. Cannot edit code.
+- **performance** — Profiling, bottlenecks, and measurable speedups. Full tool access.
+- **data-quality** — Validates annotations, datasets, and evaluation integrity. Full tool access.
+- **docs** — Documentation updates and runbooks. Full tool access.
+
+## Team Spawning Notes
+
+**Delegate mode limitation**: When a team lead enters delegate mode, spawned teammates may lose access to file/shell tools (Bash, Read, Write, Edit, Grep, Glob) even if their persona specifies them. To avoid this:
+- Spawn implementation agents using the Task tool with `run_in_background: true` instead of as team members in delegate mode
+- Or avoid delegate mode entirely — use regular teams where the lead retains full tool access
+- Agents that only need to research/plan (architect, reviewer) work fine in delegate mode since they primarily use messaging
+- Agents that need to run code, read files, or edit code (doer, creative, qa, performance, data-quality) must NOT be spawned from within delegate mode
+
 ### Key Files Modified
 
 | File | Changes |

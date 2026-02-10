@@ -286,7 +286,15 @@ class DeploymentManager:
     async def run_command(self, command: List[str], cwd: str = None, log_file: str = None, 
                           append: bool = False, check: bool = True, show_output: bool = False) -> subprocess.CompletedProcess:
         """Run a command and handle logging consistently"""
-        self.log(f"Running: {' '.join(command)}", Colors.BLUE)
+        # Redact sensitive values from logged commands
+        redacted_command = []
+        for i, arg in enumerate(command):
+            if arg.startswith("--set-env-vars=") or arg.startswith("--set-secrets="):
+                prefix = arg.split("=", 1)[0]
+                redacted_command.append(f"{prefix}=[REDACTED]")
+            else:
+                redacted_command.append(arg)
+        self.log(f"Running: {' '.join(redacted_command)}", Colors.BLUE)
         
         # For commands where we want to show output in real time
         if show_output:
@@ -609,36 +617,18 @@ class DeploymentManager:
             "Backend/"
         ]
         
-        # Build environment variables string
-        # Get email app password from environment, then .env file, then fallback to default
-        email_app_password = os.environ.get('EMAIL_APP_PASSWORD', '')
-        if not email_app_password:
-            # Try to load from .env file
-            env_vars_from_file = load_env_file()
-            email_app_password = env_vars_from_file.get('EMAIL_APP_PASSWORD', '') or \
-                                 env_vars_from_file.get('EMAIL_PASSWORD', '')
-            if email_app_password:
-                self.log("📧 Loaded EMAIL_APP_PASSWORD from .env file", Colors.GREEN)
-            else:
-                # Fallback to default app password for t30gupload@gmail.com
-                email_app_password = 'aajrrrnrfqvdltbv'
-                self.log("📧 Using default EMAIL_APP_PASSWORD", Colors.GREEN)
-        
+        # Build environment variables string (non-sensitive only)
         env_vars = [
             "FLASK_ENV=production",
             f"DB_INSTANCE={self.config.project_id}:{self.config.region}:my-db",
             "DB_USER=postgres",
-            "DB_PASS=test",
             "DB_NAME=postgres",
             f"GCS_BUCKET_NAME={self.config.bucket_name}",
-            "JWT_SECRET_KEY=your-secret-key-here",
-            f"DATABASE_URL=postgresql://postgres:test@/postgres?host=/cloudsql/{self.config.project_id}:{self.config.region}:my-db",
             # Email upload integration
             "EMAIL_UPLOAD_ENABLED=true",
             "EMAIL_IMAP_SERVER=imap.gmail.com",
             "EMAIL_IMAP_PORT=993",
             "EMAIL_USERNAME=t30gupload@gmail.com",
-            f"EMAIL_PASSWORD={email_app_password}",
             "EMAIL_POLL_INTERVAL=30",
             "EMAIL_SMTP_SERVER=smtp.gmail.com",
             "EMAIL_SMTP_PORT=587",
@@ -647,7 +637,14 @@ class DeploymentManager:
             "FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
             "PROD_FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
         ]
-        
+
+        # Secrets from GCP Secret Manager (format: ENV_VAR=secret-name:version)
+        secret_refs = [
+            "JWT_SECRET_KEY=jwt-secret:latest",
+            "DB_PASS=db-password:latest",
+            "EMAIL_PASSWORD=email-app-password:latest",
+        ]
+
         # Deploy commands
         deploy_commands = [
             "gcloud", "run", "deploy", self.config.backend_service,
@@ -662,7 +659,8 @@ class DeploymentManager:
             "--timeout=3600",
             "--quiet",
             f"--service-account={self.config.service_account}",
-            f"--set-env-vars={','.join(env_vars)}"
+            f"--set-env-vars={','.join(env_vars)}",
+            f"--set-secrets={','.join(secret_refs)}"
         ]
         
         # Build and deploy

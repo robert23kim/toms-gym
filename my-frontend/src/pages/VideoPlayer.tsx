@@ -291,6 +291,7 @@ const VideoPlayer: React.FC = () => {
                       controls
                       className="w-full h-full"
                       autoPlay
+                      muted
                       playsInline // For iOS compatibility
                       onError={handleVideoError}
                       onLoadedData={handleVideoLoad}
