@@ -15,6 +15,11 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, index }) => {
     visible: { opacity: 1, y: 0, transition: { delay: index * 0.1 } }
   };
 
+  const isBowling = challenge.title.toLowerCase().includes("bowling");
+  const detailLink = isBowling
+    ? `/bowling/challenge/${challenge.id}`
+    : `/challenges/${challenge.id}`;
+
   return (
     <motion.div
       variants={cardVariants}
@@ -22,7 +27,7 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, index }) => {
       animate="visible"
       className="bg-card rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow"
     >
-      <Link to={`/challenges/${challenge.id}`}>
+      <Link to={detailLink}>
         <div className="relative h-48">
           <img
             src={challenge.image}

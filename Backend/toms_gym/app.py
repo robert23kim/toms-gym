@@ -17,9 +17,12 @@ from toms_gym.routes.auth_routes import auth_bp
 from toms_gym.routes.admin_routes import admin_bp
 from toms_gym.routes.weekly_lifts_routes import weekly_lifts_bp
 from toms_gym.config import get_config, Config
+from toms_gym.db import cleanup_session
 
 # Import integrations
 from toms_gym.integrations.email_upload import email_upload_bp, start_background_processor
+from toms_gym.integrations.bowling_processor import start_bowling_processor
+from toms_gym.routes.bowling_routes import bowling_bp
 
 load_dotenv()
 
@@ -39,6 +42,43 @@ def run_startup_migrations():
             session.rollback()
             # Ignore if already exists or other non-critical errors
             logging.info(f"Enum migration note: {e}")
+
+        # Add 'Bowling' to lift_type enum if not exists
+        try:
+            session.execute(sqlalchemy.text("ALTER TYPE lift_type ADD VALUE IF NOT EXISTS 'Bowling'"))
+            session.commit()
+            logging.info("Added 'Bowling' to lift_type enum")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Bowling enum migration note: {e}")
+
+        # Create BowlingResult table if not exists
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "BowlingResult" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    attempt_id UUID REFERENCES "Attempt"(id) UNIQUE,
+                    processing_status TEXT DEFAULT 'queued',
+                    debug_video_url TEXT,
+                    trajectory_png_url TEXT,
+                    board_at_pins DECIMAL(5,2),
+                    entry_board DECIMAL(5,2),
+                    processing_time_s DECIMAL(8,2),
+                    detection_rate DECIMAL(5,2),
+                    error_message TEXT,
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    updated_at TIMESTAMPTZ DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_bowling_result_processing_status
+                    ON "BowlingResult" (processing_status)
+            """))
+            session.commit()
+            logging.info("BowlingResult table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"BowlingResult migration note: {e}")
         finally:
             session.close()
     except Exception as e:
@@ -91,9 +131,17 @@ app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(admin_bp)
 app.register_blueprint(weekly_lifts_bp)
 app.register_blueprint(email_upload_bp, url_prefix='/integrations')
+app.register_blueprint(bowling_bp)
 
 # Start email processor if enabled
 start_background_processor()
+
+# Start bowling processor if enabled
+start_bowling_processor()
+
+# Clean up scoped DB session after every request to prevent
+# broken transactions from leaking across requests
+app.teardown_appcontext(cleanup_session)
 
 @app.route('/health')
 def health():

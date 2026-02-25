@@ -14,6 +14,9 @@ import Profile from "../pages/Profile";
 import WeeklyLifts from "../pages/WeeklyLifts";
 import AuthCallback from "../pages/AuthCallback";
 import AuthError from "../pages/AuthError";
+import BowlingUpload from "../pages/BowlingUpload";
+import BowlingResult from "../pages/BowlingResult";
+import BowlingChallenge from "../pages/BowlingChallenge";
 import { Navigate, useParams } from "react-router-dom";
 
 // Redirect component for backward compatibility
@@ -90,6 +93,22 @@ export const routes: RouteObject[] = [
   {
     path: "/auth/error",
     element: <AuthError />,
+  },
+  {
+    path: "/bowling/upload",
+    element: <BowlingUpload />,
+  },
+  {
+    path: "/bowling/upload/:competitionId",
+    element: <BowlingUpload />,
+  },
+  {
+    path: "/bowling/result/:attemptId",
+    element: <BowlingResult />,
+  },
+  {
+    path: "/bowling/challenge/:id",
+    element: <BowlingChallenge />,
   },
   {
     path: "*",

@@ -636,6 +636,10 @@ class DeploymentManager:
             "BACKEND_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app",
             "FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
             "PROD_FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
+            # Bowling processor integration (calls bowling-service Cloud Run)
+            "BOWLING_PROCESSOR_ENABLED=true",
+            "BOWLING_SERVICE_URL=https://bowling-service-834341357827.us-east1.run.app",
+            "BOWLING_POLL_INTERVAL=5",
         ]
 
         # Secrets from GCP Secret Manager (format: ENV_VAR=secret-name:version)
@@ -653,7 +657,7 @@ class DeploymentManager:
             "--region", self.config.region,
             "--allow-unauthenticated",
             "--min-instances=1",
-            "--memory=1Gi",
+            "--memory=2Gi",
             "--cpu=1",
             "--concurrency=80",
             "--timeout=3600",
@@ -662,16 +666,16 @@ class DeploymentManager:
             f"--set-env-vars={','.join(env_vars)}",
             f"--set-secrets={','.join(secret_refs)}"
         ]
-        
+
         # Build and deploy
         new_image = await self.build_and_deploy_service(
-            "Backend", 
-            build_commands, 
-            deploy_commands, 
+            "Backend",
+            build_commands,
+            deploy_commands,
             spinner=self.backend_spinner,
             log_file=self.config.backend_log
         )
-        
+
         # Verify deployment
         if not await self.verify_deployment(self.config.backend_service, new_image):
             raise DeploymentError("Backend deployment verification failed")
@@ -808,7 +812,7 @@ class DeploymentManager:
         
         if self.mode in [DeploymentMode.BOTH, DeploymentMode.BACKEND] and backend_url:
             self.log(f"- Backend: {backend_url}", Colors.BOLD)
-            self.log(f"  • 1 CPU, 1GB RAM")
+            self.log(f"  • 1 CPU, 2GB RAM")
             self.log(f"  • Min 1 instance")
             self.log(f"  • 80 concurrent requests")
             self.log(f"  • Production environment")

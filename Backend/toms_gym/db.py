@@ -58,6 +58,8 @@ else:
         engine = sqlalchemy.create_engine(
             "postgresql+pg8000://",  # DSN prefix
             creator=getconn,        # uses the getconn() function to connect
+            pool_pre_ping=True,     # test connections before use, discard stale ones
+            pool_recycle=1800,      # recycle connections every 30 min
         )
         logger.info("PostgreSQL connection engine created")
     except Exception as e:
@@ -80,7 +82,21 @@ def get_db_connection():
     """
     try:
         session = Session()
+        # If a previous request left the session in a broken state, roll it back
+        if not session.is_active:
+            logger.warning("Session was in an invalid state, rolling back")
+            session.rollback()
         return session
     except Exception as e:
         logger.error(f"Error getting database session: {str(e)}")
-        raise 
+        raise
+
+
+def cleanup_session(exception=None):
+    """
+    Remove the scoped session after each request.
+    This ensures broken transactions don't leak across requests.
+    """
+    if exception:
+        Session.rollback()
+    Session.remove()

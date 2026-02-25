@@ -23,6 +23,7 @@ def get_weekly_lifts(user_id):
     Query params:
         - weeks: number of weeks to return (default: all)
     """
+    session = None
     try:
         weeks_param = request.args.get('weeks', type=int)
 
@@ -40,7 +41,6 @@ def get_weekly_lifts(user_id):
             sqlalchemy.text(query),
             {"user_id": user_id}
         ).fetchall()
-        session.close()
 
         # Group by week
         weeks_dict = {}
@@ -80,7 +80,12 @@ def get_weekly_lifts(user_id):
 
     except Exception as e:
         logger.error(f"Error in get_weekly_lifts: {str(e)}")
+        if session:
+            session.rollback()
         return jsonify({"error": str(e)}), 500
+    finally:
+        if session:
+            session.close()
 
 
 @weekly_lifts_bp.route('/users/<string:user_id>/weekly-lifts', methods=['POST'])
@@ -92,6 +97,7 @@ def create_or_update_weekly_lift(user_id):
         - lift_type: one of 'bench', 'squat', 'deadlift', 'sitting_press'
         - weight_lbs: decimal number
     """
+    session = None
     try:
         data = request.get_json()
 
@@ -150,7 +156,6 @@ def create_or_update_weekly_lift(user_id):
             }
         ).fetchone()
         session.commit()
-        session.close()
 
         return jsonify({
             "id": str(result[0]),
@@ -164,6 +169,9 @@ def create_or_update_weekly_lift(user_id):
     except Exception as e:
         logger.error(f"Error in create_or_update_weekly_lift: {str(e)}")
         return jsonify({"error": str(e)}), 500
+    finally:
+        if session:
+            session.close()
 
 
 @weekly_lifts_bp.route('/users/<string:user_id>/weekly-lifts/<string:lift_id>', methods=['DELETE'])
@@ -171,6 +179,7 @@ def delete_weekly_lift(user_id, lift_id):
     """
     Delete a specific weekly lift entry.
     """
+    session = None
     try:
         session = get_db_connection()
 
@@ -184,7 +193,6 @@ def delete_weekly_lift(user_id, lift_id):
             {"lift_id": lift_id, "user_id": user_id}
         ).fetchone()
         session.commit()
-        session.close()
 
         if not result:
             return jsonify({"error": "Lift entry not found or does not belong to user"}), 404
@@ -193,4 +201,9 @@ def delete_weekly_lift(user_id, lift_id):
 
     except Exception as e:
         logger.error(f"Error in delete_weekly_lift: {str(e)}")
+        if session:
+            session.rollback()
         return jsonify({"error": str(e)}), 500
+    finally:
+        if session:
+            session.close()

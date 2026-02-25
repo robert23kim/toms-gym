@@ -14,13 +14,13 @@ user_bp = Blueprint('user', __name__)
 @user_bp.route('/users/by-email/<path:email>')
 def get_user_by_email(email):
     """Find user profile by email address"""
+    session = None
     try:
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text('SELECT id, name, email FROM "User" WHERE email = :email'),
             {"email": email}
         ).fetchone()
-        session.close()
 
         if not result:
             return jsonify({"error": "No user found with that email"}), 404
@@ -31,38 +31,49 @@ def get_user_by_email(email):
             "email": result[2]
         })
     except Exception as e:
+        if session:
+            session.rollback()
         return jsonify({"error": str(e)}), 500
+    finally:
+        if session:
+            session.close()
 
 @user_bp.route('/users/<string:user_id>')
 def get_user(user_id):
     """
     Endpoint that queries a single user by ID.
     """
+    session = None
     try:
         session = get_db_connection()
         result = session.execute(
             sqlalchemy.text("SELECT * FROM \"User\" WHERE id = :id"),
             {"id": user_id}
         ).fetchone()
-        session.close()
-        
+
         if result is None:
             return {"error": "User not found"}, 404
-            
+
         # Convert result to dict properly
         user_data = {}
         for key in result._mapping.keys():
             user_data[key] = result._mapping[key]
-            
+
         return {"user": user_data}
     except Exception as e:
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @user_bp.route('/users/<string:user_id>/competitions')
 def get_user_competitions(user_id):
     """
     Endpoint that queries all competitions for a specific user.
     """
+    session = None
     try:
         session = get_db_connection()
         result = session.execute(
@@ -75,16 +86,21 @@ def get_user_competitions(user_id):
             {"user_id": user_id}
         )
         results = [dict(row) for row in result]
-        session.close()
         return {"competitions": results}
     except Exception as e:
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @user_bp.route('/users/<string:user_id>/lifts')
 def get_user_lifts(user_id):
     """
     Endpoint that queries all lifts for a specific user.
     """
+    session = None
     try:
         session = get_db_connection()
         result = session.execute(
@@ -99,10 +115,14 @@ def get_user_lifts(user_id):
             {"user_id": user_id}
         )
         results = [dict(row) for row in result]
-        session.close()
         return {"lifts": results}
     except Exception as e:
+        if session:
+            session.rollback()
         return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
 
 @user_bp.route('/users/<string:user_id>/profile')
 def get_user_profile(user_id):
