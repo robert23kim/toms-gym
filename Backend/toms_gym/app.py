@@ -79,6 +79,20 @@ def run_startup_migrations():
         except Exception as e:
             session.rollback()
             logging.info(f"BowlingResult migration note: {e}")
+
+        # Add lane edge columns if not exists (migration 005)
+        try:
+            session.execute(sqlalchemy.text("""
+                ALTER TABLE "BowlingResult"
+                    ADD COLUMN IF NOT EXISTS lane_edges_auto JSONB,
+                    ADD COLUMN IF NOT EXISTS lane_edges_manual JSONB,
+                    ADD COLUMN IF NOT EXISTS frame_url TEXT
+            """))
+            session.commit()
+            logging.info("Lane edge columns migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Lane edge columns migration note: {e}")
         finally:
             session.close()
     except Exception as e:
