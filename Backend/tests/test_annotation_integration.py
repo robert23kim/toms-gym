@@ -203,3 +203,78 @@ class TestAnnotationIntegration:
         # Also verify frame 1 -> 0002.jpg
         resp2 = integration_client.get(f'/bowling/result/{rid}/frames/1')
         assert '0002.jpg' in resp2.headers['Location']
+
+    def test_full_annotation_with_lane_edges_roundtrip(
+        self, integration_client, integration_result, db_session
+    ):
+        """PUT annotation with all fields including frame_lane_edges, GET back, verify all preserved."""
+        rid = integration_result
+        client = integration_client
+
+        # 1. PUT ball annotation on frame 0
+        resp = client.put(
+            f'/bowling/result/{rid}/annotation/ball/0',
+            json={"x": 100, "y": 200, "radius": 25},
+        )
+        assert resp.status_code == 200
+
+        # 2. Set markers
+        resp = client.put(
+            f'/bowling/result/{rid}/annotation/markers',
+            json={"ball_down": 5, "pin_hit": 45},
+        )
+        assert resp.status_code == 200
+
+        # 3. PUT lane edges with polyline points on frame 10
+        lane_edges_data = {
+            "top_left": [100, 50],
+            "top_right": [500, 50],
+            "bottom_left": [50, 400],
+            "bottom_right": [550, 400],
+            "left_edge_points": [[60, 100], [55, 200], [50, 300]],
+            "right_edge_points": [[540, 100], [545, 200], [550, 300]],
+        }
+        resp = client.put(
+            f'/bowling/result/{rid}/annotation/lane-edges/10',
+            json=lane_edges_data,
+        )
+        assert resp.status_code == 200
+
+        # 4. GET full annotation and verify all fields
+        resp = client.get(f'/bowling/result/{rid}/annotation')
+        assert resp.status_code == 200
+        data = resp.get_json()
+
+        # ball_annotations preserved
+        assert '0' in data['ball_annotations']
+        assert data['ball_annotations']['0'] == {"x": 100, "y": 200, "radius": 25}
+
+        # frame_markers preserved
+        assert data['frame_markers']['ball_down'] == 5
+        assert data['frame_markers']['pin_hit'] == 45
+
+        # frame_lane_edges preserved with correct string key
+        assert 'frame_lane_edges' in data
+        assert '10' in data['frame_lane_edges'], \
+            "frame_lane_edges keys must be strings (JSON object keys)"
+        stored = data['frame_lane_edges']['10']
+        assert stored['top_left'] == [100, 50]
+        assert stored['top_right'] == [500, 50]
+        assert stored['bottom_left'] == [50, 400]
+        assert stored['bottom_right'] == [550, 400]
+        assert stored['left_edge_points'] == [[60, 100], [55, 200], [50, 300]]
+        assert stored['right_edge_points'] == [[540, 100], [545, 200], [550, 300]]
+
+        # 5. DELETE lane edges on frame 10
+        resp = client.delete(f'/bowling/result/{rid}/annotation/lane-edges/10')
+        assert resp.status_code == 200
+
+        # 6. Verify lane edges removed but other fields intact
+        resp = client.get(f'/bowling/result/{rid}/annotation')
+        data = resp.get_json()
+        assert '10' not in data['frame_lane_edges'], \
+            "DELETE should remove lane edge key"
+        assert '0' in data['ball_annotations'], \
+            "ball_annotations must survive lane edge DELETE"
+        assert data['frame_markers']['pin_hit'] == 45, \
+            "frame_markers must survive lane edge DELETE"

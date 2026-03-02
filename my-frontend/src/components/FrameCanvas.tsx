@@ -1,5 +1,12 @@
 import { useRef, useEffect, useCallback } from 'react';
 import type { BallAnnotation, LaneEdges } from '../lib/types';
+import type { PointHit } from '../hooks/useEdgeEditor';
+
+interface EdgeState {
+  edges: LaneEdges | null;
+  selectedPoint: PointHit | null;
+  isDragging: boolean;
+}
 
 interface Props {
   image: HTMLImageElement | null;
@@ -8,9 +15,20 @@ interface Props {
   radius: number;
   onBallClick: (x: number, y: number) => void;
   onRadiusChange: (delta: number) => void;
+  editMode?: 'NORMAL' | 'EDGE_EDIT';
+  edgeState?: EdgeState;
+  onEdgeMouseDown?: (x: number, y: number) => void;
+  onEdgeMouseMove?: (x: number, y: number) => void;
+  onEdgeMouseUp?: () => void;
+  onEdgeRightClick?: (x: number, y: number) => void;
+  onEdgeShiftClick?: (x: number, y: number) => void;
 }
 
-export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRadiusChange }: Props) {
+export function FrameCanvas({
+  image, ball, laneEdges, radius, onBallClick, onRadiusChange,
+  editMode = 'NORMAL', edgeState, onEdgeMouseDown, onEdgeMouseMove, onEdgeMouseUp,
+  onEdgeRightClick, onEdgeShiftClick,
+}: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -40,39 +58,84 @@ export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRad
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
 
+    // Determine which edges to draw
+    const edgesToDraw = (editMode === 'EDGE_EDIT' && edgeState?.edges) ? edgeState.edges : laneEdges;
+
     // Draw lane edges
-    if (laneEdges) {
+    if (edgesToDraw) {
       ctx.strokeStyle = 'rgba(0, 100, 255, 0.6)';
       ctx.lineWidth = 2;
       ctx.beginPath();
 
       // Top edge: top_left -> top_right
-      ctx.moveTo(laneEdges.top_left[0] * scale, laneEdges.top_left[1] * scale);
-      ctx.lineTo(laneEdges.top_right[0] * scale, laneEdges.top_right[1] * scale);
+      ctx.moveTo(edgesToDraw.top_left[0] * scale, edgesToDraw.top_left[1] * scale);
+      ctx.lineTo(edgesToDraw.top_right[0] * scale, edgesToDraw.top_right[1] * scale);
 
       // Right edge: top_right -> bottom_right (polyline if available)
-      if (laneEdges.right_edge_points?.length) {
-        for (const [px, py] of laneEdges.right_edge_points) {
+      if (edgesToDraw.right_edge_points?.length) {
+        for (const [px, py] of edgesToDraw.right_edge_points) {
           ctx.lineTo(px * scale, py * scale);
         }
       } else {
-        ctx.lineTo(laneEdges.bottom_right[0] * scale, laneEdges.bottom_right[1] * scale);
+        ctx.lineTo(edgesToDraw.bottom_right[0] * scale, edgesToDraw.bottom_right[1] * scale);
       }
 
       // Bottom edge: bottom_right -> bottom_left
-      ctx.lineTo(laneEdges.bottom_left[0] * scale, laneEdges.bottom_left[1] * scale);
+      ctx.lineTo(edgesToDraw.bottom_left[0] * scale, edgesToDraw.bottom_left[1] * scale);
 
       // Left edge: bottom_left -> top_left (polyline if available, reversed)
-      if (laneEdges.left_edge_points?.length) {
-        for (const [px, py] of [...laneEdges.left_edge_points].reverse()) {
+      if (edgesToDraw.left_edge_points?.length) {
+        for (const [px, py] of [...edgesToDraw.left_edge_points].reverse()) {
           ctx.lineTo(px * scale, py * scale);
         }
       } else {
-        ctx.lineTo(laneEdges.top_left[0] * scale, laneEdges.top_left[1] * scale);
+        ctx.lineTo(edgesToDraw.top_left[0] * scale, edgesToDraw.top_left[1] * scale);
       }
 
       ctx.closePath();
       ctx.stroke();
+    }
+
+    // Draw edge handles in EDGE_EDIT mode
+    if (editMode === 'EDGE_EDIT' && edgesToDraw) {
+      const selected = edgeState?.selectedPoint;
+
+      // Draw corner handles (8px radius)
+      const corners: { key: string; pt: [number, number] }[] = [
+        { key: 'top_left', pt: edgesToDraw.top_left },
+        { key: 'top_right', pt: edgesToDraw.top_right },
+        { key: 'bottom_left', pt: edgesToDraw.bottom_left },
+        { key: 'bottom_right', pt: edgesToDraw.bottom_right },
+      ];
+
+      for (const corner of corners) {
+        const isSelected = selected?.type === 'corner' && selected.key === corner.key;
+        const cx = corner.pt[0] * scale;
+        const cy = corner.pt[1] * scale;
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.fillStyle = isSelected ? 'yellow' : 'cyan';
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      }
+
+      // Draw polyline handles (6px radius, cyan)
+      for (const side of ['left', 'right'] as const) {
+        const pts = side === 'left' ? edgesToDraw.left_edge_points : edgesToDraw.right_edge_points;
+        if (!pts) continue;
+        for (let i = 0; i < pts.length; i++) {
+          const px = pts[i][0] * scale;
+          const py = pts[i][1] * scale;
+
+          ctx.beginPath();
+          ctx.arc(px, py, 6, 0, Math.PI * 2);
+          ctx.fillStyle = 'cyan';
+          ctx.fill();
+        }
+      }
     }
 
     // Draw ball annotation
@@ -109,17 +172,57 @@ export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRad
       ctx.font = `${20 * scale}px sans-serif`;
       ctx.fillText('NO BALL', 10 * scale, 30 * scale);
     }
-  }, [image, ball, laneEdges, getScale]);
+  }, [image, ball, laneEdges, getScale, editMode, edgeState]);
 
-  const handleClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+  // Convert mouse event to image coordinates
+  const toImageCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
-    if (!canvas || !image) return;
+    if (!canvas || !image) return null;
     const rect = canvas.getBoundingClientRect();
     const scale = getScale();
-    const x = Math.round((e.clientX - rect.left) / scale);
-    const y = Math.round((e.clientY - rect.top) / scale);
-    onBallClick(x, y);
-  }, [image, getScale, onBallClick]);
+    return {
+      x: Math.round((e.clientX - rect.left) / scale),
+      y: Math.round((e.clientY - rect.top) / scale),
+    };
+  }, [image, getScale]);
+
+  const handleClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (editMode === 'EDGE_EDIT') return; // handled by mousedown/up
+    const coords = toImageCoords(e);
+    if (coords) onBallClick(coords.x, coords.y);
+  }, [editMode, toImageCoords, onBallClick]);
+
+  const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (editMode !== 'EDGE_EDIT') return;
+    if (e.shiftKey) return; // shift+click handled separately
+    const coords = toImageCoords(e);
+    if (coords) onEdgeMouseDown?.(coords.x, coords.y);
+  }, [editMode, toImageCoords, onEdgeMouseDown]);
+
+  const handleMouseMove = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (editMode !== 'EDGE_EDIT') return;
+    const coords = toImageCoords(e);
+    if (coords) onEdgeMouseMove?.(coords.x, coords.y);
+  }, [editMode, toImageCoords, onEdgeMouseMove]);
+
+  const handleMouseUp = useCallback(() => {
+    if (editMode !== 'EDGE_EDIT') return;
+    onEdgeMouseUp?.();
+  }, [editMode, onEdgeMouseUp]);
+
+  const handleContextMenu = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (editMode !== 'EDGE_EDIT') return;
+    e.preventDefault();
+    const coords = toImageCoords(e);
+    if (coords) onEdgeRightClick?.(coords.x, coords.y);
+  }, [editMode, toImageCoords, onEdgeRightClick]);
+
+  const handleShiftClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    if (editMode !== 'EDGE_EDIT') return;
+    if (!e.shiftKey) return;
+    const coords = toImageCoords(e);
+    if (coords) onEdgeShiftClick?.(coords.x, coords.y);
+  }, [editMode, toImageCoords, onEdgeShiftClick]);
 
   // Register wheel handler imperatively with { passive: false } to allow preventDefault
   useEffect(() => {
@@ -133,12 +236,21 @@ export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRad
     return () => canvas.removeEventListener('wheel', handler);
   }, [onRadiusChange]);
 
+  const isEdgeEdit = editMode === 'EDGE_EDIT';
+  const cursorClass = isEdgeEdit
+    ? (edgeState?.isDragging ? 'cursor-grabbing' : 'cursor-grab')
+    : 'cursor-crosshair';
+
   return (
     <div ref={containerRef} className="w-full h-full flex justify-center items-center bg-black">
       <canvas
         ref={canvasRef}
         onClick={handleClick}
-        className="cursor-crosshair"
+        onMouseDown={(e) => { handleMouseDown(e); handleShiftClick(e); }}
+        onMouseMove={handleMouseMove}
+        onMouseUp={handleMouseUp}
+        onContextMenu={handleContextMenu}
+        className={cursorClass}
       />
     </div>
   );

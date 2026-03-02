@@ -7,6 +7,7 @@ import { Timeline } from '../components/Timeline';
 import { MarkerPanel } from '../components/MarkerPanel';
 import { StatusBar } from '../components/StatusBar';
 import { useAnnotation } from '../hooks/useAnnotation';
+import { useEdgeEditor } from '../hooks/useEdgeEditor';
 import { useFrameNavigation } from '../hooks/useFrameNavigation';
 import type { FrameData, FrameMarkers } from '../lib/types';
 
@@ -18,6 +19,7 @@ export default function AnnotationWorkspace() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [showHelp, setShowHelp] = useState(false);
+  const [editMode, setEditMode] = useState<'NORMAL' | 'EDGE_EDIT'>('NORMAL');
 
   // Fetch result ID from attempt ID
   useEffect(() => {
@@ -42,12 +44,19 @@ export default function AnnotationWorkspace() {
       });
   }, [resultId]);
 
-  const { annotation, saving, setBall, clearBall, setMarkers } = useAnnotation(resultId);
+  const { annotation, saving, setBall, clearBall, setMarkers, saveLaneEdges, deleteLaneEdges } = useAnnotation(resultId);
   const {
     currentFrame, currentImage, imageLoading, frameError,
     goTo, next, prev, jumpForward, jumpBack,
     isPlaying, playbackSpeed, pause, togglePlay, cycleSpeed,
   } = useFrameNavigation(resultId, frameData?.total_frames || 0, frameData?.fps || 30);
+
+  const edgeEditor = useEdgeEditor({
+    annotation,
+    currentFrame,
+    onSave: saveLaneEdges,
+    onDelete: deleteLaneEdges,
+  });
 
   const handleSetMarker = useCallback((name: string, frame: number) => {
     setMarkers({ ...annotation?.frame_markers, [name]: frame } as FrameMarkers);
@@ -89,6 +98,16 @@ export default function AnnotationWorkspace() {
         case 'b': pause(); handleSetMarker('breakpoint', currentFrame); break;
         case 'g': pause(); handleSetMarker('ball_down', currentFrame); break;
         case 'o': pause(); handleSetMarker('ball_off_deck', currentFrame); break;
+        case 'e':
+          setEditMode(m => {
+            const next = m === 'NORMAL' ? 'EDGE_EDIT' : 'NORMAL';
+            if (next === 'EDGE_EDIT' && isPlaying) pause();
+            return next;
+          });
+          break;
+        case 'r':
+          if (editMode === 'EDGE_EDIT') edgeEditor.resetEdges();
+          break;
         case 'f': cycleSpeed(); break;
         case 'h': setShowHelp(prev => !prev); break;
       }
@@ -96,7 +115,7 @@ export default function AnnotationWorkspace() {
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [currentFrame, annotation, next, prev, jumpForward, jumpBack, setBall, clearBall, handleSetMarker, togglePlay, pause, cycleSpeed]);
+  }, [currentFrame, annotation, next, prev, jumpForward, jumpBack, setBall, clearBall, handleSetMarker, togglePlay, pause, cycleSpeed, isPlaying, editMode, edgeEditor]);
 
   const handleBallClick = useCallback((x: number, y: number) => {
     pause();
@@ -169,7 +188,7 @@ export default function AnnotationWorkspace() {
         markers={annotation?.frame_markers || {}}
         annotatedCount={annotatedCount}
         noBallCount={noBallCount}
-        editMode="NORMAL"
+        editMode={editMode}
         saving={saving}
       />
 
@@ -192,6 +211,17 @@ export default function AnnotationWorkspace() {
               radius={radius}
               onBallClick={handleBallClick}
               onRadiusChange={handleRadiusChange}
+              editMode={editMode}
+              edgeState={{
+                edges: edgeEditor.effectiveEdges,
+                selectedPoint: edgeEditor.selectedPoint,
+                isDragging: edgeEditor.isDragging,
+              }}
+              onEdgeMouseDown={edgeEditor.handleMouseDown}
+              onEdgeMouseMove={edgeEditor.handleMouseMove}
+              onEdgeMouseUp={edgeEditor.handleMouseUp}
+              onEdgeRightClick={edgeEditor.handleRightClick}
+              onEdgeShiftClick={edgeEditor.handleShiftClick}
             />
           )}
         </div>

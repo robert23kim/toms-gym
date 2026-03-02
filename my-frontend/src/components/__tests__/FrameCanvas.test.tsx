@@ -194,4 +194,80 @@ describe('FrameCanvas', () => {
     // No fillText (no "NO BALL" text)
     expect(mockCtx.fillText).not.toHaveBeenCalled();
   });
+
+  test('handles rendered when editMode=EDGE_EDIT, not when NORMAL', () => {
+    const image = createMockImage();
+    const edges = {
+      top_left: [100, 50] as [number, number],
+      top_right: [300, 50] as [number, number],
+      bottom_left: [50, 500] as [number, number],
+      bottom_right: [350, 500] as [number, number],
+    };
+
+    // NORMAL mode: no handle arc calls (no ball either)
+    render(
+      <FrameCanvas
+        image={image}
+        ball={undefined}
+        radius={25}
+        onBallClick={noop}
+        onRadiusChange={noop}
+        editMode="NORMAL"
+        edgeState={{ edges, selectedPoint: null, isDragging: false }}
+      />
+    );
+    expect(mockCtx.arc).not.toHaveBeenCalled();
+
+    jest.clearAllMocks();
+
+    // EDGE_EDIT mode: should draw corner handle arcs (4 corners x 8px radius)
+    render(
+      <FrameCanvas
+        image={image}
+        ball={undefined}
+        radius={25}
+        onBallClick={noop}
+        onRadiusChange={noop}
+        editMode="EDGE_EDIT"
+        edgeState={{ edges, selectedPoint: null, isDragging: false }}
+      />
+    );
+    const arcCalls = mockCtx.arc.mock.calls;
+    // 4 corner handles at radius 8
+    const handleCalls = arcCalls.filter((c: number[]) => c[2] === 8);
+    expect(handleCalls.length).toBe(4);
+  });
+
+  test('cursor class is cursor-crosshair in normal mode, cursor-grab in edge mode', () => {
+    const image = createMockImage();
+
+    // Normal mode
+    const { container: c1 } = render(
+      <FrameCanvas
+        image={image}
+        ball={undefined}
+        radius={25}
+        onBallClick={noop}
+        onRadiusChange={noop}
+        editMode="NORMAL"
+      />
+    );
+    const canvas1 = c1.querySelector('canvas');
+    expect(canvas1?.className).toContain('cursor-crosshair');
+
+    // Edge edit mode (not dragging)
+    const { container: c2 } = render(
+      <FrameCanvas
+        image={image}
+        ball={undefined}
+        radius={25}
+        onBallClick={noop}
+        onRadiusChange={noop}
+        editMode="EDGE_EDIT"
+        edgeState={{ edges: null, selectedPoint: null, isDragging: false }}
+      />
+    );
+    const canvas2 = c2.querySelector('canvas');
+    expect(canvas2?.className).toContain('cursor-grab');
+  });
 });

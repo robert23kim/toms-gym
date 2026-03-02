@@ -111,6 +111,101 @@ describe('useAnnotation', () => {
     });
   });
 
+  test('saveLaneEdges calls PUT with correct URL and body', async () => {
+    const { result } = renderHook(() => useAnnotation('result-1'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    const edges = {
+      top_left: [10, 20] as [number, number],
+      top_right: [300, 20] as [number, number],
+      bottom_left: [50, 400] as [number, number],
+      bottom_right: [260, 400] as [number, number],
+    };
+
+    act(() => {
+      result.current.saveLaneEdges(7, edges);
+    });
+
+    act(() => { jest.advanceTimersByTime(500); });
+
+    await waitFor(() => {
+      expect(mockedAxios.put).toHaveBeenCalledWith(
+        'https://test-api/bowling/result/result-1/annotation/lane-edges/7',
+        edges
+      );
+    });
+  });
+
+  test('saveLaneEdges updates local annotation.frame_lane_edges optimistically', async () => {
+    const { result } = renderHook(() => useAnnotation('result-1'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    const edges = {
+      top_left: [10, 20] as [number, number],
+      top_right: [300, 20] as [number, number],
+      bottom_left: [50, 400] as [number, number],
+      bottom_right: [260, 400] as [number, number],
+    };
+
+    act(() => {
+      result.current.saveLaneEdges(7, edges);
+    });
+
+    expect(result.current.annotation?.frame_lane_edges?.['7']).toEqual(edges);
+  });
+
+  test('deleteLaneEdges calls DELETE with correct URL', async () => {
+    const { result } = renderHook(() => useAnnotation('result-1'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    // First save lane edges so there's something to delete
+    const edges = {
+      top_left: [10, 20] as [number, number],
+      top_right: [300, 20] as [number, number],
+      bottom_left: [50, 400] as [number, number],
+      bottom_right: [260, 400] as [number, number],
+    };
+    act(() => {
+      result.current.saveLaneEdges(3, edges);
+    });
+    act(() => { jest.advanceTimersByTime(500); });
+
+    act(() => {
+      result.current.deleteLaneEdges(3);
+    });
+
+    act(() => { jest.advanceTimersByTime(500); });
+
+    await waitFor(() => {
+      expect(mockedAxios.delete).toHaveBeenCalledWith(
+        'https://test-api/bowling/result/result-1/annotation/lane-edges/3'
+      );
+    });
+  });
+
+  test('deleteLaneEdges removes key from local annotation.frame_lane_edges', async () => {
+    const { result } = renderHook(() => useAnnotation('result-1'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    // First save lane edges
+    const edges = {
+      top_left: [10, 20] as [number, number],
+      top_right: [300, 20] as [number, number],
+      bottom_left: [50, 400] as [number, number],
+      bottom_right: [260, 400] as [number, number],
+    };
+    act(() => {
+      result.current.saveLaneEdges(3, edges);
+    });
+    expect(result.current.annotation?.frame_lane_edges?.['3']).toEqual(edges);
+
+    act(() => {
+      result.current.deleteLaneEdges(3);
+    });
+
+    expect(result.current.annotation?.frame_lane_edges).not.toHaveProperty('3');
+  });
+
   test('debounce: rapid calls result in single network request', async () => {
     const { result } = renderHook(() => useAnnotation('result-1'));
     await waitFor(() => expect(result.current.loading).toBe(false));

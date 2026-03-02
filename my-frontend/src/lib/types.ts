@@ -136,6 +136,7 @@ export interface Annotation {
   version: string;
   video_metadata: VideoMetadata;
   lane_edges?: LaneEdges;
+  frame_lane_edges?: Record<string, LaneEdges>;
   frame_markers: FrameMarkers;
   ball_annotations: Record<string, BallAnnotation | null>;
 }

@@ -358,17 +358,35 @@ def reanalyze_bowling(result_id):
 
 
 def _ensure_annotation_structure(session, result_id):
-    """Ensure annotation JSONB has required top-level keys."""
+    """Ensure annotation JSONB has required top-level keys.
+
+    Uses jsonb_set with create_missing to add keys without overwriting
+    existing values.
+    """
     session.execute(sqlalchemy.text("""
         UPDATE "BowlingResult"
-        SET annotation = COALESCE(annotation, '{}'::jsonb)
-            || '{"ball_annotations":{}}'::jsonb
-            || '{"frame_markers":{}}'::jsonb
+        SET annotation = jsonb_set(
+            jsonb_set(
+                jsonb_set(
+                    COALESCE(annotation, '{}'::jsonb),
+                    '{ball_annotations}',
+                    COALESCE(annotation->'ball_annotations', '{}'::jsonb),
+                    true
+                ),
+                '{frame_markers}',
+                COALESCE(annotation->'frame_markers', '{}'::jsonb),
+                true
+            ),
+            '{frame_lane_edges}',
+            COALESCE(annotation->'frame_lane_edges', '{}'::jsonb),
+            true
+        )
         WHERE id = :id
           AND (
             annotation IS NULL
             OR NOT (annotation ? 'ball_annotations')
             OR NOT (annotation ? 'frame_markers')
+            OR NOT (annotation ? 'frame_lane_edges')
           )
     """), {"id": result_id})
 
@@ -661,6 +679,89 @@ def save_markers(result_id):
     except Exception as e:
         session.rollback()
         logger.error(f"Error saving markers: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()
+
+
+_LANE_EDGE_REQUIRED_CORNERS = {'top_left', 'top_right', 'bottom_left', 'bottom_right'}
+
+
+@bowling_bp.route('/result/<result_id>/annotation/lane-edges/<int:frame>', methods=['PUT'])
+def save_frame_lane_edges(result_id, frame):
+    """Save per-frame lane edge override.
+
+    Body: {
+        "top_left": [x, y], "top_right": [x, y],
+        "bottom_left": [x, y], "bottom_right": [x, y],
+        "left_edge_points": [[x,y], ...],   # optional
+        "right_edge_points": [[x,y], ...]    # optional
+    }
+    """
+    data = request.get_json()
+    if not data:
+        return jsonify({'error': 'JSON body required'}), 400
+
+    # Validate required corners
+    missing = _LANE_EDGE_REQUIRED_CORNERS - set(data.keys())
+    if missing:
+        return jsonify({'error': f'Missing required corners: {sorted(missing)}'}), 400
+
+    for corner in _LANE_EDGE_REQUIRED_CORNERS:
+        val = data[corner]
+        if not isinstance(val, list) or len(val) != 2:
+            return jsonify({'error': f'{corner} must be an [x, y] array'}), 400
+
+    session = get_db_connection()
+    try:
+        _ensure_annotation_structure(session, result_id)
+
+        frame_str = str(frame)
+        session.execute(sqlalchemy.text("""
+            UPDATE "BowlingResult"
+            SET annotation = jsonb_set(
+                annotation,
+                :path,
+                CAST(:value AS jsonb)
+            ),
+            updated_at = now()
+            WHERE id = :id
+        """), {
+            "id": result_id,
+            "path": '{frame_lane_edges,' + frame_str + '}',
+            "value": json.dumps(data),
+        })
+        session.commit()
+        return jsonify({'status': 'saved'}), 200
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error saving lane edges: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()
+
+
+@bowling_bp.route('/result/<result_id>/annotation/lane-edges/<int:frame>', methods=['DELETE'])
+def delete_frame_lane_edges(result_id, frame):
+    """Remove per-frame lane edge override."""
+    session = get_db_connection()
+    try:
+        frame_str = str(frame)
+        session.execute(sqlalchemy.text("""
+            UPDATE "BowlingResult"
+            SET annotation = annotation #- :path,
+                updated_at = now()
+            WHERE id = :id
+              AND annotation ? 'frame_lane_edges'
+        """), {
+            "id": result_id,
+            "path": '{frame_lane_edges,' + frame_str + '}',
+        })
+        session.commit()
+        return jsonify({'status': 'deleted'}), 200
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error deleting lane edges: {e}")
         return jsonify({'error': str(e)}), 500
     finally:
         session.close()
