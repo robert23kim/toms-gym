@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config';
@@ -10,6 +10,7 @@ import { useAnnotation } from '../hooks/useAnnotation';
 import { useEdgeEditor } from '../hooks/useEdgeEditor';
 import { useFrameNavigation } from '../hooks/useFrameNavigation';
 import { useCropView } from '../hooks/useCropView';
+import { TrajectoryCanvas } from '../components/TrajectoryCanvas';
 import type { FrameData, FrameMarkers } from '../lib/types';
 
 export default function AnnotationWorkspace() {
@@ -22,6 +23,8 @@ export default function AnnotationWorkspace() {
   const [showHelp, setShowHelp] = useState(false);
   const [editMode, setEditMode] = useState<'NORMAL' | 'EDGE_EDIT'>('NORMAL');
   const [cropEnabled, setCropEnabled] = useState(false);
+  const trajectoryCanvasRef = useRef<HTMLCanvasElement>(null);
+  const [savingTrajectory, setSavingTrajectory] = useState(false);
 
   // Fetch result ID from attempt ID
   useEffect(() => {
@@ -160,6 +163,19 @@ export default function AnnotationWorkspace() {
     setRadius(r => Math.max(5, Math.min(100, r + delta)));
   }, []);
 
+  const saveTrajectory = useCallback(async () => {
+    if (!trajectoryCanvasRef.current || !resultId) return;
+    setSavingTrajectory(true);
+    try {
+      const image = trajectoryCanvasRef.current.toDataURL('image/png');
+      await axios.post(`${API_URL}/bowling/result/${resultId}/annotation/trajectory`, { image });
+    } catch (err) {
+      console.error('Failed to save trajectory:', err);
+    } finally {
+      setSavingTrajectory(false);
+    }
+  }, [resultId]);
+
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
@@ -270,6 +286,27 @@ export default function AnnotationWorkspace() {
             onClearMarker={handleClearMarker}
             onGoToFrame={goTo}
           />
+
+          {/* Trajectory view */}
+          <div className="border-t border-gray-700 pt-3">
+            <TrajectoryCanvas
+              annotations={annotation?.ball_annotations || {}}
+              laneEdges={edgeEditor.effectiveEdges || annotation?.lane_edges || null}
+              frameMarkers={annotation?.frame_markers}
+              totalFrames={frameData?.total_frames || 0}
+              currentFrame={currentFrame}
+              width={230}
+              height={400}
+              canvasRef={trajectoryCanvasRef}
+            />
+            <button
+              onClick={saveTrajectory}
+              disabled={savingTrajectory}
+              className="mt-2 w-full px-3 py-1.5 bg-blue-600 hover:bg-blue-500 disabled:bg-gray-600 rounded text-sm font-medium"
+            >
+              {savingTrajectory ? 'Saving...' : 'Save Trajectory'}
+            </button>
+          </div>
         </div>
       </div>
 

@@ -4,6 +4,7 @@ Bowling Routes for Tom's Gym
 Handles bowling video uploads, result retrieval, and competition leaderboards.
 """
 
+import base64
 import json
 import os
 import uuid
@@ -679,6 +680,60 @@ def save_markers(result_id):
     except Exception as e:
         session.rollback()
         logger.error(f"Error saving markers: {e}")
+        return jsonify({'error': str(e)}), 500
+    finally:
+        session.close()
+
+
+@bowling_bp.route('/result/<result_id>/annotation/trajectory', methods=['POST'])
+def save_annotation_trajectory(result_id):
+    """Save annotation trajectory PNG to GCS."""
+    data = request.get_json()
+    if not data or 'image' not in data:
+        return jsonify({'error': 'image field required'}), 400
+
+    session = get_db_connection()
+    try:
+        # Get attempt_id for GCS path
+        row = session.execute(sqlalchemy.text(
+            'SELECT attempt_id FROM "BowlingResult" WHERE id = :id'
+        ), {"id": result_id}).fetchone()
+        if not row:
+            return jsonify({'error': 'Result not found'}), 404
+
+        attempt_id = str(row[0])
+
+        # Decode base64 image
+        image_data = data['image']
+        if image_data.startswith('data:'):
+            image_data = image_data.split(',', 1)[1]
+        image_bytes = base64.b64decode(image_data)
+
+        # Upload to GCS
+        gcs_path = f'bowling/{attempt_id}/annotation_trajectory.png'
+        blob = bucket.blob(gcs_path)
+        blob.upload_from_string(image_bytes, content_type='image/png')
+
+        url = f'https://storage.googleapis.com/{bucket.name}/{gcs_path}'
+
+        # Store URL in annotation
+        _ensure_annotation_structure(session, result_id)
+        session.execute(sqlalchemy.text("""
+            UPDATE "BowlingResult"
+            SET annotation = jsonb_set(
+                annotation,
+                '{annotation_trajectory_url}',
+                CAST(:url AS jsonb)
+            ),
+            updated_at = now()
+            WHERE id = :id
+        """), {"id": result_id, "url": json.dumps(url)})
+        session.commit()
+
+        return jsonify({'url': url}), 200
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error saving trajectory: {e}")
         return jsonify({'error': str(e)}), 500
     finally:
         session.close()
