@@ -102,7 +102,7 @@ export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRad
   }, [onRadiusChange]);
 
   return (
-    <div ref={containerRef} className="w-full flex justify-center bg-black">
+    <div ref={containerRef} className="w-full h-full flex justify-center items-center bg-black">
       <canvas
         ref={canvasRef}
         onClick={handleClick}

@@ -138,9 +138,9 @@ export default function AnnotationWorkspace() {
       </div>
 
       {/* Main content */}
-      <div className="flex-1 flex">
+      <div className="flex-1 flex min-h-0">
         {/* Canvas area */}
-        <div className="flex-1 flex items-center justify-center p-1 min-h-0">
+        <div className="flex-1 flex items-center justify-center p-1 min-h-0 h-full">
           {frameError ? (
             <div className="text-center">
               <p className="text-red-400 mb-2">{frameError}</p>
