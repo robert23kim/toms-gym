@@ -108,3 +108,39 @@ export interface BowlingResult {
 }
 
 export type CompetitionStatus = 'upcoming' | 'ongoing' | 'completed';
+
+export interface BallAnnotation {
+  x: number;
+  y: number;
+  radius: number;
+}
+
+export interface FrameMarkers {
+  pin_hit?: number;
+  breakpoint?: number;
+  ball_down?: number;
+  ball_off_deck?: number;
+}
+
+export interface VideoMetadata {
+  fps: number;
+  total_frames: number;
+  width: number;
+  height: number;
+}
+
+export interface Annotation {
+  version: string;
+  video_metadata: VideoMetadata;
+  lane_edges?: LaneEdges;
+  frame_markers: FrameMarkers;
+  ball_annotations: Record<string, BallAnnotation | null>;
+}
+
+export interface FrameData {
+  frames_prefix: string;
+  total_frames: number;
+  fps: number;
+  width: number;
+  height: number;
+}

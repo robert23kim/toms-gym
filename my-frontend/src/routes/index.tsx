@@ -17,6 +17,7 @@ import AuthError from "../pages/AuthError";
 import BowlingUpload from "../pages/BowlingUpload";
 import BowlingResult from "../pages/BowlingResult";
 import BowlingChallenge from "../pages/BowlingChallenge";
+import AnnotationWorkspace from "../pages/AnnotationWorkspace";
 import { Navigate, useParams } from "react-router-dom";
 
 // Redirect component for backward compatibility
@@ -105,6 +106,10 @@ export const routes: RouteObject[] = [
   {
     path: "/bowling/result/:attemptId",
     element: <BowlingResult />,
+  },
+  {
+    path: "/bowling/result/:attemptId/annotate",
+    element: <AnnotationWorkspace />,
   },
   {
     path: "/bowling/challenge/:id",
