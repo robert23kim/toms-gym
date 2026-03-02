@@ -649,6 +649,55 @@ test.describe("Annotation Workspace Page", () => {
     expect(data2.frame_lane_edges?.["0"]).toBeUndefined();
   });
 
+  test("trajectory panel appears in workspace", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    // "Save Trajectory" button should be visible in the side panel
+    await expect(page.getByRole("button", { name: /save trajectory/i })).toBeVisible();
+
+    // Either a trajectory canvas (if lane edges exist) or a placeholder should be visible
+    const trajectoryPlaceholder = page.locator('[data-testid="trajectory-placeholder"]');
+    const canvasCount = await page.locator("canvas").count();
+
+    // At minimum: 1 frame canvas. If lane edges exist: 2 canvases (frame + trajectory)
+    // If no lane edges: 1 canvas + placeholder div
+    if (canvasCount >= 2) {
+      // Lane edges available — trajectory canvas rendered
+      const trajectoryCanvas = page.locator("canvas").nth(1);
+      const trajBox = await trajectoryCanvas.boundingBox();
+      expect(trajBox).toBeTruthy();
+      expect(trajBox!.width).toBeGreaterThan(0);
+    } else {
+      // No lane edges — placeholder shown
+      await expect(trajectoryPlaceholder).toBeVisible();
+      await expect(page.getByText("No lane edges available")).toBeVisible();
+    }
+  });
+
+  test("save trajectory API endpoint", async () => {
+    test.skip(!resultId, "No completed bowling result available");
+
+    const ctx = await request.newContext();
+
+    // Create a minimal 1x1 white PNG as base64
+    const minimalPng = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg==";
+
+    const resp = await ctx.post(
+      `${API_URL}/bowling/result/${resultId}/annotation/trajectory`,
+      { data: { image: minimalPng } }
+    );
+    expect(resp.ok()).toBeTruthy();
+
+    const data = await resp.json();
+    expect(data.url).toBeDefined();
+    expect(data.url).toContain("annotation_trajectory.png");
+  });
+
   test("canvas renders without console errors", async ({ page }) => {
     test.skip(!attemptId, "No completed bowling result available");
     test.skip(!hasFrames, "No extracted frames");
