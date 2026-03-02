@@ -8,6 +8,13 @@ interface EdgeState {
   isDragging: boolean;
 }
 
+export interface CropRegionProp {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+}
+
 interface Props {
   image: HTMLImageElement | null;
   ball: BallAnnotation | null | undefined; // null = "no ball", undefined = not annotated
@@ -22,20 +29,40 @@ interface Props {
   onEdgeMouseUp?: () => void;
   onEdgeRightClick?: (x: number, y: number) => void;
   onEdgeShiftClick?: (x: number, y: number) => void;
+  cropRegion?: CropRegionProp;
 }
 
 export function FrameCanvas({
   image, ball, laneEdges, radius, onBallClick, onRadiusChange,
   editMode = 'NORMAL', edgeState, onEdgeMouseDown, onEdgeMouseMove, onEdgeMouseUp,
-  onEdgeRightClick, onEdgeShiftClick,
+  onEdgeRightClick, onEdgeShiftClick, cropRegion,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const getScale = useCallback(() => {
-    if (!image || !canvasRef.current) return 1;
-    return canvasRef.current.width / image.naturalWidth;
-  }, [image]);
+  // Convert frame coordinate to display (canvas) coordinate
+  const frameToDisplay = useCallback((fx: number, fy: number) => {
+    const canvas = canvasRef.current;
+    if (!canvas) return { x: fx, y: fy };
+    if (cropRegion) {
+      return {
+        x: (fx - cropRegion.x) * (canvas.width / cropRegion.w),
+        y: (fy - cropRegion.y) * (canvas.height / cropRegion.h),
+      };
+    }
+    if (!image) return { x: fx, y: fy };
+    const scale = canvas.width / image.naturalWidth;
+    return { x: fx * scale, y: fy * scale };
+  }, [image, cropRegion]);
+
+  // Scale factor for sizes (radius, font, etc.)
+  const getDisplayScale = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return 1;
+    if (cropRegion) return canvas.width / cropRegion.w;
+    if (!image) return 1;
+    return canvas.width / image.naturalWidth;
+  }, [image, cropRegion]);
 
   // Render frame + overlays
   useEffect(() => {
@@ -54,9 +81,18 @@ export function FrameCanvas({
       canvas.height = image.naturalHeight * scale;
     }
 
-    const scale = getScale();
+    const scale = getDisplayScale();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    // Draw image (cropped or full)
+    if (cropRegion) {
+      ctx.drawImage(image, cropRegion.x, cropRegion.y, cropRegion.w, cropRegion.h, 0, 0, canvas.width, canvas.height);
+    } else {
+      ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    }
+
+    // Helper to convert frame coords to display coords
+    const toD = (fx: number, fy: number) => frameToDisplay(fx, fy);
 
     // Determine which edges to draw
     const edgesToDraw = (editMode === 'EDGE_EDIT' && edgeState?.edges) ? edgeState.edges : laneEdges;
@@ -68,28 +104,34 @@ export function FrameCanvas({
       ctx.beginPath();
 
       // Top edge: top_left -> top_right
-      ctx.moveTo(edgesToDraw.top_left[0] * scale, edgesToDraw.top_left[1] * scale);
-      ctx.lineTo(edgesToDraw.top_right[0] * scale, edgesToDraw.top_right[1] * scale);
+      const tl = toD(edgesToDraw.top_left[0], edgesToDraw.top_left[1]);
+      const tr = toD(edgesToDraw.top_right[0], edgesToDraw.top_right[1]);
+      ctx.moveTo(tl.x, tl.y);
+      ctx.lineTo(tr.x, tr.y);
 
       // Right edge: top_right -> bottom_right (polyline if available)
       if (edgesToDraw.right_edge_points?.length) {
         for (const [px, py] of edgesToDraw.right_edge_points) {
-          ctx.lineTo(px * scale, py * scale);
+          const d = toD(px, py);
+          ctx.lineTo(d.x, d.y);
         }
       } else {
-        ctx.lineTo(edgesToDraw.bottom_right[0] * scale, edgesToDraw.bottom_right[1] * scale);
+        const br = toD(edgesToDraw.bottom_right[0], edgesToDraw.bottom_right[1]);
+        ctx.lineTo(br.x, br.y);
       }
 
       // Bottom edge: bottom_right -> bottom_left
-      ctx.lineTo(edgesToDraw.bottom_left[0] * scale, edgesToDraw.bottom_left[1] * scale);
+      const bl = toD(edgesToDraw.bottom_left[0], edgesToDraw.bottom_left[1]);
+      ctx.lineTo(bl.x, bl.y);
 
       // Left edge: bottom_left -> top_left (polyline if available, reversed)
       if (edgesToDraw.left_edge_points?.length) {
         for (const [px, py] of [...edgesToDraw.left_edge_points].reverse()) {
-          ctx.lineTo(px * scale, py * scale);
+          const d = toD(px, py);
+          ctx.lineTo(d.x, d.y);
         }
       } else {
-        ctx.lineTo(edgesToDraw.top_left[0] * scale, edgesToDraw.top_left[1] * scale);
+        ctx.lineTo(tl.x, tl.y);
       }
 
       ctx.closePath();
@@ -110,11 +152,10 @@ export function FrameCanvas({
 
       for (const corner of corners) {
         const isSelected = selected?.type === 'corner' && selected.key === corner.key;
-        const cx = corner.pt[0] * scale;
-        const cy = corner.pt[1] * scale;
+        const d = toD(corner.pt[0], corner.pt[1]);
 
         ctx.beginPath();
-        ctx.arc(cx, cy, 8, 0, Math.PI * 2);
+        ctx.arc(d.x, d.y, 8, 0, Math.PI * 2);
         ctx.fillStyle = isSelected ? 'yellow' : 'cyan';
         ctx.fill();
         ctx.strokeStyle = 'white';
@@ -127,11 +168,10 @@ export function FrameCanvas({
         const pts = side === 'left' ? edgesToDraw.left_edge_points : edgesToDraw.right_edge_points;
         if (!pts) continue;
         for (let i = 0; i < pts.length; i++) {
-          const px = pts[i][0] * scale;
-          const py = pts[i][1] * scale;
+          const d = toD(pts[i][0], pts[i][1]);
 
           ctx.beginPath();
-          ctx.arc(px, py, 6, 0, Math.PI * 2);
+          ctx.arc(d.x, d.y, 6, 0, Math.PI * 2);
           ctx.fillStyle = 'cyan';
           ctx.fill();
         }
@@ -140,51 +180,58 @@ export function FrameCanvas({
 
     // Draw ball annotation
     if (ball) {
-      const contactX = ball.x * scale;
-      const contactY = ball.y * scale;
+      const contact = toD(ball.x, ball.y);
       const br = ball.radius * scale;
-      const centerY = contactY - br; // Circle center above contact point
+      const centerY = contact.y - br; // Circle center above contact point
 
       // Ball circle (green outline)
       ctx.strokeStyle = '#00ff00';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(contactX, centerY, br, 0, Math.PI * 2);
+      ctx.arc(contact.x, centerY, br, 0, Math.PI * 2);
       ctx.stroke();
 
       // Contact point dot (solid red, 3px)
       ctx.fillStyle = '#ff0000';
       ctx.beginPath();
-      ctx.arc(contactX, contactY, 3, 0, Math.PI * 2);
+      ctx.arc(contact.x, contact.y, 3, 0, Math.PI * 2);
       ctx.fill();
 
       // Contact point crosshairs (red, ±10px)
       ctx.strokeStyle = '#ff0000';
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(contactX - 10, contactY);
-      ctx.lineTo(contactX + 10, contactY);
-      ctx.moveTo(contactX, contactY - 10);
-      ctx.lineTo(contactX, contactY + 10);
+      ctx.moveTo(contact.x - 10, contact.y);
+      ctx.lineTo(contact.x + 10, contact.y);
+      ctx.moveTo(contact.x, contact.y - 10);
+      ctx.lineTo(contact.x, contact.y + 10);
       ctx.stroke();
     } else if (ball === null) {
       ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
       ctx.font = `${20 * scale}px sans-serif`;
       ctx.fillText('NO BALL', 10 * scale, 30 * scale);
     }
-  }, [image, ball, laneEdges, getScale, editMode, edgeState]);
+  }, [image, ball, laneEdges, getDisplayScale, frameToDisplay, editMode, edgeState, cropRegion]);
 
-  // Convert mouse event to image coordinates
+  // Convert mouse event to image (frame) coordinates
   const toImageCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas || !image) return null;
     const rect = canvas.getBoundingClientRect();
-    const scale = getScale();
+    const displayX = e.clientX - rect.left;
+    const displayY = e.clientY - rect.top;
+    if (cropRegion) {
+      return {
+        x: Math.round(cropRegion.x + (displayX / canvas.width) * cropRegion.w),
+        y: Math.round(cropRegion.y + (displayY / canvas.height) * cropRegion.h),
+      };
+    }
+    const scale = canvas.width / image.naturalWidth;
     return {
-      x: Math.round((e.clientX - rect.left) / scale),
-      y: Math.round((e.clientY - rect.top) / scale),
+      x: Math.round(displayX / scale),
+      y: Math.round(displayY / scale),
     };
-  }, [image, getScale]);
+  }, [image, cropRegion]);
 
   const handleClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (editMode === 'EDGE_EDIT') return; // handled by mousedown/up

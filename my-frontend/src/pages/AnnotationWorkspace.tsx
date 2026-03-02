@@ -9,6 +9,7 @@ import { StatusBar } from '../components/StatusBar';
 import { useAnnotation } from '../hooks/useAnnotation';
 import { useEdgeEditor } from '../hooks/useEdgeEditor';
 import { useFrameNavigation } from '../hooks/useFrameNavigation';
+import { useCropView } from '../hooks/useCropView';
 import type { FrameData, FrameMarkers } from '../lib/types';
 
 export default function AnnotationWorkspace() {
@@ -20,6 +21,7 @@ export default function AnnotationWorkspace() {
   const [error, setError] = useState<string>('');
   const [showHelp, setShowHelp] = useState(false);
   const [editMode, setEditMode] = useState<'NORMAL' | 'EDGE_EDIT'>('NORMAL');
+  const [cropEnabled, setCropEnabled] = useState(false);
 
   // Fetch result ID from attempt ID
   useEffect(() => {
@@ -58,6 +60,9 @@ export default function AnnotationWorkspace() {
     onDelete: deleteLaneEdges,
   });
 
+  const effectiveEdges = editMode === 'EDGE_EDIT' ? edgeEditor.effectiveEdges : annotation?.lane_edges;
+  const cropView = useCropView(effectiveEdges, frameData?.width || 1920, frameData?.height || 1080);
+
   const handleSetMarker = useCallback((name: string, frame: number) => {
     setMarkers({ ...annotation?.frame_markers, [name]: frame } as FrameMarkers);
   }, [annotation, setMarkers]);
@@ -94,10 +99,34 @@ export default function AnnotationWorkspace() {
           }
           break;
         }
-        case 'p': pause(); handleSetMarker('pin_hit', currentFrame); break;
-        case 'b': pause(); handleSetMarker('breakpoint', currentFrame); break;
-        case 'g': pause(); handleSetMarker('ball_down', currentFrame); break;
-        case 'o': pause(); handleSetMarker('ball_off_deck', currentFrame); break;
+        case 'p': {
+          pause();
+          const key = 'pin_hit';
+          if (annotation?.frame_markers?.[key] === currentFrame) handleClearMarker(key);
+          else handleSetMarker(key, currentFrame);
+          break;
+        }
+        case 'b': {
+          pause();
+          const key = 'breakpoint';
+          if (annotation?.frame_markers?.[key] === currentFrame) handleClearMarker(key);
+          else handleSetMarker(key, currentFrame);
+          break;
+        }
+        case 'g': {
+          pause();
+          const key = 'ball_down';
+          if (annotation?.frame_markers?.[key] === currentFrame) handleClearMarker(key);
+          else handleSetMarker(key, currentFrame);
+          break;
+        }
+        case 'o': {
+          pause();
+          const key = 'ball_off_deck';
+          if (annotation?.frame_markers?.[key] === currentFrame) handleClearMarker(key);
+          else handleSetMarker(key, currentFrame);
+          break;
+        }
         case 'e':
           setEditMode(m => {
             const next = m === 'NORMAL' ? 'EDGE_EDIT' : 'NORMAL';
@@ -108,6 +137,11 @@ export default function AnnotationWorkspace() {
         case 'r':
           if (editMode === 'EDGE_EDIT') edgeEditor.resetEdges();
           break;
+        case 'z': setCropEnabled(prev => !prev); break;
+        case '+': case '=': case ']': setRadius(r => Math.min(100, r + 3)); break;
+        case '-': case '_': case '[': setRadius(r => Math.max(5, r - 3)); break;
+        case 'Home': e.preventDefault(); goTo(0); break;
+        case 'End': e.preventDefault(); goTo((frameData?.total_frames || 1) - 1); break;
         case 'f': cycleSpeed(); break;
         case 'h': setShowHelp(prev => !prev); break;
       }
@@ -115,7 +149,7 @@ export default function AnnotationWorkspace() {
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [currentFrame, annotation, next, prev, jumpForward, jumpBack, setBall, clearBall, handleSetMarker, togglePlay, pause, cycleSpeed, isPlaying, editMode, edgeEditor]);
+  }, [currentFrame, annotation, next, prev, jumpForward, jumpBack, setBall, clearBall, handleSetMarker, handleClearMarker, togglePlay, pause, cycleSpeed, isPlaying, editMode, edgeEditor, goTo, frameData]);
 
   const handleBallClick = useCallback((x: number, y: number) => {
     pause();
@@ -222,6 +256,7 @@ export default function AnnotationWorkspace() {
               onEdgeMouseUp={edgeEditor.handleMouseUp}
               onEdgeRightClick={edgeEditor.handleRightClick}
               onEdgeShiftClick={edgeEditor.handleShiftClick}
+              cropRegion={cropEnabled && cropView ? { x: cropView.cropX, y: cropView.cropY, w: cropView.cropW, h: cropView.cropH } : undefined}
             />
           )}
         </div>

@@ -238,6 +238,59 @@ describe('FrameCanvas', () => {
     expect(handleCalls.length).toBe(4);
   });
 
+  test('drawImage called with crop source rect when cropRegion set', () => {
+    const image = createMockImage();
+    const cropRegion = { x: 100, y: 50, w: 400, h: 300 };
+
+    render(
+      <FrameCanvas
+        image={image}
+        ball={undefined}
+        radius={25}
+        onBallClick={noop}
+        onRadiusChange={noop}
+        cropRegion={cropRegion}
+      />
+    );
+
+    // drawImage should be called with 9 args (source rect + dest rect)
+    const drawCalls = mockCtx.drawImage.mock.calls;
+    expect(drawCalls.length).toBe(1);
+    const call = drawCalls[0];
+    // drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh)
+    expect(call[0]).toBe(image);
+    expect(call[1]).toBe(100);  // sx = cropRegion.x
+    expect(call[2]).toBe(50);   // sy = cropRegion.y
+    expect(call[3]).toBe(400);  // sw = cropRegion.w
+    expect(call[4]).toBe(300);  // sh = cropRegion.h
+    expect(call[5]).toBe(0);    // dx
+    expect(call[6]).toBe(0);    // dy
+  });
+
+  test('drawImage called with full image when cropRegion not set', () => {
+    const image = createMockImage();
+
+    render(
+      <FrameCanvas
+        image={image}
+        ball={undefined}
+        radius={25}
+        onBallClick={noop}
+        onRadiusChange={noop}
+      />
+    );
+
+    // drawImage should be called with 4 args (img, 0, 0, canvasW, canvasH)
+    const drawCalls = mockCtx.drawImage.mock.calls;
+    expect(drawCalls.length).toBe(1);
+    const call = drawCalls[0];
+    expect(call[0]).toBe(image);
+    expect(call[1]).toBe(0);
+    expect(call[2]).toBe(0);
+    // drawImage(img, 0, 0, canvasW, canvasH) = 5 args (no source rect)
+    expect(call.length).toBe(5);
+  });
+
   test('cursor class is cursor-crosshair in normal mode, cursor-grab in edge mode', () => {
     const image = createMockImage();
 
