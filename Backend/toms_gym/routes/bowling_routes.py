@@ -393,10 +393,29 @@ def get_frames(result_id):
         video_url = row[2]  # Raw upload video (clean, no debug overlays)
         attempt_id = str(row[3])
 
-        # If frames already extracted, return cached metadata
+        # If frames already extracted, return metadata (optionally refresh from GCS)
         if frames_url:
             annotation = row[4] or {}
             meta = annotation.get('video_metadata', {})
+            refresh = request.args.get('refresh') == 'true'
+
+            if refresh:
+                # Count actual frames in GCS to fix stale metadata
+                blobs = list(bucket.list_blobs(prefix=frames_url))
+                actual_count = len([b for b in blobs if b.name.endswith('.jpg')])
+                if actual_count > 0 and actual_count != meta.get('total_frames', 0):
+                    meta['total_frames'] = actual_count
+                    annotation['video_metadata'] = meta
+                    session.execute(sqlalchemy.text("""
+                        UPDATE "BowlingResult"
+                        SET annotation = :annotation, updated_at = now()
+                        WHERE id = :id
+                    """), {
+                        "id": result_id,
+                        "annotation": json.dumps(annotation),
+                    })
+                    session.commit()
+
             return jsonify({
                 'frames_prefix': frames_url,
                 'total_frames': meta.get('total_frames', 0),

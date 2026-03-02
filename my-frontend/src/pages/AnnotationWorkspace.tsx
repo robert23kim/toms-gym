@@ -29,7 +29,7 @@ export default function AnnotationWorkspace() {
   useEffect(() => {
     if (!resultId) return;
     setLoading(true);
-    axios.get(`${API_URL}/bowling/result/${resultId}/frames`)
+    axios.get(`${API_URL}/bowling/result/${resultId}/frames?refresh=true`)
       .then(res => {
         setFrameData(res.data);
         setLoading(false);
@@ -41,8 +41,11 @@ export default function AnnotationWorkspace() {
   }, [resultId]);
 
   const { annotation, saving, setBall, clearBall, setMarkers } = useAnnotation(resultId);
-  const { currentFrame, currentImage, imageLoading, frameError, goTo, next, prev, jumpForward, jumpBack } =
-    useFrameNavigation(resultId, frameData?.total_frames || 0);
+  const {
+    currentFrame, currentImage, imageLoading, frameError,
+    goTo, next, prev, jumpForward, jumpBack,
+    isPlaying, playbackSpeed, pause, togglePlay, cycleSpeed,
+  } = useFrameNavigation(resultId, frameData?.total_frames || 0, frameData?.fps || 30);
 
   const handleSetMarker = useCallback((name: string, frame: number) => {
     setMarkers({ ...annotation?.frame_markers, [name]: frame } as FrameMarkers);
@@ -59,14 +62,17 @@ export default function AnnotationWorkspace() {
       if (e.target instanceof HTMLInputElement) return;
 
       switch (e.key) {
-        case 'd': case 'ArrowRight': next(); break;
-        case 'a': case 'ArrowLeft': prev(); break;
-        case 'w': case 'ArrowUp': e.preventDefault(); jumpForward(); break;
-        case 's': case 'ArrowDown': e.preventDefault(); jumpBack(); break;
+        case ' ': e.preventDefault(); togglePlay(); break;
+        case 'd': case 'ArrowRight': pause(); next(); break;
+        case 'a': case 'ArrowLeft': pause(); prev(); break;
+        case 'w': case 'ArrowUp': e.preventDefault(); pause(); jumpForward(); break;
+        case 's': case 'ArrowDown': e.preventDefault(); pause(); jumpBack(); break;
         case 'n':
+          pause();
           setBall(currentFrame, null); // Mark "no ball visible"
           break;
         case 'Delete': case 'Backspace':
+          pause();
           clearBall(currentFrame); // Remove annotation entirely
           break;
         case 'c': {
@@ -77,20 +83,22 @@ export default function AnnotationWorkspace() {
           }
           break;
         }
-        case 'p': handleSetMarker('pin_hit', currentFrame); break;
-        case 'b': handleSetMarker('breakpoint', currentFrame); break;
-        case 'g': handleSetMarker('ball_down', currentFrame); break;
-        case 'o': handleSetMarker('ball_off_deck', currentFrame); break;
+        case 'p': pause(); handleSetMarker('pin_hit', currentFrame); break;
+        case 'b': pause(); handleSetMarker('breakpoint', currentFrame); break;
+        case 'g': pause(); handleSetMarker('ball_down', currentFrame); break;
+        case 'o': pause(); handleSetMarker('ball_off_deck', currentFrame); break;
+        case 'f': cycleSpeed(); break;
       }
     };
 
     window.addEventListener('keydown', handleKey);
     return () => window.removeEventListener('keydown', handleKey);
-  }, [currentFrame, annotation, next, prev, jumpForward, jumpBack, setBall, clearBall, handleSetMarker]);
+  }, [currentFrame, annotation, next, prev, jumpForward, jumpBack, setBall, clearBall, handleSetMarker, togglePlay, pause, cycleSpeed]);
 
   const handleBallClick = useCallback((x: number, y: number) => {
+    pause();
     setBall(currentFrame, { x, y, radius });
-  }, [currentFrame, radius, setBall]);
+  }, [currentFrame, radius, setBall, pause]);
 
   const handleRadiusChange = useCallback((delta: number) => {
     setRadius(r => Math.max(5, Math.min(100, r + delta)));
@@ -131,6 +139,19 @@ export default function AnnotationWorkspace() {
           <h1 className="text-lg font-bold">Annotation</h1>
         </div>
         <div className="flex items-center gap-4 text-sm">
+          <button
+            onClick={togglePlay}
+            className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded text-sm font-medium"
+          >
+            {isPlaying ? '⏸ Pause' : '▶ Play'}
+          </button>
+          <button
+            onClick={cycleSpeed}
+            className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs"
+            title="Playback speed"
+          >
+            {playbackSpeed}x
+          </button>
           <span>Radius: {radius}</span>
           <span>{annotatedCount} / {frameData?.total_frames} annotated</span>
           {saving && <span className="text-yellow-400">Saving...</span>}
@@ -182,7 +203,7 @@ export default function AnnotationWorkspace() {
 
       {/* Keyboard help */}
       <div className="px-4 py-2 text-xs text-gray-500 bg-gray-800 border-t border-gray-700">
-        D/A: next/prev | W/S: +/-10 | Click: mark ball | Scroll: radius | N: no ball | Del: clear | P/B/G/O: markers | C: copy prev
+        Space: play/pause | F: speed | D/A: next/prev | W/S: +/-10 | Click: mark ball | Scroll: radius | N: no ball | Del: clear | P/B/G/O: markers | C: copy prev
       </div>
     </div>
   );
