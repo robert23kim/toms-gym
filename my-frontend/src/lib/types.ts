@@ -86,6 +86,8 @@ export interface LaneEdges {
   top_right: [number, number];
   bottom_left: [number, number];
   bottom_right: [number, number];
+  left_edge_points?: [number, number][];
+  right_edge_points?: [number, number][];
 }
 
 export interface BowlingResult {
@@ -109,6 +111,7 @@ export interface BowlingResult {
 
 export type CompetitionStatus = 'upcoming' | 'ongoing' | 'completed';
 
+/** Ball annotation. x, y = contact point where ball touches lane surface. */
 export interface BallAnnotation {
   x: number;
   y: number;

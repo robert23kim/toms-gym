@@ -45,32 +45,64 @@ export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRad
       ctx.strokeStyle = 'rgba(0, 100, 255, 0.6)';
       ctx.lineWidth = 2;
       ctx.beginPath();
+
+      // Top edge: top_left -> top_right
       ctx.moveTo(laneEdges.top_left[0] * scale, laneEdges.top_left[1] * scale);
       ctx.lineTo(laneEdges.top_right[0] * scale, laneEdges.top_right[1] * scale);
-      ctx.lineTo(laneEdges.bottom_right[0] * scale, laneEdges.bottom_right[1] * scale);
+
+      // Right edge: top_right -> bottom_right (polyline if available)
+      if (laneEdges.right_edge_points?.length) {
+        for (const [px, py] of laneEdges.right_edge_points) {
+          ctx.lineTo(px * scale, py * scale);
+        }
+      } else {
+        ctx.lineTo(laneEdges.bottom_right[0] * scale, laneEdges.bottom_right[1] * scale);
+      }
+
+      // Bottom edge: bottom_right -> bottom_left
       ctx.lineTo(laneEdges.bottom_left[0] * scale, laneEdges.bottom_left[1] * scale);
+
+      // Left edge: bottom_left -> top_left (polyline if available, reversed)
+      if (laneEdges.left_edge_points?.length) {
+        for (const [px, py] of [...laneEdges.left_edge_points].reverse()) {
+          ctx.lineTo(px * scale, py * scale);
+        }
+      } else {
+        ctx.lineTo(laneEdges.top_left[0] * scale, laneEdges.top_left[1] * scale);
+      }
+
       ctx.closePath();
       ctx.stroke();
     }
 
     // Draw ball annotation
     if (ball) {
-      const bx = ball.x * scale;
-      const by = ball.y * scale;
+      const contactX = ball.x * scale;
+      const contactY = ball.y * scale;
       const br = ball.radius * scale;
+      const centerY = contactY - br; // Circle center above contact point
 
+      // Ball circle (green outline)
       ctx.strokeStyle = '#00ff00';
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.arc(bx, by, br, 0, Math.PI * 2);
+      ctx.arc(contactX, centerY, br, 0, Math.PI * 2);
       ctx.stroke();
 
-      // Crosshair
+      // Contact point dot (solid red, 3px)
+      ctx.fillStyle = '#ff0000';
       ctx.beginPath();
-      ctx.moveTo(bx - br, by);
-      ctx.lineTo(bx + br, by);
-      ctx.moveTo(bx, by - br);
-      ctx.lineTo(bx, by + br);
+      ctx.arc(contactX, contactY, 3, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Contact point crosshairs (red, ±10px)
+      ctx.strokeStyle = '#ff0000';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(contactX - 10, contactY);
+      ctx.lineTo(contactX + 10, contactY);
+      ctx.moveTo(contactX, contactY - 10);
+      ctx.lineTo(contactX, contactY + 10);
       ctx.stroke();
     } else if (ball === null) {
       ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';

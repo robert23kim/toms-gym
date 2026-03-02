@@ -5,6 +5,7 @@ import { API_URL } from '../config';
 import { FrameCanvas } from '../components/FrameCanvas';
 import { Timeline } from '../components/Timeline';
 import { MarkerPanel } from '../components/MarkerPanel';
+import { StatusBar } from '../components/StatusBar';
 import { useAnnotation } from '../hooks/useAnnotation';
 import { useFrameNavigation } from '../hooks/useFrameNavigation';
 import type { FrameData, FrameMarkers } from '../lib/types';
@@ -16,6 +17,7 @@ export default function AnnotationWorkspace() {
   const [radius, setRadius] = useState(25);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
+  const [showHelp, setShowHelp] = useState(false);
 
   // Fetch result ID from attempt ID
   useEffect(() => {
@@ -88,6 +90,7 @@ export default function AnnotationWorkspace() {
         case 'g': pause(); handleSetMarker('ball_down', currentFrame); break;
         case 'o': pause(); handleSetMarker('ball_off_deck', currentFrame); break;
         case 'f': cycleSpeed(); break;
+        case 'h': setShowHelp(prev => !prev); break;
       }
     };
 
@@ -127,6 +130,9 @@ export default function AnnotationWorkspace() {
   const annotatedCount = annotation
     ? Object.values(annotation.ball_annotations).filter(v => v !== null && v !== undefined).length
     : 0;
+  const noBallCount = annotation
+    ? Object.values(annotation.ball_annotations).filter(v => v === null).length
+    : 0;
 
   return (
     <div className="h-screen bg-gray-900 text-white flex flex-col overflow-hidden">
@@ -153,10 +159,19 @@ export default function AnnotationWorkspace() {
             {playbackSpeed}x
           </button>
           <span>Radius: {radius}</span>
-          <span>{annotatedCount} / {frameData?.total_frames} annotated</span>
-          {saving && <span className="text-yellow-400">Saving...</span>}
         </div>
       </div>
+
+      <StatusBar
+        currentFrame={currentFrame}
+        totalFrames={frameData?.total_frames || 0}
+        ball={ballForFrame}
+        markers={annotation?.frame_markers || {}}
+        annotatedCount={annotatedCount}
+        noBallCount={noBallCount}
+        editMode="NORMAL"
+        saving={saving}
+      />
 
       {/* Main content */}
       <div className="flex-1 flex min-h-0">
@@ -203,8 +218,63 @@ export default function AnnotationWorkspace() {
 
       {/* Keyboard help */}
       <div className="px-4 py-2 text-xs text-gray-500 bg-gray-800 border-t border-gray-700">
-        Space: play/pause | F: speed | D/A: next/prev | W/S: +/-10 | Click: mark ball | Scroll: radius | N: no ball | Del: clear | P/B/G/O: markers | C: copy prev
+        Space: play/pause | F: speed | D/A: next/prev | W/S: +/-10 | Click: mark ball | Scroll: radius | N: no ball | Del: clear | P/B/G/O: markers | C: copy prev | H: help
       </div>
+
+      {showHelp && (
+        <div className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center" onClick={() => setShowHelp(false)} onKeyDown={() => setShowHelp(false)} data-testid="help-overlay">
+          <div className="max-w-2xl text-white space-y-6 p-8">
+            <h2 className="text-2xl font-bold text-center">Keyboard Shortcuts</h2>
+            <div>
+              <h3 className="text-lg font-semibold text-blue-400 mb-2">Navigation</h3>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <span className="text-gray-400">D / ArrowRight</span><span>Next frame</span>
+                <span className="text-gray-400">A / ArrowLeft</span><span>Previous frame</span>
+                <span className="text-gray-400">W / ArrowUp</span><span>Jump +10 frames</span>
+                <span className="text-gray-400">S / ArrowDown</span><span>Jump -10 frames</span>
+                <span className="text-gray-400">Home</span><span>First frame</span>
+                <span className="text-gray-400">End</span><span>Last frame</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-green-400 mb-2">Ball Annotation</h3>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <span className="text-gray-400">Click</span><span>Place ball at cursor</span>
+                <span className="text-gray-400">Scroll</span><span>Adjust radius</span>
+                <span className="text-gray-400">N</span><span>Mark "no ball visible"</span>
+                <span className="text-gray-400">Delete / Backspace</span><span>Clear annotation</span>
+                <span className="text-gray-400">C</span><span>Copy from previous frame</span>
+                <span className="text-gray-400">+/- or [/]</span><span>Adjust radius by 3</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-yellow-400 mb-2">Markers</h3>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <span className="text-gray-400">P</span><span>Set pin hit</span>
+                <span className="text-gray-400">B</span><span>Set breakpoint</span>
+                <span className="text-gray-400">G</span><span>Set ball down</span>
+                <span className="text-gray-400">O</span><span>Set ball off deck</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-purple-400 mb-2">Playback</h3>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <span className="text-gray-400">Space</span><span>Play / Pause</span>
+                <span className="text-gray-400">F</span><span>Cycle speed (1x / 0.5x / 0.25x)</span>
+              </div>
+            </div>
+            <div>
+              <h3 className="text-lg font-semibold text-orange-400 mb-2">Edge Editing</h3>
+              <div className="grid grid-cols-2 gap-1 text-sm">
+                <span className="text-gray-400">E</span><span>Toggle edge edit mode</span>
+                <span className="text-gray-400">Z</span><span>Toggle cropped lane view</span>
+                <span className="text-gray-400">H</span><span>Show/hide this help</span>
+              </div>
+            </div>
+            <p className="text-center text-gray-500 text-sm">Press any key or click to dismiss</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
