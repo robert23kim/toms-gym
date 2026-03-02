@@ -93,6 +93,19 @@ def run_startup_migrations():
         except Exception as e:
             session.rollback()
             logging.info(f"Lane edge columns migration note: {e}")
+
+        # Add annotation and frames_url columns (migration 006)
+        try:
+            session.execute(sqlalchemy.text("""
+                ALTER TABLE "BowlingResult"
+                    ADD COLUMN IF NOT EXISTS annotation JSONB,
+                    ADD COLUMN IF NOT EXISTS frames_url TEXT
+            """))
+            session.commit()
+            logging.info("Annotation columns migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Annotation columns migration note: {e}")
         finally:
             session.close()
     except Exception as e:
