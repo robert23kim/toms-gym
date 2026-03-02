@@ -205,7 +205,7 @@ test.describe("Annotation Workspace Page", () => {
     await expect(canvas).toBeVisible({ timeout: 15_000 });
 
     // Frame counter should show "Frame 1 / N"
-    await expect(page.getByText(/Frame 1 \//)).toBeVisible();
+    await expect(page.locator('[data-testid="status-bar"]').getByText(/Frame 1 \//)).toBeVisible();
 
     // Keyboard help bar should be visible
     await expect(page.getByText(/next\/prev/i)).toBeVisible();
@@ -232,28 +232,30 @@ test.describe("Annotation Workspace Page", () => {
     });
     await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
 
+    const statusBar = page.locator('[data-testid="status-bar"]');
+
     // Should start at Frame 1
-    await expect(page.getByText(/Frame 1 \//)).toBeVisible();
+    await expect(statusBar.getByText(/Frame 1 \//)).toBeVisible();
 
     // Press 'd' to go to next frame
     await page.keyboard.press("d");
-    await expect(page.getByText(/Frame 2 \//)).toBeVisible();
+    await expect(statusBar.getByText(/Frame 2 \//)).toBeVisible();
 
     // Press 'a' to go back
     await page.keyboard.press("a");
-    await expect(page.getByText(/Frame 1 \//)).toBeVisible();
+    await expect(statusBar.getByText(/Frame 1 \//)).toBeVisible();
 
     // Press ArrowRight to go forward
     await page.keyboard.press("ArrowRight");
-    await expect(page.getByText(/Frame 2 \//)).toBeVisible();
+    await expect(statusBar.getByText(/Frame 2 \//)).toBeVisible();
 
     // Press 'w' to jump forward 10
     await page.keyboard.press("w");
-    await expect(page.getByText(/Frame 12 \//)).toBeVisible();
+    await expect(statusBar.getByText(/Frame 12 \//)).toBeVisible();
 
     // Press 's' to jump back 10
     await page.keyboard.press("s");
-    await expect(page.getByText(/Frame 2 \//)).toBeVisible();
+    await expect(statusBar.getByText(/Frame 2 \//)).toBeVisible();
   });
 
   test("canvas click creates ball annotation", async ({ page }) => {
@@ -306,7 +308,7 @@ test.describe("Annotation Workspace Page", () => {
 
     // Navigate to frame 2 (so we don't conflict with previous test)
     await page.keyboard.press("d");
-    await expect(page.getByText(/Frame 2 \//)).toBeVisible();
+    await expect(page.locator('[data-testid="status-bar"]').getByText(/Frame 2 \//)).toBeVisible();
 
     // Press 'n' to mark "no ball visible"
     await page.keyboard.press("n");
@@ -389,7 +391,7 @@ test.describe("Annotation Workspace Page", () => {
     await page.waitForTimeout(2000);
 
     // Note the current frame text
-    const frameText = await page.getByText(/Frame \d+ \//).textContent();
+    const frameText = await page.locator('[data-testid="status-bar"]').getByText(/Frame \d+ \//).textContent();
 
     // Refresh the page
     await page.reload();
@@ -402,9 +404,283 @@ test.describe("Annotation Workspace Page", () => {
     await page.waitForTimeout(500);
 
     // The annotation count should be > 0 (persisted from before refresh)
-    const countText = await page.getByText(/\d+ \/ \d+ annotated/).textContent();
-    const count = parseInt(countText?.match(/(\d+) \//)?.[1] || "0");
+    const statusBar = page.locator('[data-testid="status-bar"]');
+    const annotatedText = await statusBar.getByText(/Annotated: \d+/).textContent();
+    const count = parseInt(annotatedText?.match(/Annotated: (\d+)/)?.[1] || "0");
     expect(count).toBeGreaterThan(0);
+  });
+
+  test("help overlay toggle via H key", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    // Press 'h' to open help overlay
+    await page.keyboard.press("h");
+    const overlay = page.locator('[data-testid="help-overlay"]');
+    await expect(overlay).toBeVisible({ timeout: 2_000 });
+    await expect(page.getByText("Keyboard Shortcuts")).toBeVisible();
+
+    // Press 'h' again to dismiss (the overlay listens for clicks/keydown)
+    await overlay.click();
+    await expect(overlay).not.toBeVisible({ timeout: 2_000 });
+  });
+
+  test("StatusBar shows frame info and mode badge", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    const statusBar = page.locator('[data-testid="status-bar"]');
+    await expect(statusBar).toBeVisible();
+    await expect(statusBar.getByText(/Frame 1 \//)).toBeVisible();
+    await expect(statusBar.getByText("NORMAL")).toBeVisible();
+  });
+
+  test("edge mode toggle via E key", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    const statusBar = page.locator('[data-testid="status-bar"]');
+    await expect(statusBar.getByText("NORMAL")).toBeVisible();
+
+    // Press 'e' to enter edge edit mode
+    await page.keyboard.press("e");
+    await expect(statusBar.getByText("EDGE EDIT")).toBeVisible({ timeout: 2_000 });
+
+    // Press 'e' again to exit
+    await page.keyboard.press("e");
+    await expect(statusBar.getByText("NORMAL")).toBeVisible({ timeout: 2_000 });
+  });
+
+  test("edge mode disables ball click", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    const statusBar = page.locator('[data-testid="status-bar"]');
+
+    // Navigate to a clean frame to avoid interference
+    await page.keyboard.press("d");
+    await page.keyboard.press("d");
+    await page.keyboard.press("d");
+    await expect(statusBar.getByText(/Frame 4 \//)).toBeVisible();
+
+    // Enter edge mode
+    await page.keyboard.press("e");
+    await expect(statusBar.getByText("EDGE EDIT")).toBeVisible({ timeout: 2_000 });
+
+    // Click canvas center
+    const canvas = page.locator("canvas");
+    const box = await canvas.boundingBox();
+    if (!box) { test.skip(true, "Canvas has no bounding box"); return; }
+    await canvas.click({ position: { x: box.width / 2, y: box.height / 2 } });
+    await page.waitForTimeout(1000);
+
+    // Frame 4 indicator should NOT be green (ball annotation should be blocked in edge mode)
+    const frame4 = page.locator('[title="Frame 4"]');
+    const classes = await frame4.getAttribute("class");
+    expect(classes).not.toContain("bg-green-500");
+
+    // Exit edge mode
+    await page.keyboard.press("e");
+  });
+
+  test("crop view toggle via Z key", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+
+    const canvas = page.locator("canvas");
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+
+    // Press 'z' to enable crop view
+    await page.keyboard.press("z");
+    await page.waitForTimeout(500);
+    await expect(canvas).toBeVisible();
+    const box1 = await canvas.boundingBox();
+    expect(box1).toBeTruthy();
+    expect(box1!.width).toBeGreaterThan(0);
+
+    // Press 'z' again to disable crop view
+    await page.keyboard.press("z");
+    await page.waitForTimeout(500);
+    await expect(canvas).toBeVisible();
+    const box2 = await canvas.boundingBox();
+    expect(box2).toBeTruthy();
+    expect(box2!.width).toBeGreaterThan(0);
+  });
+
+  test("marker toggle via P key", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    // Navigate to frame 3
+    await page.keyboard.press("d");
+    await page.keyboard.press("d");
+    await page.keyboard.press("d");
+    await expect(page.locator('[data-testid="status-bar"]').getByText(/Frame 4 \//)).toBeVisible();
+
+    // Press 'p' to set pin_hit marker on frame 3 (0-indexed), displayed as 4
+    await page.keyboard.press("p");
+    await page.waitForTimeout(1000);
+
+    const pinHitRow = page.locator("text=Pin Hit").locator("..");
+    await expect(pinHitRow.getByText("4")).toBeVisible({ timeout: 2_000 });
+
+    // Press 'p' again on same frame to toggle it off
+    await page.keyboard.press("p");
+    await page.waitForTimeout(1000);
+    await expect(pinHitRow.getByText("---")).toBeVisible({ timeout: 2_000 });
+  });
+
+  test("radius keyboard adjustment with ] and [", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    // Read current radius (default is 25)
+    const radiusText = page.getByText(/Radius: \d+/);
+    await expect(radiusText).toBeVisible();
+    const before = await radiusText.textContent();
+    const radiusBefore = parseInt(before!.match(/Radius: (\d+)/)![1]);
+
+    // Press ']' to increase radius by 3
+    await page.keyboard.press("]");
+    await expect(page.getByText(`Radius: ${radiusBefore + 3}`)).toBeVisible({ timeout: 2_000 });
+
+    // Press '[' to decrease radius by 3
+    await page.keyboard.press("[");
+    await expect(page.getByText(`Radius: ${radiusBefore}`)).toBeVisible({ timeout: 2_000 });
+  });
+
+  test("Home/End navigation", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    await expect(page.locator("canvas")).toBeVisible({ timeout: 15_000 });
+
+    const statusBar = page.locator('[data-testid="status-bar"]');
+
+    // Navigate away from frame 1
+    await page.keyboard.press("d");
+    await page.keyboard.press("d");
+    await page.keyboard.press("d");
+    await expect(statusBar.getByText(/Frame 4 \//)).toBeVisible();
+
+    // Press Home to go to first frame
+    await page.keyboard.press("Home");
+    await expect(statusBar.getByText(/Frame 1 \//)).toBeVisible({ timeout: 2_000 });
+
+    // Press End to go to last frame
+    await page.keyboard.press("End");
+    await page.waitForTimeout(500);
+
+    // Verify we're at the last frame: the displayed number should match total
+    const frameText = await statusBar.getByText(/Frame \d+ \/ \d+/).textContent();
+    const match = frameText!.match(/Frame (\d+) \/ (\d+)/);
+    expect(match).toBeTruthy();
+    expect(match![1]).toBe(match![2]); // current frame should equal total
+  });
+
+  test("lane edges API CRUD", async () => {
+    test.skip(!resultId, "No completed bowling result available");
+
+    const ctx = await request.newContext();
+
+    const edges = {
+      top_left: [100, 100],
+      top_right: [200, 100],
+      bottom_left: [100, 500],
+      bottom_right: [200, 500],
+    };
+
+    // PUT lane edges on frame 0
+    const putResp = await ctx.put(
+      `${API_URL}/bowling/result/${resultId}/annotation/lane-edges/0`,
+      { data: edges }
+    );
+    expect(putResp.ok()).toBeTruthy();
+
+    // GET annotation, verify frame_lane_edges["0"] exists
+    const getResp1 = await ctx.get(
+      `${API_URL}/bowling/result/${resultId}/annotation`
+    );
+    const data1 = await getResp1.json();
+    expect(data1.frame_lane_edges).toBeDefined();
+    expect(data1.frame_lane_edges["0"]).toBeDefined();
+    expect(data1.frame_lane_edges["0"].top_left).toEqual([100, 100]);
+
+    // DELETE lane edges on frame 0
+    const delResp = await ctx.delete(
+      `${API_URL}/bowling/result/${resultId}/annotation/lane-edges/0`
+    );
+    expect(delResp.ok()).toBeTruthy();
+
+    // GET annotation, verify frame_lane_edges["0"] is gone
+    const getResp2 = await ctx.get(
+      `${API_URL}/bowling/result/${resultId}/annotation`
+    );
+    const data2 = await getResp2.json();
+    expect(data2.frame_lane_edges?.["0"]).toBeUndefined();
+  });
+
+  test("canvas renders without console errors", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    const errors: string[] = [];
+    page.on("console", (msg) => {
+      if (msg.type() === "error") errors.push(msg.text());
+    });
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+
+    const canvas = page.locator("canvas");
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+
+    // Click canvas to annotate
+    const box = await canvas.boundingBox();
+    if (!box) { test.skip(true, "Canvas has no bounding box"); return; }
+    await canvas.click({ position: { x: box.width / 2, y: box.height / 2 } });
+    await page.waitForTimeout(1000);
+
+    // Canvas should have non-zero bounding box
+    const finalBox = await canvas.boundingBox();
+    expect(finalBox).toBeTruthy();
+    expect(finalBox!.width).toBeGreaterThan(0);
+    expect(finalBox!.height).toBeGreaterThan(0);
+
+    // Filter out known benign errors (e.g., network/CORS from GCS frame loading)
+    const realErrors = errors.filter(
+      (e) => !e.includes("Failed to load resource") && !e.includes("CORS")
+    );
+    expect(realErrors).toEqual([]);
   });
 
   test.afterAll(async () => {
@@ -419,6 +695,7 @@ test.describe("Annotation Workspace Page", () => {
             version: "1.0",
             ball_annotations: {},
             frame_markers: {},
+            frame_lane_edges: {},
             video_metadata: { fps: 30, total_frames: 60, width: 1920, height: 1080 },
           },
         }
