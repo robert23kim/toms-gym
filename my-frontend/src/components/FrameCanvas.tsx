@@ -30,7 +30,7 @@ export function FrameCanvas({ image, ball, laneEdges, radius, onBallClick, onRad
     const container = containerRef.current;
     if (container) {
       const maxW = container.clientWidth;
-      const maxH = container.clientHeight || window.innerHeight * 0.7;
+      const maxH = container.clientHeight || window.innerHeight * 0.85;
       const scale = Math.min(maxW / image.naturalWidth, maxH / image.naturalHeight);
       canvas.width = image.naturalWidth * scale;
       canvas.height = image.naturalHeight * scale;

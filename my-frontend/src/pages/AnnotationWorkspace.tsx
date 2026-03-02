@@ -121,7 +121,7 @@ export default function AnnotationWorkspace() {
     : 0;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white flex flex-col">
+    <div className="h-screen bg-gray-900 text-white flex flex-col overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-2 bg-gray-800 border-b border-gray-700">
         <div className="flex items-center gap-4">
@@ -140,7 +140,7 @@ export default function AnnotationWorkspace() {
       {/* Main content */}
       <div className="flex-1 flex">
         {/* Canvas area */}
-        <div className="flex-1 flex items-center justify-center p-2">
+        <div className="flex-1 flex items-center justify-center p-1 min-h-0">
           {frameError ? (
             <div className="text-center">
               <p className="text-red-400 mb-2">{frameError}</p>

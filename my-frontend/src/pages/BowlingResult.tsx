@@ -6,7 +6,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import LaneEdgeEditor from "../components/LaneEdgeEditor";
 import { API_URL } from "../config";
-import { BowlingResult as BowlingResultType, LaneEdges } from "../lib/types";
+import { BowlingResult as BowlingResultType, LaneEdges, Annotation } from "../lib/types";
 
 const BowlingResult: React.FC = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -16,6 +16,7 @@ const BowlingResult: React.FC = () => {
   const [editedEdges, setEditedEdges] = useState<LaneEdges | null>(null);
   const [saving, setSaving] = useState(false);
   const [polling, setPolling] = useState(false);
+  const [annotation, setAnnotation] = useState<Annotation | null>(null);
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -55,6 +56,16 @@ const BowlingResult: React.FC = () => {
     }, 3000);
     return () => clearInterval(interval);
   }, [polling, attemptId]);
+
+  // Fetch annotation summary when result is loaded
+  useEffect(() => {
+    if (!result?.id || result.processing_status !== 'completed') return;
+    axios.get(`${API_URL}/bowling/result/${result.id}/annotation`)
+      .then(res => {
+        if (res.data?.version) setAnnotation(res.data);
+      })
+      .catch(() => {}); // Silently fail — annotation is optional
+  }, [result?.id, result?.processing_status]);
 
   const handleSaveAndReanalyze = async () => {
     if (!editedEdges || !result) return;
@@ -248,6 +259,52 @@ const BowlingResult: React.FC = () => {
                       )}
                     </div>
                   </div>
+
+                  {result.processing_status === 'completed' && annotation && (
+                    <div>
+                      <h3 className="text-lg font-semibold mb-3">Annotation</h3>
+                      <div className="bg-primary/5 rounded-lg p-4 space-y-3">
+                        {/* Progress */}
+                        {(() => {
+                          const total = annotation.video_metadata?.total_frames || 0;
+                          const annotated = Object.keys(annotation.ball_annotations || {}).length;
+                          const pct = total > 0 ? Math.round((annotated / total) * 100) : 0;
+                          return (
+                            <div>
+                              <div className="flex justify-between text-sm mb-1">
+                                <span>{annotated} / {total} frames annotated</span>
+                                <span>{pct}%</span>
+                              </div>
+                              <div className="w-full bg-muted rounded-full h-2">
+                                <div
+                                  className="bg-green-500 h-2 rounded-full transition-all"
+                                  style={{ width: `${pct}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })()}
+
+                        {/* Frame markers */}
+                        {annotation.frame_markers && Object.keys(annotation.frame_markers).length > 0 && (
+                          <div className="flex flex-wrap gap-3 text-sm">
+                            {annotation.frame_markers.ball_down != null && (
+                              <span className="text-blue-400">Ball Down: Frame {annotation.frame_markers.ball_down + 1}</span>
+                            )}
+                            {annotation.frame_markers.breakpoint != null && (
+                              <span className="text-yellow-400">Breakpoint: Frame {annotation.frame_markers.breakpoint + 1}</span>
+                            )}
+                            {annotation.frame_markers.pin_hit != null && (
+                              <span className="text-red-400">Pin Hit: Frame {annotation.frame_markers.pin_hit + 1}</span>
+                            )}
+                            {annotation.frame_markers.ball_off_deck != null && (
+                              <span className="text-purple-400">Off Deck: Frame {annotation.frame_markers.ball_off_deck + 1}</span>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {result.processing_status === 'completed' && (
                     <div className="pt-2">
