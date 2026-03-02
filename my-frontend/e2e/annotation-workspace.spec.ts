@@ -732,6 +732,44 @@ test.describe("Annotation Workspace Page", () => {
     expect(realErrors).toEqual([]);
   });
 
+  test("auto-copy ball on frame advance", async ({ page }) => {
+    test.skip(!attemptId, "No completed bowling result available");
+    test.skip(!hasFrames, "No extracted frames");
+
+    await page.goto(`/bowling/result/${attemptId}/annotate`);
+    await expect(page.getByText("Annotation")).toBeVisible({ timeout: 120_000 });
+    const canvas = page.locator("canvas").first();
+    await expect(canvas).toBeVisible({ timeout: 15_000 });
+
+    // Navigate to a clean area (frame 20+)
+    for (let i = 0; i < 20; i++) await page.keyboard.press("d");
+    await page.waitForTimeout(300);
+
+    // Clear this frame to ensure clean state
+    await page.keyboard.press("Delete");
+    await page.waitForTimeout(600);
+
+    // Go back one frame and annotate it
+    await page.keyboard.press("a");
+    await page.waitForTimeout(300);
+
+    const box = await canvas.boundingBox();
+    if (!box) { test.skip(true, "Canvas has no bounding box"); return; }
+    await canvas.click({ position: { x: box.width / 2, y: box.height / 2 } });
+    await page.waitForTimeout(1000);
+
+    // Now press D to advance — next frame should auto-fill
+    await page.keyboard.press("d");
+    await page.waitForTimeout(1000);
+
+    // The frame indicator should be green (auto-copied)
+    const statusBar = page.locator('[data-testid="status-bar"]');
+    const frameText = await statusBar.getByText(/Frame \d+ \//).textContent();
+    const frameNum = parseInt(frameText!.match(/Frame (\d+)/)?.[1] || "0");
+    const indicator = page.locator(`[title="Frame ${frameNum}"]`);
+    await expect(indicator).toHaveClass(/bg-green-500/, { timeout: 2_000 });
+  });
+
   test.afterAll(async () => {
     // Clean up: reset annotation to empty for future test runs
     if (!resultId) return;

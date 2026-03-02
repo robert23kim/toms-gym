@@ -103,5 +103,23 @@ export function useAnnotation(resultId: string) {
     }, 500);
   }, [resultId]);
 
-  return { annotation, loading, saving, setBall, clearBall, setMarkers, saveLaneEdges, deleteLaneEdges };
+  const setLaneEdges = useCallback((edges: LaneEdges) => {
+    setAnnotation(prev => {
+      if (!prev) return prev;
+      return { ...prev, lane_edges: edges };
+    });
+
+    clearTimeout(saveTimeoutRef.current);
+    saveTimeoutRef.current = setTimeout(() => {
+      setSaving(true);
+      axios.put(`${API_URL}/bowling/result/${resultId}/annotation`, {
+        ...annotation,
+        lane_edges: edges,
+      })
+      .catch(err => console.error('Failed to save lane edges:', err))
+      .finally(() => setSaving(false));
+    }, 500);
+  }, [resultId, annotation]);
+
+  return { annotation, loading, saving, setBall, clearBall, setMarkers, saveLaneEdges, deleteLaneEdges, setLaneEdges };
 }

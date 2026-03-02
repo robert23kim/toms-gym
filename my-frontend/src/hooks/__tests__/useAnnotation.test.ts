@@ -206,6 +206,25 @@ describe('useAnnotation', () => {
     expect(result.current.annotation?.frame_lane_edges).not.toHaveProperty('3');
   });
 
+  test('setLaneEdges calls PUT with lane_edges in body', async () => {
+    const { result } = renderHook(() => useAnnotation('result-1'));
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    const edges = { top_left: [100, 100], top_right: [200, 100], bottom_left: [100, 500], bottom_right: [200, 500] };
+    act(() => { result.current.setLaneEdges(edges as any); });
+
+    // Optimistic update
+    expect(result.current.annotation?.lane_edges).toEqual(edges);
+
+    act(() => { jest.advanceTimersByTime(500); });
+    await waitFor(() => {
+      expect(mockedAxios.put).toHaveBeenCalledWith(
+        'https://test-api/bowling/result/result-1/annotation',
+        expect.objectContaining({ lane_edges: edges })
+      );
+    });
+  });
+
   test('debounce: rapid calls result in single network request', async () => {
     const { result } = renderHook(() => useAnnotation('result-1'));
     await waitFor(() => expect(result.current.loading).toBe(false));

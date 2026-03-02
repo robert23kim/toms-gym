@@ -34,7 +34,13 @@ export function StatusBar({ currentFrame, totalFrames, ball, markers, annotatedC
 
   const modeBadgeClass = editMode === 'EDGE_EDIT'
     ? 'px-2 py-0.5 rounded text-xs font-bold bg-yellow-500 text-black'
+    : editMode === 'EDGE_DRAW'
+    ? 'px-2 py-0.5 rounded text-xs font-bold bg-orange-500 text-black'
     : 'px-2 py-0.5 rounded text-xs font-bold bg-blue-600';
+
+  const modeLabel = editMode === 'EDGE_EDIT' ? 'EDGE EDIT'
+    : editMode === 'EDGE_DRAW' ? 'DRAW EDGES'
+    : 'NORMAL';
 
   return (
     <div className="flex items-center justify-between px-4 py-1 bg-gray-800 border-b border-gray-700 text-sm text-gray-300" data-testid="status-bar">
@@ -44,7 +50,7 @@ export function StatusBar({ currentFrame, totalFrames, ball, markers, annotatedC
         <span>{ballInfo}</span>
       </div>
       <div>
-        <span className={modeBadgeClass}>{editMode === 'EDGE_EDIT' ? 'EDGE EDIT' : 'NORMAL'}</span>
+        <span className={modeBadgeClass}>{modeLabel}</span>
       </div>
       <div className="flex items-center gap-2">
         <span className="text-xs">{markerSummary}</span>

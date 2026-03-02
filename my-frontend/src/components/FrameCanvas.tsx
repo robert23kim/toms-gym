@@ -22,7 +22,7 @@ interface Props {
   radius: number;
   onBallClick: (x: number, y: number) => void;
   onRadiusChange: (delta: number) => void;
-  editMode?: 'NORMAL' | 'EDGE_EDIT';
+  editMode?: 'NORMAL' | 'EDGE_EDIT' | 'EDGE_DRAW';
   edgeState?: EdgeState;
   onEdgeMouseDown?: (x: number, y: number) => void;
   onEdgeMouseMove?: (x: number, y: number) => void;
@@ -30,12 +30,14 @@ interface Props {
   onEdgeRightClick?: (x: number, y: number) => void;
   onEdgeShiftClick?: (x: number, y: number) => void;
   cropRegion?: CropRegionProp;
+  drawCorners?: [number, number][];
+  onDrawClick?: (x: number, y: number) => void;
 }
 
 export function FrameCanvas({
   image, ball, laneEdges, radius, onBallClick, onRadiusChange,
   editMode = 'NORMAL', edgeState, onEdgeMouseDown, onEdgeMouseMove, onEdgeMouseUp,
-  onEdgeRightClick, onEdgeShiftClick, cropRegion,
+  onEdgeRightClick, onEdgeShiftClick, cropRegion, drawCorners, onDrawClick,
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -211,7 +213,71 @@ export function FrameCanvas({
       ctx.font = `${20 * scale}px sans-serif`;
       ctx.fillText('NO BALL', 10 * scale, 30 * scale);
     }
-  }, [image, ball, laneEdges, getDisplayScale, frameToDisplay, editMode, edgeState, cropRegion]);
+
+    // Draw EDGE_DRAW overlays
+    if (editMode === 'EDGE_DRAW' && drawCorners) {
+      const cornerDescs = [
+        'Top Left (near pins, left side)',
+        'Top Right (near pins, right side)',
+        'Bottom Right (near bowler, right side)',
+        'Bottom Left (near bowler, left side)',
+      ];
+
+      // Draw placed corners
+      for (let i = 0; i < drawCorners.length; i++) {
+        const d = toD(drawCorners[i][0], drawCorners[i][1]);
+
+        // Yellow circle
+        ctx.beginPath();
+        ctx.arc(d.x, d.y, 12, 0, Math.PI * 2);
+        ctx.fillStyle = 'yellow';
+        ctx.fill();
+        ctx.strokeStyle = 'white';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // White number label
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(String(i + 1), d.x, d.y);
+      }
+
+      // Draw green dashed lines connecting placed corners
+      if (drawCorners.length > 1) {
+        ctx.strokeStyle = '#00ff00';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([8, 4]);
+        ctx.beginPath();
+        const first = toD(drawCorners[0][0], drawCorners[0][1]);
+        ctx.moveTo(first.x, first.y);
+        for (let i = 1; i < drawCorners.length; i++) {
+          const d = toD(drawCorners[i][0], drawCorners[i][1]);
+          ctx.lineTo(d.x, d.y);
+        }
+        ctx.stroke();
+        ctx.setLineDash([]);
+      }
+
+      // Prompt text
+      const nextIdx = drawCorners.length;
+      if (nextIdx < 4) {
+        const prompt = `Click corner ${nextIdx + 1}: ${cornerDescs[nextIdx]}`;
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+        ctx.fillRect(0, 0, canvas.width, 30);
+        ctx.fillStyle = 'white';
+        ctx.font = 'bold 14px sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(prompt, canvas.width / 2, 15);
+      }
+
+      // Reset text alignment
+      ctx.textAlign = 'start';
+      ctx.textBaseline = 'alphabetic';
+    }
+  }, [image, ball, laneEdges, getDisplayScale, frameToDisplay, editMode, edgeState, cropRegion, drawCorners]);
 
   // Convert mouse event to image (frame) coordinates
   const toImageCoords = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -236,8 +302,13 @@ export function FrameCanvas({
   const handleClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (editMode === 'EDGE_EDIT') return; // handled by mousedown/up
     const coords = toImageCoords(e);
-    if (coords) onBallClick(coords.x, coords.y);
-  }, [editMode, toImageCoords, onBallClick]);
+    if (!coords) return;
+    if (editMode === 'EDGE_DRAW' && onDrawClick) {
+      onDrawClick(coords.x, coords.y);
+      return;
+    }
+    onBallClick(coords.x, coords.y);
+  }, [editMode, toImageCoords, onBallClick, onDrawClick]);
 
   const handleMouseDown = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     if (editMode !== 'EDGE_EDIT') return;
@@ -286,7 +357,7 @@ export function FrameCanvas({
   const isEdgeEdit = editMode === 'EDGE_EDIT';
   const cursorClass = isEdgeEdit
     ? (edgeState?.isDragging ? 'cursor-grabbing' : 'cursor-grab')
-    : 'cursor-crosshair';
+    : 'cursor-crosshair'; // crosshair for both NORMAL and EDGE_DRAW
 
   return (
     <div ref={containerRef} className="w-full h-full flex justify-center items-center bg-black">

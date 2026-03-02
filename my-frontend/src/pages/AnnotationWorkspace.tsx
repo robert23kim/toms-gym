@@ -21,7 +21,8 @@ export default function AnnotationWorkspace() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string>('');
   const [showHelp, setShowHelp] = useState(false);
-  const [editMode, setEditMode] = useState<'NORMAL' | 'EDGE_EDIT'>('NORMAL');
+  const [editMode, setEditMode] = useState<'NORMAL' | 'EDGE_EDIT' | 'EDGE_DRAW'>('NORMAL');
+  const [drawCorners, setDrawCorners] = useState<[number, number][]>([]);
   const [cropEnabled, setCropEnabled] = useState(false);
   const trajectoryCanvasRef = useRef<HTMLCanvasElement>(null);
   const [savingTrajectory, setSavingTrajectory] = useState(false);
@@ -49,7 +50,7 @@ export default function AnnotationWorkspace() {
       });
   }, [resultId]);
 
-  const { annotation, saving, setBall, clearBall, setMarkers, saveLaneEdges, deleteLaneEdges } = useAnnotation(resultId);
+  const { annotation, saving, setBall, clearBall, setMarkers, saveLaneEdges, deleteLaneEdges, setLaneEdges } = useAnnotation(resultId);
   const {
     currentFrame, currentImage, imageLoading, frameError,
     goTo, next, prev, jumpForward, jumpBack,
@@ -65,6 +66,49 @@ export default function AnnotationWorkspace() {
 
   const effectiveEdges = editMode === 'EDGE_EDIT' ? edgeEditor.effectiveEdges : annotation?.lane_edges;
   const cropView = useCropView(effectiveEdges, frameData?.width || 1920, frameData?.height || 1080);
+
+  // Auto-copy ball position on forward +1 frame advance
+  const prevFrameRef = useRef(0);
+
+  useEffect(() => {
+    const prevFrame = prevFrameRef.current;
+    const newFrame = currentFrame;
+    prevFrameRef.current = newFrame;
+
+    // Only auto-copy on forward +1 navigation
+    if (newFrame !== prevFrame + 1) return;
+    if (!annotation) return;
+
+    // Only if new frame is unannotated (key doesn't exist)
+    const newFrameKey = String(newFrame);
+    if (newFrameKey in annotation.ball_annotations) return;
+
+    // Copy from previous frame if it has a ball annotation (not null, not missing)
+    const prevBall = annotation.ball_annotations[String(prevFrame)];
+    if (prevBall) {
+      setBall(newFrame, prevBall);
+    }
+  }, [currentFrame, annotation, setBall]);
+
+  // Handle draw-click for EDGE_DRAW mode
+  const handleDrawClick = useCallback((x: number, y: number) => {
+    setDrawCorners(prev => {
+      const next = [...prev, [x, y] as [number, number]];
+      if (next.length === 4) {
+        const edges = {
+          top_left: next[0] as [number, number],
+          top_right: next[1] as [number, number],
+          bottom_right: next[2] as [number, number],
+          bottom_left: next[3] as [number, number],
+        };
+        setLaneEdges(edges);
+        saveLaneEdges(currentFrame, edges);
+        setEditMode('EDGE_EDIT');
+        return [];
+      }
+      return next;
+    });
+  }, [setLaneEdges, saveLaneEdges, currentFrame]);
 
   const handleSetMarker = useCallback((name: string, frame: number) => {
     setMarkers({ ...annotation?.frame_markers, [name]: frame } as FrameMarkers);
@@ -130,13 +174,17 @@ export default function AnnotationWorkspace() {
           else handleSetMarker(key, currentFrame);
           break;
         }
-        case 'e':
+        case 'e': {
           setEditMode(m => {
-            const next = m === 'NORMAL' ? 'EDGE_EDIT' : 'NORMAL';
-            if (next === 'EDGE_EDIT' && isPlaying) pause();
-            return next;
+            if (m !== 'NORMAL') return 'NORMAL';
+            const hasEdges = annotation?.lane_edges || edgeEditor.effectiveEdges;
+            const nextMode = hasEdges ? 'EDGE_EDIT' : 'EDGE_DRAW';
+            if (isPlaying) pause();
+            if (nextMode === 'EDGE_DRAW') setDrawCorners([]);
+            return nextMode;
           });
           break;
+        }
         case 'r':
           if (editMode === 'EDGE_EDIT') edgeEditor.resetEdges();
           break;
@@ -273,6 +321,8 @@ export default function AnnotationWorkspace() {
               onEdgeRightClick={edgeEditor.handleRightClick}
               onEdgeShiftClick={edgeEditor.handleShiftClick}
               cropRegion={cropEnabled && cropView ? { x: cropView.cropX, y: cropView.cropY, w: cropView.cropW, h: cropView.cropH } : undefined}
+              drawCorners={editMode === 'EDGE_DRAW' ? drawCorners : undefined}
+              onDrawClick={editMode === 'EDGE_DRAW' ? handleDrawClick : undefined}
             />
           )}
         </div>
@@ -368,7 +418,8 @@ export default function AnnotationWorkspace() {
             <div>
               <h3 className="text-lg font-semibold text-orange-400 mb-2">Edge Editing</h3>
               <div className="grid grid-cols-2 gap-1 text-sm">
-                <span className="text-gray-400">E</span><span>Toggle edge edit mode</span>
+                <span className="text-gray-400">E (has edges)</span><span>Toggle edge edit mode</span>
+                <span className="text-gray-400">E (no edges)</span><span>Draw lane edges (4 corners)</span>
                 <span className="text-gray-400">Z</span><span>Toggle cropped lane view</span>
                 <span className="text-gray-400">H</span><span>Show/hide this help</span>
               </div>

@@ -66,4 +66,11 @@ describe('StatusBar', () => {
     expect(badge).toBeInTheDocument();
     expect(badge.className).toContain('bg-yellow-500');
   });
+
+  test('shows DRAW EDGES mode badge', () => {
+    render(<StatusBar {...defaultProps} editMode="EDGE_DRAW" />);
+    const badge = screen.getByText('DRAW EDGES');
+    expect(badge).toBeInTheDocument();
+    expect(badge.className).toContain('bg-orange-500');
+  });
 });
