@@ -244,7 +244,7 @@ const BowlingResult: React.FC = () => {
                       {result.detection_rate != null && (
                         <div className="bg-primary/5 rounded-lg p-4 text-center">
                           <div className="text-2xl font-bold text-primary">
-                            {(result.detection_rate * 100).toFixed(1)}%
+                            {result.detection_rate.toFixed(1)}%
                           </div>
                           <div className="text-sm text-muted-foreground">Detection Rate</div>
                         </div>
