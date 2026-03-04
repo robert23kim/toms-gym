@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize2, BarChart2, Activity, Target, Award } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL, PROD_API_URL } from "../config";
@@ -20,18 +20,31 @@ interface VideoData {
   participant_name: string;
 }
 
+function formatDate(ts: string | undefined): string {
+  if (!ts) return '';
+  const d = new Date(ts);
+  return isNaN(d.getTime()) ? '' : d.toLocaleDateString();
+}
+
+function statusBadge(status: string | undefined): { label: string; className: string } {
+  switch (status) {
+    case 'completed':
+      return { label: 'Successful', className: 'bg-green-500/10 text-green-500' };
+    case 'pending':
+      return { label: 'Pending', className: 'bg-yellow-500/10 text-yellow-500' };
+    case 'failed':
+      return { label: 'Failed', className: 'bg-red-500/10 text-red-500' };
+    default:
+      return { label: status || 'Unknown', className: 'bg-gray-500/10 text-gray-500' };
+  }
+}
+
 const VideoPlayer: React.FC = () => {
   const { id, participantId, videoId } = useParams<{ id: string; participantId: string; videoId: string }>();
   const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
-  const [debugInfo, setDebugInfo] = useState({
-    apiUrl: API_URL,
-    productionUrl: PROD_API_URL,
-    userAgent: '',
-    isMobile: false
-  });
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [videoLoadError, setVideoLoadError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -43,23 +56,6 @@ const VideoPlayer: React.FC = () => {
   const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
   const isLinux = /Linux|X11/i.test(navigator.userAgent);
   const isLinuxDesktop = isLinux && !(/Mobile|Android/i.test(navigator.userAgent));
-  
-  // For device type info only (not API URL selection)
-  const isMobile = (
-    /iPhone|iPad|iPod|Android|webOS|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
-    /Mobile|Tablet|Touch/i.test(navigator.userAgent) ||
-    window.innerWidth < 768
-  );
-
-  useEffect(() => {
-    // Update debug info
-    setDebugInfo({
-      apiUrl: API_URL,
-      productionUrl: PROD_API_URL,
-      userAgent: navigator.userAgent.substring(0, 100), // Truncate for display
-      isMobile: isMobile
-    });
-  }, [isMobile]);
 
   useEffect(() => {
     const fetchVideoData = async () => {
@@ -67,12 +63,12 @@ const VideoPlayer: React.FC = () => {
         setLoading(true);
         setError(null);
         setVideoLoadError(null);
-        
+
         console.log(`Using API URL for fetch: ${API_URL}`);
-        
+
         const response = await axios.get(`${API_URL}/competitions/${id}/participants/${participantId}/attempts/${videoId}`);
         console.log("Video data response:", response.data);
-        
+
         if (response.data) {
           let videoDataResponse = response.data;
 
@@ -80,15 +76,15 @@ const VideoPlayer: React.FC = () => {
           if (response.data.attempt) {
             videoDataResponse = response.data.attempt;
           }
-          
+
           // Process the video URL for mobile if needed
           if (videoDataResponse.video_url) {
             const originalUrl = videoDataResponse.video_url;
             console.log("Original video URL:", originalUrl);
-            
+
             // Process URL for mobile devices
             let processedUrl = originalUrl;
-            
+
             // Handle Google Storage URLs
             if (originalUrl.includes('storage.googleapis.com')) {
               // Extract video path - get everything after the bucket name
@@ -102,32 +98,32 @@ const VideoPlayer: React.FC = () => {
                   videoPath = originalUrl.substring(bucketPart + 'jtr-lift-u-4ever-cool-bucket/'.length);
                 }
               }
-              
+
               if (videoPath) {
                 // ALWAYS use production URL for the video proxy (direct video access needs prod URL)
                 const videoProxyBaseUrl = PROD_API_URL;
-                
+
                 console.log("Video path extracted:", videoPath);
-                
+
                 // Extract just the filename (without 'videos/' prefix) to avoid encoding issues
                 // The backend will add the 'videos/' prefix automatically if needed
                 let pathToSend = videoPath;
                 if (videoPath.startsWith('videos/')) {
                   pathToSend = videoPath.substring('videos/'.length);
                 }
-                
+
                 // Encode the filename/path to handle special characters
                 const encodedPath = encodeURIComponent(pathToSend);
-                
+
                 // Use the video proxy endpoint with explicit parameters - FORCE proxy usage
                 processedUrl = `${videoProxyBaseUrl}/video/${encodedPath}?mobile=true&t=${new Date().getTime()}`;
-                
+
                 // Add device type for debugging and better handling on backend
                 let deviceType = 'desktop';
                 if (isAndroid) deviceType = 'android';
                 else if (isiOS) deviceType = 'ios';
                 else if (isLinuxDesktop) deviceType = 'linux';
-                
+
                 processedUrl += `&device=${deviceType}`;
                 console.log("Using proxy URL for device:", processedUrl);
               } else {
@@ -141,8 +137,8 @@ const VideoPlayer: React.FC = () => {
                 } else {
                   // Add cache busting to direct URLs as last resort
                   const cacheBuster = `t=${new Date().getTime()}`;
-                  processedUrl = originalUrl.includes('?') ? 
-                    `${originalUrl}&${cacheBuster}` : 
+                  processedUrl = originalUrl.includes('?') ?
+                    `${originalUrl}&${cacheBuster}` :
                     `${originalUrl}?${cacheBuster}`;
                   console.log("Using direct URL with cache busting:", processedUrl);
                 }
@@ -150,7 +146,7 @@ const VideoPlayer: React.FC = () => {
             } else {
               console.log("URL is not from Google Storage, using as is:", originalUrl);
             }
-            
+
             // Set the processed URL
             setFinalVideoUrl(processedUrl);
             console.log("Final video URL set to:", processedUrl);
@@ -158,7 +154,7 @@ const VideoPlayer: React.FC = () => {
             console.error("No video URL found in the response data", videoDataResponse);
             setVideoLoadError("No video URL available in the server response");
           }
-          
+
           setVideoData(videoDataResponse);
         } else {
           setError("Video data not found");
@@ -219,7 +215,7 @@ const VideoPlayer: React.FC = () => {
     const videoElement = e.currentTarget;
     console.error("Video error:", videoElement.error);
     let errorMessage = "Unknown video playback error";
-    
+
     if (videoElement.error) {
       switch (videoElement.error.code) {
         case 1:
@@ -238,12 +234,12 @@ const VideoPlayer: React.FC = () => {
           errorMessage = `Error code: ${videoElement.error.code}`;
       }
     }
-    
+
     console.error("Video error details:", errorMessage);
     setVideoLoadError(errorMessage);
     setIsVideoLoaded(false);
   };
-  
+
   const handleVideoLoad = () => {
     console.log("Video loaded successfully");
     setIsVideoLoaded(true);
@@ -295,6 +291,9 @@ const VideoPlayer: React.FC = () => {
     );
   }
 
+  const badge = statusBadge(videoData.success);
+  const dateStr = formatDate(videoData.timestamp);
+
   return (
     <Layout>
       <motion.div
@@ -302,7 +301,7 @@ const VideoPlayer: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <Link
             to={`/challenges/${id}`}
             className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
@@ -311,123 +310,100 @@ const VideoPlayer: React.FC = () => {
             Back to Challenge
           </Link>
 
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-            <div className="p-6 sm:p-8">
-              <div className="mb-6">
-                <h1 className="text-2xl font-bold mb-2">{videoData.participant_name}'s {videoData.lift_type}</h1>
-                <div className="flex items-center gap-4 text-muted-foreground">
-                  <span>{videoData.weight}kg</span>
-                  <span className={`px-2 py-1 rounded-full text-sm ${
-                    videoData.success === 'true' ? "bg-green-500/10 text-green-500" : "bg-red-500/10 text-red-500"
-                  }`}>
-                    {videoData.success === 'true' ? "Successful" : "Failed"}
-                  </span>
-                  <span>{new Date(videoData.timestamp).toLocaleString()}</span>
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+            {/* Left column: Video */}
+            <div className="lg:col-span-3">
+              {(finalVideoUrl || (videoData && videoData.video_url)) ? (
+                <>
+                  <video
+                    ref={videoRef}
+                    src={finalVideoUrl || (videoData && videoData.video_url)}
+                    controls
+                    className="max-h-[70vh] w-full object-contain rounded-lg bg-black"
+                    autoPlay
+                    muted
+                    playsInline
+                    onError={handleVideoError}
+                    onLoadedData={handleVideoLoad}
+                    onLoadedMetadata={() => console.log("Video metadata loaded successfully")}
+                    onCanPlay={() => console.log("Video can play now")}
+                  >
+                    Your browser does not support the video tag.
+                  </video>
+                  {videoLoadError && (
+                    <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
+                      <p><strong>Error loading video:</strong> {videoLoadError}</p>
+                      <p className="text-sm mt-1">Try refreshing the page or check your internet connection.</p>
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="flex items-center justify-center h-64 bg-black rounded-lg text-muted-foreground">
+                  No video available
                 </div>
-              </div>
+              )}
+            </div>
 
-              <div className="aspect-video bg-black rounded-lg overflow-hidden">
-                {(finalVideoUrl || (videoData && videoData.video_url)) ? (
-                  <>
-                    <video
-                      ref={videoRef}
-                      src={finalVideoUrl || (videoData && videoData.video_url)}
-                      controls
-                      className="w-full h-full"
-                      autoPlay
-                      muted
-                      playsInline // For iOS compatibility
-                      onError={handleVideoError}
-                      onLoadedData={handleVideoLoad}
-                      onLoadedMetadata={() => console.log("Video metadata loaded successfully")}
-                      onCanPlay={() => console.log("Video can play now")}
-                    >
-                      Your browser does not support the video tag.
-                    </video>
-                    {videoLoadError && (
-                      <div className="mt-2 p-2 bg-red-100 border border-red-400 text-red-700 rounded">
-                        <p><strong>Error loading video:</strong> {videoLoadError}</p>
-                        <p className="text-sm mt-1">Try refreshing the page or check your internet connection.</p>
+            {/* Right column: Info + Analysis */}
+            <div className="lg:col-span-2">
+              <div className="bg-card rounded-lg shadow-lg p-6">
+                <h1 className="text-2xl font-bold mb-4">{videoData.participant_name}'s {videoData.lift_type}</h1>
+                <div className="flex items-center gap-4 text-muted-foreground mb-6">
+                  <span>{videoData.weight}kg</span>
+                  <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>
+                    {badge.label}
+                  </span>
+                  {dateStr && <span>{dateStr}</span>}
+                </div>
+
+                {/* Lifting Analysis */}
+                {videoData && videoData.lift_type && videoData.lift_type !== 'Bowling' && (
+                  <div>
+                    {!liftingResult || liftingResult.processing_status === 'failed' ? (
+                      <button
+                        onClick={handleAnalyzeForm}
+                        disabled={isAnalyzing}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                      >
+                        {isAnalyzing ? 'Analyzing...' : 'Analyze Form'}
+                      </button>
+                    ) : liftingResult.processing_status === 'queued' || liftingResult.processing_status === 'processing' ? (
+                      <div className="flex items-center gap-2">
+                        <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full" />
+                        <span>Analyzing form...</span>
                       </div>
+                    ) : liftingResult.processing_status === 'completed' && liftingResult.report ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-3">
+                          <span className={`text-2xl font-bold ${
+                            liftingResult.report.overall_grade === 'A' ? 'text-green-500' :
+                            liftingResult.report.overall_grade === 'B' ? 'text-green-400' :
+                            liftingResult.report.overall_grade === 'C' ? 'text-yellow-500' :
+                            liftingResult.report.overall_grade === 'D' ? 'text-orange-500' : 'text-red-500'
+                          }`}>{liftingResult.report.overall_grade}</span>
+                          <span>{liftingResult.report.total_reps} reps | Score: {liftingResult.report.overall_score?.toFixed(0)}%</span>
+                        </div>
+                        {liftingResult.report.insights.length > 0 && (
+                          <ul className="text-sm text-gray-600">
+                            {liftingResult.report.insights.map((insight, i) => (
+                              <li key={i}>- {insight}</li>
+                            ))}
+                          </ul>
+                        )}
+                        {liftingResult.annotated_video_url && (
+                          <video controls className="w-full rounded" src={liftingResult.annotated_video_url} />
+                        )}
+                        <button onClick={handleAnalyzeForm} className="text-sm text-blue-500 hover:underline">
+                          Re-analyze
+                        </button>
+                      </div>
+                    ) : null}
+                    {liftingResult?.error_message && (
+                      <p className="text-red-500 text-sm mt-2">Error: {liftingResult.error_message}</p>
                     )}
-                  </>
-                ) : (
-                  <div className="flex items-center justify-center h-full text-muted-foreground">
-                    No video available
                   </div>
                 )}
               </div>
-              
-              {/* Debug info */}
-              <div className="mt-4 p-2 text-xs bg-gray-100 rounded-md">
-                <details>
-                  <summary className="cursor-pointer font-medium">Debug Info (click to expand)</summary>
-                  <div className="mt-2 space-y-1">
-                    <p><strong>API URL:</strong> {debugInfo.apiUrl}</p>
-                    <p><strong>Production URL:</strong> {debugInfo.productionUrl}</p>
-                    <p><strong>Device:</strong> {isAndroid ? 'Android' : (isiOS ? 'iOS' : (isLinux ? 'Linux' : 'Desktop'))}</p>
-                    <p><strong>Is Mobile:</strong> {isMobile ? 'Yes' : 'No'}</p>
-                    <p><strong>UA:</strong> {debugInfo.userAgent}</p>
-                    <p><strong>Original URL:</strong> {videoData?.video_url || 'N/A'}</p>
-                    <p><strong>Processed URL:</strong> {finalVideoUrl || 'N/A'}</p>
-                    <p><strong>Video Loaded:</strong> {isVideoLoaded ? 'Yes' : 'No'}</p>
-                    {videoRef.current && (
-                      <>
-                        <p><strong>Video Ready State:</strong> {videoRef.current.readyState}</p>
-                        <p><strong>Network State:</strong> {videoRef.current.networkState}</p>
-                      </>
-                    )}
-                  </div>
-                </details>
-              </div>
-
-              {/* Lifting Analysis */}
-              {videoData && videoData.lift_type && videoData.lift_type !== 'Bowling' && (
-                <div className="mt-4">
-                  {!liftingResult || liftingResult.processing_status === 'failed' ? (
-                    <button
-                      onClick={handleAnalyzeForm}
-                      disabled={isAnalyzing}
-                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
-                    >
-                      {isAnalyzing ? 'Analyzing...' : 'Analyze Form'}
-                    </button>
-                  ) : liftingResult.processing_status === 'queued' || liftingResult.processing_status === 'processing' ? (
-                    <div className="flex items-center gap-2">
-                      <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full" />
-                      <span>Analyzing form...</span>
-                    </div>
-                  ) : liftingResult.processing_status === 'completed' && liftingResult.report ? (
-                    <div className="space-y-3">
-                      <div className="flex items-center gap-3">
-                        <span className={`text-2xl font-bold ${
-                          liftingResult.report.overall_grade === 'A' ? 'text-green-500' :
-                          liftingResult.report.overall_grade === 'B' ? 'text-green-400' :
-                          liftingResult.report.overall_grade === 'C' ? 'text-yellow-500' :
-                          liftingResult.report.overall_grade === 'D' ? 'text-orange-500' : 'text-red-500'
-                        }`}>{liftingResult.report.overall_grade}</span>
-                        <span>{liftingResult.report.total_reps} reps | Score: {liftingResult.report.overall_score?.toFixed(0)}%</span>
-                      </div>
-                      {liftingResult.report.insights.length > 0 && (
-                        <ul className="text-sm text-gray-600">
-                          {liftingResult.report.insights.map((insight, i) => (
-                            <li key={i}>- {insight}</li>
-                          ))}
-                        </ul>
-                      )}
-                      {liftingResult.annotated_video_url && (
-                        <video controls className="w-full max-w-lg rounded" src={liftingResult.annotated_video_url} />
-                      )}
-                      <button onClick={handleAnalyzeForm} className="text-sm text-blue-500 hover:underline">
-                        Re-analyze
-                      </button>
-                    </div>
-                  ) : null}
-                  {liftingResult?.error_message && (
-                    <p className="text-red-500 text-sm mt-2">Error: {liftingResult.error_message}</p>
-                  )}
-                </div>
-              )}
             </div>
           </div>
         </div>
