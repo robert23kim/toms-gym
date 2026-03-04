@@ -640,6 +640,8 @@ class DeploymentManager:
             "BOWLING_PROCESSOR_ENABLED=true",
             "BOWLING_SERVICE_URL=https://bowling-service-834341357827.us-east1.run.app",
             "BOWLING_POLL_INTERVAL=5",
+            # Lifting processor integration (calls bowling-service /analyze-lift)
+            "LIFTING_PROCESSOR_ENABLED=true",
         ]
 
         # Secrets from GCP Secret Manager (format: ENV_VAR=secret-name:version)
