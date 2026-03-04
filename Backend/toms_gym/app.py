@@ -22,7 +22,9 @@ from toms_gym.db import cleanup_session
 # Import integrations
 from toms_gym.integrations.email_upload import email_upload_bp, start_background_processor
 from toms_gym.integrations.bowling_processor import start_bowling_processor
+from toms_gym.integrations.lifting_processor import start_lifting_processor
 from toms_gym.routes.bowling_routes import bowling_bp
+from toms_gym.routes.lifting_routes import lifting_bp
 
 load_dotenv()
 
@@ -159,12 +161,16 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(weekly_lifts_bp)
 app.register_blueprint(email_upload_bp, url_prefix='/integrations')
 app.register_blueprint(bowling_bp)
+app.register_blueprint(lifting_bp)
 
 # Start email processor if enabled
 start_background_processor()
 
 # Start bowling processor if enabled
 start_bowling_processor()
+
+# Start lifting processor if enabled
+start_lifting_processor()
 
 # Clean up scoped DB session after every request to prevent
 # broken transactions from leaking across requests

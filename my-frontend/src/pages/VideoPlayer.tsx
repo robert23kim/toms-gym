@@ -5,6 +5,8 @@ import { ArrowLeft, Play, Pause, Volume2, VolumeX, Maximize2, BarChart2, Activit
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL, PROD_API_URL } from "../config";
+import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
+import type { LiftingResult } from '../lib/types';
 
 interface VideoData {
   id: number;
@@ -33,7 +35,9 @@ const VideoPlayer: React.FC = () => {
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [videoLoadError, setVideoLoadError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-  
+  const [liftingResult, setLiftingResult] = useState<LiftingResult | null>(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+
   // We still need device type info for video path transformation
   const isAndroid = /Android/i.test(navigator.userAgent);
   const isiOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
@@ -169,6 +173,46 @@ const VideoPlayer: React.FC = () => {
 
     fetchVideoData();
   }, [id, participantId, videoId]);
+
+  // Check for existing lifting result on mount
+  useEffect(() => {
+    if (videoId) {
+      getLiftingResult(videoId)
+        .then(setLiftingResult)
+        .catch(() => {}); // No result yet — that's fine
+    }
+  }, [videoId]);
+
+  // Poll for lifting analysis progress
+  useEffect(() => {
+    if (!isAnalyzing || !liftingResult) return;
+    if (liftingResult.processing_status === 'completed' || liftingResult.processing_status === 'failed') {
+      setIsAnalyzing(false);
+      return;
+    }
+    const interval = setInterval(async () => {
+      try {
+        const result = await getLiftingResult(videoId!);
+        setLiftingResult(result);
+        if (result.processing_status === 'completed' || result.processing_status === 'failed') {
+          setIsAnalyzing(false);
+        }
+      } catch (e) { /* continue polling */ }
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isAnalyzing, liftingResult?.processing_status, videoId]);
+
+  const handleAnalyzeForm = async () => {
+    if (!videoId) return;
+    setIsAnalyzing(true);
+    try {
+      await triggerLiftingAnalysis(videoId);
+      const result = await getLiftingResult(videoId);
+      setLiftingResult(result);
+    } catch (e) {
+      setIsAnalyzing(false);
+    }
+  };
 
   // Add event handlers for video element
   const handleVideoError = (e: React.SyntheticEvent<HTMLVideoElement, Event>) => {
@@ -336,6 +380,54 @@ const VideoPlayer: React.FC = () => {
                   </div>
                 </details>
               </div>
+
+              {/* Lifting Analysis */}
+              {videoData && videoData.lift_type && videoData.lift_type !== 'Bowling' && (
+                <div className="mt-4">
+                  {!liftingResult || liftingResult.processing_status === 'failed' ? (
+                    <button
+                      onClick={handleAnalyzeForm}
+                      disabled={isAnalyzing}
+                      className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {isAnalyzing ? 'Analyzing...' : 'Analyze Form'}
+                    </button>
+                  ) : liftingResult.processing_status === 'queued' || liftingResult.processing_status === 'processing' ? (
+                    <div className="flex items-center gap-2">
+                      <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full" />
+                      <span>Analyzing form...</span>
+                    </div>
+                  ) : liftingResult.processing_status === 'completed' && liftingResult.report ? (
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <span className={`text-2xl font-bold ${
+                          liftingResult.report.overall_grade === 'A' ? 'text-green-500' :
+                          liftingResult.report.overall_grade === 'B' ? 'text-green-400' :
+                          liftingResult.report.overall_grade === 'C' ? 'text-yellow-500' :
+                          liftingResult.report.overall_grade === 'D' ? 'text-orange-500' : 'text-red-500'
+                        }`}>{liftingResult.report.overall_grade}</span>
+                        <span>{liftingResult.report.total_reps} reps | Score: {liftingResult.report.overall_score?.toFixed(0)}%</span>
+                      </div>
+                      {liftingResult.report.insights.length > 0 && (
+                        <ul className="text-sm text-gray-600">
+                          {liftingResult.report.insights.map((insight, i) => (
+                            <li key={i}>- {insight}</li>
+                          ))}
+                        </ul>
+                      )}
+                      {liftingResult.annotated_video_url && (
+                        <video controls className="w-full max-w-lg rounded" src={liftingResult.annotated_video_url} />
+                      )}
+                      <button onClick={handleAnalyzeForm} className="text-sm text-blue-500 hover:underline">
+                        Re-analyze
+                      </button>
+                    </div>
+                  ) : null}
+                  {liftingResult?.error_message && (
+                    <p className="text-red-500 text-sm mt-2">Error: {liftingResult.error_message}</p>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>

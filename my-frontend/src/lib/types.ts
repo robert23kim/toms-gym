@@ -109,6 +109,39 @@ export interface BowlingResult {
   frame_url?: string;
 }
 
+export interface RepMetrics {
+  rep_number: number;
+  elbow_angle_range: [number, number];
+  tempo_ratio: number;
+  elbow_drift_pct: number;
+  body_sway_pct: number;
+  form_grade: string;
+  form_score: number;
+}
+
+export interface LiftingReport {
+  camera_view: string;
+  active_arm: string;
+  total_reps: number;
+  overall_grade: string;
+  overall_score: number;
+  rep_metrics: RepMetrics[];
+  insights: string[];
+}
+
+export interface LiftingResult {
+  id: string;
+  attempt_id: string;
+  processing_status: 'queued' | 'processing' | 'completed' | 'failed';
+  annotated_video_url?: string;
+  summary_url?: string;
+  report?: LiftingReport;
+  processing_time_s?: number;
+  error_message?: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export type CompetitionStatus = 'upcoming' | 'ongoing' | 'completed';
 
 /** Ball annotation. x, y = contact point where ball touches lane surface. */
