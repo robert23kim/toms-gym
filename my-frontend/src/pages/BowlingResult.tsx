@@ -100,7 +100,7 @@ const BowlingResult: React.FC = () => {
     return (
       <Layout>
         <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="flex items-center justify-center h-64">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
             </div>
@@ -114,7 +114,7 @@ const BowlingResult: React.FC = () => {
     return (
       <Layout>
         <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
               {error}
             </div>
@@ -128,7 +128,7 @@ const BowlingResult: React.FC = () => {
     return (
       <Layout>
         <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mx-auto text-center">
+          <div className="max-w-6xl mx-auto text-center">
             <h2 className="text-2xl font-bold">Result not found</h2>
             <Link to="/" className="text-primary hover:underline mt-4 inline-block">
               Return Home
@@ -146,7 +146,7 @@ const BowlingResult: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
       >
-        <div className="max-w-3xl mx-auto">
+        <div className="max-w-6xl mx-auto">
           <button
             onClick={() => navigate(-1)}
             className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
@@ -175,30 +175,81 @@ const BowlingResult: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  {result.debug_video_url && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Debug Video</h3>
-                      <video
-                        src={result.debug_video_url}
-                        controls
-                        autoPlay
-                        muted
-                        className="w-full rounded-lg"
-                      />
+                  {/* Top row: video left, trajectory + stats right */}
+                  <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    {/* Debug Video — 3 cols */}
+                    <div className="lg:col-span-3">
+                      {result.debug_video_url ? (
+                        <div>
+                          <h3 className="text-lg font-semibold mb-2">Debug Video</h3>
+                          <video
+                            src={result.debug_video_url}
+                            controls
+                            autoPlay
+                            muted
+                            className="w-full rounded-lg"
+                          />
+                        </div>
+                      ) : (
+                        <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
+                          <span className="text-muted-foreground">No debug video available</span>
+                        </div>
+                      )}
                     </div>
-                  )}
 
-                  {result.trajectory_png_url && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-2">Trajectory</h3>
-                      <img
-                        src={result.trajectory_png_url}
-                        alt="Ball trajectory"
-                        className="w-full rounded-lg"
-                      />
+                    {/* Right panel: trajectory + stats — 2 cols */}
+                    <div className="lg:col-span-2 space-y-4">
+                      {/* Trajectory */}
+                      <div>
+                        <h3 className="text-lg font-semibold mb-2">Trajectory</h3>
+                        {result.trajectory_png_url ? (
+                          <img
+                            src={result.trajectory_png_url}
+                            alt="Ball trajectory"
+                            className="w-full rounded-lg"
+                          />
+                        ) : (
+                          <div className="w-full aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
+                            <span className="text-muted-foreground text-sm">No trajectory available</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Stats 2x2 */}
+                      <div className="grid grid-cols-2 gap-3">
+                        {result.board_at_pins != null && (
+                          <div className="bg-primary/5 rounded-lg p-3 text-center">
+                            <div className="text-2xl font-bold text-primary">{result.board_at_pins}</div>
+                            <div className="text-xs text-muted-foreground">Board at Pins</div>
+                          </div>
+                        )}
+                        {result.entry_board != null && (
+                          <div className="bg-primary/5 rounded-lg p-3 text-center">
+                            <div className="text-2xl font-bold text-primary">{result.entry_board}</div>
+                            <div className="text-xs text-muted-foreground">Entry Board</div>
+                          </div>
+                        )}
+                        {result.detection_rate != null && (
+                          <div className="bg-primary/5 rounded-lg p-3 text-center">
+                            <div className="text-2xl font-bold text-primary">
+                              {result.detection_rate.toFixed(1)}%
+                            </div>
+                            <div className="text-xs text-muted-foreground">Detection Rate</div>
+                          </div>
+                        )}
+                        {result.processing_time_s != null && (
+                          <div className="bg-primary/5 rounded-lg p-3 text-center">
+                            <div className="text-2xl font-bold text-primary">
+                              {result.processing_time_s.toFixed(1)}s
+                            </div>
+                            <div className="text-xs text-muted-foreground">Processing Time</div>
+                          </div>
+                        )}
+                      </div>
                     </div>
-                  )}
+                  </div>
 
+                  {/* Lane Edges — full width */}
                   {result.frame_url && (result.lane_edges_auto || result.lane_edges_manual) && (
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Lane Edges</h3>
@@ -227,94 +278,61 @@ const BowlingResult: React.FC = () => {
                     </div>
                   )}
 
-                  <div>
-                    <h3 className="text-lg font-semibold mb-3">Stats</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                      {result.board_at_pins != null && (
-                        <div className="bg-primary/5 rounded-lg p-4 text-center">
-                          <div className="text-2xl font-bold text-primary">{result.board_at_pins}</div>
-                          <div className="text-sm text-muted-foreground">Board at Pins</div>
-                        </div>
-                      )}
-                      {result.entry_board != null && (
-                        <div className="bg-primary/5 rounded-lg p-4 text-center">
-                          <div className="text-2xl font-bold text-primary">{result.entry_board}</div>
-                          <div className="text-sm text-muted-foreground">Entry Board</div>
-                        </div>
-                      )}
-                      {result.detection_rate != null && (
-                        <div className="bg-primary/5 rounded-lg p-4 text-center">
-                          <div className="text-2xl font-bold text-primary">
-                            {result.detection_rate.toFixed(1)}%
+                  {/* Annotation bar — compact row */}
+                  {result.processing_status === 'completed' && (
+                    <div className="bg-primary/5 rounded-lg p-4">
+                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-4 mb-2">
+                            <h3 className="text-lg font-semibold">Annotation</h3>
+                            {annotation && (() => {
+                              const total = annotation.video_metadata?.total_frames || 0;
+                              const annotated = Object.keys(annotation.ball_annotations || {}).length;
+                              const pct = total > 0 ? Math.round((annotated / total) * 100) : 0;
+                              return (
+                                <span className="text-sm text-muted-foreground">
+                                  {annotated} / {total} frames ({pct}%)
+                                </span>
+                              );
+                            })()}
                           </div>
-                          <div className="text-sm text-muted-foreground">Detection Rate</div>
-                        </div>
-                      )}
-                      {result.processing_time_s != null && (
-                        <div className="bg-primary/5 rounded-lg p-4 text-center">
-                          <div className="text-2xl font-bold text-primary">
-                            {result.processing_time_s.toFixed(1)}s
-                          </div>
-                          <div className="text-sm text-muted-foreground">Processing Time</div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {result.processing_status === 'completed' && annotation && (
-                    <div>
-                      <h3 className="text-lg font-semibold mb-3">Annotation</h3>
-                      <div className="bg-primary/5 rounded-lg p-4 space-y-3">
-                        {/* Progress */}
-                        {(() => {
-                          const total = annotation.video_metadata?.total_frames || 0;
-                          const annotated = Object.keys(annotation.ball_annotations || {}).length;
-                          const pct = total > 0 ? Math.round((annotated / total) * 100) : 0;
-                          return (
-                            <div>
-                              <div className="flex justify-between text-sm mb-1">
-                                <span>{annotated} / {total} frames annotated</span>
-                                <span>{pct}%</span>
-                              </div>
+                          {annotation && (() => {
+                            const total = annotation.video_metadata?.total_frames || 0;
+                            const annotated = Object.keys(annotation.ball_annotations || {}).length;
+                            const pct = total > 0 ? Math.round((annotated / total) * 100) : 0;
+                            return (
                               <div className="w-full bg-muted rounded-full h-2">
                                 <div
                                   className="bg-green-500 h-2 rounded-full transition-all"
                                   style={{ width: `${pct}%` }}
                                 />
                               </div>
+                            );
+                          })()}
+                          {annotation?.frame_markers && Object.keys(annotation.frame_markers).length > 0 && (
+                            <div className="flex flex-wrap gap-3 text-sm mt-2">
+                              {annotation.frame_markers.ball_down != null && (
+                                <span className="text-blue-400">Ball Down: Frame {annotation.frame_markers.ball_down + 1}</span>
+                              )}
+                              {annotation.frame_markers.breakpoint != null && (
+                                <span className="text-yellow-400">Breakpoint: Frame {annotation.frame_markers.breakpoint + 1}</span>
+                              )}
+                              {annotation.frame_markers.pin_hit != null && (
+                                <span className="text-red-400">Pin Hit: Frame {annotation.frame_markers.pin_hit + 1}</span>
+                              )}
+                              {annotation.frame_markers.ball_off_deck != null && (
+                                <span className="text-purple-400">Off Deck: Frame {annotation.frame_markers.ball_off_deck + 1}</span>
+                              )}
                             </div>
-                          );
-                        })()}
-
-                        {/* Frame markers */}
-                        {annotation.frame_markers && Object.keys(annotation.frame_markers).length > 0 && (
-                          <div className="flex flex-wrap gap-3 text-sm">
-                            {annotation.frame_markers.ball_down != null && (
-                              <span className="text-blue-400">Ball Down: Frame {annotation.frame_markers.ball_down + 1}</span>
-                            )}
-                            {annotation.frame_markers.breakpoint != null && (
-                              <span className="text-yellow-400">Breakpoint: Frame {annotation.frame_markers.breakpoint + 1}</span>
-                            )}
-                            {annotation.frame_markers.pin_hit != null && (
-                              <span className="text-red-400">Pin Hit: Frame {annotation.frame_markers.pin_hit + 1}</span>
-                            )}
-                            {annotation.frame_markers.ball_off_deck != null && (
-                              <span className="text-purple-400">Off Deck: Frame {annotation.frame_markers.ball_off_deck + 1}</span>
-                            )}
-                          </div>
-                        )}
+                          )}
+                        </div>
+                        <a
+                          href={`/bowling/result/${attemptId}/annotate`}
+                          className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md whitespace-nowrap"
+                        >
+                          Annotate Frames
+                        </a>
                       </div>
-                    </div>
-                  )}
-
-                  {result.processing_status === 'completed' && (
-                    <div className="pt-2">
-                      <a
-                        href={`/bowling/result/${attemptId}/annotate`}
-                        className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md"
-                      >
-                        Annotate Frames
-                      </a>
                     </div>
                   )}
                 </>
