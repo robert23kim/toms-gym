@@ -69,11 +69,11 @@ export interface Challenge {
   registrationDeadline: string;
   location: string;
   description: string;
-  image: string;
+  image?: string;
   status: "upcoming" | "ongoing" | "completed";
   categories: string[];
   participants: number;
-  prizePool: {
+  prizePool?: {
     first: number;
     second: number;
     third: number;
