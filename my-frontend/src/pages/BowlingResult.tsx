@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import axios from "axios";
@@ -10,6 +10,7 @@ import { BowlingResult as BowlingResultType, LaneEdges, Annotation } from "../li
 
 const BowlingResult: React.FC = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
+  const navigate = useNavigate();
   const [result, setResult] = useState<BowlingResultType | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -146,13 +147,13 @@ const BowlingResult: React.FC = () => {
         className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
       >
         <div className="max-w-3xl mx-auto">
-          <Link
-            to="/"
+          <button
+            onClick={() => navigate(-1)}
             className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
           >
             <ArrowLeft className="mr-2" size={16} />
             Back
-          </Link>
+          </button>
 
           <div className="bg-card rounded-lg shadow-lg overflow-hidden">
             <div className="p-6 sm:p-8 space-y-6">
