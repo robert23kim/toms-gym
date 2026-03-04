@@ -7,6 +7,19 @@ import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { BowlingResult } from "../lib/types";
 
+function timeAgo(dateStr: string): string {
+  const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
+  if (seconds < 60) return "just now";
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
+  if (days < 30) return `${days}d ago`;
+  const months = Math.floor(days / 30);
+  return `${months}mo ago`;
+}
+
 const BowlingChallenge: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [results, setResults] = useState<BowlingResult[]>([]);
@@ -24,6 +37,8 @@ const BowlingChallenge: React.FC = () => {
   const [activeAttemptId, setActiveAttemptId] = useState<string | null>(null);
   const [activeResult, setActiveResult] = useState<BowlingResult | null>(null);
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [showUpload, setShowUpload] = useState(false);
+  const uploadRef = useRef<HTMLDivElement>(null);
 
   const fetchResults = async () => {
     try {
@@ -132,6 +147,7 @@ const BowlingChallenge: React.FC = () => {
       setActiveAttemptId(response.data.attempt_id);
       setActiveResult(null);
       setSelectedFile(null);
+      setShowUpload(false);
     } catch (err: any) {
       console.error("Upload error:", err);
       let errorMsg = "Upload failed";
@@ -179,7 +195,7 @@ const BowlingChallenge: React.FC = () => {
         animate={{ opacity: 1, y: 0 }}
         className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
       >
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl mx-auto">
           <Link
             to="/challenges"
             className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
@@ -189,94 +205,31 @@ const BowlingChallenge: React.FC = () => {
           </Link>
 
           {/* Header */}
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
-            <div className="p-6 sm:p-8">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
-                <h1 className="text-3xl font-bold mb-4 sm:mb-0">Bowling Challenge</h1>
-                <div className="flex items-center text-muted-foreground">
-                  <Users className="mr-2" size={16} />
-                  <span>{results.length} submission{results.length !== 1 ? "s" : ""}</span>
-                </div>
-              </div>
-
-              {/* Upload Form */}
-              <div className="bg-blue-500/5 rounded-lg p-6 border border-blue-500/10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2 bg-blue-500/10 rounded-lg">
-                    <Upload className="w-5 h-5 text-blue-500" />
-                  </div>
-                  <h2 className="text-xl font-semibold">Upload Your Bowling Video</h2>
-                </div>
-
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  {!localStorage.getItem("userId") && (
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Email Address</label>
-                      <input
-                        type="email"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Enter your email to link this upload"
-                        className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
-                      <p className="text-xs text-muted-foreground mt-1">
-                        No account needed! Your video will be linked to this email.
-                      </p>
-                    </div>
-                  )}
-
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Video</label>
-                    <div
-                      onDrop={handleDrop}
-                      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                      onDragLeave={() => setIsDragging(false)}
-                      className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
-                        isDragging
-                          ? "border-primary bg-primary/5"
-                          : "border-input hover:border-primary/50"
-                      }`}
-                    >
-                      <input
-                        type="file"
-                        accept="video/*"
-                        onChange={handleFileSelect}
-                        className="hidden"
-                        id="bowling-video-upload"
-                      />
-                      <label
-                        htmlFor="bowling-video-upload"
-                        className="cursor-pointer flex flex-col items-center"
-                      >
-                        <Upload className="w-6 h-6 text-muted-foreground mb-2" />
-                        <span className="text-sm text-muted-foreground">
-                          {selectedFile
-                            ? selectedFile.name
-                            : "Click or drag and drop a bowling video"}
-                        </span>
-                      </label>
-                    </div>
-                  </div>
-
-                  {uploadError && (
-                    <div className="text-red-500 text-sm">{uploadError}</div>
-                  )}
-
-                  <button
-                    type="submit"
-                    disabled={isUploading || !selectedFile}
-                    className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {isUploading ? "Uploading..." : "Upload Video"}
-                  </button>
-                </form>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <div>
+              <h1 className="text-3xl font-bold">Bowling Challenge</h1>
+              <div className="flex items-center text-muted-foreground mt-1">
+                <Users className="mr-2" size={16} />
+                <span>{results.length} submission{results.length !== 1 ? "s" : ""}</span>
               </div>
             </div>
+            <button
+              onClick={() => {
+                setShowUpload(!showUpload);
+                if (!showUpload) {
+                  setTimeout(() => uploadRef.current?.scrollIntoView({ behavior: "smooth" }), 100);
+                }
+              }}
+              className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+            >
+              <Upload size={16} />
+              Upload Video
+            </button>
           </div>
 
           {/* Active Processing Result */}
           {activeAttemptId && (
-            <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
+            <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-6">
               <div className="p-6 sm:p-8">
                 {!activeResult || activeResult.processing_status === "queued" ? (
                   <div className="text-center py-4">
@@ -298,31 +251,18 @@ const BowlingChallenge: React.FC = () => {
                 ) : (
                   <div className="space-y-4">
                     <h3 className="text-xl font-bold">Your Results</h3>
-
                     {activeResult.debug_video_url && (
                       <div>
                         <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Debug Video</h4>
-                        <video
-                          src={activeResult.debug_video_url}
-                          controls
-                          autoPlay
-                          muted
-                          className="w-full rounded-lg"
-                        />
+                        <video src={activeResult.debug_video_url} controls autoPlay muted className="w-full rounded-lg" />
                       </div>
                     )}
-
                     {activeResult.trajectory_png_url && (
                       <div>
                         <h4 className="text-sm font-semibold mb-2 text-muted-foreground">Trajectory</h4>
-                        <img
-                          src={activeResult.trajectory_png_url}
-                          alt="Ball trajectory"
-                          className="w-full rounded-lg"
-                        />
+                        <img src={activeResult.trajectory_png_url} alt="Ball trajectory" className="w-full rounded-lg" />
                       </div>
                     )}
-
                     <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                       {activeResult.board_at_pins != null && (
                         <div className="bg-primary/5 rounded-lg p-3 text-center">
@@ -355,16 +295,23 @@ const BowlingChallenge: React.FC = () => {
             </div>
           )}
 
-          {/* All Results Grid */}
+          {/* All Submissions Grid */}
           <h2 className="text-2xl font-bold mb-4">All Submissions</h2>
           {results.length === 0 && !activeAttemptId ? (
-            <div className="bg-card rounded-lg shadow-lg p-8 text-center">
-              <p className="text-muted-foreground">
+            <div className="bg-card rounded-lg shadow-lg p-8 text-center mb-8">
+              <p className="text-muted-foreground mb-4">
                 No bowling results yet. Be the first to upload!
               </p>
+              <button
+                onClick={() => setShowUpload(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90"
+              >
+                <Upload size={16} />
+                Upload Video
+              </button>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
               {results.map((result) => (
                 <Link
                   key={result.attempt_id}
@@ -376,6 +323,17 @@ const BowlingChallenge: React.FC = () => {
                       src={result.trajectory_png_url}
                       alt="Trajectory"
                       className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = "none";
+                        target.parentElement!.insertBefore(
+                          Object.assign(document.createElement("div"), {
+                            className: "w-full h-48 bg-muted flex items-center justify-center",
+                            innerHTML: '<span class="text-muted-foreground text-sm">No trajectory</span>',
+                          }),
+                          target
+                        );
+                      }}
                     />
                   ) : (
                     <div className="w-full h-48 bg-muted flex items-center justify-center">
@@ -392,9 +350,14 @@ const BowlingChallenge: React.FC = () => {
                     </div>
                   )}
                   <div className="p-4">
-                    {result.user_name && (
-                      <h3 className="font-semibold mb-1">{result.user_name}</h3>
-                    )}
+                    <div className="flex justify-between items-start mb-1">
+                      {result.user_name && (
+                        <h3 className="font-semibold">{result.user_name}</h3>
+                      )}
+                      {result.created_at && (
+                        <span className="text-xs text-muted-foreground">{timeAgo(result.created_at)}</span>
+                      )}
+                    </div>
                     <div className="flex justify-between text-sm text-muted-foreground">
                       {result.board_at_pins != null && (
                         <span>Board: {result.board_at_pins}</span>
@@ -403,18 +366,101 @@ const BowlingChallenge: React.FC = () => {
                         <span>{result.detection_rate.toFixed(1)}% detected</span>
                       )}
                     </div>
-                    <div className="mt-1 text-xs text-muted-foreground">
-                      {result.processing_status === "completed"
-                        ? "Completed"
-                        : result.processing_status === "failed"
-                        ? "Failed"
-                        : "Processing..."}
-                    </div>
+                    {result.processing_status !== "completed" && (
+                      <div className="mt-1">
+                        {result.processing_status === "failed" ? (
+                          <span className="text-xs text-red-400">Failed</span>
+                        ) : (
+                          <span className="text-xs text-blue-400">Processing...</span>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </Link>
               ))}
             </div>
           )}
+
+          {/* Upload Form -- collapsed by default */}
+          <div ref={uploadRef}>
+            {showUpload && (
+              <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
+                <div className="p-6 sm:p-8">
+                  <div className="bg-blue-500/5 rounded-lg p-6 border border-blue-500/10">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-2 bg-blue-500/10 rounded-lg">
+                        <Upload className="w-5 h-5 text-blue-500" />
+                      </div>
+                      <h2 className="text-xl font-semibold">Upload Your Bowling Video</h2>
+                    </div>
+
+                    <form onSubmit={handleSubmit} className="space-y-4">
+                      {!localStorage.getItem("userId") && (
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Email Address</label>
+                          <input
+                            type="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            placeholder="Enter your email to link this upload"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                          <p className="text-xs text-muted-foreground mt-1">
+                            No account needed! Your video will be linked to this email.
+                          </p>
+                        </div>
+                      )}
+
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Video</label>
+                        <div
+                          onDrop={handleDrop}
+                          onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                          onDragLeave={() => setIsDragging(false)}
+                          className={`border-2 border-dashed rounded-lg p-6 text-center transition-colors ${
+                            isDragging
+                              ? "border-primary bg-primary/5"
+                              : "border-input hover:border-primary/50"
+                          }`}
+                        >
+                          <input
+                            type="file"
+                            accept="video/*"
+                            onChange={handleFileSelect}
+                            className="hidden"
+                            id="bowling-video-upload"
+                          />
+                          <label
+                            htmlFor="bowling-video-upload"
+                            className="cursor-pointer flex flex-col items-center"
+                          >
+                            <Upload className="w-6 h-6 text-muted-foreground mb-2" />
+                            <span className="text-sm text-muted-foreground">
+                              {selectedFile
+                                ? selectedFile.name
+                                : "Click or drag and drop a bowling video"}
+                            </span>
+                          </label>
+                        </div>
+                      </div>
+
+                      {uploadError && (
+                        <div className="text-red-500 text-sm">{uploadError}</div>
+                      )}
+
+                      <button
+                        type="submit"
+                        disabled={isUploading || !selectedFile}
+                        className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {isUploading ? "Uploading..." : "Upload Video"}
+                      </button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </motion.div>
     </Layout>
