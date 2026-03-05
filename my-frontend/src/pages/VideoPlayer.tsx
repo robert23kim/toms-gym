@@ -205,11 +205,10 @@ const VideoPlayer: React.FC = () => {
 
   const handleAnalyzeForm = async () => {
     if (!videoId) return;
+    setLiftingResult(null);
     setIsAnalyzing(true);
     try {
       await triggerLiftingAnalysis(videoId);
-      const result = await getLiftingResult(videoId);
-      setLiftingResult(result);
     } catch (e) {
       setIsAnalyzing(false);
     }
