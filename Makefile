@@ -7,9 +7,9 @@ all: setup
 setup:
 	@echo "Setting up development environment..."
 	@test -d venv || python -m venv venv
-	@. venv/bin/activate && pip install -r Backend/requirements.txt
-	@. venv/bin/activate && pip install -e Backend
-	@cd my-frontend && npm install
+	@. venv/bin/activate && pip install -r backend/requirements.txt
+	@. venv/bin/activate && pip install -e backend
+	@cd frontend && npm install
 	@echo "Setup complete!"
 
 # Start development environment
@@ -28,12 +28,12 @@ test: test-backend test-frontend test-mobile
 # Run backend tests
 test-backend:
 	@echo "Running backend tests..."
-	@cd Backend && python -m pytest
+	@cd backend && python -m pytest
 
 # Run frontend tests
 test-frontend:
 	@echo "Running frontend tests..."
-	@cd my-frontend && npm run lint
+	@cd frontend && npm run lint
 
 # Run mobile tests
 test-mobile:
@@ -59,13 +59,13 @@ deploy-frontend:
 clean:
 	@echo "Cleaning development environment..."
 	@docker-compose down -v
-	@rm -rf Backend/venv
+	@rm -rf backend/venv
 	@rm -rf venv
-	@rm -rf my-frontend/node_modules
-	@rm -rf Backend/__pycache__
-	@rm -rf Backend/tests/__pycache__
-	@rm -rf Backend/toms_gym/__pycache__
-	@rm -rf Backend/toms_gym/routes/__pycache__
+	@rm -rf frontend/node_modules
+	@rm -rf backend/__pycache__
+	@rm -rf backend/tests/__pycache__
+	@rm -rf backend/toms_gym/__pycache__
+	@rm -rf backend/toms_gym/routes/__pycache__
 	@echo "Cleanup complete!"
 
 # Show help

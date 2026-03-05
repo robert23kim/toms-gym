@@ -447,9 +447,9 @@ def get_frames(result_id):
         if not video_url:
             return jsonify({'error': 'No video available for frame extraction'}), 400
 
-        bowling_service_url = os.environ.get('BOWLING_SERVICE_URL', '')
+        bowling_service_url = os.environ.get('ANALYSIS_SERVICE_URL', '')
         if not bowling_service_url:
-            return jsonify({'error': 'BOWLING_SERVICE_URL not configured'}), 500
+            return jsonify({'error': 'ANALYSIS_SERVICE_URL not configured'}), 500
 
         import requests
         import google.auth.transport.requests as google_auth_requests

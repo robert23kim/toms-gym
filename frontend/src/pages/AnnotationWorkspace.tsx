@@ -11,7 +11,7 @@ import { useEdgeEditor } from '../hooks/useEdgeEditor';
 import { useFrameNavigation } from '../hooks/useFrameNavigation';
 import { useCropView } from '../hooks/useCropView';
 import { TrajectoryCanvas } from '../components/TrajectoryCanvas';
-import type { FrameData, FrameMarkers } from '../lib/types';
+import type { FrameData, FrameMarkers, LaneEdges } from '../lib/types';
 
 export default function AnnotationWorkspace() {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -57,10 +57,15 @@ export default function AnnotationWorkspace() {
     isPlaying, playbackSpeed, pause, togglePlay, cycleSpeed,
   } = useFrameNavigation(resultId, frameData?.total_frames || 0, frameData?.fps || 30);
 
+  const handleEdgeSave = useCallback((frame: number, edges: LaneEdges) => {
+    saveLaneEdges(frame, edges);
+    setLaneEdges(edges);
+  }, [saveLaneEdges, setLaneEdges]);
+
   const edgeEditor = useEdgeEditor({
     annotation,
     currentFrame,
-    onSave: saveLaneEdges,
+    onSave: handleEdgeSave,
     onDelete: deleteLaneEdges,
   });
 

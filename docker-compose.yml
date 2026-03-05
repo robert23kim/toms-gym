@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./Backend
+      context: ./backend
       dockerfile: Dockerfile
     container_name: toms-gym-backend
     ports:
@@ -38,8 +38,8 @@ services:
       - EMAIL_SEND_CONFIRMATIONS=true
       - BACKEND_URL=http://localhost:5000
     volumes:
-      - ./Backend:/app
-      - ./Backend/credentials.json:/credentials/credentials.json:ro
+      - ./backend:/app
+      - ./backend/credentials.json:/credentials/credentials.json:ro
       - ./tests:/app/tests
     depends_on:
       - db
@@ -63,7 +63,7 @@ services:
       - "5434:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./Backend/toms_gym/migrations:/docker-entrypoint-initdb.d
+      - ./backend/toms_gym/migrations:/docker-entrypoint-initdb.d
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U postgres"]
       interval: 10s
@@ -87,7 +87,7 @@ services:
 
   frontend:
     build:
-      context: ./my-frontend
+      context: ./frontend
       dockerfile: Dockerfile
       args:
         - API_URL=http://localhost:5001

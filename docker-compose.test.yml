@@ -3,7 +3,7 @@ version: '3.8'
 services:
   backend-test:
     build: 
-      context: ./Backend
+      context: ./backend
       target: development
     environment:
       - DATABASE_URL=postgresql://postgres:test@db-test:5432/toms_gym_test
@@ -15,7 +15,7 @@ services:
       - DEBUG=true
       - PYTHONPATH=/app
     volumes:
-      - ./Backend:/app
+      - ./backend:/app
     ports:
       - "8080:8080"
     depends_on:

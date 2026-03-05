@@ -4,8 +4,8 @@ A platform for fitness competitions, video uploads, and weightlifting challenges
 
 ## Project Structure
 
-- **Backend/**: Python Flask API for video handling and competition management
-- **my-frontend/**: React/TypeScript frontend application
+- **backend/**: Python Flask API for video handling and competition management
+- **frontend/**: React/TypeScript frontend application
 - **tests/**: Mobile video playback testing scripts and tools
 - **docker-compose.yml**: Orchestrates the development environment
 
@@ -40,7 +40,7 @@ This will start:
 #### Backend Setup
 
 ```bash
-cd Backend
+cd backend
 
 # Create and activate virtual environment
 python -m venv venv
@@ -64,7 +64,7 @@ python main.py
 #### Frontend Setup
 
 ```bash
-cd my-frontend
+cd frontend
 
 # Install dependencies
 npm install
@@ -81,7 +81,7 @@ npm run dev
 ### Run Backend Tests
 
 ```bash
-cd Backend
+cd backend
 python -m pytest
 ```
 
@@ -153,11 +153,11 @@ If videos don't play correctly on mobile:
 
 ```bash
 # Update backend dependencies
-cd Backend
+cd backend
 pip install --upgrade -r requirements.txt
 
 # Update frontend dependencies
-cd my-frontend
+cd frontend
 npm update
 ```
 

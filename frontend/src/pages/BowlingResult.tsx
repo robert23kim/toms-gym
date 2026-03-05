@@ -283,30 +283,29 @@ const BowlingResult: React.FC = () => {
                     <div className="bg-primary/5 rounded-lg p-4">
                       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                         <div className="flex-1">
-                          <div className="flex items-center gap-4 mb-2">
-                            <h3 className="text-lg font-semibold">Annotation</h3>
-                            {annotation && (() => {
-                              const total = annotation.video_metadata?.total_frames || 0;
-                              const annotated = Object.keys(annotation.ball_annotations || {}).length;
-                              const pct = total > 0 ? Math.round((annotated / total) * 100) : 0;
-                              return (
-                                <span className="text-sm text-muted-foreground">
-                                  {annotated} / {total} frames ({pct}%)
-                                </span>
-                              );
-                            })()}
-                          </div>
-                          {annotation && (() => {
-                            const total = annotation.video_metadata?.total_frames || 0;
-                            const annotated = Object.keys(annotation.ball_annotations || {}).length;
+                          {(() => {
+                            const total = annotation?.video_metadata?.total_frames || 0;
+                            const annotated = Object.keys(annotation?.ball_annotations || {}).length;
                             const pct = total > 0 ? Math.round((annotated / total) * 100) : 0;
                             return (
-                              <div className="w-full bg-muted rounded-full h-2">
-                                <div
-                                  className="bg-green-500 h-2 rounded-full transition-all"
-                                  style={{ width: `${pct}%` }}
-                                />
-                              </div>
+                              <>
+                                <div className="flex items-center gap-4 mb-2">
+                                  <h3 className="text-lg font-semibold">Annotation</h3>
+                                  {annotation && (
+                                    <span className="text-sm text-muted-foreground">
+                                      {annotated} / {total} frames ({pct}%)
+                                    </span>
+                                  )}
+                                </div>
+                                {annotation && (
+                                  <div className="w-full bg-muted rounded-full h-2">
+                                    <div
+                                      className="bg-green-500 h-2 rounded-full transition-all"
+                                      style={{ width: `${pct}%` }}
+                                    />
+                                  </div>
+                                )}
+                              </>
                             );
                           })()}
                           {annotation?.frame_markers && Object.keys(annotation.frame_markers).length > 0 && (

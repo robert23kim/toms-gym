@@ -7,7 +7,7 @@
 - Use `python3 deploy.py --skip-iam` for full deployment
 
 ## Production URLs
-- Frontend: https://my-frontend-quyiiugyoq-ue.a.run.app
+- Frontend: https://toms-gym-web-quyiiugyoq-ue.a.run.app
 - Backend: https://my-python-backend-quyiiugyoq-ue.a.run.app
 
 ## Testing
@@ -33,7 +33,7 @@ The app supports **optional authentication**. Users can upload videos and create
 
 ### Key Endpoints
 
-#### Backend (`/Backend/toms_gym/routes/`)
+#### Backend (`/backend/toms_gym/routes/`)
 
 | Endpoint | Method | Description |
 |----------|--------|-------------|
@@ -88,7 +88,7 @@ Production secrets are stored in **GCP Secret Manager** and injected into Cloud 
 - `deploy.py` uses `--set-secrets` for sensitive values and `--set-env-vars` for non-sensitive config
 - Deploy command logging redacts `--set-env-vars` and `--set-secrets` values
 - Flask app has **no fallback defaults** for secrets in production — missing secrets cause a startup error
-- `.dockerignore` files in `Backend/` and `my-frontend/` exclude `.env`, credentials, and key files
+- `.dockerignore` files in `backend/` and `frontend/` exclude `.env`, credentials, and key files
 
 ### Updating a Secret
 ```bash
@@ -125,13 +125,13 @@ Custom agent personas are defined in `.claude/agents/`. When spawning a team, re
 
 | File | Changes |
 |------|---------|
-| `Backend/.../upload_routes.py` | Returns `user_id` in upload response |
-| `Backend/.../user_routes.py` | Added `/users/by-email/<email>` endpoint |
-| `Backend/.../auth_routes.py` | Made password optional in register |
-| `my-frontend/.../UploadVideo.tsx` | Email field for non-logged-in users |
-| `my-frontend/.../Profile.tsx` | No auth required, works with URL param |
-| `my-frontend/.../CreateProfile.tsx` | Password optional (hidden by default) |
-| `my-frontend/.../FindProfile.tsx` | New component for email lookup |
-| `my-frontend/.../Navbar.tsx` | Find Profile button, Forget Me for passwordless |
-| `my-frontend/.../AuthContext.tsx` | Handles passwordless user state |
-| `my-frontend/.../routes/index.tsx` | Added `/profile/:id` route |
+| `backend/.../upload_routes.py` | Returns `user_id` in upload response |
+| `backend/.../user_routes.py` | Added `/users/by-email/<email>` endpoint |
+| `backend/.../auth_routes.py` | Made password optional in register |
+| `frontend/.../UploadVideo.tsx` | Email field for non-logged-in users |
+| `frontend/.../Profile.tsx` | No auth required, works with URL param |
+| `frontend/.../CreateProfile.tsx` | Password optional (hidden by default) |
+| `frontend/.../FindProfile.tsx` | New component for email lookup |
+| `frontend/.../Navbar.tsx` | Find Profile button, Forget Me for passwordless |
+| `frontend/.../AuthContext.tsx` | Handles passwordless user state |
+| `frontend/.../routes/index.tsx` | Added `/profile/:id` route |

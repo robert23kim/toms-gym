@@ -232,8 +232,8 @@ const VideoGallery: React.FC<VideoGalleryProps> = ({
               </div>
             </Link>
             
-            {/* Delete button */}
-            {showDeleteButton && (
+            {/* Delete button — only show for own videos */}
+            {showDeleteButton && (!userId || video.user_id === userId) && (
               <button
                 onClick={(e) => handleDeleteClick(e, video)}
                 className="absolute top-2 right-2 p-2 bg-red-500/90 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600 shadow-lg"

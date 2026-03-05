@@ -6,7 +6,7 @@ to the bowling-service's /analyze-lift endpoint for processing.
 
 Config via environment variables:
     LIFTING_PROCESSOR_ENABLED: 'true' to enable (default: 'false')
-    BOWLING_SERVICE_URL: URL of the processing service
+    ANALYSIS_SERVICE_URL: URL of the processing service
     LIFTING_POLL_INTERVAL: seconds between polls (default: 5)
 """
 
@@ -22,7 +22,7 @@ import sqlalchemy
 logger = logging.getLogger(__name__)
 
 LIFTING_PROCESSOR_ENABLED = os.environ.get('LIFTING_PROCESSOR_ENABLED', 'false').lower() == 'true'
-BOWLING_SERVICE_URL = os.environ.get('BOWLING_SERVICE_URL', '')
+ANALYSIS_SERVICE_URL = os.environ.get('ANALYSIS_SERVICE_URL', '')
 LIFTING_POLL_INTERVAL = int(os.environ.get('LIFTING_POLL_INTERVAL', '5'))
 
 
@@ -30,7 +30,7 @@ def _get_id_token():
     """Get Google identity token for service-to-service auth."""
     from google.auth.transport.requests import Request as AuthRequest
     from google.oauth2 import id_token
-    return id_token.fetch_id_token(AuthRequest(), BOWLING_SERVICE_URL)
+    return id_token.fetch_id_token(AuthRequest(), ANALYSIS_SERVICE_URL)
 
 
 def start_lifting_processor():
@@ -39,8 +39,8 @@ def start_lifting_processor():
         logger.info("Lifting processor is disabled")
         return
 
-    if not BOWLING_SERVICE_URL:
-        logger.warning("BOWLING_SERVICE_URL not configured, lifting processor cannot start")
+    if not ANALYSIS_SERVICE_URL:
+        logger.warning("ANALYSIS_SERVICE_URL not configured, lifting processor cannot start")
         return
 
     thread = threading.Thread(target=_run_processor, daemon=True)
@@ -118,7 +118,7 @@ def _process_job(get_connection, result_id, attempt_id, video_url):
         id_token = _get_id_token()
 
         response = requests.post(
-            f"{BOWLING_SERVICE_URL}/analyze-lift",
+            f"{ANALYSIS_SERVICE_URL}/analyze-lift",
             json={
                 "video_url": video_url,
                 "attempt_id": str(attempt_id),

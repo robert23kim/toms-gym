@@ -464,36 +464,113 @@ def create_competition():
         if session:
             session.close()
 
+@competition_bp.route('/competitions/<string:competition_id>', methods=['PATCH'])
+def update_competition(competition_id):
+    """
+    Endpoint to update a competition by ID.
+    Accepts JSON payload with fields to update: name, description, start_date, end_date, status.
+    """
+    session = None
+    try:
+        request_data = request.json
+        if not request_data:
+            return {"error": "No data provided"}, 400
+
+        allowed_fields = {"name", "description", "start_date", "end_date", "status"}
+        updates = {k: v for k, v in request_data.items() if k in allowed_fields}
+
+        if not updates:
+            return {"error": "No valid fields to update"}, 400
+
+        session = get_db_connection()
+
+        # Check competition exists
+        existing = session.execute(
+            sqlalchemy.text("SELECT id FROM \"Competition\" WHERE id = :id"),
+            {"id": competition_id}
+        ).fetchone()
+        if existing is None:
+            return {"error": "Competition not found"}, 404
+
+        # Build dynamic UPDATE query
+        set_clauses = ", ".join(f"{field} = :{field}" for field in updates)
+        updates["id"] = competition_id
+        session.execute(
+            sqlalchemy.text(f"UPDATE \"Competition\" SET {set_clauses}, updated_at = NOW() WHERE id = :id"),
+            updates
+        )
+        session.commit()
+
+        logger.info(f"Updated competition {competition_id}: {list(updates.keys())}")
+        return {"message": "Competition updated successfully", "competition_id": competition_id}, 200
+    except Exception as e:
+        logger.error(f"Error updating competition: {str(e)}")
+        if session:
+            session.rollback()
+        return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
+
 @competition_bp.route('/competitions/<string:competition_id>', methods=['DELETE'])
 def delete_competition(competition_id):
     """
     Endpoint to delete a competition by ID.
-    This will cascade delete all associated UserCompetitions and Attempts.
+    Manually cascades: BowlingResult -> Attempt -> UserCompetition -> Competition.
     """
     session = None
     try:
         logger.info(f"Deleting competition with ID: {competition_id}")
         session = get_db_connection()
-        
+
         # First check if the competition exists
         result = session.execute(
             sqlalchemy.text("SELECT id, name FROM \"Competition\" WHERE id = :id"),
             {"id": competition_id}
         ).fetchone()
-        
+
         if result is None:
             logger.warning(f"Competition not found with ID: {competition_id}")
             return {"error": "Competition not found"}, 404
-        
+
         competition_name = result._mapping.get('name', 'unknown')
-        
-        # Delete the competition (cascades to UserCompetition and Attempt)
+
+        # Manually cascade: BowlingResult -> Attempt -> UserCompetition -> Competition
+        # 1. Delete BowlingResults for attempts in this competition
+        session.execute(
+            sqlalchemy.text("""
+                DELETE FROM "BowlingResult"
+                WHERE attempt_id IN (
+                    SELECT a.id FROM "Attempt" a
+                    JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                    WHERE uc.competition_id = :id
+                )
+            """),
+            {"id": competition_id}
+        )
+        # 2. Delete Attempts for this competition
+        session.execute(
+            sqlalchemy.text("""
+                DELETE FROM "Attempt"
+                WHERE user_competition_id IN (
+                    SELECT id FROM "UserCompetition"
+                    WHERE competition_id = :id
+                )
+            """),
+            {"id": competition_id}
+        )
+        # 3. Delete UserCompetitions
+        session.execute(
+            sqlalchemy.text("DELETE FROM \"UserCompetition\" WHERE competition_id = :id"),
+            {"id": competition_id}
+        )
+        # 4. Delete the competition itself
         session.execute(
             sqlalchemy.text("DELETE FROM \"Competition\" WHERE id = :id"),
             {"id": competition_id}
         )
         session.commit()
-        
+
         logger.info(f"Successfully deleted competition: {competition_name} (ID: {competition_id})")
         return {"message": f"Competition '{competition_name}' deleted successfully", "competition_id": competition_id}, 200
     except Exception as e:

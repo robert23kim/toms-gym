@@ -109,14 +109,30 @@ export interface BowlingResult {
   frame_url?: string;
 }
 
+export interface MetricFeedback {
+  key: string;
+  label: string;
+  value: number;
+  unit: string;
+  target: string;
+  status: 'pass' | 'warn' | 'fail';
+  best_time_s?: number;
+  worst_time_s?: number;
+  clip_url?: string;
+}
+
 export interface RepMetrics {
   rep_number: number;
   elbow_angle_range: [number, number];
   tempo_ratio: number;
   elbow_drift_pct: number;
   body_sway_pct: number;
+  momentum_score?: number;
+  rom_score?: number;
+  shoulder_flexion_avg?: number;
   form_grade: string;
   form_score: number;
+  metrics?: MetricFeedback[];
 }
 
 export interface LiftingReport {

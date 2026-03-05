@@ -35,9 +35,9 @@ def load_env_file(env_path: str = None) -> dict:
     script_dir = Path(__file__).parent
     paths_to_check.extend([
         script_dir / '.env',
-        script_dir / 'Backend' / '.env',
+        script_dir / 'backend' / '.env',
         Path.cwd() / '.env',
-        Path.cwd() / 'Backend' / '.env',
+        Path.cwd() / 'backend' / '.env',
     ])
     
     for path in paths_to_check:
@@ -96,7 +96,7 @@ def log(message, color=None, start_time=None):
 
 class DeploymentMode(Enum):
     BOTH = "both"
-    FRONTEND = "frontend"
+    FRONTEND = "toms-gym-web"
     BACKEND = "backend"
 
 @dataclass
@@ -104,10 +104,10 @@ class DeploymentConfig:
     """Configuration for deployment."""
     project_id: str
     region: str
-    backend_service: str = "my-python-backend"
-    frontend_service: str = "my-frontend"
-    backend_image: str = "gcr.io/toms-gym/my-python-backend:latest"
-    frontend_image: str = "gcr.io/toms-gym/my-frontend:latest"
+    backend_service: str = "toms-gym-api"
+    frontend_service: str = "toms-gym-web"
+    backend_image: str = "gcr.io/toms-gym/toms-gym-api:latest"
+    frontend_image: str = "gcr.io/toms-gym/toms-gym-web:latest"
     service_account: str = "toms-gym-service@toms-gym.iam.gserviceaccount.com"
     min_instances: int = 1
     backend_memory: str = "1Gi"
@@ -269,9 +269,9 @@ class DeploymentManager:
         self.config = config
         self.mode = mode
         self.skip_iam = skip_iam
-        self.backend_spinner = Spinner("Backend", Colors.YELLOW)
+        self.backend_spinner = Spinner("backend", Colors.YELLOW)
         self.frontend_spinner = Spinner("Frontend", Colors.BLUE)
-        self.backend_logs = LogStreamer(Path(self.config.backend_log), "Backend", Colors.YELLOW)
+        self.backend_logs = LogStreamer(Path(self.config.backend_log), "backend", Colors.YELLOW)
         self.frontend_logs = LogStreamer(Path(self.config.frontend_log), "Frontend", Colors.BLUE)
         self._roles_checked = set()  # Cache for checked roles
         self._gcloud_describe_cache: Dict[str, Any] = {}  # Cache for gcloud describe calls
@@ -570,7 +570,7 @@ class DeploymentManager:
             
         # Get current image
         current_image = await self.get_service_image(
-            self.config.backend_service if service_type == "Backend" else self.config.frontend_service
+            self.config.backend_service if service_type == "backend" else self.config.frontend_service
         )
         self.log(f"Current {service_type.lower()} image: {current_image}", Colors.BLUE)
         
@@ -595,7 +595,7 @@ class DeploymentManager:
         
         # Get new image version
         new_image = await self.get_service_image(
-            self.config.backend_service if service_type == "Backend" else self.config.frontend_service
+            self.config.backend_service if service_type == "backend" else self.config.frontend_service
         )
         self.log(f"New {service_type.lower()} image: {new_image}", Colors.GREEN)
         
@@ -614,7 +614,7 @@ class DeploymentManager:
             "--timeout=1800s",
             "--quiet",
             f"--gcs-log-dir=gs://{self.config.bucket_name}/build-logs",
-            "Backend/"
+            "backend/"
         ]
         
         # Build environment variables string (non-sensitive only)
@@ -633,12 +633,12 @@ class DeploymentManager:
             "EMAIL_SMTP_SERVER=smtp.gmail.com",
             "EMAIL_SMTP_PORT=587",
             "EMAIL_SEND_CONFIRMATIONS=true",
-            "BACKEND_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app",
-            "FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
-            "PROD_FRONTEND_URL=https://my-frontend-quyiiugyoq-ue.a.run.app",
+            "BACKEND_URL=https://toms-gym-api-quyiiugyoq-ue.a.run.app",
+            "FRONTEND_URL=https://toms-gym-web-quyiiugyoq-ue.a.run.app",
+            "PROD_FRONTEND_URL=https://toms-gym-web-quyiiugyoq-ue.a.run.app",
             # Bowling processor integration (calls bowling-service Cloud Run)
             "BOWLING_PROCESSOR_ENABLED=true",
-            "BOWLING_SERVICE_URL=https://bowling-service-834341357827.us-east1.run.app",
+            "ANALYSIS_SERVICE_URL=https://analysis-engine-834341357827.us-east1.run.app",
             "BOWLING_POLL_INTERVAL=5",
             # Lifting processor integration (calls bowling-service /analyze-lift)
             "LIFTING_PROCESSOR_ENABLED=true",
@@ -671,7 +671,7 @@ class DeploymentManager:
 
         # Build and deploy
         new_image = await self.build_and_deploy_service(
-            "Backend",
+            "backend",
             build_commands,
             deploy_commands,
             spinner=self.backend_spinner,
@@ -731,13 +731,13 @@ class DeploymentManager:
                 self.log(f"Using backend URL from deployed service: {backend_url}", Colors.BLUE)
             except Exception as e:
                 # Default to the standard production backend URL if we can't get it
-                backend_url = "https://my-python-backend-quyiiugyoq-ue.a.run.app"
+                backend_url = "https://toms-gym-api-quyiiugyoq-ue.a.run.app"
                 self.log(f"Using default backend URL: {backend_url}", Colors.BLUE)
         
         # Always set the API_URL in the production environment
         self.log(f"Setting API_URL to {backend_url} for frontend build", Colors.BLUE)
         # Create a temporary .env.production file with the API_URL
-        with open("my-frontend/.env.production", "w") as f:
+        with open("frontend/.env.production", "w") as f:
             f.write(f"VITE_API_URL={backend_url}\n")
             f.write(f"VITE_BUILD_TIMESTAMP={int(time.time())}\n")
         
@@ -761,7 +761,7 @@ class DeploymentManager:
             "Frontend", 
             build_commands, 
             deploy_commands, 
-            cwd="my-frontend",
+            cwd="frontend",
             spinner=self.frontend_spinner,
             log_file=self.config.frontend_log
         )
@@ -896,7 +896,7 @@ class DeploymentManager:
             # Run health checks in parallel
             health_checks = []
             if self.mode in [DeploymentMode.BOTH, DeploymentMode.BACKEND] and backend_url:
-                health_checks.append(self.verify_health(backend_url, "Backend"))
+                health_checks.append(self.verify_health(backend_url, "backend"))
             if self.mode in [DeploymentMode.BOTH, DeploymentMode.FRONTEND] and frontend_url:
                 health_checks.append(self.verify_health(frontend_url, "Frontend"))
             if health_checks:

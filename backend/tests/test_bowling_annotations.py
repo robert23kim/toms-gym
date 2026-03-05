@@ -123,7 +123,7 @@ class TestGetFrames:
     @patch('requests.post')
     @patch('google.oauth2.id_token.fetch_id_token')
     @patch('google.auth.transport.requests.Request')
-    @patch.dict('os.environ', {'BOWLING_SERVICE_URL': 'http://test-service:8080'})
+    @patch.dict('os.environ', {'ANALYSIS_SERVICE_URL': 'http://test-service:8080'})
     def test_not_extracted_calls_service(
         self, mock_auth_req, mock_fetch_token, mock_requests_post,
         annotation_client, bowling_result

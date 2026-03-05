@@ -33,6 +33,9 @@ const BowlingChallenge: React.FC = () => {
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
+  // Track broken trajectory images
+  const [brokenImages, setBrokenImages] = useState<Set<string>>(new Set());
+
   // Active processing state (for the just-uploaded result)
   const [activeAttemptId, setActiveAttemptId] = useState<string | null>(null);
   const [activeResult, setActiveResult] = useState<BowlingResult | null>(null);
@@ -318,21 +321,13 @@ const BowlingChallenge: React.FC = () => {
                   to={`/bowling/result/${result.attempt_id}`}
                   className="bg-card rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
                 >
-                  {result.trajectory_png_url ? (
+                  {result.trajectory_png_url && !brokenImages.has(result.attempt_id) ? (
                     <img
                       src={result.trajectory_png_url}
                       alt="Trajectory"
                       className="w-full h-48 object-cover"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = "none";
-                        target.parentElement!.insertBefore(
-                          Object.assign(document.createElement("div"), {
-                            className: "w-full h-48 bg-muted flex items-center justify-center",
-                            innerHTML: '<span class="text-muted-foreground text-sm">No trajectory</span>',
-                          }),
-                          target
-                        );
+                      onError={() => {
+                        setBrokenImages((prev) => new Set(prev).add(result.attempt_id));
                       }}
                     />
                   ) : (

@@ -7,7 +7,7 @@ to the bowling Cloud Run service for processing.
 Configuration via environment variables:
     BOWLING_PROCESSOR_ENABLED  - 'true' to enable (default 'false')
     BOWLING_POLL_INTERVAL      - seconds between polls (default 5)
-    BOWLING_SERVICE_URL        - URL of the bowling Cloud Run service
+    ANALYSIS_SERVICE_URL        - URL of the bowling Cloud Run service
 """
 
 import os
@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # Configuration from environment
 BOWLING_PROCESSOR_ENABLED = os.environ.get('BOWLING_PROCESSOR_ENABLED', 'false').lower() == 'true'
 BOWLING_POLL_INTERVAL = int(os.environ.get('BOWLING_POLL_INTERVAL', '5'))
-BOWLING_SERVICE_URL = os.environ.get('BOWLING_SERVICE_URL', '')
+ANALYSIS_SERVICE_URL = os.environ.get('ANALYSIS_SERVICE_URL', '')
 
 # Timeout for stuck jobs (seconds)
 STUCK_PROCESSING_TIMEOUT = 300  # 5 minutes
@@ -35,7 +35,7 @@ def _get_id_token():
     import google.auth.transport.requests
     import google.oauth2.id_token
     auth_request = google.auth.transport.requests.Request()
-    return google.oauth2.id_token.fetch_id_token(auth_request, BOWLING_SERVICE_URL)
+    return google.oauth2.id_token.fetch_id_token(auth_request, ANALYSIS_SERVICE_URL)
 
 
 def start_bowling_processor():
@@ -44,8 +44,8 @@ def start_bowling_processor():
         logger.info("Bowling processor is disabled")
         return
 
-    if not BOWLING_SERVICE_URL:
-        logger.warning("BOWLING_SERVICE_URL not configured, skipping bowling processor")
+    if not ANALYSIS_SERVICE_URL:
+        logger.warning("ANALYSIS_SERVICE_URL not configured, skipping bowling processor")
         return
 
     thread = threading.Thread(target=run_bowling_processor, daemon=True)
@@ -146,7 +146,7 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
 
         # Call bowling service
         response = requests.post(
-            f"{BOWLING_SERVICE_URL}/analyze",
+            f"{ANALYSIS_SERVICE_URL}/analyze",
             json=payload,
             headers={"Authorization": f"Bearer {id_token}"},
             timeout=360,
