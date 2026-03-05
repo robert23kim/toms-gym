@@ -505,12 +505,15 @@ const VideoPlayer: React.FC = () => {
                                           const isPercent = m.unit === '%';
                                           // For degree-based metrics (shoulder swing), show an inverted bar (lower = better)
                                           const isDegree = m.unit === '°';
-                                          const showBar = isPercent || isDegree;
+                                          const isTempo = m.unit === ':1';
+                                          const showBar = isPercent || isDegree || isTempo;
                                           const barWidth = isPercent
                                             ? Math.min(m.value, 100)
                                             : isDegree
                                               ? Math.max(0, Math.min(100, 100 - (m.value / 90) * 100))  // 0°=100%, 90°=0%
-                                              : 0;
+                                              : isTempo
+                                                ? Math.max(0, Math.min(100, (m.value / 3) * 100))  // 0:1=0%, 3:1=100%
+                                                : 0;
                                           const hasClips = m.clip_url != null || (m.best_time_s != null && m.worst_time_s != null);
                                           const isExpanded = expandedMetric === `${rm.rep_number}-${m.key}`;
                                           const metricId = `${rm.rep_number}-${m.key}`;
