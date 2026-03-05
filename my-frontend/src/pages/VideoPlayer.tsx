@@ -415,7 +415,7 @@ const VideoPlayer: React.FC = () => {
                     <div className="bg-card rounded-lg shadow-lg p-6">
                       <h1 className="text-2xl font-bold mb-2">{videoData.participant_name}'s {videoData.lift_type}</h1>
                       <div className="flex items-center gap-3 text-muted-foreground">
-                        <span className="font-medium text-foreground">{videoData.weight}kg</span>
+                        <span className="font-medium text-foreground">{videoData.weight} lbs</span>
                         <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>
                           {badge.label}
                         </span>

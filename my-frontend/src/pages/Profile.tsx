@@ -249,7 +249,7 @@ const Profile = () => {
             <div className="space-y-2">
               {profileData.best_lifts.map(lift => (
                 <p key={lift.type}>
-                  {lift.type}: {lift.best_weight}kg
+                  {lift.type}: {lift.best_weight} lbs
                 </p>
               ))}
               {profileData.best_lifts.length === 0 && (
@@ -263,7 +263,7 @@ const Profile = () => {
               <h2 className="text-xl font-semibold">Achievements</h2>
             </div>
             <div className="space-y-2">
-              <p>Heaviest Lift: {profileData.achievements.heaviest_lift}kg</p>
+              <p>Heaviest Lift: {profileData.achievements.heaviest_lift} lbs</p>
               {profileData.achievements.best_snatch > 0 && (
                 <p>Best Snatch: {profileData.achievements.best_snatch} lifts</p>
               )}
@@ -370,7 +370,7 @@ const Profile = () => {
                           {competition.status}
                         </span>
                         {competition.total_weight > 0 && (
-                          <p className="text-accent font-medium mt-1">{competition.total_weight}kg total</p>
+                          <p className="text-accent font-medium mt-1">{competition.total_weight} lbs total</p>
                         )}
                       </div>
                     </div>
@@ -392,7 +392,7 @@ const Profile = () => {
                                 <Play size={16} className="text-accent" />
                               </div>
                               <div>
-                                <p className="font-medium text-sm">{video.lift_type} - {video.weight}kg</p>
+                                <p className="font-medium text-sm">{video.lift_type} - {video.weight} lbs</p>
                                 <p className="text-xs text-muted-foreground">
                                   {new Date(video.created_at).toLocaleDateString()}
                                 </p>

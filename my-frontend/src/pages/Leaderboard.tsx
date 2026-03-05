@@ -199,7 +199,7 @@ const Leaderboard = () => {
                         <td className="px-6 py-4">{participant.country}</td>
                         <td className="px-6 py-4">{participant.location}</td>
                         <td className="px-6 py-4 text-right font-medium">
-                          {bestLift ? `${bestLift}kg` : 'N/A'}
+                          {bestLift ? `${bestLift} lbs` : 'N/A'}
                         </td>
                       </motion.tr>
                     );

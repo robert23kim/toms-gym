@@ -81,7 +81,7 @@ const Athletes = () => {
                 {participant.totalWeight && (
                   <div>
                     <span className="text-sm text-muted-foreground">Total</span>
-                    <p className="font-medium">{participant.totalWeight}kg</p>
+                    <p className="font-medium">{participant.totalWeight} lbs</p>
                   </div>
                 )}
               </div>
@@ -94,19 +94,19 @@ const Athletes = () => {
                     <div className="text-center p-2 bg-secondary/40 rounded">
                       <p className="text-xs text-muted-foreground">Squat</p>
                       <p className="font-medium">
-                        {Math.max(...participant.attempts.squat.filter(w => w > 0))}kg
+                        {Math.max(...participant.attempts.squat.filter(w => w > 0))} lbs
                       </p>
                     </div>
                     <div className="text-center p-2 bg-secondary/40 rounded">
                       <p className="text-xs text-muted-foreground">Bench</p>
                       <p className="font-medium">
-                        {Math.max(...participant.attempts.bench.filter(w => w > 0))}kg
+                        {Math.max(...participant.attempts.bench.filter(w => w > 0))} lbs
                       </p>
                     </div>
                     <div className="text-center p-2 bg-secondary/40 rounded">
                       <p className="text-xs text-muted-foreground">Deadlift</p>
                       <p className="font-medium">
-                        {Math.max(...participant.attempts.deadlift.filter(w => w > 0))}kg
+                        {Math.max(...participant.attempts.deadlift.filter(w => w > 0))} lbs
                       </p>
                     </div>
                   </div>

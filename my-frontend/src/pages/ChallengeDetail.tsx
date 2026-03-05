@@ -1,12 +1,13 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, Users, Dumbbell, CheckCircle2, ArrowRight, Play, Upload } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, Users, Dumbbell, CheckCircle2, Upload, Play } from "lucide-react";
 import axios from "axios";
-import { Challenge } from "../lib/types";
+import { Challenge, LiftingResult } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
-import VideoGallery from "../components/VideoGallery";
+import { getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
+// VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
 
 // Use the local API URL for competitions
@@ -50,6 +51,7 @@ const ChallengeDetail: React.FC = () => {
   const [challengeName, setChallengeName] = useState<string>("");
   const [showUpload, setShowUpload] = useState(false);
   const uploadRef = useRef<HTMLDivElement>(null);
+  const [liftingResults, setLiftingResults] = useState<Record<string, LiftingResult>>({});
 
   // Upload form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -117,7 +119,7 @@ const ChallengeDetail: React.FC = () => {
       if (response.data.url) {
         toast({
           title: "Upload Successful!",
-          description: "Your lift has been submitted to this challenge.",
+          description: "Analyzing your form automatically...",
           duration: 5000,
         });
 
@@ -131,6 +133,34 @@ const ChallengeDetail: React.FC = () => {
 
         // Update hasJoined status
         setHasJoined(true);
+
+        // Auto-trigger analysis for the new upload
+        const attemptId = response.data.attempt_id;
+        if (attemptId) {
+          try {
+            await triggerLiftingAnalysis(attemptId);
+            // Poll until complete, then refresh results
+            const pollInterval = setInterval(async () => {
+              try {
+                const result = await getLiftingResult(attemptId);
+                if (result.processing_status === 'completed' || result.processing_status === 'failed') {
+                  clearInterval(pollInterval);
+                  setLiftingResults(prev => ({ ...prev, [attemptId]: result }));
+                  toast({
+                    title: result.report?.overall_grade && ['A','B','C','D'].includes(result.report.overall_grade)
+                      ? "Lift Approved!" : "Analysis Complete",
+                    description: result.report
+                      ? `Grade: ${result.report.overall_grade} (${result.report.overall_score?.toFixed(0)}%)`
+                      : "Check your lift for details.",
+                    duration: 5000,
+                  });
+                }
+              } catch { /* continue polling */ }
+            }, 3000);
+          } catch (err) {
+            console.error("Auto-analyze failed:", err);
+          }
+        }
       }
     } catch (err: any) {
       console.error("Upload error:", err);
@@ -142,6 +172,22 @@ const ChallengeDetail: React.FC = () => {
     } finally {
       setIsUploading(false);
     }
+  };
+
+  // Fetch lifting analysis results for all videos
+  const fetchLiftingResults = async (videos: VideoData[]) => {
+    const results: Record<string, LiftingResult> = {};
+    await Promise.all(
+      videos.map(async (v) => {
+        try {
+          const result = await getLiftingResult(v.attempt_id);
+          if (result && result.processing_status === 'completed') {
+            results[v.attempt_id] = result;
+          }
+        } catch { /* no result yet */ }
+      })
+    );
+    setLiftingResults(results);
   };
 
   // Function to fetch videos - can be called to refresh after deletion
@@ -167,6 +213,7 @@ const ChallengeDetail: React.FC = () => {
         }));
 
       setVideoData(processedVideoData);
+      fetchLiftingResults(processedVideoData);
       console.log("Refreshed video data:", processedVideoData);
     } catch (err) {
       console.error("Error fetching videos:", err);
@@ -214,6 +261,7 @@ const ChallengeDetail: React.FC = () => {
           }));
 
         setVideoData(processedVideoData);
+        fetchLiftingResults(processedVideoData);
 
         // Debug logging
         console.log("Processed video data:", processedVideoData);
@@ -498,118 +546,117 @@ const ChallengeDetail: React.FC = () => {
                 </div>
               </div>
 
-              {/* Tags row: lift types + weight classes + gender */}
-              {challenge.categories.length > 0 && (
-                <div className="flex flex-wrap gap-2 mb-6">
-                  {challenge.categories.map((tag) => {
-                    const isWeight = tag.includes('kg');
-                    const isGender = tag === 'Men' || tag === 'Women';
-                    return (
-                      <span
-                        key={tag}
-                        className={`px-3 py-1 rounded-full text-sm ${
-                          isWeight
-                            ? 'bg-blue-500/10 text-blue-500'
-                            : isGender
-                            ? 'bg-purple-500/10 text-purple-500'
-                            : 'bg-primary/10 text-primary'
-                        }`}
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })}
-                </div>
-              )}
-
-              {/* Participants Section */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold mb-4 flex items-center">
-                  <Users className="mr-2" size={20} />
-                  Top Participants
-                </h2>
-                <div className="space-y-2">
-                  {participants.slice(0, 5).map((participant) => (
-                    <div key={participant.id} className="p-3 bg-card rounded-lg shadow">
-                      <div className="flex justify-between items-center mb-1">
-                        <h4 className="text-lg font-semibold">{participant.name}</h4>
-                        <span className="text-sm text-muted-foreground">{participant.weight_class}</span>
-                      </div>
-
-                      {/* Horizontal layout for attempts */}
-                      <div className="flex flex-wrap gap-x-3 gap-y-2">
-                        {participant.attempts?.filter((attempt: any) => attempt.weight).map((attempt: any, index: number) => (
-                          <div
-                            key={index}
-                            className={`flex items-center text-sm rounded-full px-3 py-1 ${
-                              attempt.status === 'completed'
-                                ? 'bg-green-500/10 border border-green-500/20'
-                                : attempt.status === 'failed'
-                                ? 'bg-red-500/10 border border-red-500/20'
-                                : 'bg-yellow-500/10 border border-yellow-500/20'
-                            }`}
-                          >
-                            <span className={`${
-                              attempt.status === 'completed'
-                                ? 'text-green-600 font-medium'
-                                : attempt.status === 'failed'
-                                ? 'text-red-600 line-through'
-                                : 'text-yellow-600'
-                              }`}
-                            >
-                              {attempt.lift_type}
-                            </span>
-                            <span className="mx-1 font-bold">{attempt.weight}kg</span>
-                            {attempt.video_url && (
-                              <Link
-                                to={`/challenges/${id}/participants/${participant.id}/video/${attempt.id}`}
-                                className="text-primary hover:underline text-xs ml-1"
-                              >
-                                (watch video)
-                              </Link>
-                            )}
-                          </div>
-                        ))}
-                      </div>
+              {/* Tags: lift types prominent, weight classes compact */}
+              {challenge.categories.length > 0 && (() => {
+                const liftTypes = challenge.categories.filter(c => !c.includes('kg') && c !== 'Men' && c !== 'Women');
+                const weightClasses = challenge.categories.filter(c => c.includes('kg'));
+                const gender = challenge.categories.find(c => c === 'Men' || c === 'Women');
+                return (
+                  <div className="mb-6 space-y-2">
+                    <div className="flex flex-wrap gap-2">
+                      {liftTypes.map((tag) => (
+                        <span key={tag} className="px-3 py-1 rounded-full text-sm bg-primary/10 text-primary">{tag}</span>
+                      ))}
+                      {gender && (
+                        <span className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-500">{gender}</span>
+                      )}
                     </div>
-                  ))}
-                  {participants.length > 5 && (
-                    <p className="text-sm text-muted-foreground mt-1">
-                      And {participants.length - 5} more participants...
-                    </p>
-                  )}
-                </div>
-              </div>
+                    {weightClasses.length > 0 && (
+                      <p className="text-xs text-muted-foreground">
+                        Weight classes: {weightClasses.join(', ')}
+                      </p>
+                    )}
+                  </div>
+                );
+              })()}
+
             </div>
           </div>
 
-          {/* Recent Challenge Videos */}
-          <div className="mt-12">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-2xl font-bold">Recent Challenge Videos</h3>
-              {videoData.length > 0 && (
-                <Link
-                  to={`/challenges/${id}/videos`}
-                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 font-medium transition-colors"
-                >
-                  See All Videos
-                  <ArrowRight className="w-4 h-4" />
-                </Link>
-              )}
-            </div>
+          {/* Unified Lift Feed */}
+          <div className="mt-6">
+            <h2 className="text-xl font-semibold mb-4 flex items-center">
+              <Dumbbell className="mr-2" size={20} />
+              Lifts ({videoData.length})
+            </h2>
 
             {videoData.length > 0 ? (
-              <VideoGallery
-                videos={videoData}
-                title=""
-                emptyMessage="No videos uploaded yet for this challenge"
-                maxVideos={6}
-                onVideoDeleted={fetchVideos}
-              />
+              <div className="space-y-3">
+                {videoData
+                  .sort((a, b) => b.weight - a.weight)
+                  .map((video) => {
+                    // Find participant name for this lift
+                    const participant = participants.find((p: any) => p.id === video.user_id);
+                    const participantName = participant?.name || 'Unknown';
+
+                    return (
+                      <Link
+                        key={video.attempt_id}
+                        to={`/challenges/${id}/participants/${video.user_id}/video/${video.attempt_id}`}
+                        className="flex items-center gap-4 bg-card rounded-lg shadow hover:shadow-lg transition-shadow p-4 group"
+                      >
+                        {/* Video thumbnail */}
+                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-black overflow-hidden shrink-0 relative">
+                          <video
+                            src={video.video_url}
+                            muted
+                            playsInline
+                            preload="metadata"
+                            className="w-full h-full object-cover"
+                            onLoadedData={(e) => { (e.target as HTMLVideoElement).currentTime = 0.5; }}
+                          />
+                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
+                            <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center">
+                              <Play className="w-4 h-4 text-primary ml-0.5" fill="currentColor" />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Lift info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between mb-1">
+                            <h3 className="font-semibold truncate">{participantName}</h3>
+                            <span className="text-lg font-bold text-primary ml-2 shrink-0">{video.weight} lbs</span>
+                          </div>
+                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                            <span>{video.lift_type}</span>
+                            <span>&middot;</span>
+                            <span>{new Date(video.created_at).toLocaleDateString()}</span>
+                          </div>
+                          <div className="mt-1">
+                            {(() => {
+                              const lr = liftingResults[video.attempt_id];
+                              const grade = lr?.report?.overall_grade;
+                              const isApproved = grade && ['A', 'B', 'C', 'D'].includes(grade);
+                              const isFailed = grade === 'F';
+                              const badgeClass = isApproved ? 'bg-green-500/10 text-green-500' :
+                                                 isFailed ? 'bg-red-500/10 text-red-500' :
+                                                 'bg-yellow-500/10 text-yellow-500';
+                              const badgeText = isApproved ? `Approved (${grade})` :
+                                                isFailed ? 'Failed' : 'Pending';
+                              return (
+                                <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${badgeClass}`}>
+                                  {badgeText}
+                                </span>
+                              );
+                            })()}
+                          </div>
+                        </div>
+                      </Link>
+                    );
+                  })}
+              </div>
             ) : (
-              <div className="bg-gray-100 dark:bg-gray-800 p-8 rounded-lg text-center">
-                <p className="text-gray-700 dark:text-gray-300 mb-4">No videos have been uploaded yet. Be the first to upload your attempt!</p>
-                <p className="text-sm text-muted-foreground">Click "Upload Lift" above to submit your lift.</p>
+              <div className="bg-card rounded-lg shadow p-8 text-center">
+                <Dumbbell className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
+                <p className="text-muted-foreground mb-4">No lifts uploaded yet. Be the first!</p>
+                <button
+                  onClick={() => { setShowUpload(true); setTimeout(() => uploadRef.current?.scrollIntoView({ behavior: 'smooth' }), 100); }}
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600"
+                >
+                  <Upload className="w-4 h-4" />
+                  Upload Lift
+                </button>
               </div>
             )}
           </div>
@@ -653,7 +700,7 @@ const ChallengeDetail: React.FC = () => {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium mb-1">Weight (kg)</label>
+                    <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
                     <input
                       type="number"
                       value={weight}
