@@ -453,7 +453,7 @@ const VideoPlayer: React.FC = () => {
                         {/* Analyzing in progress */}
                         {liftingResult && (liftingResult.processing_status === 'queued' || liftingResult.processing_status === 'processing') && (
                           <div className="bg-card rounded-lg shadow-lg p-6 text-center">
-                            <div className="animate-spin h-8 w-8 border-3 border-blue-500 border-t-transparent rounded-full mx-auto mb-3" />
+                            <div className="animate-spin h-8 w-8 border-[3px] border-blue-500 border-t-transparent rounded-full mx-auto mb-3" />
                             <p className="font-medium">Analyzing your form...</p>
                             <p className="text-sm text-muted-foreground mt-1">This usually takes 30-60 seconds.</p>
                           </div>
