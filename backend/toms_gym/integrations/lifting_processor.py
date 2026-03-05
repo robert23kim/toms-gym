@@ -74,7 +74,7 @@ def _poll_and_process(get_connection):
 
         # Grab one queued job with row-level lock
         row = session.execute(sqlalchemy.text("""
-            SELECT lr.id, lr.attempt_id, a.video_url
+            SELECT lr.id, lr.attempt_id, a.video_url, a.lift_type
             FROM "LiftingResult" lr
             JOIN "Attempt" a ON a.id = lr.attempt_id
             WHERE lr.processing_status = 'queued'
@@ -89,8 +89,9 @@ def _poll_and_process(get_connection):
         result_id = row.id
         attempt_id = row.attempt_id
         video_url = row.video_url
+        lift_type = row.lift_type
 
-        logger.info(f"Processing lifting job: result={result_id}, attempt={attempt_id}")
+        logger.info(f"Processing lifting job: result={result_id}, attempt={attempt_id}, lift_type={lift_type}")
 
         # Mark as processing
         session.execute(sqlalchemy.text("""
@@ -108,27 +109,48 @@ def _poll_and_process(get_connection):
         session.close()
 
     # Process with a fresh session (don't hold poll session open during HTTP call)
-    _process_job(get_connection, result_id, attempt_id, video_url)
+    _process_job(get_connection, result_id, attempt_id, video_url, lift_type)
 
 
-def _process_job(get_connection, result_id, attempt_id, video_url):
+def _normalize_lift_type(db_lift_type):
+    """Map DB lift_type enum values to analysis engine format.
+
+    DB uses mixed-case enum ('Bicep Curl', 'Deadlift', 'Bench Press', etc.)
+    Analysis engine expects lowercase underscore ('bicep_curl', 'deadlift', etc.)
+    """
+    mapping = {
+        'Bicep Curl': 'bicep_curl',
+        'Deadlift': 'deadlift',
+        'Squat': 'squat',
+        'Bench Press': 'bench_press',
+    }
+    return mapping.get(db_lift_type, 'bicep_curl')
+
+
+def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=None):
     """Call the analysis service and store results."""
     session = get_connection()
     try:
+        url = f"{ANALYSIS_SERVICE_URL}/analyze-lift"
+        logger.info(f"Calling analysis service at: {url}")
         id_token = _get_id_token()
 
+        payload = {
+            "video_url": video_url,
+            "attempt_id": str(attempt_id),
+        }
+        if lift_type:
+            payload["lift_type"] = _normalize_lift_type(lift_type)
+
         response = requests.post(
-            f"{ANALYSIS_SERVICE_URL}/analyze-lift",
-            json={
-                "video_url": video_url,
-                "attempt_id": str(attempt_id),
-            },
+            url,
+            json=payload,
             headers={"Authorization": f"Bearer {id_token}"},
             timeout=360,
         )
 
         if response.status_code != 200:
-            raise RuntimeError(f"Service returned {response.status_code}: {response.text[:500]}")
+            raise RuntimeError(f"Service at {url} returned {response.status_code}: {response.text[:500]}")
 
         result = response.json()
 

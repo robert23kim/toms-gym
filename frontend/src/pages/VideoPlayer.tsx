@@ -537,15 +537,9 @@ const VideoPlayer: React.FC = () => {
                                                   <span className="text-muted-foreground/60 w-16 text-right">{m.target}</span>
                                                 </div>
                                               </div>
-                                              {showHelp === m.key && (
+                                              {showHelp === m.key && m.description && (
                                                 <div className="text-[10px] text-muted-foreground/80 bg-muted/40 rounded px-2 py-1 mb-1">
-                                                  {{
-                                                    rom: 'How much of the full curl range you used. Measures the angle between full extension (~160°) and peak contraction (~60°).',
-                                                    control: 'How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.',
-                                                    elbow_stability: 'How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.',
-                                                    shoulder_swing: 'How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.',
-                                                    tempo: 'Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift — good for muscle growth.',
-                                                  }[m.key]}
+                                                  {m.description}
                                                 </div>
                                               )}
                                               {showBar && (
@@ -639,10 +633,18 @@ const VideoPlayer: React.FC = () => {
                               <th className="text-left p-3 text-muted-foreground font-medium">Rep</th>
                               <th className="text-left p-3 text-muted-foreground font-medium">Grade</th>
                               <th className="text-left p-3 text-muted-foreground font-medium">Score</th>
-                              <th className="text-left p-3 text-muted-foreground font-medium">Elbow Range</th>
-                              <th className="text-left p-3 text-muted-foreground font-medium">Tempo</th>
-                              <th className="text-left p-3 text-muted-foreground font-medium">Drift</th>
-                              <th className="text-left p-3 text-muted-foreground font-medium">Sway</th>
+                              {report.rep_metrics[0]?.metrics && report.rep_metrics[0].metrics.length > 0 ? (
+                                report.rep_metrics[0].metrics.map((m) => (
+                                  <th key={m.key} className="text-left p-3 text-muted-foreground font-medium">{m.label}</th>
+                                ))
+                              ) : (
+                                <>
+                                  <th className="text-left p-3 text-muted-foreground font-medium">Elbow Range</th>
+                                  <th className="text-left p-3 text-muted-foreground font-medium">Tempo</th>
+                                  <th className="text-left p-3 text-muted-foreground font-medium">Drift</th>
+                                  <th className="text-left p-3 text-muted-foreground font-medium">Sway</th>
+                                </>
+                              )}
                             </tr>
                           </thead>
                           <tbody>
@@ -653,10 +655,18 @@ const VideoPlayer: React.FC = () => {
                                   <span className={`font-bold ${gradeColor(rep.form_grade)}`}>{rep.form_grade}</span>
                                 </td>
                                 <td className="p-3">{rep.form_score?.toFixed(0)}%</td>
-                                <td className="p-3">{Math.round(rep.elbow_angle_range[0])}°–{Math.round(rep.elbow_angle_range[1])}°</td>
-                                <td className="p-3">{rep.tempo_ratio?.toFixed(1)}:1</td>
-                                <td className="p-3">{rep.elbow_drift_pct?.toFixed(1)}%</td>
-                                <td className="p-3">{rep.body_sway_pct?.toFixed(1)}%</td>
+                                {rep.metrics && rep.metrics.length > 0 ? (
+                                  rep.metrics.map((m) => (
+                                    <td key={m.key} className="p-3">{m.value}{m.unit}</td>
+                                  ))
+                                ) : (
+                                  <>
+                                    <td className="p-3">{Math.round(rep.elbow_angle_range[0])}°–{Math.round(rep.elbow_angle_range[1])}°</td>
+                                    <td className="p-3">{rep.tempo_ratio?.toFixed(1)}:1</td>
+                                    <td className="p-3">{rep.elbow_drift_pct?.toFixed(1)}%</td>
+                                    <td className="p-3">{rep.body_sway_pct?.toFixed(1)}%</td>
+                                  </>
+                                )}
                               </tr>
                             ))}
                           </tbody>

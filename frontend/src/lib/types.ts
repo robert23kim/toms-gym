@@ -72,6 +72,7 @@ export interface Challenge {
   image?: string;
   status: "upcoming" | "ongoing" | "completed";
   categories: string[];
+  lifttypes?: string[];
   participants: number;
   prizePool?: {
     first: number;
@@ -116,6 +117,7 @@ export interface MetricFeedback {
   unit: string;
   target: string;
   status: 'pass' | 'warn' | 'fail';
+  description?: string;
   best_time_s?: number;
   worst_time_s?: number;
   clip_url?: string;
@@ -143,6 +145,7 @@ export interface LiftingReport {
   overall_score: number;
   rep_metrics: RepMetrics[];
   insights: string[];
+  lift_type?: string;
 }
 
 export interface LiftingResult {
