@@ -134,3 +134,37 @@ test("review cells use Fairway color semantics vs par", async ({ page }) => {
   await page.keyboard.press("Enter");
   await expect(firstCell).toHaveClass(/fw-cell-bogey-plus/);
 });
+
+test("low-confidence cells get the fw-cell-needs-review glow", async ({ page }) => {
+  // Stub the round fetch so hole 3 is low-confidence and holes 1-2 are not.
+  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+    const body = {
+      id: seededRoundId,
+      user_id: "stub-user",
+      course_name: "Stub Course",
+      slope_rating: 128,
+      course_rating: 71.2,
+      adjusted_gross_score: null,
+      differential: null,
+      scorecard_image_url: null,
+      ocr_confidence: 0.5,
+      processing_status: "ocr_complete",
+      played_at: "2026-04-18",
+      holes: Array.from({ length: 18 }, (_, i) => ({
+        hole_number: i + 1,
+        par: 4,
+        strokes: i === 2 ? 4 : null,
+        ocr_confidence: i === 2 ? 0.5 : 0.99,
+      })),
+      detected_players: [],
+    };
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+  });
+
+  await page.goto(`/golf/review/${seededRoundId}`);
+  await expect(page.locator('[data-testid="scorecard-cell-3"]')).toHaveClass(/fw-cell-needs-review/);
+  await expect(page.locator('[data-testid="scorecard-cell-1"]')).not.toHaveClass(/fw-cell-needs-review/);
+
+  // The old AlertTriangle icon should be gone.
+  await expect(page.locator('[data-testid="scorecard-cell-3"] svg')).toHaveCount(0);
+});

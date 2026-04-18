@@ -283,7 +283,13 @@ const GolfReview: React.FC = () => {
             onClick={() => setEditingHole(hole.hole_number)}
             className={`relative p-2 cursor-pointer transition-colors ${getHoleBgClass(
               hole
-            )} ${editingHole === hole.hole_number ? "fw-selected" : ""}`}
+            )} ${editingHole === hole.hole_number ? "fw-selected" : ""} ${
+              hole.ocr_confidence !== undefined &&
+              hole.ocr_confidence < 0.85 &&
+              hole.strokes !== null
+                ? "fw-cell-needs-review"
+                : ""
+            }`}
           >
             <div className="text-xs text-muted-foreground text-center">
               #{hole.hole_number}
@@ -329,13 +335,6 @@ const GolfReview: React.FC = () => {
                 {hole.strokes !== null ? hole.strokes : "-"}
               </div>
             )}
-            {hole.ocr_confidence !== undefined &&
-              hole.ocr_confidence < 0.7 &&
-              hole.strokes !== null && (
-                <div className="absolute top-1 right-1">
-                  <AlertTriangle className="w-3 h-3 text-amber-500" />
-                </div>
-              )}
           </div>
         ))}
       </div>
