@@ -88,16 +88,26 @@ const GolfLeaderboard: React.FC = () => {
                 <Trophy className="w-12 h-12 fw-text-secondary mx-auto mb-4" />
                 <h2 className="text-xl font-semibold mb-2">No handicaps yet</h2>
                 <p className="fw-text-secondary mb-6">
-                  Be the first to establish a handicap. Upload 3 or more rounds to
-                  get your handicap index.
+                  Be the first to establish a handicap — one round is enough to
+                  get a provisional index.
                 </p>
-                <Link
-                  to="/golf/upload"
-                  className="h-9 px-6 rounded-md bg-[var(--fw-info)] text-white text-sm inline-flex items-center gap-2"
-                >
-                  <Upload className="w-4 h-4" />
-                  Upload Scorecard
-                </Link>
+                <div className="flex justify-center gap-3 flex-wrap">
+                  <Link
+                    to="/golf/upload"
+                    className="h-9 px-6 rounded-md bg-[var(--fw-info)] text-white text-sm inline-flex items-center gap-2"
+                  >
+                    <Upload className="w-4 h-4" />
+                    Upload Scorecard
+                  </Link>
+                  {localStorage.getItem("userId") && (
+                    <Link
+                      to={`/golf/profile/${localStorage.getItem("userId")}`}
+                      className="h-9 px-6 rounded-md border border-[var(--fw-border-secondary)] text-sm inline-flex items-center gap-2 hover:bg-[var(--fw-bg-secondary)]"
+                    >
+                      My Golf Profile
+                    </Link>
+                  )}
+                </div>
               </div>
             ) : (
               <div data-testid="leaderboard-list" className="fw-surface overflow-hidden">
@@ -138,17 +148,17 @@ const GolfLeaderboard: React.FC = () => {
               </div>
             )}
 
-            {/* Quick links */}
-            <div className="mt-8 flex justify-center gap-4">
-              {localStorage.getItem("userId") && (
+            {/* Quick links — populated state only; empty-state has its own CTA above. */}
+            {entries.length > 0 && localStorage.getItem("userId") && (
+              <div className="mt-8 flex justify-center">
                 <Link
                   to={`/golf/profile/${localStorage.getItem("userId")}`}
-                  className="text-sm text-[var(--fw-text-info)] hover:underline"
+                  className="h-9 px-6 rounded-md border border-[var(--fw-border-secondary)] text-sm inline-flex items-center gap-2 hover:bg-[var(--fw-bg-secondary)]"
                 >
                   My Golf Profile
                 </Link>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         </motion.div>
       </FairwayScope>

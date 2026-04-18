@@ -126,14 +126,22 @@ def test_establishing_with_zero_rounds_returns_null_index():
     result = compute_handicap_index([], nine_hole_flags=[])
     assert result.handicap_index is None
     assert result.status == "establishing"
-    assert result.rounds_needed == 3
-
-
-def test_establishing_with_two_rounds_returns_null_index():
-    result = compute_handicap_index([12.3, 10.1], nine_hole_flags=[False, False])
-    assert result.handicap_index is None
-    assert result.status == "establishing"
     assert result.rounds_needed == 1
+
+
+def test_one_round_returns_provisional_index():
+    # Tom's Gym extension: a single round produces a provisional index using
+    # the lowest (only) differential, no adjustment.
+    result = compute_handicap_index([12.3], nine_hole_flags=[False])
+    assert result.handicap_index == pytest.approx(12.3, abs=0.05)
+    assert result.status == "active"
+
+
+def test_two_rounds_returns_provisional_index():
+    # Lowest of the two; no adjustment.
+    result = compute_handicap_index([12.3, 10.1], nine_hole_flags=[False, False])
+    assert result.handicap_index == pytest.approx(10.1, abs=0.05)
+    assert result.status == "active"
 
 
 def test_handicap_index_capped_at_54():

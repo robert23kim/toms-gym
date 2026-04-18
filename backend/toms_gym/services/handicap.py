@@ -15,6 +15,7 @@ from typing import List, Optional
 # Matches spec \u00a7B2 WHS table exactly: 9-11 \u2192 lowest 3, 12-14 \u2192 lowest 4,
 # 15-16 \u2192 lowest 5, 17-18 \u2192 lowest 6, 19 \u2192 lowest 7, 20+ \u2192 lowest 8.
 WHS_TABLE = {
+    1:  (1,  0),  2:  (1,  0),
     3:  (1, -2.0), 4:  (1, -1.0), 5:  (1,  0),
     6:  (2, -1.0), 7:  (2,  0),   8:  (2,  0),
     9:  (3,  0),  10:  (3,  0),  11:  (3,  0),
@@ -84,13 +85,13 @@ def compute_handicap_index(
     assert len(differentials) == len(nine_hole_flags), "length mismatch"
     effective = _effective_round_count(nine_hole_flags)
 
-    if effective < 3:
+    if effective < 1:
         return HandicapResult(
             handicap_index=None,
             diffs_used_count=0,
             adjustment=0.0,
             status="establishing",
-            rounds_needed=3 - effective,
+            rounds_needed=1 - effective,
         )
 
     lookup_n = min(effective, 20)

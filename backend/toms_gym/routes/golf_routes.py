@@ -1216,6 +1216,34 @@ def get_handicap(user_id):
 
 
 # ---------------------------------------------------------------------------
+# POST /golf/handicap/<user_id>/recompute
+# ---------------------------------------------------------------------------
+
+
+@golf_bp.route('/handicap/<user_id>/recompute', methods=['POST'])
+def recompute_user_handicap(user_id):
+    """Force a fresh HandicapSnapshot for a user from their stored rounds.
+
+    Used when the engine rules change (e.g. minimum-rounds threshold) and we
+    need to refresh existing users' indices without re-confirming rounds.
+    """
+    session = get_db_connection()
+    try:
+        index = _recalculate_handicap(session, user_id)
+        session.commit()
+        return jsonify({
+            'user_id': user_id,
+            'handicap_index': float(index) if index is not None else None,
+        }), 200
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error recomputing handicap for {user_id}: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+    finally:
+        session.close()
+
+
+# ---------------------------------------------------------------------------
 # GET /golf/leaderboard
 # ---------------------------------------------------------------------------
 
