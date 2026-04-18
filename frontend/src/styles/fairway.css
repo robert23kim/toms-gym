@@ -4,26 +4,30 @@
  * palette from fairway_spec_bundle/designs/_base.css. */
 
 .fw-scope {
-  /* Palette — Fairway spec §13 */
-  --fw-bg-primary: #FFFFFF;
-  --fw-bg-secondary: #F7F5EF;
-  --fw-bg-tertiary: #EFEDE6;
-  --fw-bg-info: #E6F1FB;
-  --fw-bg-success: #EAF3DE;
-  --fw-bg-warning: #FAEEDA;
-  --fw-bg-danger: #FCEBEB;
+  /* Palette — Fairway spec §13, dark theme to match the site chrome.
+   * The wider app uses a single dark theme via :root HSL tokens (see
+   * src/index.css) — no html.dark class is ever set — so the scope must
+   * default to dark too, otherwise golf pages render as a white card on
+   * a black page. */
+  --fw-bg-primary: #17181A;
+  --fw-bg-secondary: #1F2022;
+  --fw-bg-tertiary: #26272A;
+  --fw-bg-info: #1A2C42;
+  --fw-bg-success: #1F2E18;
+  --fw-bg-warning: #3A2A12;
+  --fw-bg-danger: #3A1818;
 
-  --fw-text-primary: #2C2C2A;
-  --fw-text-secondary: #5F5E5A;
-  --fw-text-tertiary: #888780;
-  --fw-text-info: #185FA5;
-  --fw-text-success: #3B6D11;
-  --fw-text-warning: #854F0B;
-  --fw-text-danger: #A32D2D;
+  --fw-text-primary: #F2F2F0;
+  --fw-text-secondary: #B8B8B4;
+  --fw-text-tertiary: #7A7A76;
+  --fw-text-info: #6EAEEC;
+  --fw-text-success: #9FCB6F;
+  --fw-text-warning: #EFB970;
+  --fw-text-danger: #E78A6B;
 
-  --fw-border-tertiary: rgba(0,0,0,0.12);
-  --fw-border-secondary: rgba(0,0,0,0.22);
-  --fw-border-primary: rgba(0,0,0,0.35);
+  --fw-border-tertiary: rgba(255,255,255,0.12);
+  --fw-border-secondary: rgba(255,255,255,0.22);
+  --fw-border-primary: rgba(255,255,255,0.35);
   --fw-border-info: #378ADD;
   --fw-border-success: #97C459;
   --fw-border-warning: #EF9F27;
@@ -31,7 +35,7 @@
   --fw-success: #1D9E75;
   --fw-warning: #EF9F27;
   --fw-danger:  #D85A30;
-  --fw-info:    #185FA5;
+  --fw-info:    #378ADD;
 
   --fw-radius-sm: 4px;
   --fw-radius-md: 8px;
@@ -45,22 +49,7 @@
 
   font-family: var(--fw-font-sans);
   color: var(--fw-text-primary);
-  background: #FAFAF7;
-}
-
-/* Dark-mode overrides — used when the root html has the `dark` class
- * (next-themes contract already used elsewhere in the app). */
-html.dark .fw-scope {
-  --fw-bg-primary: #17181A;
-  --fw-bg-secondary: #1F2022;
-  --fw-bg-tertiary: #26272A;
-  --fw-text-primary: #F2F2F0;
-  --fw-text-secondary: #B8B8B4;
-  --fw-text-tertiary: #7A7A76;
-  --fw-border-tertiary: rgba(255,255,255,0.12);
-  --fw-border-secondary: rgba(255,255,255,0.22);
-  --fw-border-primary: rgba(255,255,255,0.35);
-  background: #0F1012;
+  background: transparent;
 }
 
 /* Surface + typography primitives */
