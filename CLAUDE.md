@@ -7,7 +7,7 @@
 - Use `python3 deploy.py --skip-iam` for full deployment
 
 ## Production URLs
-- Frontend: https://toms-gym-web-quyiiugyoq-ue.a.run.app
+- Frontend: https://my-frontend-quyiiugyoq-ue.a.run.app
 - Backend: https://my-python-backend-quyiiugyoq-ue.a.run.app
 
 ## Testing
