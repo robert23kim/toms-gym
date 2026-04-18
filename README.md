@@ -1,13 +1,26 @@
 # Tom's Gym
 
-A platform for fitness competitions, video uploads, and weightlifting challenges.
+A platform for fitness competitions and sport-specific video/photo analysis.
+
+## Features
+
+Three independent analysis pipelines share the app shell:
+
+- **Lifting** — upload squat / bench / deadlift / bicep-curl videos; an analysis service returns annotated video + per-rep metrics. See `backend/toms_gym/routes/lifting_routes.py`, `frontend/src/pages/UploadVideo.tsx`.
+- **Bowling** — upload bowling videos; ball trajectory, lane edges, and entry/pin-impact boards are detected. Manual annotation UI at `frontend/src/pages/AnnotationWorkspace.tsx`. See `backend/toms_gym/routes/bowling_routes.py`, `docs/plans/2026-03-04-bowling-pages-implementation.md`.
+- **Golf** — upload a scorecard photo; OCR parses hole-by-hole scores for every handwritten player on the card; user confirms to compute a USGA WHS handicap. See `backend/toms_gym/routes/golf_routes.py`, `docs/golf-feature.md`.
+
+Authentication is optional: uploads accept either a `user_id` or an email, auto-creating a passwordless profile on first submission. Users can set a password later via `/auth/register`.
 
 ## Project Structure
 
-- **backend/**: Python Flask API for video handling and competition management
-- **frontend/**: React/TypeScript frontend application
-- **tests/**: Mobile video playback testing scripts and tools
-- **docker-compose.yml**: Orchestrates the development environment
+- **backend/** — Python Flask API. Blueprints under `toms_gym/routes/` (one per feature).
+- **frontend/** — React + Vite + TypeScript app. Pages under `src/pages/`.
+- **docs/** — runbooks, integration guides, per-feature design docs, plans.
+- **deploy.py** — one-shot Cloud Run deploy for backend, frontend, and the bowling/lifting analysis service.
+- **docker-compose.yml** — local dev orchestration.
+
+Primary guide for day-to-day work: **CLAUDE.md** at the repo root.
 
 ## 🚀 Getting Started
 
@@ -84,6 +97,17 @@ npm run dev
 cd backend
 python -m pytest
 ```
+
+### Run Golf Parser Regression (no DB required)
+
+```bash
+cd backend
+venv/bin/python tools/run_golf_parser_tests.py
+```
+
+This exercises the multi-player scorecard parser against a saved Vision API
+fixture (`backend/tests/fixtures/golf_scorecard_ocr.json`) without bringing
+up the main `conftest.py`'s database dependencies.
 
 ### Run Mobile Video Tests
 
