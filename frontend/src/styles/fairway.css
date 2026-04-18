@@ -1,0 +1,162 @@
+/* Fairway design tokens — scoped to .fw-scope so they don't leak into
+ * lifting / bowling / nav. Follows the Fairway spec visual reference:
+ * 0.5px borders on most surfaces, 2px info borders only on selected items,
+ * palette from fairway_spec_bundle/designs/_base.css. */
+
+.fw-scope {
+  /* Palette — Fairway spec §13 */
+  --fw-bg-primary: #FFFFFF;
+  --fw-bg-secondary: #F7F5EF;
+  --fw-bg-tertiary: #EFEDE6;
+  --fw-bg-info: #E6F1FB;
+  --fw-bg-success: #EAF3DE;
+  --fw-bg-warning: #FAEEDA;
+  --fw-bg-danger: #FCEBEB;
+
+  --fw-text-primary: #2C2C2A;
+  --fw-text-secondary: #5F5E5A;
+  --fw-text-tertiary: #888780;
+  --fw-text-info: #185FA5;
+  --fw-text-success: #3B6D11;
+  --fw-text-warning: #854F0B;
+  --fw-text-danger: #A32D2D;
+
+  --fw-border-tertiary: rgba(0,0,0,0.12);
+  --fw-border-secondary: rgba(0,0,0,0.22);
+  --fw-border-primary: rgba(0,0,0,0.35);
+  --fw-border-info: #378ADD;
+  --fw-border-success: #97C459;
+  --fw-border-warning: #EF9F27;
+
+  --fw-success: #1D9E75;
+  --fw-warning: #EF9F27;
+  --fw-danger:  #D85A30;
+  --fw-info:    #185FA5;
+
+  --fw-radius-sm: 4px;
+  --fw-radius-md: 8px;
+  --fw-radius-lg: 12px;
+
+  --fw-font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --fw-font-size-body: 14px;
+  --fw-font-size-h3: 16px;
+  --fw-font-size-h2: 18px;
+  --fw-font-size-h1: 22px;
+
+  font-family: var(--fw-font-sans);
+  color: var(--fw-text-primary);
+  background: #FAFAF7;
+}
+
+/* Dark-mode overrides — used when the root html has the `dark` class
+ * (next-themes contract already used elsewhere in the app). */
+html.dark .fw-scope {
+  --fw-bg-primary: #17181A;
+  --fw-bg-secondary: #1F2022;
+  --fw-bg-tertiary: #26272A;
+  --fw-text-primary: #F2F2F0;
+  --fw-text-secondary: #B8B8B4;
+  --fw-text-tertiary: #7A7A76;
+  --fw-border-tertiary: rgba(255,255,255,0.12);
+  --fw-border-secondary: rgba(255,255,255,0.22);
+  --fw-border-primary: rgba(255,255,255,0.35);
+  background: #0F1012;
+}
+
+/* Surface + typography primitives */
+.fw-scope .fw-surface {
+  background: var(--fw-bg-primary);
+  border: 0.5px solid var(--fw-border-tertiary);
+  border-radius: var(--fw-radius-lg);
+}
+
+.fw-scope .fw-h1 { font-size: var(--fw-font-size-h1); font-weight: 500; margin: 0; }
+.fw-scope .fw-h2 { font-size: var(--fw-font-size-h2); font-weight: 500; margin: 0; }
+.fw-scope .fw-h3 { font-size: var(--fw-font-size-h3); font-weight: 500; margin: 0; }
+.fw-scope .fw-text-secondary { color: var(--fw-text-secondary); }
+
+/* Selected / featured — the ONE place where 2px borders are allowed. */
+.fw-scope .fw-selected {
+  border: 2px solid var(--fw-border-info) !important;
+}
+
+/* Scorecard cell score-vs-par semantics (Fairway spec §5.2 Step 3). */
+.fw-scope .fw-cell {
+  background: var(--fw-bg-primary);
+  border: 0.5px solid var(--fw-border-tertiary);
+  border-radius: var(--fw-radius-md);
+  color: var(--fw-text-primary);
+}
+.fw-scope .fw-cell-birdie {
+  background: var(--fw-bg-success);
+  border-color: var(--fw-border-success);
+  color: var(--fw-text-success);
+}
+.fw-scope .fw-cell-par {
+  background: var(--fw-bg-primary);
+  border-color: var(--fw-border-tertiary);
+}
+.fw-scope .fw-cell-bogey-plus {
+  background: var(--fw-bg-danger);
+  border-color: var(--fw-border-warning);
+  color: var(--fw-text-danger);
+}
+
+/* Low-confidence glow (Fairway spec §5.2 Step 3, threshold 0.85). */
+.fw-scope .fw-cell-needs-review {
+  box-shadow: 0 0 0 2px var(--fw-border-warning),
+              0 0 12px 2px rgba(239, 159, 39, 0.5);
+  animation: fw-glow-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes fw-glow-pulse {
+  0%, 100% { box-shadow: 0 0 0 2px var(--fw-border-warning),
+                         0 0 8px  2px rgba(239, 159, 39, 0.35); }
+  50%      { box-shadow: 0 0 0 2px var(--fw-border-warning),
+                         0 0 16px 4px rgba(239, 159, 39, 0.65); }
+}
+
+/* Staged-parse progress pulsing dot (Fairway spec §5.2 Step 2). */
+.fw-scope .fw-parse-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--fw-border-tertiary);
+  display: inline-block;
+  margin-right: 10px;
+}
+.fw-scope .fw-parse-dot-active {
+  background: var(--fw-info);
+  animation: fw-parse-pulse 1s ease-in-out infinite;
+}
+.fw-scope .fw-parse-dot-done {
+  background: var(--fw-success);
+}
+@keyframes fw-parse-pulse {
+  0%, 100% { opacity: 1;   transform: scale(1); }
+  50%      { opacity: 0.5; transform: scale(0.85); }
+}
+
+/* Camera viewport corner guides on GolfUpload (Fairway spec §5.2 Step 1). */
+.fw-scope .fw-corner-guides {
+  position: relative;
+}
+.fw-scope .fw-corner-guides::before,
+.fw-scope .fw-corner-guides::after {
+  content: "";
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--fw-info);
+  pointer-events: none;
+}
+.fw-scope .fw-corner-guides::before {
+  top: 8px; left: 8px;
+  border-right: none; border-bottom: none;
+  border-top-left-radius: 4px;
+}
+.fw-scope .fw-corner-guides::after {
+  bottom: 8px; right: 8px;
+  border-left: none; border-top: none;
+  border-bottom-right-radius: 4px;
+}
