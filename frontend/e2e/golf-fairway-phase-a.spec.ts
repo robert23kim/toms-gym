@@ -168,3 +168,32 @@ test("low-confidence cells get the fw-cell-needs-review glow", async ({ page }) 
   // The old AlertTriangle icon should be gone.
   await expect(page.locator('[data-testid="scorecard-cell-3"] svg')).toHaveCount(0);
 });
+
+test("N holes need review banner appears when any cell < 0.85", async ({ page }) => {
+  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+    const body = {
+      id: seededRoundId,
+      user_id: "stub",
+      course_name: "Stub",
+      slope_rating: 128,
+      course_rating: 71.2,
+      adjusted_gross_score: null,
+      differential: null,
+      scorecard_image_url: null,
+      ocr_confidence: 0.6,
+      processing_status: "ocr_complete",
+      played_at: "2026-04-18",
+      holes: Array.from({ length: 18 }, (_, i) => ({
+        hole_number: i + 1,
+        par: 4,
+        strokes: 4,
+        ocr_confidence: i < 3 ? 0.5 : 0.95, // 3 low-confidence holes
+      })),
+      detected_players: [],
+    };
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+  });
+
+  await page.goto(`/golf/review/${seededRoundId}`);
+  await expect(page.locator('[data-testid="review-banner"]')).toHaveText(/3 holes? need review/i);
+});

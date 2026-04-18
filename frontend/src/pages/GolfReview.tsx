@@ -5,6 +5,7 @@ import { ArrowLeft, AlertTriangle, Check, Trophy, Users } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
+import ReviewBanner from "../components/golf/ReviewBanner";
 import { API_URL } from "../config";
 import { GolfRound, GolfHoleScore, GolfDetectedPlayer } from "../lib/types";
 
@@ -89,6 +90,10 @@ const GolfReview: React.FC = () => {
   const allHolesComplete = holes.every(
     (h) => h.strokes !== null && h.strokes >= 1
   );
+
+  const needsReviewCount = holes.filter(
+    (h) => h.ocr_confidence !== undefined && h.ocr_confidence < 0.85 && h.strokes !== null
+  ).length;
 
   const front9 = holes.filter((h) => h.hole_number <= 9);
   const back9 = holes.filter((h) => h.hole_number > 9);
@@ -372,6 +377,8 @@ const GolfReview: React.FC = () => {
                   </p>
                 )}
               </div>
+
+              <ReviewBanner needsReviewCount={needsReviewCount} />
 
               {/* Scorecard image */}
               {round?.scorecard_image_url && (
