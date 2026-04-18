@@ -22,33 +22,71 @@ test.describe.configure({ mode: "serial" });
 const seededRoundId = "00000000-0000-4000-8000-000000000001";
 const seededUserId  = "00000000-0000-4000-8000-000000000002";
 
-function stubSeededRound(page: Page, overrides: Record<string, unknown> = {}) {
-  return page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
-    const body = {
+type NestedOverrides = {
+  round?: Record<string, unknown>;
+  course?: Record<string, unknown>;
+  tee?: Record<string, unknown>;
+  hole_scores?: Array<Record<string, unknown>>;
+  detected_players?: Array<Record<string, unknown>>;
+};
+
+function nestedRoundBody(overrides: NestedOverrides = {}) {
+  return {
+    round: {
       id: seededRoundId,
       user_id: seededUserId,
-      course_name: "Phase A Course",
-      slope_rating: 128,
-      course_rating: 71.2,
-      adjusted_gross_score: null,
-      differential: null,
-      scorecard_image_url: null,
-      ocr_confidence: 0.95,
-      processing_status: "ocr_complete",
-      played_at: "2026-04-18",
-      holes: Array.from({ length: 18 }, (_, i) => ({
+      played_on: "2026-04-18",
+      holes: 18,
+      course: {
+        id: "course-phase-a",
+        name: "Phase A Course",
+        city: null, state: null, country: null,
+        latitude: null, longitude: null,
+        holes: 18, status: "verified",
+        ...(overrides.course || {}),
+      },
+      tee: {
+        id: "tee-phase-a",
+        name: "Default",
+        color_hex: null,
+        rating_18: 71.2,
+        slope_18: 128,
+        rating_9_front: null, slope_9_front: null,
+        rating_9_back: null,  slope_9_back: null,
+        yardage: null, par: 72,
+        hole_pars: null, hole_yardages: null, hole_handicaps: null,
+        ...(overrides.tee || {}),
+      },
+      hole_scores: overrides.hole_scores ?? Array.from({ length: 18 }, (_, i) => ({
         hole_number: i + 1,
         par: 4,
         strokes: null,
         ocr_confidence: 0.99,
+        manually_corrected: false,
       })),
-      detected_players: [],
-      ...overrides,
-    };
+      scores: null,
+      total_score: null,
+      front_nine: null,
+      back_nine: null,
+      score_differential: null,
+      scorecard_image_url: null,
+      ocr_confidence: 0.95,
+      processing_status: "ocr_complete",
+      needs_tee: false,
+      created_at: "2026-04-18 12:00:00",
+      updated_at: "2026-04-18 12:00:00",
+      ...(overrides.round || {}),
+    },
+    detected_players: overrides.detected_players ?? [],
+  };
+}
+
+function stubSeededRound(page: Page, overrides: NestedOverrides = {}) {
+  return page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
     await route.fulfill({
       status: 200,
       contentType: "application/json",
-      body: JSON.stringify(body),
+      body: JSON.stringify(nestedRoundBody(overrides)),
     });
   });
 }
@@ -171,26 +209,17 @@ test("review cells use Fairway color semantics vs par", async ({ page }) => {
 test("low-confidence cells get the fw-cell-needs-review glow", async ({ page }) => {
   // Stub the round fetch so hole 3 is low-confidence and holes 1-2 are not.
   await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
-    const body = {
-      id: seededRoundId,
-      user_id: "stub-user",
-      course_name: "Stub Course",
-      slope_rating: 128,
-      course_rating: 71.2,
-      adjusted_gross_score: null,
-      differential: null,
-      scorecard_image_url: null,
-      ocr_confidence: 0.5,
-      processing_status: "ocr_complete",
-      played_at: "2026-04-18",
-      holes: Array.from({ length: 18 }, (_, i) => ({
+    const body = nestedRoundBody({
+      course: { name: "Stub Course" },
+      round: { ocr_confidence: 0.5 },
+      hole_scores: Array.from({ length: 18 }, (_, i) => ({
         hole_number: i + 1,
         par: 4,
         strokes: i === 2 ? 4 : null,
         ocr_confidence: i === 2 ? 0.5 : 0.99,
+        manually_corrected: false,
       })),
-      detected_players: [],
-    };
+    });
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
   });
 
@@ -204,26 +233,17 @@ test("low-confidence cells get the fw-cell-needs-review glow", async ({ page }) 
 
 test("N holes need review banner appears when any cell < 0.85", async ({ page }) => {
   await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
-    const body = {
-      id: seededRoundId,
-      user_id: "stub",
-      course_name: "Stub",
-      slope_rating: 128,
-      course_rating: 71.2,
-      adjusted_gross_score: null,
-      differential: null,
-      scorecard_image_url: null,
-      ocr_confidence: 0.6,
-      processing_status: "ocr_complete",
-      played_at: "2026-04-18",
-      holes: Array.from({ length: 18 }, (_, i) => ({
+    const body = nestedRoundBody({
+      course: { name: "Stub" },
+      round: { ocr_confidence: 0.6 },
+      hole_scores: Array.from({ length: 18 }, (_, i) => ({
         hole_number: i + 1,
         par: 4,
         strokes: 4,
         ocr_confidence: i < 3 ? 0.5 : 0.95, // 3 low-confidence holes
+        manually_corrected: false,
       })),
-      detected_players: [],
-    };
+    });
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
   });
 
@@ -233,26 +253,16 @@ test("N holes need review banner appears when any cell < 0.85", async ({ page })
 
 test("live differential footer updates as scores change", async ({ page }) => {
   await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
-    const body = {
-      id: seededRoundId,
-      user_id: "stub",
-      course_name: "Stub",
-      slope_rating: 128,
-      course_rating: 71.2,
-      adjusted_gross_score: null,
-      differential: null,
-      scorecard_image_url: null,
-      ocr_confidence: 0.95,
-      processing_status: "ocr_complete",
-      played_at: "2026-04-18",
-      holes: Array.from({ length: 18 }, (_, i) => ({
+    const body = nestedRoundBody({
+      course: { name: "Stub" },
+      hole_scores: Array.from({ length: 18 }, (_, i) => ({
         hole_number: i + 1,
         par: 4,
-        strokes: 4, // total 72, = course rating → differential 0.0
+        strokes: 4, // total 72
         ocr_confidence: 0.95,
+        manually_corrected: false,
       })),
-      detected_players: [],
-    };
+    });
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
   });
 
@@ -278,25 +288,21 @@ test("review page uses Fairway typography and surface styles", async ({ page }) 
 
 test("round page shows highlights grid and hole bar chart", async ({ page }) => {
   await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
-    const body = {
-      id: seededRoundId,
-      user_id: "stub",
-      course_name: "Stub Course",
-      slope_rating: 128,
-      course_rating: 71.2,
-      adjusted_gross_score: 80,
-      differential: 7.8,
-      scorecard_image_url: null,
-      ocr_confidence: 0.95,
-      processing_status: "confirmed",
-      played_at: "2026-04-18",
-      holes: Array.from({ length: 18 }, (_, i) => ({
+    const body = nestedRoundBody({
+      course: { name: "Stub Course" },
+      round: {
+        total_score: 80,
+        score_differential: 7.8,
+        processing_status: "confirmed",
+      },
+      hole_scores: Array.from({ length: 18 }, (_, i) => ({
         hole_number: i + 1,
         par: 4,
         strokes: 4 + (i % 3 === 0 ? 1 : 0),
         ocr_confidence: 0.95,
+        manually_corrected: false,
       })),
-    };
+    });
     await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
   });
 
