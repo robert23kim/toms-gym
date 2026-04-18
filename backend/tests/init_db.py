@@ -1,3 +1,4 @@
+import re
 import time
 import os
 import sys
@@ -11,8 +12,31 @@ MIGRATIONS_TO_APPLY = [
 ]
 
 
+_BEGIN_COMMIT_RE = re.compile(r"^\s*(BEGIN|COMMIT)\s*;", re.IGNORECASE | re.MULTILINE)
+
+
+def _strip_transaction_boundaries(sql: str) -> str:
+    """Remove top-level BEGIN; / COMMIT; lines from migration SQL.
+
+    Migration files ship with `BEGIN; ... COMMIT;` so they're atomic when run
+    standalone via `psql -f` or `apply_schema.py`. When we execute the same
+    SQL via SQLAlchemy's `conn.execute(text(sql))`, an embedded COMMIT ends
+    the implicit SQLAlchemy transaction early and leaves the connection in a
+    state where the caller's subsequent `conn.commit()` is a no-op (or, on
+    some psycopg2/SA versions, raises). Strip them here so the SQLAlchemy
+    transaction remains the single source of commit truth; the migration
+    file on disk is NOT touched (prod path stays atomic).
+    """
+    return _BEGIN_COMMIT_RE.sub("", sql)
+
+
 def _apply_migration_files(conn):
-    """Run each SQL file in MIGRATIONS_TO_APPLY against the given connection."""
+    """Run each SQL file in MIGRATIONS_TO_APPLY against the given connection.
+
+    Wraps each migration's execution in a SAVEPOINT so a BEGIN/COMMIT quirk
+    or a DDL error can't poison the outer transaction that the caller will
+    commit at the end of `init_db()`.
+    """
     migrations_dir = Path(__file__).resolve().parents[1] / "toms_gym" / "migrations"
     # pg_trgm is required by migration 008's GIN index; ensure the extension
     # is available before the migration runs (test-DB user may not be
@@ -28,7 +52,7 @@ def _apply_migration_files(conn):
         if not path.exists():
             raise FileNotFoundError(f"Migration file not found: {path}")
         print(f"Applying migration {filename}...")
-        sql = path.read_text()
+        sql = _strip_transaction_boundaries(path.read_text())
         conn.execute(text(sql))
         print(f"  Applied {filename}")
 
