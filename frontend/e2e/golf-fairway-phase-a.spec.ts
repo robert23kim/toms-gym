@@ -104,3 +104,33 @@ test("staged parse progress shows 5 tasks during upload", async ({ page }) => {
     await expect(page.getByText(label)).toBeVisible({ timeout: 3500 });
   }
 });
+
+test("review cells use Fairway color semantics vs par", async ({ page }) => {
+  await page.goto(`/golf/review/${seededRoundId}`);
+
+  // Find at least one hole input. Because the seeded round is from a tiny
+  // test image the OCR will produce no scores, so we'll type a known value
+  // and assert the class changes accordingly.
+  const firstCell = page.locator('[data-testid="scorecard-cell-1"]');
+  await expect(firstCell).toBeVisible();
+
+  // Click to edit, enter a birdie (par 4 → stroke 3)
+  await firstCell.click();
+  await page.keyboard.type("3");
+  await page.keyboard.press("Enter");
+  await expect(firstCell).toHaveClass(/fw-cell-birdie/);
+
+  // Enter a par
+  await firstCell.click();
+  await page.keyboard.press("ControlOrMeta+a");
+  await page.keyboard.type("4");
+  await page.keyboard.press("Enter");
+  await expect(firstCell).toHaveClass(/fw-cell-par/);
+
+  // Enter a bogey
+  await firstCell.click();
+  await page.keyboard.press("ControlOrMeta+a");
+  await page.keyboard.type("5");
+  await page.keyboard.press("Enter");
+  await expect(firstCell).toHaveClass(/fw-cell-bogey-plus/);
+});

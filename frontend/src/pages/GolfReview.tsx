@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, AlertTriangle, Check, Trophy, Users } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import FairwayScope from "../components/FairwayScope";
 import { API_URL } from "../config";
 import { GolfRound, GolfHoleScore, GolfDetectedPlayer } from "../lib/types";
 
@@ -105,12 +106,11 @@ const GolfReview: React.FC = () => {
   const totalPar = front9Par + back9Par;
 
   const getHoleBgClass = (hole: GolfHoleScore) => {
-    if (hole.strokes === null) return "border-dashed border-red-500/50";
+    if (hole.strokes === null) return "fw-cell";
     const diff = hole.strokes - hole.par;
-    if (diff <= -1) return "bg-green-500/20 border-green-500/50";
-    if (diff === 0) return "bg-card border-input";
-    if (diff === 1) return "bg-yellow-500/20 border-yellow-500/50";
-    return "bg-red-500/20 border-red-500/50";
+    if (diff <= -1) return "fw-cell fw-cell-birdie";
+    if (diff === 0)  return "fw-cell fw-cell-par";
+    return "fw-cell fw-cell-bogey-plus";
   };
 
   const handleConfirm = async () => {
@@ -149,13 +149,15 @@ const GolfReview: React.FC = () => {
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <FairwayScope>
+          <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--fw-info)]"></div>
+              </div>
             </div>
           </div>
-        </div>
+        </FairwayScope>
       </Layout>
     );
   }
@@ -163,13 +165,15 @@ const GolfReview: React.FC = () => {
   if (error && !round) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
-              {error}
+        <FairwayScope>
+          <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
+                {error}
+              </div>
             </div>
           </div>
-        </div>
+        </FairwayScope>
       </Layout>
     );
   }
@@ -178,6 +182,7 @@ const GolfReview: React.FC = () => {
     const userId = round?.user_id || localStorage.getItem("userId");
     return (
       <Layout>
+        <FairwayScope>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -262,6 +267,7 @@ const GolfReview: React.FC = () => {
             </div>
           </div>
         </motion.div>
+        </FairwayScope>
       </Layout>
     );
   }
@@ -273,10 +279,11 @@ const GolfReview: React.FC = () => {
         {holeSet.map((hole) => (
           <div
             key={hole.hole_number}
+            data-testid={`scorecard-cell-${hole.hole_number}`}
             onClick={() => setEditingHole(hole.hole_number)}
-            className={`relative border rounded-lg p-2 cursor-pointer transition-colors ${getHoleBgClass(
+            className={`relative p-2 cursor-pointer transition-colors ${getHoleBgClass(
               hole
-            )} ${editingHole === hole.hole_number ? "ring-2 ring-primary" : ""}`}
+            )} ${editingHole === hole.hole_number ? "fw-selected" : ""}`}
           >
             <div className="text-xs text-muted-foreground text-center">
               #{hole.hole_number}
@@ -337,6 +344,7 @@ const GolfReview: React.FC = () => {
 
   return (
     <Layout>
+      <FairwayScope>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -493,6 +501,7 @@ const GolfReview: React.FC = () => {
           </div>
         </div>
       </motion.div>
+      </FairwayScope>
     </Layout>
   );
 };
