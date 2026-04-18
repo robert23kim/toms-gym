@@ -7,11 +7,12 @@ import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import ReviewBanner from "../components/golf/ReviewBanner";
 import { API_URL } from "../config";
-import { GolfRound, GolfHoleScore, GolfDetectedPlayer } from "../lib/types";
+import { fetchRound } from "../lib/api";
+import { GolfRoundDetail, GolfHole, GolfDetectedPlayer } from "../lib/types";
 
-const buildFullHoles = (partial: GolfHoleScore[] | undefined): GolfHoleScore[] => {
+const buildFullHoles = (partial: GolfHole[] | undefined): GolfHole[] => {
   const src = partial || [];
-  const out: GolfHoleScore[] = [];
+  const out: GolfHole[] = [];
   for (let i = 1; i <= 18; i++) {
     const existing = src.find((h) => h.hole_number === i);
     out.push(
@@ -24,10 +25,10 @@ const buildFullHoles = (partial: GolfHoleScore[] | undefined): GolfHoleScore[] =
 const GolfReview: React.FC = () => {
   const { roundId } = useParams<{ roundId: string }>();
   const navigate = useNavigate();
-  const [round, setRound] = useState<GolfRound | null>(null);
+  const [round, setRound] = useState<GolfRoundDetail | null>(null);
   const [detectedPlayers, setDetectedPlayers] = useState<GolfDetectedPlayer[]>([]);
   const [selectedPlayerName, setSelectedPlayerName] = useState<string | null>(null);
-  const [holes, setHoles] = useState<GolfHoleScore[]>([]);
+  const [holes, setHoles] = useState<GolfHole[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editingHole, setEditingHole] = useState<number | null>(null);
@@ -40,14 +41,15 @@ const GolfReview: React.FC = () => {
   } | null>(null);
 
   useEffect(() => {
-    const fetchRound = async () => {
+    const load = async () => {
+      if (!roundId) return;
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/golf/round/${roundId}`);
-        setRound(response.data);
-        const players: GolfDetectedPlayer[] = response.data.detected_players || [];
+        const data = await fetchRound(roundId);
+        setRound(data.round);
+        const players: GolfDetectedPlayer[] = data.detected_players || [];
         setDetectedPlayers(players);
-        setHoles(buildFullHoles(response.data.holes));
+        setHoles(buildFullHoles(data.round.hole_scores));
         if (players.length > 0) {
           setSelectedPlayerName(players[0].name);
         }
@@ -61,7 +63,7 @@ const GolfReview: React.FC = () => {
       }
     };
 
-    fetchRound();
+    load();
   }, [roundId]);
 
   const handlePlayerPick = (name: string) => {
@@ -98,9 +100,9 @@ const GolfReview: React.FC = () => {
   const front9 = holes.filter((h) => h.hole_number <= 9);
   const back9 = holes.filter((h) => h.hole_number > 9);
 
-  const sumStrokes = (holeSet: GolfHoleScore[]) =>
+  const sumStrokes = (holeSet: GolfHole[]) =>
     holeSet.reduce((acc, h) => acc + (h.strokes || 0), 0);
-  const sumPar = (holeSet: GolfHoleScore[]) =>
+  const sumPar = (holeSet: GolfHole[]) =>
     holeSet.reduce((acc, h) => acc + h.par, 0);
 
   const front9Total = sumStrokes(front9);
@@ -111,12 +113,12 @@ const GolfReview: React.FC = () => {
   const totalPar = front9Par + back9Par;
 
   const liveDifferential =
-    round && allHolesComplete
-      ? ((grandTotal - Number(round.course_rating)) * 113) /
-        Number(round.slope_rating)
+    round && allHolesComplete && round.tee.rating_18 !== null && round.tee.slope_18 !== null
+      ? ((grandTotal - Number(round.tee.rating_18)) * 113) /
+        Number(round.tee.slope_18)
       : null;
 
-  const getHoleBgClass = (hole: GolfHoleScore) => {
+  const getHoleBgClass = (hole: GolfHole) => {
     if (hole.strokes === null) return "fw-cell";
     const diff = hole.strokes - hole.par;
     if (diff <= -1) return "fw-cell fw-cell-birdie";
@@ -130,9 +132,11 @@ const GolfReview: React.FC = () => {
     setError(null);
 
     try {
+      const userId = round?.user_id || localStorage.getItem("userId") || "";
       const response = await axios.put(
         `${API_URL}/golf/round/${roundId}/scores`,
         {
+          user_id: userId,
           holes: holes.map((h) => ({
             hole_number: h.hole_number,
             par: h.par,
@@ -142,7 +146,7 @@ const GolfReview: React.FC = () => {
       );
 
       setResultData({
-        differential: response.data.differential,
+        differential: response.data.score_differential,
         handicap_index: response.data.handicap_index,
         adjusted_gross_score: response.data.adjusted_gross_score,
       });
@@ -205,7 +209,7 @@ const GolfReview: React.FC = () => {
               </div>
               <h1 className="fw-h1 mb-1">Round saved</h1>
               <p className="fw-text-secondary mb-6">
-                {round?.course_name} — {round?.played_at}
+                {round?.course.name} — {round?.played_on}
               </p>
               <div className="grid grid-cols-2 gap-3 mb-6 text-left">
                 <div className="fw-surface p-4">
@@ -248,7 +252,7 @@ const GolfReview: React.FC = () => {
     );
   }
 
-  const renderHoleGrid = (holeSet: GolfHoleScore[], label: string) => (
+  const renderHoleGrid = (holeSet: GolfHole[], label: string) => (
     <div>
       <h3 className="text-lg font-semibold mb-3">{label}</h3>
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-9 gap-2">
@@ -338,7 +342,7 @@ const GolfReview: React.FC = () => {
             <div>
               <h1 className="fw-h1">Review scores</h1>
               <p className="fw-text-secondary text-sm mt-1">
-                {round?.course_name} — {round?.played_at}
+                {round?.course.name} — {round?.played_on}
               </p>
               {round?.ocr_confidence !== null && round?.ocr_confidence !== undefined && (
                 <p className="text-xs fw-text-secondary mt-1">

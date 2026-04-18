@@ -1,6 +1,20 @@
 import axios from "axios";
 import { API_URL } from '../config';
-import { Competition, Participant, Challenge, LiftingResult } from './types';
+import {
+  Competition,
+  Participant,
+  Challenge,
+  LiftingResult,
+  GolfCourse,
+  GolfCourseSearchResult,
+  GolfCreateCourseRequest,
+  GolfHandicapHistoryRange,
+  GolfHandicapHistoryResponse,
+  GolfRoundDetailResponse,
+  GolfRoundListResponse,
+  GolfScoresUpdateRequest,
+  GolfScoresUpdateResponse,
+} from './types';
 
 const API_BASE_URL = "https://my-app-834341357827.us-east1.run.app";
 
@@ -356,5 +370,63 @@ export async function triggerLiftingAnalysis(attemptId: string): Promise<{ lifti
 
 export async function getLiftingResult(attemptId: string): Promise<LiftingResult> {
   const response = await axios.get(`${API_URL}/lifting/result/${attemptId}`);
+  return response.data;
+}
+
+// ---------------------------------------------------------------------------
+// Golf — Phase B nested Course/Tee/Round shapes.
+// Contracts mirror backend/toms_gym/routes/golf_routes.py (commit e5500d6).
+// ---------------------------------------------------------------------------
+
+export async function fetchRound(roundId: string): Promise<GolfRoundDetailResponse> {
+  const response = await axios.get(`${API_URL}/golf/round/${roundId}`);
+  return response.data;
+}
+
+export async function fetchRounds(
+  userId: string,
+  options: { limit?: number; offset?: number } = {},
+): Promise<GolfRoundListResponse> {
+  const params = new URLSearchParams({ user_id: userId });
+  if (options.limit !== undefined) params.set("limit", String(options.limit));
+  if (options.offset !== undefined) params.set("offset", String(options.offset));
+  const response = await axios.get(`${API_URL}/golf/rounds?${params.toString()}`);
+  return response.data;
+}
+
+export async function updateRoundScores(
+  roundId: string,
+  body: GolfScoresUpdateRequest,
+): Promise<GolfScoresUpdateResponse> {
+  const response = await axios.put(`${API_URL}/golf/round/${roundId}/scores`, body);
+  return response.data;
+}
+
+export async function searchCourses(
+  q: string,
+  options: { near?: [number, number]; limit?: number } = {},
+): Promise<GolfCourseSearchResult[]> {
+  if (!q.trim()) return [];
+  const params = new URLSearchParams({ q });
+  if (options.near) params.set("near", `${options.near[0]},${options.near[1]}`);
+  if (options.limit !== undefined) params.set("limit", String(options.limit));
+  const response = await axios.get(`${API_URL}/golf/courses?${params.toString()}`);
+  return response.data.courses || [];
+}
+
+export async function createCourse(
+  body: GolfCreateCourseRequest,
+): Promise<GolfCourse> {
+  const response = await axios.post(`${API_URL}/golf/courses`, body);
+  return response.data.course;
+}
+
+export async function getHandicapHistory(
+  userId: string,
+  range: GolfHandicapHistoryRange = "12m",
+): Promise<GolfHandicapHistoryResponse> {
+  const response = await axios.get(
+    `${API_URL}/golf/users/${userId}/handicap/history?range=${range}`,
+  );
   return response.data;
 }

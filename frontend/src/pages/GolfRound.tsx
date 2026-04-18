@@ -2,28 +2,28 @@ import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, MapPin, TrendingDown } from "lucide-react";
-import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import HighlightsGrid from "../components/golf/HighlightsGrid";
 import HoleBarChart from "../components/golf/HoleBarChart";
-import { API_URL } from "../config";
-import { GolfRound as GolfRoundType, GolfHoleScore } from "../lib/types";
+import { fetchRound } from "../lib/api";
+import { GolfRoundDetail, GolfHole } from "../lib/types";
 
 const GolfRound: React.FC = () => {
   const { roundId } = useParams<{ roundId: string }>();
   const navigate = useNavigate();
-  const [round, setRound] = useState<GolfRoundType | null>(null);
+  const [round, setRound] = useState<GolfRoundDetail | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageExpanded, setImageExpanded] = useState(false);
 
   useEffect(() => {
-    const fetchRound = async () => {
+    const load = async () => {
+      if (!roundId) return;
       try {
         setLoading(true);
-        const response = await axios.get(`${API_URL}/golf/round/${roundId}`);
-        setRound(response.data);
+        const data = await fetchRound(roundId);
+        setRound(data.round);
       } catch (err: any) {
         console.error("Error fetching round:", err);
         setError(
@@ -34,10 +34,10 @@ const GolfRound: React.FC = () => {
       }
     };
 
-    fetchRound();
+    load();
   }, [roundId]);
 
-  const getHoleBgClass = (hole: GolfHoleScore) => {
+  const getHoleBgClass = (hole: GolfHole) => {
     if (hole.strokes === null) return "fw-cell";
     const diff = hole.strokes - hole.par;
     if (diff <= -1) return "fw-cell fw-cell-birdie";
@@ -80,13 +80,13 @@ const GolfRound: React.FC = () => {
     );
   }
 
-  const holes = round.holes || [];
+  const holes = round.hole_scores || [];
   const front9 = holes.filter((h) => h.hole_number <= 9).sort((a, b) => a.hole_number - b.hole_number);
   const back9 = holes.filter((h) => h.hole_number > 9).sort((a, b) => a.hole_number - b.hole_number);
 
-  const sumStrokes = (holeSet: GolfHoleScore[]) =>
+  const sumStrokes = (holeSet: GolfHole[]) =>
     holeSet.reduce((acc, h) => acc + (h.strokes || 0), 0);
-  const sumPar = (holeSet: GolfHoleScore[]) =>
+  const sumPar = (holeSet: GolfHole[]) =>
     holeSet.reduce((acc, h) => acc + h.par, 0);
 
   // Count stats
@@ -95,7 +95,7 @@ const GolfRound: React.FC = () => {
   const bogeys = holes.filter((h) => h.strokes !== null && h.strokes === h.par + 1).length;
   const doubles = holes.filter((h) => h.strokes !== null && h.strokes >= h.par + 2).length;
 
-  const renderHoleGrid = (holeSet: GolfHoleScore[], label: string) => (
+  const renderHoleGrid = (holeSet: GolfHole[], label: string) => (
     <div>
       <h3 className="text-lg font-semibold mb-3">{label}</h3>
       <div className="grid grid-cols-3 sm:grid-cols-3 md:grid-cols-9 gap-2">
@@ -142,29 +142,29 @@ const GolfRound: React.FC = () => {
                 <div>
                   <h1 className="fw-h1 flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-[var(--fw-text-success)]" />
-                    {round.course_name}
+                    {round.course.name}
                   </h1>
                   <div className="flex items-center gap-4 mt-2 text-sm fw-text-secondary">
                     <span className="inline-flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
-                      {round.played_at}
+                      {round.played_on}
                     </span>
-                    <span>Slope {round.slope_rating}</span>
-                    <span>Rating {round.course_rating}</span>
+                    {round.tee.slope_18 !== null && <span>Slope {round.tee.slope_18}</span>}
+                    {round.tee.rating_18 !== null && <span>Rating {round.tee.rating_18}</span>}
                   </div>
                 </div>
                 <div className="flex gap-2">
                   <div className="fw-surface px-4 py-2 text-center">
                     <div className="text-2xl font-medium">
-                      {round.adjusted_gross_score || sumStrokes(holes)}
+                      {round.total_score ?? sumStrokes(holes)}
                     </div>
                     <div className="text-xs fw-text-secondary">Score</div>
                   </div>
-                  {round.differential !== null && (
+                  {round.score_differential !== null && (
                     <div className="fw-surface px-4 py-2 text-center">
                       <div className="text-2xl font-medium text-[var(--fw-text-success)] inline-flex items-center gap-1">
                         <TrendingDown className="w-4 h-4" />
-                        {round.differential.toFixed(1)}
+                        {round.score_differential.toFixed(1)}
                       </div>
                       <div className="text-xs fw-text-secondary">Differential</div>
                     </div>

@@ -201,33 +201,110 @@ export interface FrameData {
   height: number;
 }
 
-export interface GolfHoleScore {
+/**
+ * Golf API types — Phase B nested Course/Tee/Round shapes.
+ * Mirrors backend `/golf/*` response contracts in
+ * `backend/toms_gym/routes/golf_routes.py` (commit e5500d6).
+ */
+
+export interface GolfHole {
   hole_number: number;
   par: number;
   strokes: number | null;
-  ocr_confidence?: number;
+  ocr_confidence: number | null;
   manually_corrected?: boolean;
 }
 
 export interface GolfDetectedPlayer {
   name: string;
-  holes: GolfHoleScore[];
+  holes: GolfHole[];
 }
 
-export interface GolfRound {
+export type GolfCourseStatus = "verified" | "pending";
+
+export interface GolfCourse {
+  id: string;
+  name: string;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  holes: number;
+  status: GolfCourseStatus;
+}
+
+export interface GolfTee {
+  id: string | null;
+  name: string | null;
+  color_hex: string | null;
+  rating_18: number | null;
+  slope_18: number | null;
+  rating_9_front: number | null;
+  slope_9_front: number | null;
+  rating_9_back: number | null;
+  slope_9_back: number | null;
+  yardage: number | null;
+  par: number | null;
+  hole_pars: number[] | null;
+  hole_yardages: number[] | null;
+  hole_handicaps: number[] | null;
+}
+
+export type GolfProcessingStatus =
+  | "pending"
+  | "ocr_complete"
+  | "confirmed"
+  | "failed";
+
+export interface GolfRoundDetail {
   id: string;
   user_id: string;
-  course_name: string;
-  slope_rating: number;
-  course_rating: number;
-  adjusted_gross_score: number | null;
-  differential: number | null;
+  played_on: string | null;
+  holes: number;
+  course: GolfCourse;
+  tee: GolfTee;
+  hole_scores: GolfHole[];
+  scores: number[] | null;
+  total_score: number | null;
+  front_nine: number | null;
+  back_nine: number | null;
+  score_differential: number | null;
   scorecard_image_url: string | null;
   ocr_confidence: number | null;
-  processing_status: 'pending' | 'ocr_complete' | 'confirmed' | 'failed';
-  played_at: string;
-  holes: GolfHoleScore[];
-  detected_players?: GolfDetectedPlayer[];
+  processing_status: GolfProcessingStatus;
+  needs_tee: boolean;
+  created_at: string | null;
+  updated_at: string | null;
+}
+
+export type GolfRoundListItem = GolfRoundDetail;
+
+export interface GolfRoundDetailResponse {
+  round: GolfRoundDetail;
+  detected_players: GolfDetectedPlayer[];
+  needs_tee?: boolean;
+}
+
+export interface GolfRoundListResponse {
+  rounds: GolfRoundListItem[];
+  handicap_index: number | null;
+  rounds_used: number;
+}
+
+export interface GolfScoresUpdateRequest {
+  user_id: string;
+  holes: Array<{ hole_number: number; par: number; strokes: number }>;
+}
+
+export interface GolfScoresUpdateResponse {
+  round_id: string;
+  user_id: string;
+  adjusted_gross_score: number;
+  total_score: number;
+  score_differential: number | null;
+  processing_status: GolfProcessingStatus;
+  handicap_index: number | null;
 }
 
 export interface GolfHandicap {
@@ -235,6 +312,45 @@ export interface GolfHandicap {
   handicap_index: number | null;
   rounds_used: number;
   differentials_used: number[];
+  created_at: string | null;
+}
+
+export type GolfHandicapHistoryRange = "6m" | "12m" | "24m" | "all";
+
+export interface GolfHandicapHistoryPoint {
+  handicap_index: number | null;
+  rounds_used: number;
+  created_at: string | null;
+}
+
+export interface GolfHandicapHistoryResponse {
+  history: GolfHandicapHistoryPoint[];
+  range: GolfHandicapHistoryRange;
+}
+
+export interface GolfCourseSearchResult {
+  id: string;
+  name: string;
+  city: string | null;
+  state: string | null;
+  country: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  holes: number;
+  status: GolfCourseStatus;
+  similarity?: number;
+  distance_km?: number;
+}
+
+export interface GolfCreateCourseRequest {
+  name: string;
+  city?: string;
+  state?: string;
+  country?: string;
+  latitude?: number;
+  longitude?: number;
+  holes?: 9 | 18;
+  user_id?: string;
 }
 
 export interface GolfLeaderboardEntry {
@@ -242,6 +358,9 @@ export interface GolfLeaderboardEntry {
   user_id: string;
   user_name: string;
   handicap_index: number;
+  monthly_delta: number | null;
   rounds_played: number;
+  rounds_used: number;
   best_differential: number | null;
+  latest_snapshot_at: string | null;
 }

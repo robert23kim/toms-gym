@@ -6,13 +6,13 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import { API_URL } from "../config";
-import { getGhibliAvatar } from "../lib/api";
-import { GolfRound, GolfHoleScore } from "../lib/types";
+import { getGhibliAvatar, fetchRounds } from "../lib/api";
+import { GolfRoundListItem, GolfHole } from "../lib/types";
 
 const GolfProfile: React.FC = () => {
   const { userId: paramUserId } = useParams<{ userId: string }>();
   const userId = paramUserId || localStorage.getItem("userId") || "";
-  const [rounds, setRounds] = useState<GolfRound[]>([]);
+  const [rounds, setRounds] = useState<GolfRoundListItem[]>([]);
   const [handicapIndex, setHandicapIndex] = useState<number | null>(null);
   const [userName, setUserName] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -30,12 +30,12 @@ const GolfProfile: React.FC = () => {
       try {
         setLoading(true);
         const [roundsRes, profileRes] = await Promise.all([
-          axios.get(`${API_URL}/golf/rounds?user_id=${userId}`),
+          fetchRounds(userId),
           axios.get(`${API_URL}/users/${userId}/profile`).catch(() => null),
         ]);
 
-        setRounds(roundsRes.data.rounds || []);
-        setHandicapIndex(roundsRes.data.handicap_index ?? null);
+        setRounds(roundsRes.rounds || []);
+        setHandicapIndex(roundsRes.handicap_index ?? null);
 
         if (profileRes?.data) {
           setUserName(profileRes.data.name || profileRes.data.email || "Golfer");
@@ -53,7 +53,7 @@ const GolfProfile: React.FC = () => {
     fetchData();
   }, [userId]);
 
-  const getHoleBgClass = (hole: GolfHoleScore) => {
+  const getHoleBgClass = (hole: GolfHole) => {
     if (hole.strokes === null) return "fw-cell";
     const diff = hole.strokes - hole.par;
     if (diff <= -1) return "fw-cell fw-cell-birdie";
@@ -61,8 +61,8 @@ const GolfProfile: React.FC = () => {
     return "fw-cell fw-cell-bogey-plus";
   };
 
-  const getRoundStats = (round: GolfRound) => {
-    const holes = round.holes || [];
+  const getRoundStats = (round: GolfRoundListItem) => {
+    const holes = round.hole_scores || [];
     const birdies = holes.filter((h) => h.strokes !== null && h.strokes < h.par).length;
     const bogeys = holes.filter((h) => h.strokes !== null && h.strokes === h.par + 1).length;
     const doubles = holes.filter((h) => h.strokes !== null && h.strokes >= h.par + 2).length;
@@ -155,7 +155,7 @@ const GolfProfile: React.FC = () => {
                 <div className="text-2xl font-medium">
                   {(() => {
                     const diffs = rounds
-                      .map((r) => r.differential)
+                      .map((r) => r.score_differential)
                       .filter((d): d is number => d !== null);
                     return diffs.length ? Math.min(...diffs).toFixed(1) : "—";
                   })()}
@@ -164,11 +164,11 @@ const GolfProfile: React.FC = () => {
               <div className="fw-surface p-4 col-span-2 sm:col-span-1">
                 <div className="text-xs fw-text-secondary">Last round</div>
                 <div className="text-2xl font-medium">
-                  {rounds[0]?.adjusted_gross_score ?? "—"}
+                  {rounds[0]?.total_score ?? "—"}
                 </div>
                 {rounds[0] && (
                   <div className="text-xs fw-text-secondary mt-1 truncate">
-                    {rounds[0].course_name} · {rounds[0].played_at}
+                    {rounds[0].course.name} · {rounds[0].played_on}
                   </div>
                 )}
               </div>
@@ -214,22 +214,22 @@ const GolfProfile: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <MapPin className="w-4 h-4 text-green-500 flex-shrink-0" />
                             <span className="font-semibold truncate">
-                              {round.course_name}
+                              {round.course.name}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 mt-1 text-sm fw-text-secondary">
                             <Calendar className="w-3 h-3" />
-                            <span>{round.played_at}</span>
+                            <span>{round.played_on}</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
                           <div className="text-right">
                             <div className="text-xl font-bold">
-                              {round.adjusted_gross_score || "-"}
+                              {round.total_score ?? "-"}
                             </div>
-                            {round.differential !== null && (
+                            {round.score_differential !== null && (
                               <div className="text-xs text-green-500">
-                                {round.differential.toFixed(1)}
+                                {round.score_differential.toFixed(1)}
                               </div>
                             )}
                           </div>
@@ -273,7 +273,7 @@ const GolfProfile: React.FC = () => {
                           <div className="px-4 pb-4 space-y-3">
                             {/* Mini hole grid */}
                             <div className="grid grid-cols-9 gap-1">
-                              {(round.holes || [])
+                              {(round.hole_scores || [])
                                 .sort((a, b) => a.hole_number - b.hole_number)
                                 .slice(0, 9)
                                 .map((hole) => (
@@ -291,7 +291,7 @@ const GolfProfile: React.FC = () => {
                                 ))}
                             </div>
                             <div className="grid grid-cols-9 gap-1">
-                              {(round.holes || [])
+                              {(round.hole_scores || [])
                                 .sort((a, b) => a.hole_number - b.hole_number)
                                 .slice(9, 18)
                                 .map((hole) => (
