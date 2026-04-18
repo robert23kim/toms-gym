@@ -87,21 +87,55 @@ Users photograph a scorecard; OCR (Google Vision API `document_text_detection`) 
 
 ## Golf Feature
 
+> **Phase B schema migration landed 2026-04-18** (branch `golf/fairway-phase-b`, migration `008_fairway_schema.sql`). The flat `GolfRound` / `GolfHoleScore` / `GolfHandicap` tables were dropped and replaced with the normalized `Course` / `Tee` / `Round` / `HoleScore` / `HandicapSnapshot` model below. PRs or docs written before that date refer to the old shape — see the Field Rename Map at the end of this section.
+
 ### Data Model
-- **`GolfRound`** — one per upload: `user_id`, `course_name`, `slope_rating`, `course_rating`, `adjusted_gross_score`, `differential`, `scorecard_image_url`, `ocr_raw` (JSONB: `{text, detected_players}`), `ocr_confidence`, `processing_status`.
-- **`GolfHoleScore`** — one per hole (18 per round): `round_id`, `hole_number`, `par`, `strokes`, `ocr_confidence`, `manually_corrected`.
-- **`GolfHandicap`** — one per user: `handicap_index`, `rounds_used`, `differentials_used` (USGA WHS formula; needs ≥3 confirmed rounds).
+- **`Course`** — one per golf course: `id` (UUID), `name`, `city`, `state`, `country`, `latitude`, `longitude`, `holes` (9 or 18), `status` (`'verified'` | `'pending'`). `pending` is set by the OCR matcher on a miss; admins promote to `verified`. GIN trigram index on `name` for fuzzy search.
+- **`Tee`** — one per tee box per course: `course_id`, `name` (e.g. `"Blue"`), `color_hex`, 18-hole `rating_18` / `slope_18`, optional 9-hole splits (`rating_9_front` / `slope_9_front` / `rating_9_back` / `slope_9_back`), `yardage`, `par`, `hole_pars[]`, `hole_yardages[]`, `hole_handicaps[]` (per-hole stroke-allocation ranks 1..18; null falls back to the flat NDB-10 cap). Slope columns enforce WHS legal range 55–155.
+- **`Round`** — one per upload: `user_id`, `course_id`, `tee_id` (nullable until user picks a tee), `played_on` (DATE), `holes` (9 or 18), `scores[]`, `total_score`, `front_nine`, `back_nine`, `score_differential`, `scorecard_image_url`, `ocr_raw` (JSONB: `{text, detected_players}`), `ocr_confidence`, `processing_status`.
+- **`HoleScore`** — one per hole (9 or 18 per round): `round_id`, `hole_number`, `par`, `strokes`, `ocr_confidence`, `manually_corrected`. `UNIQUE (round_id, hole_number)`.
+- **`HandicapSnapshot`** — append-only handicap history: `user_id`, `handicap_index`, `rounds_used`, `differentials_used` (JSONB), `triggered_by_round_id`, `created_at`. Written on every round save, edit, or delete; indexed by `(user_id, created_at DESC)` for history queries.
 
 ### API Endpoints
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/golf/upload` | POST | Multipart form with scorecard image + course data. Accepts `user_id` OR `email`. Returns `round_id`, `holes` (primary player), `detected_players` (all detected). |
-| `/golf/round/<id>` | GET | Fetch round + holes + `detected_players` for the review UI. |
-| `/golf/round/<id>/scores` | PUT | Confirm/correct 18 holes; computes differential + recalculates handicap. |
-| `/golf/round/<id>` | DELETE | Delete a round and recalculate handicap. |
-| `/golf/rounds?user_id=` | GET | List a user's rounds with holes. |
-| `/golf/handicap/<user_id>` | GET | Current handicap index + differentials used. |
-| `/golf/leaderboard` | GET | Global handicap leaderboard. |
+| `/golf/upload` | POST | Multipart form with scorecard image + course data. Accepts `user_id` OR `email`. OCR runs, `services.courses.match_or_create_course` + `match_or_create_tee` link the round. Returns `round_id`, `hole_scores` (primary player), `detected_players`, `needs_tee` (true when no tee could be matched and user must supply rating/slope). |
+| `/golf/round/<id>` | GET | Fetch round with nested `course` and `tee` objects + `hole_scores`, `detected_players`, `needs_tee` for the review UI. |
+| `/golf/round/<id>/scores` | PUT | Confirm/correct holes; computes `score_differential` via `services.handicap.compute_differential`, recalculates WHS index, writes a new `HandicapSnapshot`. (Tee-override persistence is a Phase D follow-up — the route does not yet accept `tee_id` overrides.) |
+| `/golf/round/<id>` | DELETE | Delete a round and write a recalculated `HandicapSnapshot`. |
+| `/golf/rounds?user_id=` | GET | List a user's rounds; each entry carries nested `course` and `tee`. |
+| `/golf/handicap/<user_id>` | GET | Current handicap index + differentials used (reads latest `HandicapSnapshot`). |
+| `/golf/leaderboard` | GET | Global leaderboard sourced from latest `HandicapSnapshot` per user; each row includes `monthly_delta` (30-day handicap change; frontend pill is a Phase D follow-up). |
+| `/golf/courses?q=&near=lat,lng` | GET | `pg_trgm` fuzzy search over `Course.name`; optional geo-biased tie-break. |
+| `/golf/courses` | POST | Create a new course. Body: `{name, city?, state?, country?, latitude?, longitude?, holes?}`. Authenticated callers create `status='verified'`; anonymous callers create `status='pending'`. |
+| `/golf/users/<user_id>/handicap/history?range=6m\|12m\|24m\|all` | GET | Ordered `HandicapSnapshot` series for the trend chart (Phase D dashboard consumer). |
+
+### Handicap Engine (WHS 2020+)
+
+`backend/toms_gym/services/handicap.py` is a pure, DB-free module exposing `net_double_bogey_cap`, `compute_differential`, `compute_handicap_index`, `allocate_strokes`, `apply_twelve_month_cap`. Route code loads rounds, calls these helpers, writes snapshots.
+
+- **Net-double-bogey cap.** Per-hole strokes are capped before the differential is computed. Cap is `par + 2 + strokes_received_on_hole` when a handicap exists; a flat **10** per hole when the user is still establishing. Hole-handicap ranks come from `Tee.hole_handicaps`; the flat-10 fallback kicks in whenever those ranks are missing (OCR rarely extracts them today — see Phase D follow-up).
+- **Differential.** `((adjusted_total − rating − PCC) × 113) / slope`. `PCC = 0` (Playing Conditions Calculation is MVP-disabled). Works for both 9- and 18-hole rounds — the route picks the correct rating/slope pair.
+- **WHS adjustment table (no 0.96 multiplier).** Final index = `trunc((avg_of_lowest_N + adjustment) × 10) / 10`, capped at 54.0. The pre-2020 `× 0.96` "bonus for excellence" is intentionally omitted per USGA Rules of Handicapping §5.2.
+
+  | Rounds in pool | Lowest N used | Adjustment |
+  |---|---|---|
+  | 3 | 1 | −2.0 |
+  | 4 | 1 | −1.0 |
+  | 5 | 1 | 0 |
+  | 6 | 2 | −1.0 |
+  | 7–8 | 2 | 0 |
+  | 9–11 | 3 | 0 |
+  | 12–14 | 4 | 0 |
+  | 15–16 | 5 | 0 |
+  | 17–18 | 6 | 0 |
+  | 19 | 7 | 0 |
+  | 20+ | 8 | 0 |
+
+- **Establishing state.** Fewer than 3 effective rounds → `handicap_index=None`, `status="establishing"`, `rounds_needed=3-effective`.
+- **12-month low cap.** A user's index cannot rise more than **5.0** above their lowest index in the preceding 12 months (`apply_twelve_month_cap`). The cap only prevents rises — it never pushes the index down.
+- **9-hole rounds.** Weighted at **0.5** toward the "last 20" pool. `_effective_round_count` = full 18-hole rounds + (nine-hole rounds // 2).
+- **Reference fixtures.** `backend/tests/fixtures/whs_reference_cases.json` + `backend/tests/test_handicap.py` exercise every adjustment-table row plus NDB cap, establishing, 12-month cap, and 9-hole weighting. Any handicap change must re-pass this fixture bit-for-bit.
 
 ### OCR Parser (multi-player)
 `_parse_scorecard_symbols(symbols, page_width, page_height)` in `golf_routes.py` operates on **symbol-level** Vision output (not words — Vision tends to concatenate handwritten digits into garbage tokens like `"7864856T65854494444"`).
@@ -125,10 +159,25 @@ Image rotation: `_auto_orient_image` only applies EXIF transpose. If the parser 
 | Route | Component | Description |
 |-------|-----------|-------------|
 | `/golf/upload` | `GolfUpload` | Scorecard upload + course info form. |
-| `/golf/review/:roundId` | `GolfReview` | OCR result review: shows detected players, lets user pick their row, edit scores, confirm. |
-| `/golf/round/:roundId` | `GolfRound` | Completed round detail. |
-| `/golf/leaderboard` | `GolfLeaderboard` | Handicap leaderboard. |
-| `/golf/profile/:userId?` | `GolfProfile` | User's golf stats and rounds. |
+| `/golf/review/:roundId` | `GolfReview` | OCR result review: shows detected players, lets user pick their row, edit scores, confirm. A "Change" link on the course/tee header opens `TeePickerDrawer` (`frontend/src/components/golf/TeePickerDrawer.tsx`) — up to 4 tee cards, editable rating (step 0.1) / slope (step 1) / yardage, `DifficultyMeter` anchored at slope 113, and a live differential preview. Selected tee carries the `fw-selected` class (2px `fw-info` border from Phase A). |
+| `/golf/round/:roundId` | `GolfRound` | Completed round detail; reads nested `course` / `tee`. |
+| `/golf/leaderboard` | `GolfLeaderboard` | Handicap leaderboard; rows are fed from latest `HandicapSnapshot` per user. |
+| `/golf/profile/:userId?` | `GolfProfile` | User's golf stats and rounds. Consumes `GET /golf/users/:id/handicap/history` for the handicap trend (Phase D dashboard surface). |
+
+### Field Rename Map (Phase A → Phase B)
+Anyone reading pre-2026-04-18 PRs, branches, or issues should map old flat fields onto the new nested shape:
+
+| Old (flat) | New (nested) |
+|---|---|
+| `course_rating` | `tee.rating_18` |
+| `slope_rating` | `tee.slope_18` |
+| `course_name` | `course.name` |
+| `played_at` | `played_on` |
+| `differential` | `score_differential` |
+| `adjusted_gross_score` | `total_score` |
+| `holes: GolfHole[]` (array) | `hole_scores: GolfHole[]` |
+| `holes` (top-level) | now a number: `9` or `18` (round length) |
+| `GolfHandicap.handicap_index` | latest `HandicapSnapshot.handicap_index` |
 
 ## Secrets Management
 
