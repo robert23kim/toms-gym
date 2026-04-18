@@ -61,4 +61,5 @@ else:
 bucket = storage_client.bucket(bucket_name)
 
 # Allowed file extensions
-ALLOWED_EXTENSIONS = {'mov', 'mp4', 'avi', 'mkv'} 
+ALLOWED_EXTENSIONS = {'mov', 'mp4', 'avi', 'mkv'}
+ALLOWED_IMAGE_EXTENSIONS = {'jpg', 'jpeg', 'png', 'heic', 'heif', 'webp'} 
