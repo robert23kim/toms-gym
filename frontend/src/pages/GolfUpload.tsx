@@ -5,6 +5,7 @@ import { ArrowLeft, Upload, Image } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
+import FairwayScope from "../components/FairwayScope";
 
 const GolfUpload: React.FC = () => {
   const navigate = useNavigate();
@@ -133,11 +134,12 @@ const GolfUpload: React.FC = () => {
 
   return (
     <Layout>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
-      >
+      <FairwayScope>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
+        >
         <div className="max-w-2xl mx-auto">
           <Link
             to="/golf/leaderboard"
@@ -289,7 +291,8 @@ const GolfUpload: React.FC = () => {
             </div>
           </div>
         </div>
-      </motion.div>
+        </motion.div>
+      </FairwayScope>
     </Layout>
   );
 };
