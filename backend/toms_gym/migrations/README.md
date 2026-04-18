@@ -123,6 +123,10 @@ Phase B of the Fairway migration. Drops flat `GolfRound`/`GolfHoleScore`/`GolfHa
 
 Greenfield — no data preservation. Rollback is `DROP TABLE` on the five new tables plus redeploy of the prior image.
 
+### Caution: `BEGIN;` / `COMMIT;` inside migration SQL
+
+Migration SQL files (including `008_fairway_schema.sql`) wrap the whole script in `BEGIN; ... COMMIT;` so they apply atomically via `psql -f` or `apply_schema.py` in prod — keep that pattern for any new migration. The test harness in `backend/tests/init_db.py` strips those boundaries before executing via SQLAlchemy, because an embedded `COMMIT` terminates SA's implicit transaction and a follow-up `conn.commit()` would then run in an inconsistent state. Do **not** remove `BEGIN;`/`COMMIT;` from the `.sql` files to "fix" a test failure — fix the harness instead.
+
 ## Troubleshooting
 
 Common issues and solutions:
