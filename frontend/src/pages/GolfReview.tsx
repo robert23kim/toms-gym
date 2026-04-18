@@ -6,9 +6,12 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import ReviewBanner from "../components/golf/ReviewBanner";
+import TeePickerDrawer, {
+  TeePickerApplyPayload,
+} from "../components/golf/TeePickerDrawer";
 import { API_URL } from "../config";
-import { fetchRound } from "../lib/api";
-import { GolfRoundDetail, GolfHole, GolfDetectedPlayer } from "../lib/types";
+import { fetchRound, searchCourses } from "../lib/api";
+import { GolfRoundDetail, GolfHole, GolfDetectedPlayer, GolfTee } from "../lib/types";
 
 const buildFullHoles = (partial: GolfHole[] | undefined): GolfHole[] => {
   const src = partial || [];
@@ -39,6 +42,8 @@ const GolfReview: React.FC = () => {
     handicap_index: number | null;
     adjusted_gross_score: number;
   } | null>(null);
+  const [teePickerOpen, setTeePickerOpen] = useState(false);
+  const [teeOverride, setTeeOverride] = useState<TeePickerApplyPayload | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -112,11 +117,16 @@ const GolfReview: React.FC = () => {
   const back9Par = sumPar(back9);
   const totalPar = front9Par + back9Par;
 
+  const effectiveRating = teeOverride?.rating_18 ?? round?.tee.rating_18 ?? null;
+  const effectiveSlope = teeOverride?.slope_18 ?? round?.tee.slope_18 ?? null;
+  const effectiveTeeId = teeOverride?.tee_id ?? round?.tee.id ?? null;
+
   const liveDifferential =
-    round && allHolesComplete && round.tee.rating_18 !== null && round.tee.slope_18 !== null
-      ? ((grandTotal - Number(round.tee.rating_18)) * 113) /
-        Number(round.tee.slope_18)
+    round && allHolesComplete && effectiveRating !== null && effectiveSlope !== null && effectiveSlope !== 0
+      ? ((grandTotal - Number(effectiveRating)) * 113) / Number(effectiveSlope)
       : null;
+
+  const availableTees: GolfTee[] = round?.tee ? [round.tee] : [];
 
   const getHoleBgClass = (hole: GolfHole) => {
     if (hole.strokes === null) return "fw-cell";
@@ -341,9 +351,28 @@ const GolfReview: React.FC = () => {
           <div className="fw-surface p-6 sm:p-8 space-y-5">
             <div>
               <h1 className="fw-h1">Review scores</h1>
-              <p className="fw-text-secondary text-sm mt-1">
-                {round?.course.name} — {round?.played_on}
-              </p>
+              <div className="flex items-center gap-2 mt-1 text-sm">
+                <p className="fw-text-secondary">
+                  {round?.course.name} — {round?.played_on}
+                </p>
+                {round && (
+                  <button
+                    type="button"
+                    data-testid="tee-picker-open"
+                    onClick={() => setTeePickerOpen(true)}
+                    className="text-[var(--fw-text-info)] hover:underline"
+                  >
+                    Change
+                  </button>
+                )}
+              </div>
+              {(effectiveRating !== null || effectiveSlope !== null) && (
+                <p className="text-xs fw-text-secondary mt-1">
+                  {effectiveRating !== null && <>Rating {Number(effectiveRating).toFixed(1)}</>}
+                  {effectiveRating !== null && effectiveSlope !== null && " · "}
+                  {effectiveSlope !== null && <>Slope {effectiveSlope}</>}
+                </p>
+              )}
               {round?.ocr_confidence !== null && round?.ocr_confidence !== undefined && (
                 <p className="text-xs fw-text-secondary mt-1">
                   OCR confidence {(round.ocr_confidence * 100).toFixed(0)}% · tap any cell to edit.
@@ -485,6 +514,27 @@ const GolfReview: React.FC = () => {
           </div>
         </div>
       </motion.div>
+      {round && (
+        <TeePickerDrawer
+          open={teePickerOpen}
+          course={round.course}
+          tees={availableTees}
+          selectedTeeId={effectiveTeeId}
+          adjustedGrossScore={grandTotal}
+          onApply={(payload) => {
+            setTeeOverride(payload);
+            setTeePickerOpen(false);
+          }}
+          onClose={() => setTeePickerOpen(false)}
+          onLookup={async (q, near) => {
+            const nearTuple: [number, number] | undefined =
+              near[0] !== null && near[1] !== null
+                ? [near[0], near[1]]
+                : undefined;
+            return searchCourses(q, { near: nearTuple });
+          }}
+        />
+      )}
       </FairwayScope>
     </Layout>
   );
