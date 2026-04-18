@@ -1,7 +1,37 @@
 import time
 import os
 import sys
+from pathlib import Path
 from sqlalchemy import create_engine, text
+
+# Migration files under backend/toms_gym/migrations/ applied after the inline
+# base-schema setup below. Order matters.
+MIGRATIONS_TO_APPLY = [
+    "008_fairway_schema.sql",  # Phase B: Course/Tee/Round/HoleScore/HandicapSnapshot
+]
+
+
+def _apply_migration_files(conn):
+    """Run each SQL file in MIGRATIONS_TO_APPLY against the given connection."""
+    migrations_dir = Path(__file__).resolve().parents[1] / "toms_gym" / "migrations"
+    # pg_trgm is required by migration 008's GIN index; ensure the extension
+    # is available before the migration runs (test-DB user may not be
+    # superuser, but the postgres:15 default image allows CREATE EXTENSION
+    # for the postgres superuser used by docker-compose.test.yml).
+    try:
+        conn.execute(text("CREATE EXTENSION IF NOT EXISTS pg_trgm;"))
+    except Exception as e:
+        print(f"  Warning: could not pre-create pg_trgm extension: {e}")
+
+    for filename in MIGRATIONS_TO_APPLY:
+        path = migrations_dir / filename
+        if not path.exists():
+            raise FileNotFoundError(f"Migration file not found: {path}")
+        print(f"Applying migration {filename}...")
+        sql = path.read_text()
+        conn.execute(text(sql))
+        print(f"  Applied {filename}")
+
 
 def init_db():
     """Initialize the test database with required tables"""
@@ -152,7 +182,10 @@ def init_db():
                 CREATE INDEX idx_usercomp_competition ON "UserCompetition" (competition_id);
                 CREATE INDEX idx_attempt_usercomp ON "Attempt" (user_competition_id);
                 """))
-                
+
+                # Apply migration files (Phase B schema, etc.)
+                _apply_migration_files(conn)
+
                 conn.commit()
                 print("Tables created and committed successfully")
             print("Connection closed successfully")

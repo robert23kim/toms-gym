@@ -117,6 +117,12 @@ The database schema is designed to be cloud-agnostic and supports both PostgreSQ
    - Query optimization
    - Regular maintenance
 
+## 008_fairway_schema.sql
+
+Phase B of the Fairway migration. Drops flat `GolfRound`/`GolfHoleScore`/`GolfHandicap` and replaces them with `Course`, `Tee`, `Round`, `HoleScore`, `HandicapSnapshot`. Enables `pg_trgm` extension and adds a GIN trigram index on `Course.name`.
+
+Greenfield — no data preservation. Rollback is `DROP TABLE` on the five new tables plus redeploy of the prior image.
+
 ## Troubleshooting
 
 Common issues and solutions:

@@ -176,6 +176,10 @@ def init_db(app):
             session.execute(text('CREATE INDEX IF NOT EXISTS idx_user_username ON "User"(username)'))
             # ... Add other indexes
 
+            # Apply file-based migrations (Phase B: Fairway schema)
+            from tests.init_db import MIGRATIONS_TO_APPLY, _apply_migration_files  # noqa: WPS433
+            _apply_migration_files(session)
+
             session.commit()
             print("COMMIT transaction for schema creation.")
             print("✅ Database schema initialization committed successfully.")
