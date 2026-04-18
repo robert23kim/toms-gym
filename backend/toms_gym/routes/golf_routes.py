@@ -455,6 +455,91 @@ def _recalculate_handicap(session, user_id, triggered_by_round_id=None):
     return final_index
 
 
+def _find_or_create_guest_golfer(session, raw_name):
+    """Find or create a User row for a player name detected from a scorecard.
+
+    Email is deterministic: `{slug}@guest.tomsgym.local`. Same name across
+    uploads → same user → handicap accumulates. Returns user_id or None when
+    name is empty.
+    """
+    if not raw_name or not raw_name.strip():
+        return None
+    name = raw_name.strip().title()
+    email_slug = ''.join(c for c in name.lower() if c.isalnum())
+    if not email_slug:
+        return None
+    email = f'{email_slug}@guest.tomsgym.local'
+
+    row = session.execute(
+        sqlalchemy.text('SELECT id FROM "User" WHERE LOWER(email) = :em'),
+        {'em': email}
+    ).fetchone()
+    if row:
+        return str(row[0])
+
+    new_id = str(uuid.uuid4())
+    session.execute(sqlalchemy.text("""
+        INSERT INTO "User" (id, email, name, username, auth_method, status, role, created_at)
+        VALUES (:id, :em, :name, :un, 'guest', 'active', 'user', NOW())
+    """), {
+        'id': new_id, 'em': email, 'name': name, 'un': email_slug,
+    })
+    session.commit()
+    return new_id
+
+
+def _save_guest_player_round(session, *, raw_name, holes, course_id, tee_id,
+                              rating, slope, scorecard_image_url, ocr_payload):
+    """Save a confirmed round for a detected scorecard player.
+
+    Creates the guest user (idempotent by name), inserts a Round + HoleScores,
+    auto-confirms via NDB-10 cap, computes the differential, and writes a
+    HandicapSnapshot via _recalculate_handicap. Returns (user_id, round_id).
+    """
+    guest_id = _find_or_create_guest_golfer(session, raw_name)
+    if not guest_id:
+        return None, None
+    valid = [h for h in holes if h.get('strokes') is not None]
+    if not valid:
+        return guest_id, None
+
+    adjusted = sum(min(int(h['strokes']), 10) for h in valid)
+    front = sum(int(h['strokes']) for h in valid if h.get('hole_number', 0) <= 9)
+    back = sum(int(h['strokes']) for h in valid if h.get('hole_number', 0) > 9)
+    total = front + back
+    differential = round(compute_differential(adjusted, float(rating), int(slope)), 1)
+
+    round_id = str(uuid.uuid4())
+    session.execute(sqlalchemy.text("""
+        INSERT INTO "Round"
+            (id, user_id, course_id, tee_id, holes, played_on, total_score,
+             front_nine, back_nine, score_differential, scorecard_image_url,
+             ocr_raw, ocr_confidence, processing_status)
+        VALUES (:id, :uid, :cid, :tid, 18, CURRENT_DATE, :tot,
+                :f, :b, :diff, :url, :raw, :conf, 'confirmed')
+    """), {
+        'id': round_id, 'uid': guest_id, 'cid': course_id, 'tid': tee_id,
+        'tot': total, 'f': front, 'b': back, 'diff': differential,
+        'url': scorecard_image_url,
+        'raw': json.dumps({'name': raw_name, 'holes': holes}),
+        'conf': round(sum(h.get('ocr_confidence', 0) for h in valid) / len(valid), 2),
+    })
+    for h in valid:
+        session.execute(sqlalchemy.text("""
+            INSERT INTO "HoleScore"
+                (round_id, hole_number, par, strokes, ocr_confidence)
+            VALUES (:rid, :hn, :par, :s, :c)
+            ON CONFLICT (round_id, hole_number) DO UPDATE
+                SET par = :par, strokes = :s, ocr_confidence = :c
+        """), {
+            'rid': round_id, 'hn': h['hole_number'], 'par': h['par'],
+            's': h['strokes'], 'c': h.get('ocr_confidence', 0),
+        })
+    _recalculate_handicap(session, guest_id, round_id)
+    session.commit()
+    return guest_id, round_id
+
+
 # ---------------------------------------------------------------------------
 # POST /golf/upload
 # ---------------------------------------------------------------------------
@@ -694,6 +779,34 @@ def upload_scorecard():
             """), {"id": round_id})
             session.commit()
 
+        # Multi-player auto-save: spin up a guest golfer per detected player and
+        # save a confirmed round for each. Each detected name maps to a stable
+        # synthetic email so the same TOM across uploads accumulates rounds
+        # under one user instead of duplicating.
+        guest_rounds = []
+        for player in detected_players:
+            try:
+                gid, gr_id = _save_guest_player_round(
+                    session,
+                    raw_name=player.get('name', ''),
+                    holes=player.get('holes', []),
+                    course_id=course_match.course_id,
+                    tee_id=tee_match.tee_id,
+                    rating=rating_18 if rating_18 else 72.0,
+                    slope=slope_18 if slope_18 else 113,
+                    scorecard_image_url=scorecard_image_url,
+                    ocr_payload=ocr_raw_payload,
+                )
+                if gid:
+                    guest_rounds.append({
+                        'name': player.get('name'),
+                        'user_id': gid,
+                        'round_id': gr_id,
+                    })
+            except Exception as guest_err:
+                logger.warning(f"Failed to save guest round for {player.get('name')}: {guest_err}")
+                session.rollback()
+
         return _fetch_and_serialize_round(
             session,
             round_id,
@@ -701,6 +814,7 @@ def upload_scorecard():
             extra={
                 'detected_players': detected_players,
                 'needs_tee': tee_match.needs_tee,
+                'guest_rounds': guest_rounds,
             },
         )
 
