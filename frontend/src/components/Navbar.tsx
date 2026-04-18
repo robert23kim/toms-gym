@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X, Dumbbell, ShoppingBag, LogOut, User, Search } from "lucide-react";
+import { Menu, X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy } from "lucide-react";
 import FindProfile from "./FindProfile";
 import { useAuth } from "../auth/AuthContext";
 
@@ -44,7 +44,9 @@ const Navbar: React.FC = () => {
   const links = [
     { href: "/", label: "Home" },
     { href: "/about", label: "About" },
+    { href: "/challenges", label: "Challenges", icon: <Trophy className="w-4 h-4" /> },
     { href: "/leaderboard", label: "Leaderboard" },
+    { href: "/golf/leaderboard", label: "Golf" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },
   ];
 
@@ -138,8 +140,9 @@ const Navbar: React.FC = () => {
                   to={item.href}
                   label={item.label}
                   isActive={
-                    (item.label === "Home" && location.pathname === "/") ||
-                    (item.label !== "Home" && location.pathname.includes(item.label.toLowerCase()))
+                    item.href === "/"
+                      ? location.pathname === "/"
+                      : location.pathname === item.href || location.pathname.startsWith(item.href + "/")
                   }
                   delay={index * 0.1}
                 />
@@ -175,10 +178,13 @@ const Navbar: React.FC = () => {
                 key={item.label}
                 to={item.href}
                 className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  (item.label === "Home" && location.pathname === "/") ||
-                  (item.label !== "Home" && location.pathname.includes(item.label.toLowerCase()))
-                    ? "text-accent font-semibold"
-                    : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
+                  item.href === "/"
+                    ? location.pathname === "/"
+                      ? "text-accent font-semibold"
+                      : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
+                    : location.pathname === item.href || location.pathname.startsWith(item.href + "/")
+                      ? "text-accent font-semibold"
+                      : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
                 }`}
               >
                 {item.label}
