@@ -4,6 +4,9 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, MapPin, TrendingDown } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import FairwayScope from "../components/FairwayScope";
+import HighlightsGrid from "../components/golf/HighlightsGrid";
+import HoleBarChart from "../components/golf/HoleBarChart";
 import { API_URL } from "../config";
 import { GolfRound as GolfRoundType, GolfHoleScore } from "../lib/types";
 
@@ -35,24 +38,25 @@ const GolfRound: React.FC = () => {
   }, [roundId]);
 
   const getHoleBgClass = (hole: GolfHoleScore) => {
-    if (hole.strokes === null) return "border-input";
+    if (hole.strokes === null) return "fw-cell";
     const diff = hole.strokes - hole.par;
-    if (diff <= -1) return "bg-green-500/20 border-green-500/50";
-    if (diff === 0) return "bg-card border-input";
-    if (diff === 1) return "bg-yellow-500/20 border-yellow-500/50";
-    return "bg-red-500/20 border-red-500/50";
+    if (diff <= -1) return "fw-cell fw-cell-birdie";
+    if (diff === 0)  return "fw-cell fw-cell-par";
+    return "fw-cell fw-cell-bogey-plus";
   };
 
   if (loading) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="flex items-center justify-center h-64">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <FairwayScope>
+          <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="flex items-center justify-center h-64">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--fw-info)]"></div>
+              </div>
             </div>
           </div>
-        </div>
+        </FairwayScope>
       </Layout>
     );
   }
@@ -60,16 +64,18 @@ const GolfRound: React.FC = () => {
   if (error || !round) {
     return (
       <Layout>
-        <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
-              {error || "Round not found"}
+        <FairwayScope>
+          <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
+                {error || "Round not found"}
+              </div>
+              <Link to="/golf/leaderboard" className="text-primary hover:underline mt-4 inline-block">
+                Back to Golf
+              </Link>
             </div>
-            <Link to="/golf/leaderboard" className="text-primary hover:underline mt-4 inline-block">
-              Back to Golf
-            </Link>
           </div>
-        </div>
+        </FairwayScope>
       </Layout>
     );
   }
@@ -115,52 +121,52 @@ const GolfRound: React.FC = () => {
 
   return (
     <Layout>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
-      >
-        <div className="max-w-4xl mx-auto">
-          <button
-            onClick={() => navigate(-1)}
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
-          >
-            <ArrowLeft className="mr-2" size={16} />
-            Back
-          </button>
+      <FairwayScope>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
+        >
+          <div className="max-w-4xl mx-auto">
+            <button
+              onClick={() => navigate(-1)}
+              className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
+            >
+              <ArrowLeft className="mr-2" size={16} />
+              Back
+            </button>
 
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-            <div className="p-6 sm:p-8 space-y-6">
+            <div className="fw-surface p-6 sm:p-8 space-y-6">
               {/* Header */}
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4">
                 <div>
-                  <h1 className="text-2xl font-bold flex items-center gap-2">
-                    <MapPin className="w-5 h-5 text-green-500" />
+                  <h1 className="fw-h1 flex items-center gap-2">
+                    <MapPin className="w-5 h-5 text-[var(--fw-text-success)]" />
                     {round.course_name}
                   </h1>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1">
-                      <Calendar className="w-4 h-4" />
+                  <div className="flex items-center gap-4 mt-2 text-sm fw-text-secondary">
+                    <span className="inline-flex items-center gap-1">
+                      <Calendar className="w-3.5 h-3.5" />
                       {round.played_at}
                     </span>
-                    <span>Slope: {round.slope_rating}</span>
-                    <span>Rating: {round.course_rating}</span>
+                    <span>Slope {round.slope_rating}</span>
+                    <span>Rating {round.course_rating}</span>
                   </div>
                 </div>
-                <div className="flex gap-3">
-                  <div className="bg-primary/5 rounded-lg px-4 py-2 text-center">
-                    <div className="text-2xl font-bold text-primary">
+                <div className="flex gap-2">
+                  <div className="fw-surface px-4 py-2 text-center">
+                    <div className="text-2xl font-medium">
                       {round.adjusted_gross_score || sumStrokes(holes)}
                     </div>
-                    <div className="text-xs text-muted-foreground">Score</div>
+                    <div className="text-xs fw-text-secondary">Score</div>
                   </div>
                   {round.differential !== null && (
-                    <div className="bg-green-500/10 rounded-lg px-4 py-2 text-center">
-                      <div className="text-2xl font-bold text-green-500 flex items-center gap-1">
+                    <div className="fw-surface px-4 py-2 text-center">
+                      <div className="text-2xl font-medium text-[var(--fw-text-success)] inline-flex items-center gap-1">
                         <TrendingDown className="w-4 h-4" />
                         {round.differential.toFixed(1)}
                       </div>
-                      <div className="text-xs text-muted-foreground">Differential</div>
+                      <div className="text-xs fw-text-secondary">Differential</div>
                     </div>
                   )}
                 </div>
@@ -170,53 +176,26 @@ const GolfRound: React.FC = () => {
               {renderHoleGrid(front9, "Front 9")}
               {renderHoleGrid(back9, "Back 9")}
 
+              <HoleBarChart holes={holes} />
+
               {/* Totals */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">
-                    {sumStrokes(front9)}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Front 9 (Par {sumPar(front9)})
-                  </div>
+              <div className="grid grid-cols-3 gap-2">
+                <div className="fw-surface p-3 text-center">
+                  <div className="text-xl font-medium">{sumStrokes(front9)}</div>
+                  <div className="text-xs fw-text-secondary">Front 9 (Par {sumPar(front9)})</div>
                 </div>
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">
-                    {sumStrokes(back9)}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Back 9 (Par {sumPar(back9)})
-                  </div>
+                <div className="fw-surface p-3 text-center">
+                  <div className="text-xl font-medium">{sumStrokes(back9)}</div>
+                  <div className="text-xs fw-text-secondary">Back 9 (Par {sumPar(back9)})</div>
                 </div>
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">
-                    {sumStrokes(holes)}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Total (Par {sumPar(holes)})
-                  </div>
+                <div className="fw-surface p-3 text-center">
+                  <div className="text-xl font-medium">{sumStrokes(holes)}</div>
+                  <div className="text-xs fw-text-secondary">Total (Par {sumPar(holes)})</div>
                 </div>
               </div>
 
               {/* Summary stats */}
-              <div className="grid grid-cols-4 gap-3">
-                <div className="bg-green-500/10 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-green-500">{birdies}</div>
-                  <div className="text-xs text-muted-foreground">Birdies</div>
-                </div>
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">{pars}</div>
-                  <div className="text-xs text-muted-foreground">Pars</div>
-                </div>
-                <div className="bg-yellow-500/10 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-yellow-500">{bogeys}</div>
-                  <div className="text-xs text-muted-foreground">Bogeys</div>
-                </div>
-                <div className="bg-red-500/10 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-red-500">{doubles}</div>
-                  <div className="text-xs text-muted-foreground">Double+</div>
-                </div>
-              </div>
+              <HighlightsGrid birdies={birdies} pars={pars} bogeys={bogeys} doublesOrWorse={doubles} />
 
               {/* Scorecard image */}
               {round.scorecard_image_url && (
@@ -238,8 +217,8 @@ const GolfRound: React.FC = () => {
               )}
             </div>
           </div>
-        </div>
-      </motion.div>
+        </motion.div>
+      </FairwayScope>
     </Layout>
   );
 };
