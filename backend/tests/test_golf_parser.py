@@ -147,3 +147,184 @@ def test_all_holes_have_valid_structure(real_ocr):
         assert hole_nums == list(range(1, 19))
         for h in p['holes']:
             assert 'par' in h and 'strokes' in h and 'ocr_confidence' in h
+
+
+# ---- Upload-path integration tests (Task 5 / #14) ---------------------------
+#
+# These exercise /golf/upload end-to-end against the real DB: a multipart POST
+# in, a JSON response with the nested {course, tee, needs_tee} shape out. They
+# stub only (a) the Vision OCR call, (b) GCS blob writes, and (c) the EXIF
+# auto-orient pass — everything else (match_or_create_course / _tee, DB
+# inserts, response serialization) runs for real.
+
+import io  # noqa: E402
+import uuid  # noqa: E402
+
+from sqlalchemy import text  # noqa: E402
+
+
+def test_rate_limit_bypass_is_wired(app):
+    """Tripwire regression test for Revision 1 fix #4. `rate_limit` no-ops only
+    when `app.config['TESTING'] is True`; if future config drift flips this
+    off, these integration tests will stop being deterministic under their
+    10/hour cap. Fail fast here instead."""
+    assert app.config['TESTING'] is True
+
+
+@pytest.fixture
+def clean_golf_tables(db_session):
+    """Reset Fairway tables between upload tests so seed state is predictable."""
+    db_session.execute(text('DELETE FROM "HoleScore"'))
+    db_session.execute(text('DELETE FROM "HandicapSnapshot"'))
+    db_session.execute(text('DELETE FROM "Round"'))
+    db_session.execute(text('DELETE FROM "Tee"'))
+    db_session.execute(text('DELETE FROM "Course"'))
+    db_session.commit()
+    yield
+
+
+@pytest.fixture
+def golf_user(db_session, clean_golf_tables):
+    """Minimal User row so Round.user_id FK resolves."""
+    user_id = str(uuid.uuid4())
+    db_session.execute(
+        text("""
+            INSERT INTO "User" (id, email, name, username, auth_method, status, role, created_at)
+            VALUES (:id, :email, :name, :username, 'password', 'active', 'user', NOW())
+        """),
+        {
+            "id": user_id,
+            "email": f"golfer_{user_id[:8]}@example.com",
+            "name": "Golf Tester",
+            "username": f"golfer_{user_id[:8]}",
+        },
+    )
+    db_session.commit()
+    return user_id
+
+
+@pytest.fixture
+def stub_ocr_and_gcs(monkeypatch):
+    """Neutralize the three outside-world dependencies of the upload handler.
+
+    - `_run_ocr`           → returns a sentinel object (truthy, `text` attr).
+    - `_extract_players_from_ocr` → returns a single minimal 18-hole player.
+    - `_auto_orient_image` → identity pass-through (no PIL Image.open on stub bytes).
+    - `bucket.blob()`      → stub with upload_from_string / upload_from_file no-ops.
+    """
+    from toms_gym.routes import golf_routes
+
+    class _StubOCRResponse:
+        text = "stub ocr text"
+        pages = []
+
+    def _stub_run_ocr(_gcs_uri):
+        return _StubOCRResponse()
+
+    def _stub_extract_players(_resp):
+        return [{
+            "name": "TESTPLAYER",
+            "holes": [
+                {"hole_number": n, "par": 4, "strokes": 4, "ocr_confidence": 0.95}
+                for n in range(1, 19)
+            ],
+        }]
+
+    def _stub_auto_orient(file_bytes, content_type='image/jpeg'):
+        return file_bytes
+
+    class _StubBlob:
+        def __init__(self, name): self.name = name
+        def upload_from_string(self, data, content_type=None): pass
+        def upload_from_file(self, f, content_type=None): pass
+
+    class _StubBucket:
+        name = "stub-bucket"
+        def blob(self, name): return _StubBlob(name)
+
+    monkeypatch.setattr(golf_routes, "_run_ocr", _stub_run_ocr)
+    monkeypatch.setattr(golf_routes, "_extract_players_from_ocr", _stub_extract_players)
+    monkeypatch.setattr(golf_routes, "_auto_orient_image", _stub_auto_orient)
+    monkeypatch.setattr(golf_routes, "bucket", _StubBucket())
+
+
+def _post_scorecard(client, **form):
+    """Build a multipart upload request with a stub JPEG byte blob."""
+    form.setdefault("image", (io.BytesIO(b"fake-jpeg-bytes"), "card.jpg"))
+    return client.post(
+        "/golf/upload",
+        data=form,
+        content_type="multipart/form-data",
+    )
+
+
+def test_upload_resolves_existing_course_by_name(
+    client, db_session, golf_user, stub_ocr_and_gcs
+):
+    """Fuzzy-match: a typo on an existing verified course name should resolve
+    to that course (not create a new pending one) and the existing 'Blue' tee
+    should be picked up by name — i.e. `needs_tee` is False."""
+    course_id = db_session.execute(text(
+        """INSERT INTO "Course" (name, status) VALUES ('Pebble Beach Golf Links', 'verified')
+           RETURNING id"""
+    )).scalar()
+    db_session.execute(text(
+        """INSERT INTO "Tee" (course_id, name, rating_18, slope_18)
+           VALUES (:cid, 'Default', 72.7, 138)"""
+    ), {"cid": course_id})
+    db_session.commit()
+
+    resp = _post_scorecard(
+        client,
+        user_id=golf_user,
+        course_name="Peble Beech Golf Lnks",  # deliberate typos
+    )
+
+    assert resp.status_code == 200, resp.get_data(as_text=True)
+    body = resp.get_json()
+    assert body["round"]["course"]["id"] == str(course_id)
+    assert body["round"]["course"]["status"] == "verified"
+    assert body["round"]["needs_tee"] is False
+    assert body["round"]["tee"]["id"] is not None
+
+
+def test_upload_creates_pending_course_on_miss(
+    client, golf_user, stub_ocr_and_gcs
+):
+    """Novel course name with no seed → service creates a pending row; the
+    response's nested course block reflects `status='pending'`."""
+    resp = _post_scorecard(
+        client,
+        user_id=golf_user,
+        course_name=f"Ephemeral Test Course {uuid.uuid4()}",
+    )
+
+    assert resp.status_code == 200, resp.get_data(as_text=True)
+    body = resp.get_json()
+    assert body["round"]["course"]["status"] == "pending"
+    assert body["round"]["course"]["id"] is not None
+
+
+def test_upload_marks_needs_tee_when_no_tee_on_course(
+    client, db_session, golf_user, stub_ocr_and_gcs
+):
+    """Seed a course with zero tees; upload without rating/slope → tee service
+    can't match or create, so `needs_tee=True` and `tee.id is None`."""
+    course_id = db_session.execute(text(
+        """INSERT INTO "Course" (name, status) VALUES ('Tee-Less Municipal', 'verified')
+           RETURNING id"""
+    )).scalar()
+    db_session.commit()
+
+    resp = _post_scorecard(
+        client,
+        user_id=golf_user,
+        course_name="Tee-Less Municipal",
+        # No slope_rating / course_rating → service can't create a new Tee.
+    )
+
+    assert resp.status_code == 200, resp.get_data(as_text=True)
+    body = resp.get_json()
+    assert body["round"]["course"]["id"] == str(course_id)
+    assert body["round"]["needs_tee"] is True
+    assert body["round"]["tee"]["id"] is None
