@@ -116,9 +116,9 @@ def test_whs_table_selects_correct_diffs_and_adjustment(n, diffs_used, adjustmen
     assert isinstance(result, HandicapResult)
     assert result.diffs_used_count == diffs_used
     avg = sum(sorted(diffs)[:diffs_used]) / diffs_used
-    # Expected raw index = (avg + adjustment) * 0.96 truncated to 1 decimal.
+    # Expected raw index = (avg + adjustment) truncated to 1 decimal (WHS 2020+).
     import math
-    expected = math.trunc((avg + adjustment) * 0.96 * 10) / 10
+    expected = math.trunc((avg + adjustment) * 10) / 10
     assert result.handicap_index == pytest.approx(min(expected, 54.0), abs=0.05)
 
 

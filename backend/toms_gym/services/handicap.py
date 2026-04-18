@@ -97,7 +97,10 @@ def compute_handicap_index(
     diffs_to_use, adjustment = WHS_TABLE[lookup_n]
     best = sorted(differentials)[:diffs_to_use]
     avg = sum(best) / diffs_to_use
-    raw = math.trunc((avg + adjustment) * 0.96 * 10) / 10
+    # WHS (2020+): index = avg of lowest-N + table adjustment, truncated to 0.1.
+    # The pre-2020 0.96 "bonus for excellence" multiplier was removed when the
+    # unified World Handicap System launched (USGA Rules of Handicapping §5.2).
+    raw = math.trunc((avg + adjustment) * 10) / 10
     index = min(raw, MAX_INDEX)
 
     return HandicapResult(
