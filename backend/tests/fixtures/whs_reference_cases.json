@@ -1,120 +1,46 @@
 {
-  "source": "USGA Rules of Handicapping \u00a75.2",
-  "notes": [
-    "Differentials are pre-computed. Each row lists N differentials, in submission order (not sorted).",
-    "Expected index is computed per WHS \u00a75.2 Appendix B (lowest-N-of-last-20 with adjustments).",
-    "Differentials chosen so arithmetic stays whole-number friendly for human verification."
-  ],
-  "differential_pool": [
-    10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0,
-    30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0
-  ],
-  "cases": [
-    {"rounds": 3,  "differentials": [10.0, 12.0, 14.0],                                                                                                                                   "expected_index": 8.0,  "rule": "lowest 1 of 3, \u22122.0"},
-    {"rounds": 4,  "differentials": [10.0, 12.0, 14.0, 16.0],                                                                                                                             "expected_index": 9.0,  "rule": "lowest 1 of 4, \u22121.0"},
-    {"rounds": 5,  "differentials": [10.0, 12.0, 14.0, 16.0, 18.0],                                                                                                                       "expected_index": 10.0, "rule": "lowest 1 of 5, 0"},
-    {"rounds": 6,  "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0],                                                                                                                 "expected_index": 10.0, "rule": "avg lowest 2 of 6, \u22121.0"},
-    {"rounds": 7,  "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0],                                                                                                           "expected_index": 11.0, "rule": "avg lowest 2 of 7, 0"},
-    {"rounds": 8,  "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0],                                                                                                     "expected_index": 11.0, "rule": "avg lowest 2 of 8, 0"},
-    {"rounds": 9,  "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0],                                                                                               "expected_index": 12.0, "rule": "avg lowest 3 of 9, 0"},
-    {"rounds": 11, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0],                                                                                   "expected_index": 12.0, "rule": "avg lowest 3 of 11, 0"},
-    {"rounds": 13, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0],                                                                       "expected_index": 13.0, "rule": "avg lowest 4 of 13, 0"},
-    {"rounds": 14, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0],                                                                 "expected_index": 13.0, "rule": "avg lowest 4 of 14, 0"},
-    {"rounds": 16, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0],                                                     "expected_index": 14.0, "rule": "avg lowest 5 of 16, 0"},
-    {"rounds": 17, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0],                                               "expected_index": 15.0, "rule": "avg lowest 6 of 17, 0"},
-    {"rounds": 18, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0],                                         "expected_index": 15.0, "rule": "avg lowest 6 of 18, 0"},
-    {"rounds": 19, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0],                                   "expected_index": 16.0, "rule": "avg lowest 7 of 19, 0"},
-    {"rounds": 20, "differentials": [10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0, 30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0],                             "expected_index": 17.0, "rule": "avg lowest 8 of 20, 0"}
-  ],
-  "twenty_plus_only_last_twenty": {
-    "description": "With 25 submitted rounds, only the most recent 20 are considered; of those, lowest 8 average.",
-    "differentials_in_submission_order": [
-      100.0, 99.0, 98.0, 97.0, 96.0,
-      10.0, 12.0, 14.0, 16.0, 18.0, 20.0, 22.0, 24.0, 26.0, 28.0,
-      30.0, 32.0, 34.0, 36.0, 38.0, 40.0, 42.0, 44.0, 46.0, 48.0
+  "source": "USGA Rules of Handicapping \u00a75.2 (WHS adjustment table)",
+  "establishing_zero_rounds": {
+    "rounds": [],
+    "expected_index": null,
+    "expected_status": {"status": "establishing", "rounds_needed": 3}
+  },
+  "establishing_two_rounds": {
+    "rounds": [
+      {"adjusted_total": 92, "rating": 72.1, "slope": 128, "holes": 18},
+      {"adjusted_total": 89, "rating": 72.1, "slope": 128, "holes": 18}
     ],
-    "expected_index": 17.0
+    "expected_index": null,
+    "expected_status": {"status": "establishing", "rounds_needed": 1}
   },
-  "establishing": [
-    {"rounds": 0, "differentials": [],                 "expected_status": "establishing", "expected_rounds_needed": 3},
-    {"rounds": 2, "differentials": [10.0, 12.0],       "expected_status": "establishing", "expected_rounds_needed": 1}
-  ],
-  "maximum_index": {
-    "description": "WHS caps handicap index at 54.0. Feed differentials that would otherwise compute to >54.",
-    "differentials": [60.0, 62.0, 64.0, 66.0, 68.0, 70.0, 72.0, 74.0, 76.0, 78.0,
-                      80.0, 82.0, 84.0, 86.0, 88.0, 90.0, 92.0, 94.0, 96.0, 98.0],
-    "expected_index": 54.0
+  "three_rounds_lowest_minus_2": {
+    "rounds": [
+      {"adjusted_total": 85, "rating": 71.0, "slope": 124, "holes": 18},
+      {"adjusted_total": 91, "rating": 71.0, "slope": 124, "holes": 18},
+      {"adjusted_total": 88, "rating": 71.0, "slope": 124, "holes": 18}
+    ],
+    "expected_adjustment": -2.0,
+    "expected_diffs_used": 1
   },
-  "ndb_no_handicap": {
-    "description": "Net-double-bogey cap at 10 for a user with no established handicap.",
-    "par_by_hole": [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    "raw_strokes":  [4, 5, 6, 7, 8, 9, 10, 11, 12, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    "expected_capped": [4, 5, 6, 7, 8, 9, 10, 10, 10, 4, 4, 4, 4, 4, 4, 4, 4, 4]
-  },
-  "ndb_with_handicap": {
-    "description": "Net-double-bogey for a user with a 12-stroke course handicap: cap = par + 2 + strokes_allocated. Hole handicaps 1-18 in order, so holes 1-12 get +1 stroke (cap = par+3), rest cap = par+2.",
-    "par_by_hole":       [4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4],
-    "hole_handicaps":    [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-    "course_handicap": 12,
-    "raw_strokes":       [10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10, 10],
-    "expected_capped":   [7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  6,  6,  6,  6,  6,  6]
-  },
+  "four_rounds_lowest_minus_1":  {"rounds_count": 4,  "expected_adjustment": -1.0, "expected_diffs_used": 1},
+  "five_rounds_lowest_zero":     {"rounds_count": 5,  "expected_adjustment": 0,    "expected_diffs_used": 1},
+  "six_rounds_avg_2_minus_1":    {"rounds_count": 6,  "expected_adjustment": -1.0, "expected_diffs_used": 2},
+  "nine_rounds_avg_3":           {"rounds_count": 9,  "expected_adjustment": 0,    "expected_diffs_used": 3},
+  "fifteen_rounds_avg_5":        {"rounds_count": 15, "expected_adjustment": 0,    "expected_diffs_used": 5},
+  "twenty_rounds_avg_8":         {"rounds_count": 20, "expected_adjustment": 0,    "expected_diffs_used": 8},
   "twelve_month_cap": {
-    "description": "New index cannot rise more than 5.0 above the user's lowest HandicapSnapshot in the trailing 12 months.",
-    "cases": [
-      {
-        "low_12mo": 10.0,
-        "newly_computed": 16.0,
-        "expected_capped": 15.0
-      },
-      {
-        "low_12mo": 10.0,
-        "newly_computed": 14.0,
-        "expected_capped": 14.0
-      },
-      {
-        "low_12mo": null,
-        "newly_computed": 20.0,
-        "expected_capped": 20.0
-      }
-    ]
+    "description": "Handicap cannot rise more than 5.0 above the 12-month low",
+    "twelve_month_low": 8.0,
+    "raw_new_index": 14.3,
+    "expected_index": 13.0
   },
-  "nine_hole_weighting": {
-    "description": "9-hole rounds count as 0.5 toward the last-20 window. Four 9-hole rounds equal 2 effective 18-hole rounds.",
-    "submitted": [
-      {"holes": 9,  "differential": 10.0},
-      {"holes": 9,  "differential": 12.0},
-      {"holes": 18, "differential": 14.0},
-      {"holes": 18, "differential": 16.0}
-    ],
-    "effective_round_count": 3,
-    "expected_index": 8.0,
-    "rule": "effective count 3 (=0.5+0.5+1+1) \u2192 lowest 1 of all submitted \u2212 2.0 = 10.0 \u2212 2.0"
+  "nine_hole_round_counts_as_half": {
+    "description": "Nine-hole rounds use 9-hole rating/slope and count as 0.5 toward last 20",
+    "rounds": [{"adjusted_total": 46, "rating": 35.2, "slope": 122, "holes": 9}]
   },
-  "allocate_strokes_cases": [
-    {
-      "description": "Zero course handicap \u2192 no strokes anywhere.",
-      "course_handicap": 0,
-      "hole_handicaps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-      "expected_strokes": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    },
-    {
-      "description": "Five-stroke handicap \u2192 holes with stroke index 1..5 each get one stroke.",
-      "course_handicap": 5,
-      "hole_handicaps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-      "expected_strokes": [1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-    },
-    {
-      "description": "18-stroke handicap \u2192 every hole gets one stroke.",
-      "course_handicap": 18,
-      "hole_handicaps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-      "expected_strokes": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    },
-    {
-      "description": "22-stroke handicap \u2192 every hole gets one, plus stroke indexes 1..4 get a second.",
-      "course_handicap": 22,
-      "hole_handicaps": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
-      "expected_strokes": [2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
-    }
-  ]
+  "net_double_bogey_cap": {
+    "description": "Strokes cap at par+2 (NDB, +strokes received). No handicap yet -> cap at 10.",
+    "par_strokes": [[3, 9], [4, 12], [5, 11]],
+    "expected_adjusted": [5, 6, 7]
+  }
 }
