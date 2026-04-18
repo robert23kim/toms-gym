@@ -70,6 +70,8 @@ def init_db(app):
             # Drop existing tables first (order matters for FKs)
             print("Dropping existing tables (if any)...")
             tables_to_drop = [
+                # Fairway schema (migration 008) — drop before User (FK dep).
+                "HandicapSnapshot", "HoleScore", "Round", "Tee", "Course",
                 "TokenBlacklist", "SecurityAudit", "UserSession", "Attempt",
                 "UserCompetition", "Competition", "User"
             ]
