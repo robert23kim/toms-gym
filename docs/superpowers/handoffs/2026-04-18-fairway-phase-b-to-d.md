@@ -94,6 +94,20 @@ If Phase D touches `GolfReview.tsx` for any reason, fold in: extend `PUT /round/
 
 ---
 
+## Post-merge polish (shipped same-day as Phase B)
+
+After the Phase B merge commit `3a8a778` landed on `main`, a short round of polish was shipped as a series of fast-follows. All are live in prod as of `cb82a6c`:
+
+- **`8091cda` — Restored Challenges and Golf nav tabs.** The Phase A → B reskin had dropped two nav links; href-prefix `isActive` matching brought back alongside them (replaces the old substring-in-label approach).
+- **`711b568` — Fairway scope dark by default.** The wider app uses a single dark theme via Tailwind `:root` HSL tokens (no `html.dark` class is ever set). The Phase A `fw-scope` assumed a next-themes-style toggle, so its dark-mode block never activated and golf pages rendered as a white card on a black page. The dark palette is now the scope default and the wrapper background is `transparent` so the site chrome bleeds through.
+- **`d946448` — Dropped the 3-round minimum + surfaced Golf Profile button.** `WHS_TABLE` now covers 1- and 2-round states with lowest-1 differential and no adjustment; engine threshold lowered from `< 3` to `< 1`. A `POST /golf/handicap/<user_id>/recompute` internal endpoint was added to backfill snapshots for users whose rounds predate the rule change. The `My Golf Profile` link on the leaderboard was promoted from a low-contrast text link to a bordered button and is now shown in both empty- and populated-state layouts.
+- **`f6c0a06` + `86df471` — Auto-create guest golfers per detected scorecard player.** See the "Multi-player auto-save" section in `CLAUDE.md`. The first attempt failed silently because `auth_method` enum had no `'guest'` value; the nullable column is now left NULL.
+- **`cb82a6c` — Leaderboard stale-snapshot fix + named avatars.** The leaderboard query filter now runs *outside* `DISTINCT ON` so a user whose latest snapshot is null drops off the board instead of reviving their stale 33.0 index. A new `getGolfAvatar(name, id)` helper (DiceBear avataaars) ships hand-tuned presets for known recurring golfer names (`tom`, `chris`) and a name-seeded fallback for everyone else; leaderboard and profile pages migrated off `getGhibliAvatar` for golf contexts only.
+
+**Manual smoke against prod:** two real-scorecard uploads (Pebble Beach and Waverly Oaks) ran cleanly end-to-end. OCR returned TOM 56/49/105 + CHRIS 93; guest rounds were auto-created for both detected names; leaderboard ordered Chris (21.0) ahead of Tom (33.0); avatars rendered with distinct skin/hair via the new preset map. The uploader's test user was later deleted (4 rounds cleared via `DELETE /golf/round/<id>?user_id=...`) and drops off the board as expected.
+
+None of this changes Phase D scope — the entry points called out below are still the right starting list.
+
 ## Kick-off prompt for the next agent
 
 > Continue the Fairway incremental migration at Phase D. Start by writing `docs/superpowers/plans/<today>-fairway-phase-d.md` per the spec's §Phase D requirements, using the same bite-sized TDD task structure as Phase B's plan. Once the plan is reviewed and approved, execute it on a new branch `golf/fairway-phase-d` off `main`.
