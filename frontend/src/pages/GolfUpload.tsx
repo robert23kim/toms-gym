@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Upload, Image } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import FairwayScope from "../components/FairwayScope";
+import StagedParseProgress from "../components/golf/StagedParseProgress";
 
 const GolfUpload: React.FC = () => {
   const navigate = useNavigate();
@@ -138,104 +139,97 @@ const GolfUpload: React.FC = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
+          className="min-h-screen py-10 px-4 sm:px-6 lg:px-8"
         >
-        <div className="max-w-2xl mx-auto">
-          <Link
-            to="/golf/leaderboard"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
-          >
-            <ArrowLeft className="mr-2" size={16} />
-            Back to Golf
-          </Link>
+          <div className="max-w-2xl mx-auto">
+            <Link
+              to="/golf/leaderboard"
+              className="inline-flex items-center fw-text-secondary hover:opacity-80 mb-6 text-sm"
+            >
+              <ArrowLeft className="mr-2" size={16} />
+              Back to Golf
+            </Link>
 
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-            <div className="p-6 sm:p-8">
-              <div className="flex items-center gap-3 mb-6">
-                <div className="p-2 bg-green-500/10 rounded-lg">
-                  <Upload className="w-6 h-6 text-green-500" />
-                </div>
-                <h1 className="text-2xl font-bold">Upload Scorecard</h1>
+            <div className="fw-surface p-6 sm:p-8 space-y-6">
+              <div>
+                <h1 className="fw-h1">Log round</h1>
+                <p className="fw-text-secondary text-sm mt-1">
+                  Snap your scorecard — we'll read it and do the math.
+                </p>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-5">
                 {!localStorage.getItem("userId") && (
                   <div>
-                    <label className="block text-sm font-medium mb-2">Email Address</label>
+                    <label className="block text-sm font-medium mb-1.5">Email</label>
                     <input
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="Enter your email to link this upload"
-                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      placeholder="you@example.com"
+                      className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm focus:outline-none focus:border-[var(--fw-info)]"
                     />
-                    <p className="text-xs text-muted-foreground mt-1">
-                      No account needed! Your round will be linked to this email.
+                    <p className="text-xs fw-text-secondary mt-1">
+                      No account needed — your round is linked to this email.
                     </p>
                   </div>
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Course Name</label>
+                  <label className="block text-sm font-medium mb-1.5">Course</label>
                   <input
                     type="text"
                     value={courseName}
                     onChange={(e) => setCourseName(e.target.value)}
                     placeholder="e.g. Pebble Beach Golf Links"
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm focus:outline-none focus:border-[var(--fw-info)]"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium mb-2">Slope Rating</label>
+                    <label className="block text-sm font-medium mb-1.5">Slope</label>
                     <input
                       type="number"
                       value={slopeRating}
                       onChange={(e) => setSlopeRating(e.target.value)}
-                      min="55"
-                      max="155"
-                      step="1"
-                      placeholder="55-155"
-                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      min="55" max="155" step="1"
+                      className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium mb-2">Course Rating</label>
+                    <label className="block text-sm font-medium mb-1.5">Course rating</label>
                     <input
                       type="number"
                       value={courseRating}
                       onChange={(e) => setCourseRating(e.target.value)}
-                      min="55"
-                      max="85"
-                      step="0.1"
-                      placeholder="55-85"
-                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      min="55" max="85" step="0.1"
+                      className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Date Played</label>
+                  <label className="block text-sm font-medium mb-1.5">Date</label>
                   <input
                     type="date"
                     value={playedAt}
                     onChange={(e) => setPlayedAt(e.target.value)}
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium mb-2">Scorecard Photo</label>
+                  <label className="block text-sm font-medium mb-1.5">Scorecard photo</label>
                   <div
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
-                    className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
+                    className={`fw-corner-guides rounded-lg p-10 text-center transition-colors ${
                       isDragging
-                        ? "border-primary bg-primary/5"
-                        : "border-input hover:border-primary/50"
-                    }`}
+                        ? "border-[var(--fw-info)] bg-[var(--fw-bg-info)]"
+                        : "border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-secondary)]"
+                    } border-[0.5px] border-dashed`}
                   >
                     <input
                       type="file"
@@ -244,53 +238,62 @@ const GolfUpload: React.FC = () => {
                       className="hidden"
                       id="golf-scorecard-upload"
                     />
-                    <label
-                      htmlFor="golf-scorecard-upload"
-                      className="cursor-pointer flex flex-col items-center"
-                    >
-                      {previewUrl ? (
-                        <img
-                          src={previewUrl}
-                          alt="Scorecard preview"
-                          className="max-h-48 rounded-lg mb-2 object-contain"
-                        />
-                      ) : (
-                        <Image className="w-8 h-8 text-muted-foreground mb-2" />
-                      )}
-                      <span className="text-muted-foreground">
-                        {selectedFile
-                          ? selectedFile.name
-                          : "Click or drag and drop a scorecard photo"}
-                      </span>
-                      <span className="text-xs text-muted-foreground mt-1">
-                        JPEG, PNG, HEIC up to 20MB
-                      </span>
-                    </label>
+
+                    {previewUrl ? (
+                      <img
+                        src={previewUrl}
+                        alt="Scorecard preview"
+                        className="max-h-56 rounded-md mb-3 object-contain mx-auto"
+                      />
+                    ) : (
+                      <p className="fw-text-secondary text-sm mb-4">
+                        Lay flat, fill frame, avoid glare.
+                      </p>
+                    )}
+
+                    <div className="flex gap-3 justify-center flex-wrap">
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById("golf-scorecard-upload")?.click()}
+                        className="inline-flex items-center gap-2 h-9 px-4 rounded-md border border-[var(--fw-border-secondary)] bg-[var(--fw-bg-primary)] text-sm cursor-pointer hover:bg-[var(--fw-bg-tertiary)]"
+                      >
+                        Upload from library
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => document.getElementById("golf-scorecard-upload")?.click()}
+                        className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-[var(--fw-info)] text-white text-sm hover:opacity-90"
+                      >
+                        Capture photo
+                      </button>
+                    </div>
+
+                    {selectedFile && (
+                      <p className="text-xs fw-text-secondary mt-3">{selectedFile.name}</p>
+                    )}
                   </div>
                 </div>
 
                 {error && (
-                  <div className="text-red-500 text-sm">{error}</div>
+                  <div className="text-sm text-[var(--fw-text-danger)] bg-[var(--fw-bg-danger)] border border-[var(--fw-border-warning)] rounded-md px-3 py-2">
+                    {error}
+                  </div>
                 )}
 
-                <button
-                  type="submit"
-                  disabled={isUploading || !selectedFile}
-                  className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {isUploading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
-                      Analyzing scorecard...
-                    </span>
-                  ) : (
-                    "Upload Scorecard"
-                  )}
-                </button>
+                {isUploading ? (
+                  <StagedParseProgress />
+                ) : (
+                  <button
+                    type="submit"
+                    disabled={!selectedFile}
+                    className="w-full h-10 rounded-md bg-[var(--fw-info)] text-white font-medium text-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    Analyse scorecard
+                  </button>
+                )}
               </form>
             </div>
           </div>
-        </div>
         </motion.div>
       </FairwayScope>
     </Layout>

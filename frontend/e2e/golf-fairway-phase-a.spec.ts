@@ -18,3 +18,41 @@ test("golf upload page is wrapped in fw-scope", async ({ page }) => {
   const scope = page.locator(".fw-scope").first();
   await expect(scope).toBeVisible();
 });
+
+test("golf upload shows Fairway header, alignment guides, and two CTAs", async ({ page }) => {
+  await page.goto("/golf/upload");
+  await expect(page.locator(".fw-h1", { hasText: "Log round" })).toBeVisible();
+  await expect(page.locator(".fw-corner-guides")).toBeVisible();
+  await expect(page.getByRole("button", { name: /capture photo/i })).toBeVisible();
+  await expect(page.getByRole("button", { name: /upload from library/i })).toBeVisible();
+  await expect(page.getByText(/lay flat, fill frame, avoid glare/i)).toBeVisible();
+});
+
+test("staged parse progress shows 5 tasks during upload", async ({ page }) => {
+  await page.goto("/golf/upload");
+
+  // Stall the upload POST ~3s so the staged UI animates fully.
+  await page.route("**/golf/upload", async (route) => {
+    await new Promise((r) => setTimeout(r, 3000));
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({ round_id: "stub-round-id", user_id: "stub-user-id" }),
+    });
+  });
+
+  await page.fill('input[type="email"]', "fairway-smoke@test.com").catch(() => {});
+  await page.fill('input[placeholder*="Pebble Beach" i]', "Smoke Course");
+  await page.setInputFiles("#golf-scorecard-upload", "e2e/fixtures/scorecard-test.jpg");
+  await page.getByRole("button", { name: /analyse scorecard/i }).click();
+
+  for (const label of [
+    "Detecting layout",
+    "Identifying course",
+    "Reading par and yardage",
+    "Extracting player scores",
+    "Flagging low-confidence holes",
+  ]) {
+    await expect(page.getByText(label)).toBeVisible({ timeout: 3500 });
+  }
+});
