@@ -6,7 +6,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import { API_URL } from "../config";
-import { getGhibliAvatar } from "../lib/api";
+import { getGolfAvatar } from "../lib/api";
 import { GolfLeaderboardEntry } from "../lib/types";
 
 const GolfLeaderboard: React.FC = () => {
@@ -125,7 +125,7 @@ const GolfLeaderboard: React.FC = () => {
                       {entry.rank}
                     </div>
                     <img
-                      src={getGhibliAvatar(entry.user_id)}
+                      src={getGolfAvatar(entry.user_name, entry.user_id)}
                       alt={entry.user_name}
                       className="w-10 h-10 rounded-full bg-[var(--fw-bg-secondary)]"
                     />

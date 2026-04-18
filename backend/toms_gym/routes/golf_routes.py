@@ -1377,11 +1377,20 @@ def get_leaderboard():
     try:
         rows = session.execute(sqlalchemy.text("""
             WITH latest AS (
-                SELECT DISTINCT ON (user_id)
-                       user_id, handicap_index, rounds_used, created_at
-                FROM "HandicapSnapshot"
+                -- Pick the most-recent snapshot per user first, THEN drop
+                -- users whose latest snapshot has a null index (all their
+                -- rounds deleted or still in establishing state). Filtering
+                -- inside the DISTINCT ON would keep stale non-null snapshots
+                -- alive after a delete, which would show ex-users on the
+                -- leaderboard.
+                SELECT user_id, handicap_index, rounds_used, created_at
+                FROM (
+                    SELECT DISTINCT ON (user_id)
+                           user_id, handicap_index, rounds_used, created_at
+                    FROM "HandicapSnapshot"
+                    ORDER BY user_id, created_at DESC
+                ) _latest
                 WHERE handicap_index IS NOT NULL
-                ORDER BY user_id, created_at DESC
             ),
             past AS (
                 SELECT DISTINCT ON (user_id)

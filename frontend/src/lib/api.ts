@@ -54,6 +54,25 @@ export const getGhibliAvatar = (id: string | number): string => {
   return ghibliAvatars[index];
 };
 
+// Golf-feature avatars — uses DiceBear avataaars seeded by golfer name so
+// two uploads of the same TOM/CHRIS share an avatar. Known names get hand-
+// tuned presets; everyone else falls back to a stable seed-only avatar.
+const AVATAAARS = "https://api.dicebear.com/7.x/avataaars/svg";
+const KNOWN_GOLFER_AVATARS: Record<string, string> = {
+  tom: `${AVATAAARS}?seed=tom-asian-guy&skinColor=fd9841&topType=shortHairShortFlat&hairColor=2c1b18&eyeType=squint&eyebrowType=default&mouthType=smile&clotheType=hoodie&clotheColor=3c4f5c`,
+  chris: `${AVATAAARS}?seed=chris-white-dude&skinColor=edb98a&topType=shortHairShortCurly&hairColor=a55728&eyeType=default&eyebrowType=defaultNatural&mouthType=default&facialHairType=beardMedium&facialHairColor=a55728&clotheType=collarSweater&clotheColor=262e33`,
+};
+
+export const getGolfAvatar = (
+  name?: string | null,
+  fallbackId?: string | number,
+): string => {
+  const key = (name ?? "").trim().toLowerCase();
+  if (key && KNOWN_GOLFER_AVATARS[key]) return KNOWN_GOLFER_AVATARS[key];
+  const seed = encodeURIComponent(key || (fallbackId ?? "golfer").toString());
+  return `${AVATAAARS}?seed=${seed}`;
+};
+
 export const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {

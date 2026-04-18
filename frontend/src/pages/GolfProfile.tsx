@@ -6,7 +6,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import { API_URL } from "../config";
-import { getGhibliAvatar, fetchRounds } from "../lib/api";
+import { getGolfAvatar, fetchRounds } from "../lib/api";
 import { GolfRoundListItem, GolfHole } from "../lib/types";
 
 const GolfProfile: React.FC = () => {
@@ -128,7 +128,7 @@ const GolfProfile: React.FC = () => {
             {/* Profile Header */}
             <div className="flex items-center gap-4 mb-6">
               <img
-                src={getGhibliAvatar(userId)}
+                src={getGolfAvatar(userName, userId)}
                 alt="Avatar"
                 className="w-14 h-14 rounded-full bg-[var(--fw-bg-secondary)] border-[0.5px] border-[var(--fw-border-tertiary)]"
               />
