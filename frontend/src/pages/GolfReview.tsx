@@ -110,6 +110,12 @@ const GolfReview: React.FC = () => {
   const back9Par = sumPar(back9);
   const totalPar = front9Par + back9Par;
 
+  const liveDifferential =
+    round && allHolesComplete
+      ? ((grandTotal - Number(round.course_rating)) * 113) /
+        Number(round.slope_rating)
+      : null;
+
   const getHoleBgClass = (hole: GolfHoleScore) => {
     if (hole.strokes === null) return "fw-cell";
     const diff = hole.strokes - hole.par;
@@ -155,7 +161,7 @@ const GolfReview: React.FC = () => {
     return (
       <Layout>
         <FairwayScope>
-          <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+          <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <div className="flex items-center justify-center h-64">
                 <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--fw-info)]"></div>
@@ -171,7 +177,7 @@ const GolfReview: React.FC = () => {
     return (
       <Layout>
         <FairwayScope>
-          <div className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8">
+          <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-4xl mx-auto">
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500">
                 {error}
@@ -188,90 +194,55 @@ const GolfReview: React.FC = () => {
     return (
       <Layout>
         <FairwayScope>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
-        >
-          <div className="max-w-2xl mx-auto text-center">
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.2 }}
-              className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto mb-6"
-            >
-              <Check className="w-10 h-10 text-green-500" />
-            </motion.div>
-
-            <h1 className="text-3xl font-bold mb-2">Scores Confirmed!</h1>
-            <p className="text-muted-foreground mb-8">
-              {round?.course_name} - {round?.played_at}
-            </p>
-
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-card rounded-lg p-6 border border-input"
-              >
-                <div className="text-3xl font-bold text-primary">
-                  {resultData.adjusted_gross_score}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="min-h-screen py-10 px-4 sm:px-6 lg:px-8"
+          >
+            <div className="max-w-2xl mx-auto text-center">
+              <div className="w-16 h-16 rounded-full bg-[var(--fw-bg-success)] border-[0.5px] border-[var(--fw-border-success)] flex items-center justify-center mx-auto mb-4">
+                <Check className="w-8 h-8 text-[var(--fw-text-success)]" />
+              </div>
+              <h1 className="fw-h1 mb-1">Round saved</h1>
+              <p className="fw-text-secondary mb-6">
+                {round?.course_name} — {round?.played_at}
+              </p>
+              <div className="grid grid-cols-2 gap-3 mb-6 text-left">
+                <div className="fw-surface p-4">
+                  <div className="text-2xl font-medium">{resultData.adjusted_gross_score}</div>
+                  <div className="text-xs fw-text-secondary">Total score</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Total Score</div>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
-                className="bg-card rounded-lg p-6 border border-input"
-              >
-                <div className="text-3xl font-bold text-green-500">
-                  {resultData.differential !== null
-                    ? resultData.differential.toFixed(1)
-                    : "N/A"}
+                <div className="fw-surface p-4">
+                  <div className="text-2xl font-medium text-[var(--fw-text-success)]">
+                    {resultData.differential !== null ? resultData.differential.toFixed(1) : "N/A"}
+                  </div>
+                  <div className="text-xs fw-text-secondary">Differential</div>
                 </div>
-                <div className="text-sm text-muted-foreground">Differential</div>
-              </motion.div>
-            </div>
-
-            {resultData.handicap_index !== null && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ delay: 0.7 }}
-                className="bg-card rounded-lg p-6 border border-input mb-8"
-              >
-                <div className="flex items-center justify-center gap-3">
-                  <Trophy className="w-6 h-6 text-green-500" />
-                  <div>
-                    <div className="text-4xl font-bold text-green-500">
-                      {resultData.handicap_index.toFixed(1)}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Handicap Index
-                    </div>
+              </div>
+              {resultData.handicap_index !== null && (
+                <div className="fw-surface p-4 mb-6 text-left">
+                  <div className="text-xs fw-text-secondary">Handicap index</div>
+                  <div className="text-3xl font-medium text-[var(--fw-text-success)]">
+                    {resultData.handicap_index.toFixed(1)}
                   </div>
                 </div>
-              </motion.div>
-            )}
-
-            <div className="flex gap-4 justify-center">
-              <Link
-                to={userId ? `/golf/profile/${userId}` : "/golf/profile"}
-                className="bg-primary text-primary-foreground py-2 px-6 rounded-lg hover:bg-primary/90"
-              >
-                View Profile
-              </Link>
-              <Link
-                to={`/golf/round/${roundId}`}
-                className="bg-card text-foreground py-2 px-6 rounded-lg border border-input hover:bg-muted"
-              >
-                View Round
-              </Link>
+              )}
+              <div className="flex gap-3 justify-center">
+                <Link
+                  to={userId ? `/golf/profile/${userId}` : "/golf/profile"}
+                  className="h-9 px-4 rounded-md bg-[var(--fw-info)] text-white text-sm inline-flex items-center"
+                >
+                  View profile
+                </Link>
+                <Link
+                  to={`/golf/round/${roundId}`}
+                  className="h-9 px-4 rounded-md border-[0.5px] border-[var(--fw-border-secondary)] text-sm inline-flex items-center"
+                >
+                  View round
+                </Link>
+              </div>
             </div>
-          </div>
-        </motion.div>
+          </motion.div>
         </FairwayScope>
       </Layout>
     );
@@ -352,158 +323,161 @@ const GolfReview: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
+        className="min-h-screen py-12 px-4 sm:px-6 lg:px-8"
       >
         <div className="max-w-4xl mx-auto">
           <Link
             to="/golf/upload"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
+            className="inline-flex items-center fw-text-secondary hover:text-foreground mb-8"
           >
             <ArrowLeft className="mr-2" size={16} />
             Back to Upload
           </Link>
 
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden">
-            <div className="p-6 sm:p-8 space-y-6">
-              <div>
-                <h1 className="text-2xl font-bold">Review Scores</h1>
-                <p className="text-muted-foreground mt-1">
-                  {round?.course_name} - {round?.played_at}
-                </p>
-                {round?.ocr_confidence !== null && round?.ocr_confidence !== undefined && (
-                  <p className="text-xs text-muted-foreground mt-1">
-                    OCR confidence: {(round.ocr_confidence * 100).toFixed(0)}%
-                    {" - "}Tap any cell to edit scores and par
-                  </p>
-                )}
-              </div>
-
-              <ReviewBanner needsReviewCount={needsReviewCount} />
-
-              {/* Scorecard image */}
-              {round?.scorecard_image_url && (
-                <div>
-                  <h3 className="text-sm font-medium text-muted-foreground mb-2">
-                    Scorecard Reference
-                  </h3>
-                  <img
-                    src={round.scorecard_image_url}
-                    alt="Scorecard"
-                    className="w-full rounded-lg border border-input max-h-64 object-contain bg-black/5"
-                  />
-                </div>
-              )}
-
-              {/* Detected players picker */}
-              {detectedPlayers.length > 0 && (
-                <div
-                  data-testid="detected-players"
-                  className="bg-primary/5 border border-primary/20 rounded-lg p-4"
-                >
-                  <div className="flex items-center gap-2 mb-2">
-                    <Users className="w-4 h-4 text-primary" />
-                    <h3 className="text-sm font-semibold">
-                      {detectedPlayers.length === 1
-                        ? "Detected player"
-                        : `Detected ${detectedPlayers.length} players — pick your row`}
-                    </h3>
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {detectedPlayers.map((p) => {
-                      const total = p.holes.reduce(
-                        (acc, h) => acc + (h.strokes || 0),
-                        0
-                      );
-                      const active = selectedPlayerName === p.name;
-                      return (
-                        <button
-                          key={p.name}
-                          type="button"
-                          data-testid={`player-pill-${p.name}`}
-                          onClick={() => handlePlayerPick(p.name)}
-                          className={`px-3 py-2 rounded-lg text-sm font-medium border transition-colors ${
-                            active
-                              ? "bg-primary text-primary-foreground border-primary"
-                              : "bg-background text-foreground border-input hover:border-primary/60"
-                          }`}
-                        >
-                          <span className="font-semibold">{p.name}</span>
-                          <span className="opacity-70 ml-2">total {total}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                  <p className="text-xs text-muted-foreground mt-2">
-                    The selected player's scores are loaded below. Tap any cell to
-                    correct a value.
-                  </p>
-                </div>
-              )}
-
-              {/* Hole grids */}
-              {renderHoleGrid(front9, "Front 9")}
-              {renderHoleGrid(back9, "Back 9")}
-
-              {/* Running totals */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">
-                    {front9Total}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Front 9 (Par {front9Par})
-                  </div>
-                </div>
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">
-                    {back9Total}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Back 9 (Par {back9Par})
-                  </div>
-                </div>
-                <div className="bg-primary/5 rounded-lg p-3 text-center">
-                  <div className="text-xl font-bold text-primary">
-                    {grandTotal}
-                  </div>
-                  <div className="text-xs text-muted-foreground">
-                    Total (Par {totalPar})
-                  </div>
-                </div>
-              </div>
-
-              {error && (
-                <div className="text-red-500 text-sm">{error}</div>
-              )}
-
-              {/* Confirm button */}
-              <button
-                onClick={handleConfirm}
-                disabled={!allHolesComplete || confirming}
-                title={
-                  !allHolesComplete
-                    ? "All 18 holes must have a score of 1 or more"
-                    : undefined
-                }
-                className="w-full bg-primary text-primary-foreground py-3 px-4 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-              >
-                {confirming ? (
-                  <span className="flex items-center justify-center gap-2">
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary-foreground"></div>
-                    Confirming...
-                  </span>
-                ) : (
-                  "Confirm Scores"
-                )}
-              </button>
-
-              {!allHolesComplete && (
-                <p className="text-xs text-muted-foreground text-center">
-                  {holes.filter((h) => h.strokes === null || h.strokes < 1).length}{" "}
-                  hole(s) still need scores. Tap the cell to enter a score.
+          <div className="fw-surface p-6 sm:p-8 space-y-5">
+            <div>
+              <h1 className="fw-h1">Review scores</h1>
+              <p className="fw-text-secondary text-sm mt-1">
+                {round?.course_name} — {round?.played_at}
+              </p>
+              {round?.ocr_confidence !== null && round?.ocr_confidence !== undefined && (
+                <p className="text-xs fw-text-secondary mt-1">
+                  OCR confidence {(round.ocr_confidence * 100).toFixed(0)}% · tap any cell to edit.
                 </p>
               )}
             </div>
+
+            <ReviewBanner needsReviewCount={needsReviewCount} />
+
+            {/* Scorecard image */}
+            {round?.scorecard_image_url && (
+              <div>
+                <h3 className="text-sm font-medium fw-text-secondary mb-2">
+                  Scorecard Reference
+                </h3>
+                <img
+                  src={round.scorecard_image_url}
+                  alt="Scorecard"
+                  className="w-full rounded-lg border border-input max-h-64 object-contain bg-black/5"
+                />
+              </div>
+            )}
+
+            {/* Detected players picker */}
+            {detectedPlayers.length > 0 && (
+              <div
+                data-testid="detected-players"
+                className="rounded-md border-[0.5px] border-[var(--fw-border-info)] bg-[var(--fw-bg-info)] p-3"
+              >
+                <div className="flex items-center gap-2 mb-2">
+                  <Users className="w-4 h-4 text-[var(--fw-text-info)]" />
+                  <h3 className="text-sm font-semibold">
+                    {detectedPlayers.length === 1
+                      ? "Detected player"
+                      : `Detected ${detectedPlayers.length} players — pick your row`}
+                  </h3>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {detectedPlayers.map((p) => {
+                    const total = p.holes.reduce(
+                      (acc, h) => acc + (h.strokes || 0),
+                      0
+                    );
+                    const active = selectedPlayerName === p.name;
+                    return (
+                      <button
+                        key={p.name}
+                        type="button"
+                        data-testid={`player-pill-${p.name}`}
+                        onClick={() => handlePlayerPick(p.name)}
+                        className={`px-3 py-2 rounded-md text-sm font-medium border-[0.5px] transition-colors ${
+                          active
+                            ? "bg-[var(--fw-info)] text-white border-[var(--fw-border-info)]"
+                            : "bg-background text-foreground border-[var(--fw-border-secondary)] hover:border-[var(--fw-border-info)]"
+                        }`}
+                      >
+                        <span className="font-semibold">{p.name}</span>
+                        <span className="opacity-70 ml-2">total {total}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-xs fw-text-secondary mt-2">
+                  The selected player's scores are loaded below. Tap any cell to
+                  correct a value.
+                </p>
+              </div>
+            )}
+
+            {/* Hole grids */}
+            {renderHoleGrid(front9, "Front 9")}
+            {renderHoleGrid(back9, "Back 9")}
+
+            {/* Running totals */}
+            <div className="grid grid-cols-3 gap-4">
+              <div className="fw-surface p-3 text-center">
+                <div className="text-xl font-medium">
+                  {front9Total}
+                </div>
+                <div className="text-xs fw-text-secondary">
+                  Front 9 (Par {front9Par})
+                </div>
+              </div>
+              <div className="fw-surface p-3 text-center">
+                <div className="text-xl font-medium">
+                  {back9Total}
+                </div>
+                <div className="text-xs fw-text-secondary">
+                  Back 9 (Par {back9Par})
+                </div>
+              </div>
+              <div className="fw-surface p-3 text-center">
+                <div className="text-xl font-medium">
+                  {grandTotal}
+                </div>
+                <div className="text-xs fw-text-secondary">
+                  Total (Par {totalPar})
+                </div>
+              </div>
+            </div>
+
+            {/* Live differential (Fairway spec §5.2 Step 3). */}
+            <div
+              data-testid="review-differential"
+              className="fw-surface p-3 text-sm flex items-center justify-between"
+            >
+              <span className="fw-text-secondary">
+                Front {front9Total} · Back {back9Total} · Total {grandTotal}
+              </span>
+              <span className="font-medium">
+                Score differential:{" "}
+                <span className="text-[var(--fw-text-info)]">
+                  {liveDifferential !== null
+                    ? liveDifferential.toFixed(1)
+                    : "—"}
+                </span>
+              </span>
+            </div>
+
+            {error && (
+              <div className="text-red-500 text-sm">{error}</div>
+            )}
+
+            {/* Confirm button */}
+            <button
+              onClick={handleConfirm}
+              disabled={!allHolesComplete || confirming}
+              className="w-full h-11 rounded-md bg-[var(--fw-info)] text-white font-medium text-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {confirming ? "Confirming..." : "Confirm and save"}
+            </button>
+
+            {!allHolesComplete && (
+              <p className="text-xs fw-text-secondary text-center">
+                {holes.filter((h) => h.strokes === null || h.strokes < 1).length}{" "}
+                hole(s) still need scores. Tap the cell to enter a score.
+              </p>
+            )}
           </div>
         </div>
       </motion.div>
