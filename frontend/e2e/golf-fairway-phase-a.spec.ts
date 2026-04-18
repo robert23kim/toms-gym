@@ -1,4 +1,6 @@
-import { test, expect, request } from "@playwright/test";
+import { test, expect, request, APIRequestContext } from "@playwright/test";
+import fs from "fs";
+import path from "path";
 
 /**
  * Fairway Phase A — visual + UX polish smoke test.
@@ -12,6 +14,52 @@ const API_URL =
   "https://my-python-backend-quyiiugyoq-ue.a.run.app";
 
 test.describe.configure({ mode: "serial" });
+
+// Module-level seed — populated by beforeAll, read by downstream tests.
+let seededRoundId = "";
+let seededUserId = "";
+
+test.beforeAll(async () => {
+  const ctx: APIRequestContext = await request.newContext();
+
+  const uniq = Date.now().toString(36);
+  const email = `fairway-phase-a-${uniq}@test.com`;
+  const register = await ctx.post(`${API_URL}/auth/register`, {
+    data: { email, password: "TestPassword123!", name: `Phase A ${uniq}` },
+  });
+  if (!register.ok()) {
+    throw new Error(
+      `Failed to register test user: ${register.status()} ${await register.text()}`
+    );
+  }
+
+  const fixturePath = path.resolve(__dirname, "fixtures/scorecard-test.jpg");
+  const imageBuffer = fs.readFileSync(fixturePath);
+  const upload = await ctx.post(`${API_URL}/golf/upload`, {
+    multipart: {
+      image: {
+        name: "scorecard-test.jpg",
+        mimeType: "image/jpeg",
+        buffer: imageBuffer,
+      },
+      email,
+      course_name: `Phase A Test Course ${uniq}`,
+      slope_rating: "128",
+      course_rating: "71.2",
+      played_at: new Date().toISOString().split("T")[0],
+    },
+  });
+  if (!upload.ok()) {
+    throw new Error(
+      `Failed to seed round: ${upload.status()} ${await upload.text()}`
+    );
+  }
+  const body = await upload.json();
+  seededRoundId = body.round_id;
+  seededUserId = body.user_id;
+  expect(seededRoundId).toMatch(/^[0-9a-f-]{36}$/);
+  expect(seededUserId).toMatch(/^[0-9a-f-]{36}$/);
+});
 
 test("golf upload page is wrapped in fw-scope", async ({ page }) => {
   await page.goto("/golf/upload");
