@@ -200,3 +200,48 @@ export interface FrameData {
   width: number;
   height: number;
 }
+
+export interface GolfHoleScore {
+  hole_number: number;
+  par: number;
+  strokes: number | null;
+  ocr_confidence?: number;
+  manually_corrected?: boolean;
+}
+
+export interface GolfDetectedPlayer {
+  name: string;
+  holes: GolfHoleScore[];
+}
+
+export interface GolfRound {
+  id: string;
+  user_id: string;
+  course_name: string;
+  slope_rating: number;
+  course_rating: number;
+  adjusted_gross_score: number | null;
+  differential: number | null;
+  scorecard_image_url: string | null;
+  ocr_confidence: number | null;
+  processing_status: 'pending' | 'ocr_complete' | 'confirmed' | 'failed';
+  played_at: string;
+  holes: GolfHoleScore[];
+  detected_players?: GolfDetectedPlayer[];
+}
+
+export interface GolfHandicap {
+  user_id: string;
+  handicap_index: number | null;
+  rounds_used: number;
+  differentials_used: number[];
+}
+
+export interface GolfLeaderboardEntry {
+  rank: number;
+  user_id: string;
+  user_name: string;
+  handicap_index: number;
+  rounds_played: number;
+  best_differential: number | null;
+}

@@ -14,6 +14,7 @@ from toms_gym.routes.user_routes import user_bp
 from toms_gym.routes.attempt_routes import attempt_bp
 from toms_gym.routes.upload_routes import upload_bp
 from toms_gym.routes.auth_routes import auth_bp
+from toms_gym.routes.telemetry_routes import telemetry_bp
 from toms_gym.routes.admin_routes import admin_bp
 from toms_gym.routes.weekly_lifts_routes import weekly_lifts_bp
 from toms_gym.config import get_config, Config
@@ -25,6 +26,7 @@ from toms_gym.integrations.bowling_processor import start_bowling_processor
 from toms_gym.integrations.lifting_processor import start_lifting_processor
 from toms_gym.routes.bowling_routes import bowling_bp
 from toms_gym.routes.lifting_routes import lifting_bp
+from toms_gym.routes.golf_routes import golf_bp
 
 load_dotenv()
 
@@ -108,6 +110,88 @@ def run_startup_migrations():
         except Exception as e:
             session.rollback()
             logging.info(f"Annotation columns migration note: {e}")
+
+        # Create GolfRound table if not exists
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "GolfRound" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    user_id UUID NOT NULL REFERENCES "User"(id),
+                    course_name TEXT NOT NULL,
+                    slope_rating DECIMAL(5,1) NOT NULL,
+                    course_rating DECIMAL(4,1) NOT NULL,
+                    adjusted_gross_score INTEGER,
+                    differential DECIMAL(5,1),
+                    scorecard_image_url TEXT,
+                    ocr_raw JSONB,
+                    ocr_confidence DECIMAL(3,2),
+                    played_at DATE NOT NULL DEFAULT CURRENT_DATE,
+                    processing_status TEXT DEFAULT 'pending',
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    updated_at TIMESTAMPTZ DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_golf_round_user_id
+                    ON "GolfRound" (user_id)
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_golf_round_played_at
+                    ON "GolfRound" (played_at DESC)
+            """))
+            session.commit()
+            logging.info("GolfRound table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"GolfRound migration note: {e}")
+
+        # Create GolfHoleScore table if not exists
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "GolfHoleScore" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    round_id UUID NOT NULL REFERENCES "GolfRound"(id) ON DELETE CASCADE,
+                    hole_number INTEGER NOT NULL CHECK (hole_number BETWEEN 1 AND 18),
+                    par INTEGER NOT NULL CHECK (par BETWEEN 3 AND 6),
+                    strokes INTEGER NOT NULL CHECK (strokes >= 1),
+                    ocr_confidence DECIMAL(3,2),
+                    manually_corrected BOOLEAN DEFAULT false,
+                    UNIQUE (round_id, hole_number)
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_golf_hole_score_round_id
+                    ON "GolfHoleScore" (round_id)
+            """))
+            session.commit()
+            logging.info("GolfHoleScore table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"GolfHoleScore migration note: {e}")
+
+        # Create GolfHandicap table if not exists
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "GolfHandicap" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    user_id UUID NOT NULL REFERENCES "User"(id) UNIQUE,
+                    handicap_index DECIMAL(4,1),
+                    rounds_used INTEGER DEFAULT 0,
+                    differentials_used JSONB,
+                    last_computed_at TIMESTAMPTZ DEFAULT now(),
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    updated_at TIMESTAMPTZ DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_golf_handicap_index
+                    ON "GolfHandicap" (handicap_index ASC)
+            """))
+            session.commit()
+            logging.info("GolfHandicap table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"GolfHandicap migration note: {e}")
         finally:
             session.close()
     except Exception as e:
@@ -136,6 +220,7 @@ app.json_encoder = CustomJSONEncoder
 # Basic configuration
 app.secret_key = os.environ.get('APP_SECRET_KEY', secrets.token_hex(16))
 app.config['UPLOAD_FOLDER'] = 'uploads'
+app.config['MAX_CONTENT_LENGTH'] = 500 * 1024 * 1024  # 500 MB max upload size
 os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
 
 # Frontend URL for redirects
@@ -162,6 +247,8 @@ app.register_blueprint(weekly_lifts_bp)
 app.register_blueprint(email_upload_bp, url_prefix='/integrations')
 app.register_blueprint(bowling_bp)
 app.register_blueprint(lifting_bp)
+app.register_blueprint(golf_bp)
+app.register_blueprint(telemetry_bp)
 
 # Start email processor if enabled
 start_background_processor()

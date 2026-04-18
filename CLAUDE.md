@@ -72,6 +72,64 @@ The app supports **optional authentication**. Users can upload videos and create
 1. Register via `/auth/register` with password
 2. Or create profile with "Set a password (optional)" checkbox
 
+## Features
+
+The app has three independent analysis features alongside the core gym/video flow. Each has its own backend routes and frontend pages.
+
+### Lifting (`backend/toms_gym/routes/lifting_routes.py` + `pages/UploadVideo.tsx`, `VideoPlayer.tsx`)
+Users upload lifting videos. An analysis service (Cloud Run `bowling-service`) produces annotated video + rep metrics. Supported lift types include squat, bench, deadlift, bicep curl.
+
+### Bowling (`backend/toms_gym/routes/bowling_routes.py` + `pages/BowlingUpload.tsx`, `BowlingResult.tsx`)
+Users upload bowling videos. Analysis detects ball trajectory, lane edges, and entry/pin impact boards. Manual annotation UI at `pages/AnnotationWorkspace.tsx`.
+
+### Golf (`backend/toms_gym/routes/golf_routes.py` + `pages/Golf*.tsx`)
+Users photograph a scorecard; OCR (Google Vision API `document_text_detection`) extracts hole scores; user confirms to produce a WHS handicap differential. See "Golf Feature" below.
+
+## Golf Feature
+
+### Data Model
+- **`GolfRound`** — one per upload: `user_id`, `course_name`, `slope_rating`, `course_rating`, `adjusted_gross_score`, `differential`, `scorecard_image_url`, `ocr_raw` (JSONB: `{text, detected_players}`), `ocr_confidence`, `processing_status`.
+- **`GolfHoleScore`** — one per hole (18 per round): `round_id`, `hole_number`, `par`, `strokes`, `ocr_confidence`, `manually_corrected`.
+- **`GolfHandicap`** — one per user: `handicap_index`, `rounds_used`, `differentials_used` (USGA WHS formula; needs ≥3 confirmed rounds).
+
+### API Endpoints
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/golf/upload` | POST | Multipart form with scorecard image + course data. Accepts `user_id` OR `email`. Returns `round_id`, `holes` (primary player), `detected_players` (all detected). |
+| `/golf/round/<id>` | GET | Fetch round + holes + `detected_players` for the review UI. |
+| `/golf/round/<id>/scores` | PUT | Confirm/correct 18 holes; computes differential + recalculates handicap. |
+| `/golf/round/<id>` | DELETE | Delete a round and recalculate handicap. |
+| `/golf/rounds?user_id=` | GET | List a user's rounds with holes. |
+| `/golf/handicap/<user_id>` | GET | Current handicap index + differentials used. |
+| `/golf/leaderboard` | GET | Global handicap leaderboard. |
+
+### OCR Parser (multi-player)
+`_parse_scorecard_symbols(symbols, page_width, page_height)` in `golf_routes.py` operates on **symbol-level** Vision output (not words — Vision tends to concatenate handwritten digits into garbage tokens like `"7864856T65854494444"`).
+
+Pipeline:
+1. Group symbols into rows by y-proximity (~2% of page height).
+2. For each row, skip if it has too many letters (label/tee row) or too few digits (hole-number or blank row).
+3. Extract the leftmost contiguous letter cluster as the player's name; reject known labels (`PAR`, `HANDICAP`, `BLACK`, `GOLD`, `GREEN`, `WHITE`, …) and label prefixes.
+4. Cluster the row's digits by x-gap: single-digit clusters are hole scores; multi-digit clusters (`"56"`, `"105"`) are subtotals (OUT/IN/TOT) and used as column separators.
+5. First 9 singles before the OUT subtotal = front 9; first 9 singles between OUT and IN = back 9.
+6. Return `{players: [{name, holes: [{hole_number, par, strokes, ocr_confidence}] x18}, ...]}`.
+
+Image rotation: `_auto_orient_image` only applies EXIF transpose. If the parser detects no players, the upload route retries OCR on a 90°-rotated copy and keeps whichever pass produced more players. It does **not** force portrait orientation (that was a previous bug that broke valid landscape scorecards).
+
+### Tests
+- `tests/test_golf_parser.py` — pytest suite covering helpers + end-to-end multi-player parsing against a real OCR fixture (`tests/fixtures/golf_scorecard_ocr.json`).
+- `tools/run_golf_parser_tests.py` — standalone runner that bypasses the DB-heavy conftest. Use this for quick iteration: `cd backend && venv/bin/python tools/run_golf_parser_tests.py`.
+- `tools/ocr_inspect3.py` — debug tool: runs Vision API on a local image and prints symbol-level row/column layout. Requires `GOOGLE_APPLICATION_CREDENTIALS=backend/credentials.json`.
+
+### Frontend Pages
+| Route | Component | Description |
+|-------|-----------|-------------|
+| `/golf/upload` | `GolfUpload` | Scorecard upload + course info form. |
+| `/golf/review/:roundId` | `GolfReview` | OCR result review: shows detected players, lets user pick their row, edit scores, confirm. |
+| `/golf/round/:roundId` | `GolfRound` | Completed round detail. |
+| `/golf/leaderboard` | `GolfLeaderboard` | Handicap leaderboard. |
+| `/golf/profile/:userId?` | `GolfProfile` | User's golf stats and rounds. |
+
 ## Secrets Management
 
 Production secrets are stored in **GCP Secret Manager** and injected into Cloud Run at runtime via `--set-secrets`. See `docs/secrets-management-plan.md` for the full audit and migration plan.

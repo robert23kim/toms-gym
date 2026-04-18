@@ -18,6 +18,11 @@ import BowlingUpload from "../pages/BowlingUpload";
 import BowlingResult from "../pages/BowlingResult";
 import BowlingChallenge from "../pages/BowlingChallenge";
 import AnnotationWorkspace from "../pages/AnnotationWorkspace";
+import GolfUpload from "../pages/GolfUpload";
+import GolfReview from "../pages/GolfReview";
+import GolfRound from "../pages/GolfRound";
+import GolfProfile from "../pages/GolfProfile";
+import GolfLeaderboard from "../pages/GolfLeaderboard";
 import { Navigate, useParams } from "react-router-dom";
 
 // Redirect component for backward compatibility
@@ -114,6 +119,30 @@ export const routes: RouteObject[] = [
   {
     path: "/bowling/challenge/:id",
     element: <BowlingChallenge />,
+  },
+  {
+    path: "/golf/upload",
+    element: <GolfUpload />,
+  },
+  {
+    path: "/golf/review/:roundId",
+    element: <GolfReview />,
+  },
+  {
+    path: "/golf/round/:roundId",
+    element: <GolfRound />,
+  },
+  {
+    path: "/golf/profile",
+    element: <GolfProfile />,
+  },
+  {
+    path: "/golf/profile/:userId",
+    element: <GolfProfile />,
+  },
+  {
+    path: "/golf/leaderboard",
+    element: <GolfLeaderboard />,
   },
   {
     path: "*",
