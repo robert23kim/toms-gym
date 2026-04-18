@@ -197,3 +197,105 @@ test("N holes need review banner appears when any cell < 0.85", async ({ page })
   await page.goto(`/golf/review/${seededRoundId}`);
   await expect(page.locator('[data-testid="review-banner"]')).toHaveText(/3 holes? need review/i);
 });
+
+test("live differential footer updates as scores change", async ({ page }) => {
+  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+    const body = {
+      id: seededRoundId,
+      user_id: "stub",
+      course_name: "Stub",
+      slope_rating: 128,
+      course_rating: 71.2,
+      adjusted_gross_score: null,
+      differential: null,
+      scorecard_image_url: null,
+      ocr_confidence: 0.95,
+      processing_status: "ocr_complete",
+      played_at: "2026-04-18",
+      holes: Array.from({ length: 18 }, (_, i) => ({
+        hole_number: i + 1,
+        par: 4,
+        strokes: 4, // total 72, = course rating → differential 0.0
+        ocr_confidence: 0.95,
+      })),
+      detected_players: [],
+    };
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+  });
+
+  await page.goto(`/golf/review/${seededRoundId}`);
+  const footer = page.locator('[data-testid="review-differential"]');
+  await expect(footer).toContainText("0.7");
+  // ((72 - 71.2) × 113) / 128 = 0.70625 → "0.7"
+
+  // Change hole 1 from 4 → 5. New total 73. Differential: ((73-71.2)*113)/128 = 1.5890625 → "1.6"
+  await page.locator('[data-testid="scorecard-cell-1"]').click();
+  await page.keyboard.press("ControlOrMeta+a");
+  await page.keyboard.type("5");
+  await page.keyboard.press("Enter");
+  await expect(footer).toContainText("1.6");
+});
+
+test("review page uses Fairway typography and surface styles", async ({ page }) => {
+  await page.goto(`/golf/review/${seededRoundId}`);
+  await expect(page.locator(".fw-scope .fw-h1", { hasText: /review/i })).toBeVisible();
+  await expect(page.locator(".fw-surface").first()).toBeVisible();
+});
+
+test("round page shows highlights grid and hole bar chart", async ({ page }) => {
+  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+    const body = {
+      id: seededRoundId,
+      user_id: "stub",
+      course_name: "Stub Course",
+      slope_rating: 128,
+      course_rating: 71.2,
+      adjusted_gross_score: 80,
+      differential: 7.8,
+      scorecard_image_url: null,
+      ocr_confidence: 0.95,
+      processing_status: "confirmed",
+      played_at: "2026-04-18",
+      holes: Array.from({ length: 18 }, (_, i) => ({
+        hole_number: i + 1,
+        par: 4,
+        strokes: 4 + (i % 3 === 0 ? 1 : 0),
+        ocr_confidence: 0.95,
+      })),
+    };
+    await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(body) });
+  });
+
+  await page.goto(`/golf/round/${seededRoundId}`);
+  await expect(page.locator('[data-testid="highlights-grid"]')).toBeVisible();
+  await expect(page.locator('[data-testid="hole-bar-chart"] rect')).toHaveCount(18);
+});
+
+test("profile page uses Fairway stat tiles for rounds played", async ({ page }) => {
+  await page.goto(`/golf/profile/${seededUserId}`);
+  await expect(page.locator(".fw-scope .fw-h1")).toBeVisible();
+  await expect(page.locator('[data-testid="profile-stats"]')).toBeVisible();
+});
+
+test("leaderboard uses Fairway row style", async ({ page }) => {
+  await page.goto("/golf/leaderboard");
+  await expect(page.locator(".fw-scope .fw-h1", { hasText: /leaderboard/i })).toBeVisible();
+  await expect(page.locator('[data-testid="leaderboard-list"]')).toHaveClass(/fw-surface/);
+});
+
+test("full Phase A surface is Fairway-skinned", async ({ page }) => {
+  await page.goto("/golf/upload");
+  await expect(page.locator(".fw-scope .fw-h1", { hasText: /log round/i })).toBeVisible();
+
+  await page.goto(`/golf/review/${seededRoundId}`);
+  await expect(page.locator(".fw-scope .fw-h1", { hasText: /review/i })).toBeVisible();
+
+  await page.goto(`/golf/round/${seededRoundId}`);
+  await expect(page.locator(".fw-scope")).toBeVisible();
+
+  await page.goto(`/golf/profile/${seededUserId}`);
+  await expect(page.locator('[data-testid="profile-stats"]')).toBeVisible();
+
+  await page.goto("/golf/leaderboard");
+  await expect(page.locator('[data-testid="leaderboard-list"]')).toBeVisible();
+});
