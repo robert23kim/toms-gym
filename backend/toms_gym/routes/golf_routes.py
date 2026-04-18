@@ -7,7 +7,6 @@ handicap calculation, and leaderboard.
 
 import io
 import json
-import math
 import os
 import uuid
 import logging
@@ -20,6 +19,21 @@ from PIL import Image, ImageOps
 from toms_gym.db import get_db_connection
 from toms_gym.storage import bucket, ALLOWED_IMAGE_EXTENSIONS
 from toms_gym.security import rate_limit
+from toms_gym.services.handicap import (
+    HandicapResult,
+    allocate_strokes,
+    apply_twelve_month_cap,
+    compute_differential,
+    compute_handicap_index,
+    net_double_bogey_cap,
+)
+from toms_gym.services.courses import (
+    CourseMatch,
+    TeeMatch,
+    match_or_create_course,
+    match_or_create_tee,
+    search_courses,
+)
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -53,16 +67,6 @@ def _auto_orient_image(file_bytes, content_type='image/jpeg'):
     except Exception as e:
         logger.warning(f"Auto-orient failed, using original image: {e}")
         return file_bytes
-
-
-# WHS table: rounds_available -> (differentials_to_use, adjustment)
-WHS_TABLE = {
-    3: (1, -2.0), 4: (1, -1.0), 5: (1, 0),
-    6: (2, -1.0), 7: (2, 0), 8: (2, 0),
-    9: (3, 0), 10: (3, 0), 11: (4, 0), 12: (4, 0),
-    13: (5, 0), 14: (5, 0), 15: (6, 0), 16: (6, 0),
-    17: (7, 0), 18: (7, 0), 19: (8, 0), 20: (8, 0)
-}
 
 
 def _run_ocr(gcs_uri):
@@ -326,85 +330,166 @@ def _extract_players_from_ocr(ocr_response):
     return result['players']
 
 
-def _recalculate_handicap(session, user_id):
-    """Recalculate WHS handicap index for a user.
+# ---------------------------------------------------------------------------
+# Helpers: row serialization + handicap recalc
+# ---------------------------------------------------------------------------
 
-    Full WHS formula per USGA Rule 5.2:
-    1. Fetch last 20 confirmed rounds
-    2. Select best N differentials per WHS table
-    3. Handicap Index = (average of selected + adjustment) * 0.96
-    4. Truncate to 1 decimal, cap at 54.0
-    5. Minimum 3 rounds required; fewer -> NULL
-    """
-    rows = session.execute(sqlalchemy.text("""
-        SELECT differential FROM "GolfRound"
-        WHERE user_id = :user_id AND processing_status = 'confirmed' AND differential IS NOT NULL
-        ORDER BY played_at DESC
-        LIMIT 20
-    """), {"user_id": user_id}).fetchall()
 
-    differentials = [float(r[0]) for r in rows]
-    n = len(differentials)
-
-    if n < 3:
-        # Not enough rounds
-        session.execute(sqlalchemy.text("""
-            INSERT INTO "GolfHandicap" (id, user_id, handicap_index, rounds_used, differentials_used, last_computed_at)
-            VALUES (gen_random_uuid(), :user_id, NULL, :n, :diffs, now())
-            ON CONFLICT (user_id) DO UPDATE SET
-                handicap_index = NULL, rounds_used = :n, differentials_used = :diffs,
-                last_computed_at = now(), updated_at = now()
-        """), {"user_id": user_id, "n": n, "diffs": json.dumps([])})
+def _course_to_dict(row):
+    """Serialize a joined "Course" row to the nested `course` response block."""
+    if row is None:
         return None
+    return {
+        'id':        str(row['id']),
+        'name':      row['name'],
+        'city':      row['city'],
+        'state':     row['state'],
+        'country':   row['country'],
+        'latitude':  float(row['latitude'])  if row['latitude']  is not None else None,
+        'longitude': float(row['longitude']) if row['longitude'] is not None else None,
+        'holes':     row['holes'],
+        'status':    row['status'],
+    }
 
-    num_to_use, adjustment = WHS_TABLE.get(n, (8, 0))
 
-    sorted_diffs = sorted(differentials)
-    best = sorted_diffs[:num_to_use]
+def _tee_to_dict(row):
+    """Serialize a joined "Tee" row. Returns an all-null tee when row is None so
+    the response shape stays stable for rounds awaiting tee entry."""
+    if row is None:
+        return {
+            'id': None, 'name': None, 'color_hex': None,
+            'rating_18': None, 'slope_18': None,
+            'rating_9_front': None, 'slope_9_front': None,
+            'rating_9_back':  None, 'slope_9_back':  None,
+            'yardage': None, 'par': None,
+            'hole_pars': None, 'hole_yardages': None, 'hole_handicaps': None,
+        }
+    return {
+        'id':              str(row['id']),
+        'name':            row['name'],
+        'color_hex':       row['color_hex'],
+        'rating_18':       float(row['rating_18']) if row['rating_18'] is not None else None,
+        'slope_18':        row['slope_18'],
+        'rating_9_front':  float(row['rating_9_front']) if row['rating_9_front'] is not None else None,
+        'slope_9_front':   row['slope_9_front'],
+        'rating_9_back':   float(row['rating_9_back'])  if row['rating_9_back']  is not None else None,
+        'slope_9_back':    row['slope_9_back'],
+        'yardage':         row['yardage'],
+        'par':             row['par'],
+        'hole_pars':       list(row['hole_pars'])      if row['hole_pars']      is not None else None,
+        'hole_yardages':   list(row['hole_yardages'])  if row['hole_yardages']  is not None else None,
+        'hole_handicaps':  list(row['hole_handicaps']) if row['hole_handicaps'] is not None else None,
+    }
 
-    # WHS formula: (average + adjustment) * 0.96, truncated to 1 decimal
-    avg = sum(best) / len(best)
-    handicap_index = math.trunc((avg + adjustment) * 0.96 * 10) / 10
-    handicap_index = min(handicap_index, 54.0)
+
+def _latest_handicap_snapshot(session, user_id):
+    """Return (handicap_index, rounds_used, created_at) for the user's latest
+    snapshot, or (None, 0, None) when they have no snapshot yet."""
+    row = session.execute(sqlalchemy.text("""
+        SELECT handicap_index, rounds_used, created_at
+        FROM "HandicapSnapshot"
+        WHERE user_id = :user_id
+        ORDER BY created_at DESC
+        LIMIT 1
+    """), {"user_id": user_id}).mappings().fetchone()
+    if row is None:
+        return None, 0, None
+    return (
+        float(row['handicap_index']) if row['handicap_index'] is not None else None,
+        row['rounds_used'],
+        row['created_at'],
+    )
+
+
+def _recalculate_handicap(session, user_id, triggered_by_round_id=None):
+    """Recompute the user's WHS handicap from last-20 Round differentials and
+    INSERT a new HandicapSnapshot. Returns the capped index (or None when the
+    user is still establishing).
+
+    Pipeline:
+      1. Pull last 20 rounds (score_differential NOT NULL) ordered by played_on DESC.
+      2. Build parallel (differentials, nine_hole_flags) lists.
+      3. Call compute_handicap_index().
+      4. Pull MIN(handicap_index) from the trailing 12 months of HandicapSnapshot.
+      5. apply_twelve_month_cap() on the new index.
+      6. INSERT one HandicapSnapshot row with the lowest-N differentials used.
+    """
+    round_rows = session.execute(sqlalchemy.text("""
+        SELECT score_differential, holes, played_on
+        FROM "Round"
+        WHERE user_id = :uid AND score_differential IS NOT NULL
+        ORDER BY played_on DESC, created_at DESC
+        LIMIT 20
+    """), {"uid": user_id}).mappings().fetchall()
+
+    differentials = [float(r['score_differential']) for r in round_rows]
+    nine_hole_flags = [r['holes'] == 9 for r in round_rows]
+
+    result = compute_handicap_index(differentials, nine_hole_flags=nine_hole_flags)
+
+    final_index = None
+    diffs_used = []
+    if result.status == 'active' and result.handicap_index is not None:
+        low_12mo_row = session.execute(sqlalchemy.text("""
+            SELECT MIN(handicap_index) AS low
+            FROM "HandicapSnapshot"
+            WHERE user_id = :uid AND handicap_index IS NOT NULL
+              AND created_at > now() - INTERVAL '12 months'
+        """), {"uid": user_id}).mappings().fetchone()
+        low_12mo = float(low_12mo_row['low']) if low_12mo_row and low_12mo_row['low'] is not None else None
+        final_index = apply_twelve_month_cap(result.handicap_index, low_12mo)
+        diffs_used = sorted(differentials)[:result.diffs_used_count]
 
     session.execute(sqlalchemy.text("""
-        INSERT INTO "GolfHandicap" (id, user_id, handicap_index, rounds_used, differentials_used, last_computed_at)
-        VALUES (gen_random_uuid(), :user_id, :handicap, :n, :diffs, now())
-        ON CONFLICT (user_id) DO UPDATE SET
-            handicap_index = :handicap, rounds_used = :n, differentials_used = :diffs,
-            last_computed_at = now(), updated_at = now()
+        INSERT INTO "HandicapSnapshot"
+            (user_id, handicap_index, rounds_used, differentials_used, triggered_by_round_id)
+        VALUES (:uid, :idx, :rounds, :diffs, :rid)
     """), {
-        "user_id": user_id,
-        "handicap": handicap_index,
-        "n": n,
-        "diffs": json.dumps(best)
+        "uid": user_id,
+        "idx": final_index,
+        "rounds": len(round_rows),
+        "diffs": json.dumps(diffs_used),
+        "rid": triggered_by_round_id,
     })
 
-    return handicap_index
+    return final_index
+
+
+# ---------------------------------------------------------------------------
+# POST /golf/upload
+# ---------------------------------------------------------------------------
 
 
 @golf_bp.route('/upload', methods=['POST'])
 @rate_limit('10/hour')
 def upload_scorecard():
-    """
-    Upload a golf scorecard image for OCR processing.
+    """Upload a golf scorecard image for OCR processing.
 
-    Accepts multipart form: image file, course_name, slope_rating, course_rating,
-    user_id OR email, played_at (optional).
-    Creates GolfRound, runs OCR, returns extracted scores.
+    Multipart form:
+      image          (file, required)
+      course_name    (required)
+      slope_rating   (optional number; when present with course_rating, an
+                      auto-created Tee row is filled with slope_18/rating_18)
+      course_rating  (optional number; paired with slope_rating)
+      tee_name       (optional, defaults to "Default")
+      city, state, country, latitude, longitude (optional — help the fuzzy match)
+      user_id        (required — OR email)
+      email          (required — OR user_id)
+
+    Creates a Round row pointing at a Course + Tee (matched-or-created), runs
+    OCR, inserts HoleScore rows for the primary player, returns nested shape.
+    NOTE: `played_on` defaults to CURRENT_DATE; upload does NOT accept an
+    override (that's a future-phase concern per plan §Task 4).
     """
-    # Validate image file
     if 'image' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
 
     file = request.files['image']
     if file.filename == '':
         return jsonify({'error': 'No selected file'}), 400
-
     if not _allowed_image(file.filename):
         return jsonify({'error': 'File type not allowed'}), 400
 
-    # Check file size (20MB max)
     file.seek(0, 2)
     file_size = file.tell()
     file.seek(0)
@@ -412,104 +497,125 @@ def upload_scorecard():
         return jsonify({'error': 'File too large. Maximum 20MB'}), 400
 
     course_name = request.form.get('course_name')
-    slope_rating = request.form.get('slope_rating')
-    course_rating = request.form.get('course_rating')
-    user_id = request.form.get('user_id')
-    email = request.form.get('email')
-    played_at = request.form.get('played_at')
-
     if not course_name:
         return jsonify({'error': 'course_name is required'}), 400
-    if not slope_rating:
-        return jsonify({'error': 'slope_rating is required'}), 400
-    if not course_rating:
-        return jsonify({'error': 'course_rating is required'}), 400
 
+    slope_rating  = request.form.get('slope_rating')
+    course_rating = request.form.get('course_rating')
+    tee_name      = request.form.get('tee_name') or 'Default'
+
+    rating_18 = None
+    slope_18  = None
+    if slope_rating or course_rating:
+        try:
+            if slope_rating:
+                slope_18 = int(float(slope_rating))
+            if course_rating:
+                rating_18 = float(course_rating)
+        except (ValueError, TypeError):
+            return jsonify({'error': 'slope_rating and course_rating must be numbers'}), 400
+        if slope_18 is not None and not (55 <= slope_18 <= 155):
+            return jsonify({'error': 'slope_rating must be between 55 and 155'}), 400
+        if rating_18 is not None and not (55 <= rating_18 <= 85):
+            return jsonify({'error': 'course_rating must be between 55 and 85'}), 400
+
+    city    = request.form.get('city')
+    state   = request.form.get('state')
+    country = request.form.get('country')
+    lat_s   = request.form.get('latitude')
+    lng_s   = request.form.get('longitude')
+    near = None
     try:
-        slope_rating = float(slope_rating)
-        course_rating = float(course_rating)
+        lat = float(lat_s) if lat_s else None
+        lng = float(lng_s) if lng_s else None
+        if lat is not None and lng is not None:
+            near = (lat, lng)
     except (ValueError, TypeError):
-        return jsonify({'error': 'slope_rating and course_rating must be numbers'}), 400
+        return jsonify({'error': 'latitude and longitude must be numbers'}), 400
 
-    if not (55 <= slope_rating <= 155):
-        return jsonify({'error': 'slope_rating must be between 55 and 155'}), 400
-    if not (55 <= course_rating <= 85):
-        return jsonify({'error': 'course_rating must be between 55 and 85'}), 400
+    user_id = request.form.get('user_id')
+    email   = request.form.get('email')
 
-    # Resolve user: user_id > email lookup > auto-create from email
     session = get_db_connection()
     try:
+        # Resolve user: user_id > email lookup > auto-create from email.
         if not user_id and email:
-            # Look up existing user by email
             user_row = session.execute(
                 sqlalchemy.text('SELECT id FROM "User" WHERE LOWER(email) = :email'),
                 {"email": email.lower()}
             ).fetchone()
-
             if user_row:
                 user_id = str(user_row[0])
-                logger.info(f"Found existing user by email: {user_id}")
             else:
-                # Auto-create user from email
                 user_id = str(uuid.uuid4())
                 name = email.split('@')[0].replace('.', ' ').replace('_', ' ').title()
-                session.execute(
-                    sqlalchemy.text("""
-                        INSERT INTO "User" (id, email, name, username, auth_method, status, role, created_at)
-                        VALUES (:id, :email, :name, :username, 'password', 'active', 'user', NOW())
-                    """),
-                    {
-                        "id": user_id,
-                        "email": email.lower(),
-                        "name": name,
-                        "username": email.lower(),
-                    }
-                )
+                session.execute(sqlalchemy.text("""
+                    INSERT INTO "User" (id, email, name, username, auth_method, status, role, created_at)
+                    VALUES (:id, :email, :name, :username, 'password', 'active', 'user', NOW())
+                """), {
+                    "id": user_id,
+                    "email": email.lower(),
+                    "name": name,
+                    "username": email.lower(),
+                })
                 session.commit()
-                logger.info(f"Auto-created user: {user_id} for email {email}")
+                logger.info(f"Auto-created user {user_id} for email {email}")
 
         if not user_id:
             return jsonify({'error': 'user_id or email is required'}), 400
 
-        # Create GolfRound row
-        round_id = str(uuid.uuid4())
-        session.execute(
-            sqlalchemy.text("""
-                INSERT INTO "GolfRound" (id, user_id, course_name, slope_rating, course_rating, played_at, processing_status)
-                VALUES (:id, :user_id, :course_name, :slope_rating, :course_rating, :played_at, 'pending')
-            """),
-            {
-                "id": round_id,
-                "user_id": user_id,
-                "course_name": course_name,
-                "slope_rating": slope_rating,
-                "course_rating": course_rating,
-                "played_at": played_at or datetime.now().strftime('%Y-%m-%d'),
-            }
+        # Match-or-create Course + Tee via the courses service.
+        # The service issues its own commits for newly-inserted rows.
+        course_match = match_or_create_course(session, name=course_name, near=near)
+        # Patch city/state/country/lat/lng when we just created a pending course
+        # and the caller provided them — the service only stores (name, lat, lng).
+        if course_match.created and (city or state or country):
+            session.execute(sqlalchemy.text("""
+                UPDATE "Course" SET city = :c, state = :s, country = :co
+                WHERE id = :id
+            """), {"c": city, "s": state, "co": country, "id": course_match.course_id})
+            session.commit()
+
+        tee_match = match_or_create_tee(
+            session,
+            course_id=course_match.course_id,
+            name=tee_name,
+            rating=rating_18,
+            slope=slope_18,
         )
+
+        # Create the Round.
+        round_id = str(uuid.uuid4())
+        session.execute(sqlalchemy.text("""
+            INSERT INTO "Round"
+                (id, user_id, course_id, tee_id, holes, processing_status)
+            VALUES (:id, :uid, :cid, :tid, 18, 'pending')
+        """), {
+            "id":  round_id,
+            "uid": user_id,
+            "cid": course_match.course_id,
+            "tid": tee_match.tee_id,
+        })
         session.commit()
 
+        # Upload the scorecard image.
         ext = file.filename.rsplit('.', 1)[1].lower()
         content_type = file.content_type or 'image/jpeg'
         raw_bytes = file.read()
         oriented_bytes = _auto_orient_image(raw_bytes, content_type)
-        logger.info(f"Image size: {len(raw_bytes)} -> {len(oriented_bytes)} bytes after orient")
 
         gcs_path = f'golf/scorecards/{user_id}/{round_id}.{ext}'
         blob = bucket.blob(gcs_path)
         blob.upload_from_string(oriented_bytes, content_type=content_type)
         scorecard_image_url = f'https://storage.googleapis.com/{bucket.name}/{gcs_path}'
-        logger.info(f"Uploaded scorecard image: {scorecard_image_url}")
 
-        session.execute(
-            sqlalchemy.text("""
-                UPDATE "GolfRound" SET scorecard_image_url = :url, updated_at = now()
-                WHERE id = :id
-            """),
-            {"id": round_id, "url": scorecard_image_url}
-        )
+        session.execute(sqlalchemy.text("""
+            UPDATE "Round" SET scorecard_image_url = :url, updated_at = now()
+            WHERE id = :id
+        """), {"id": round_id, "url": scorecard_image_url})
         session.commit()
 
+        # OCR pass (with 90° rotation retry on empty result).
         holes = []
         detected_players = []
         ocr_confidence = 0.0
@@ -520,33 +626,24 @@ def upload_scorecard():
             ocr_response = _run_ocr(gcs_uri)
             detected_players = _extract_players_from_ocr(ocr_response)
 
-            # If OCR failed to detect any players, try rotating 90° and re-running.
             if not detected_players:
-                logger.info("OCR detected no players, trying 90° rotation...")
                 try:
                     img = Image.open(io.BytesIO(oriented_bytes))
                     rotated = img.rotate(-90, expand=True)
                     rot_buf = io.BytesIO()
                     rotated.save(rot_buf, format='JPEG', quality=95)
-                    rot_buf.seek(0)
                     rot_bytes = rot_buf.getvalue()
-
                     blob.upload_from_string(rot_bytes, content_type='image/jpeg')
                     ocr_response_rot = _run_ocr(gcs_uri)
                     players_rot = _extract_players_from_ocr(ocr_response_rot)
-
                     if players_rot:
-                        logger.info(f"Rotated OCR detected {len(players_rot)} players")
                         detected_players = players_rot
                         ocr_response = ocr_response_rot
                     else:
                         blob.upload_from_string(oriented_bytes, content_type=content_type)
-                        logger.info("Rotation didn't help — kept original orientation")
                 except Exception as rot_err:
                     logger.warning(f"Rotation retry failed: {rot_err}")
 
-            # Use the first detected player's holes as the primary round scores
-            # (the user will pick their own row in the review UI if multiple detected).
             if detected_players:
                 holes = detected_players[0]['holes']
 
@@ -561,58 +658,51 @@ def upload_scorecard():
 
             for hole in holes:
                 if hole['strokes'] is not None:
-                    session.execute(
-                        sqlalchemy.text("""
-                            INSERT INTO "GolfHoleScore" (id, round_id, hole_number, par, strokes, ocr_confidence)
-                            VALUES (gen_random_uuid(), :round_id, :hole_number, :par, :strokes, :ocr_confidence)
-                        """),
-                        {
-                            "round_id": round_id,
-                            "hole_number": hole['hole_number'],
-                            "par": hole['par'],
-                            "strokes": hole['strokes'],
-                            "ocr_confidence": hole['ocr_confidence'],
-                        }
-                    )
+                    session.execute(sqlalchemy.text("""
+                        INSERT INTO "HoleScore"
+                            (round_id, hole_number, par, strokes, ocr_confidence)
+                        VALUES (:rid, :hn, :par, :strokes, :conf)
+                        ON CONFLICT (round_id, hole_number) DO UPDATE SET
+                            par = :par, strokes = :strokes, ocr_confidence = :conf
+                    """), {
+                        "rid": round_id,
+                        "hn":  hole['hole_number'],
+                        "par": hole['par'],
+                        "strokes": hole['strokes'],
+                        "conf": hole['ocr_confidence'],
+                    })
 
-            session.execute(
-                sqlalchemy.text("""
-                    UPDATE "GolfRound"
-                    SET processing_status = :status, ocr_raw = :ocr_raw,
-                        ocr_confidence = :confidence, updated_at = now()
-                    WHERE id = :id
-                """),
-                {
-                    "id": round_id,
-                    "status": processing_status,
-                    "ocr_raw": json.dumps(ocr_raw_payload),
-                    "confidence": ocr_confidence,
-                }
-            )
+            session.execute(sqlalchemy.text("""
+                UPDATE "Round"
+                SET processing_status = :status, ocr_raw = :raw, ocr_confidence = :conf,
+                    updated_at = now()
+                WHERE id = :id
+            """), {
+                "id": round_id,
+                "status": processing_status,
+                "raw":    json.dumps(ocr_raw_payload),
+                "conf":   ocr_confidence,
+            })
             session.commit()
 
         except Exception as ocr_err:
             logger.error(f"OCR processing failed: {ocr_err}")
             processing_status = 'failed'
-            session.execute(
-                sqlalchemy.text("""
-                    UPDATE "GolfRound"
-                    SET processing_status = 'failed', updated_at = now()
-                    WHERE id = :id
-                """),
-                {"id": round_id}
-            )
+            session.execute(sqlalchemy.text("""
+                UPDATE "Round" SET processing_status = 'failed', updated_at = now()
+                WHERE id = :id
+            """), {"id": round_id})
             session.commit()
 
-        return jsonify({
-            'round_id': round_id,
-            'user_id': user_id,
-            'processing_status': processing_status,
-            'ocr_confidence': ocr_confidence,
-            'holes': holes,
-            'detected_players': detected_players,
-            'scorecard_image_url': scorecard_image_url,
-        }), 200
+        return _fetch_and_serialize_round(
+            session,
+            round_id,
+            user_id=user_id,
+            extra={
+                'detected_players': detected_players,
+                'needs_tee': tee_match.needs_tee,
+            },
+        )
 
     except Exception as e:
         session.rollback()
@@ -622,76 +712,125 @@ def upload_scorecard():
         session.close()
 
 
+# ---------------------------------------------------------------------------
+# GET /golf/round/<id>
+# ---------------------------------------------------------------------------
+
+
+def _fetch_and_serialize_round(session, round_id, user_id=None, extra=None):
+    """Shared helper used by upload + GET /round. Joins Round, Course, Tee and
+    HoleScore rows; returns an (already JSON'd) Flask response.
+    """
+    row = session.execute(sqlalchemy.text("""
+        SELECT r.id AS round_id, r.user_id, r.played_on, r.holes AS round_holes,
+               r.scores, r.total_score, r.front_nine, r.back_nine,
+               r.score_differential, r.scorecard_image_url, r.ocr_raw,
+               r.ocr_confidence, r.processing_status, r.created_at, r.updated_at,
+               c.id AS c_id, c.name AS c_name, c.city, c.state, c.country,
+               c.latitude, c.longitude, c.holes AS c_holes, c.status AS c_status,
+               t.id AS t_id, t.name AS t_name, t.color_hex,
+               t.rating_18, t.slope_18,
+               t.rating_9_front, t.slope_9_front, t.rating_9_back, t.slope_9_back,
+               t.yardage, t.par, t.hole_pars, t.hole_yardages, t.hole_handicaps
+        FROM "Round" r
+        JOIN "Course" c ON c.id = r.course_id
+        LEFT JOIN "Tee" t ON t.id = r.tee_id
+        WHERE r.id = :id
+    """), {"id": round_id}).mappings().fetchone()
+
+    if row is None:
+        return jsonify({'error': 'Round not found'}), 404
+
+    # Hole scores in order.
+    hole_rows = session.execute(sqlalchemy.text("""
+        SELECT hole_number, par, strokes, ocr_confidence, manually_corrected
+        FROM "HoleScore"
+        WHERE round_id = :rid
+        ORDER BY hole_number
+    """), {"rid": round_id}).mappings().fetchall()
+    hole_scores = [
+        {
+            'hole_number': h['hole_number'],
+            'par': h['par'],
+            'strokes': h['strokes'],
+            'ocr_confidence':
+                float(h['ocr_confidence']) if h['ocr_confidence'] is not None else None,
+            'manually_corrected': h['manually_corrected'],
+        }
+        for h in hole_rows
+    ]
+
+    # Parse detected_players from ocr_raw.
+    detected_players = []
+    if row['ocr_raw']:
+        try:
+            payload = row['ocr_raw'] if isinstance(row['ocr_raw'], dict) else json.loads(row['ocr_raw'])
+            if isinstance(payload, dict):
+                detected_players = payload.get('detected_players', []) or []
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+    course_block = _course_to_dict({
+        'id': row['c_id'],           'name': row['c_name'],
+        'city': row['city'],         'state': row['state'],
+        'country': row['country'],   'latitude': row['latitude'],
+        'longitude': row['longitude'], 'holes': row['c_holes'],
+        'status': row['c_status'],
+    })
+    tee_block = _tee_to_dict({
+        'id': row['t_id'],
+        'name': row['t_name'],
+        'color_hex': row['color_hex'],
+        'rating_18': row['rating_18'], 'slope_18': row['slope_18'],
+        'rating_9_front': row['rating_9_front'], 'slope_9_front': row['slope_9_front'],
+        'rating_9_back':  row['rating_9_back'],  'slope_9_back':  row['slope_9_back'],
+        'yardage': row['yardage'],     'par': row['par'],
+        'hole_pars': row['hole_pars'],
+        'hole_yardages': row['hole_yardages'],
+        'hole_handicaps': row['hole_handicaps'],
+    }) if row['t_id'] is not None else _tee_to_dict(None)
+
+    round_block = {
+        'id':                  str(row['round_id']),
+        'user_id':             str(row['user_id']),
+        'played_on':           str(row['played_on']) if row['played_on'] else None,
+        'holes':               row['round_holes'],
+        'course':              course_block,
+        'tee':                 tee_block,
+        'hole_scores':         hole_scores,
+        'scores':              list(row['scores']) if row['scores'] is not None else None,
+        'total_score':         row['total_score'],
+        'front_nine':          row['front_nine'],
+        'back_nine':           row['back_nine'],
+        'score_differential':
+            float(row['score_differential']) if row['score_differential'] is not None else None,
+        'scorecard_image_url': row['scorecard_image_url'],
+        'ocr_confidence':
+            float(row['ocr_confidence']) if row['ocr_confidence'] is not None else None,
+        'processing_status':   row['processing_status'],
+        'needs_tee':           row['t_id'] is None,
+        'created_at':          str(row['created_at']) if row['created_at'] else None,
+        'updated_at':          str(row['updated_at']) if row['updated_at'] else None,
+    }
+
+    body = {
+        'round': round_block,
+        'detected_players': detected_players,
+    }
+    if user_id is not None:
+        body['user_id'] = user_id
+        body['round_id'] = str(row['round_id'])
+    if extra:
+        body.update(extra)
+    return jsonify(body), 200
+
+
 @golf_bp.route('/round/<round_id>', methods=['GET'])
 def get_round(round_id):
-    """Get round details with hole scores."""
+    """Get round details with nested course/tee + hole scores."""
     session = get_db_connection()
     try:
-        row = session.execute(
-            sqlalchemy.text("""
-                SELECT id, user_id, course_name, slope_rating, course_rating,
-                       adjusted_gross_score, differential, scorecard_image_url,
-                       ocr_confidence, played_at, processing_status,
-                       created_at, updated_at, ocr_raw
-                FROM "GolfRound"
-                WHERE id = :id
-            """),
-            {"id": round_id}
-        ).fetchone()
-
-        if not row:
-            return jsonify({'error': 'Round not found'}), 404
-
-        # Fetch hole scores
-        hole_rows = session.execute(
-            sqlalchemy.text("""
-                SELECT hole_number, par, strokes, ocr_confidence, manually_corrected
-                FROM "GolfHoleScore"
-                WHERE round_id = :round_id
-                ORDER BY hole_number
-            """),
-            {"round_id": round_id}
-        ).fetchall()
-
-        holes = []
-        for h in hole_rows:
-            holes.append({
-                'hole_number': h[0],
-                'par': h[1],
-                'strokes': h[2],
-                'ocr_confidence': float(h[3]) if h[3] is not None else None,
-                'manually_corrected': h[4],
-            })
-
-        # Extract detected_players from ocr_raw if present.
-        detected_players = []
-        ocr_raw = row[13]
-        if ocr_raw:
-            try:
-                payload = ocr_raw if isinstance(ocr_raw, dict) else json.loads(ocr_raw)
-                if isinstance(payload, dict):
-                    detected_players = payload.get('detected_players', []) or []
-            except (json.JSONDecodeError, TypeError):
-                pass
-
-        return jsonify({
-            'id': str(row[0]),
-            'user_id': str(row[1]),
-            'course_name': row[2],
-            'slope_rating': float(row[3]),
-            'course_rating': float(row[4]),
-            'adjusted_gross_score': row[5],
-            'differential': float(row[6]) if row[6] is not None else None,
-            'scorecard_image_url': row[7],
-            'ocr_confidence': float(row[8]) if row[8] is not None else None,
-            'played_at': str(row[9]) if row[9] else None,
-            'processing_status': row[10],
-            'created_at': str(row[11]) if row[11] else None,
-            'updated_at': str(row[12]) if row[12] else None,
-            'holes': holes,
-            'detected_players': detected_players,
-        }), 200
-
+        return _fetch_and_serialize_round(session, round_id)
     except Exception as e:
         logger.error(f"Error fetching round: {e}")
         return jsonify({'error': 'Internal server error'}), 500
@@ -699,12 +838,30 @@ def get_round(round_id):
         session.close()
 
 
+# ---------------------------------------------------------------------------
+# PUT /golf/round/<id>/scores
+# ---------------------------------------------------------------------------
+
+
 @golf_bp.route('/round/<round_id>/scores', methods=['PUT'])
 def confirm_scores(round_id):
-    """
-    Confirm/correct hole scores, compute differential, recalculate handicap.
+    """Confirm/correct hole scores.
 
-    Request body: {"holes": [{"hole_number": 1, "par": 4, "strokes": 5}, ... x18]}
+    Body: {"holes": [{"hole_number": 1, "par": 4, "strokes": 5}, ...x18],
+           "user_id": "..." (or ?user_id=...)}
+
+    Pipeline:
+      1. Validate holes (18 distinct entries, legal values).
+      2. Fetch Round + Tee (need slope_18/rating_18/hole_handicaps).
+      3. Verify ownership (round.user_id == requesting_user_id).
+      4. Upsert each HoleScore with manually_corrected flag derived from prior row.
+      5. Fetch the user's latest handicap_index (via _latest_handicap_snapshot).
+         allocate_strokes(index, hole_handicaps) → per-hole received or None.
+      6. Per hole: NDB cap = net_double_bogey_cap(par, rec, actual=strokes); sum
+         the capped values → adjusted_total.
+      7. compute_differential(adjusted_total, rating_18, slope_18) → differential.
+      8. UPDATE Round with totals + differential + status='confirmed'.
+      9. _recalculate_handicap() → new HandicapSnapshot.
     """
     data = request.get_json()
     if not data or 'holes' not in data:
@@ -718,21 +875,19 @@ def confirm_scores(round_id):
     if len(holes) != 18:
         return jsonify({'error': 'Exactly 18 holes required'}), 400
 
-    # Validate all holes have distinct hole_numbers 1-18
     hole_numbers = set()
     for hole in holes:
         hole_num = hole.get('hole_number')
-        par = hole.get('par')
-        strokes = hole.get('strokes')
-
+        par      = hole.get('par')
+        strokes  = hole.get('strokes')
         if hole_num is None or par is None or strokes is None:
-            return jsonify({'error': f'Each hole must have hole_number, par, and strokes'}), 400
+            return jsonify({'error': 'Each hole must have hole_number, par, and strokes'}), 400
         if not isinstance(strokes, int) or strokes < 1:
             return jsonify({'error': f'Hole {hole_num}: strokes must be an integer >= 1'}), 400
         if not isinstance(par, int) or par < 3 or par > 6:
             return jsonify({'error': f'Hole {hole_num}: par must be between 3 and 6'}), 400
         if not isinstance(hole_num, int) or hole_num < 1 or hole_num > 18:
-            return jsonify({'error': f'hole_number must be between 1 and 18'}), 400
+            return jsonify({'error': 'hole_number must be between 1 and 18'}), 400
         if hole_num in hole_numbers:
             return jsonify({'error': f'Duplicate hole_number: {hole_num}'}), 400
         hole_numbers.add(hole_num)
@@ -742,92 +897,108 @@ def confirm_scores(round_id):
 
     session = get_db_connection()
     try:
-        # Fetch the round
-        row = session.execute(
-            sqlalchemy.text("""
-                SELECT id, user_id, slope_rating, course_rating
-                FROM "GolfRound"
-                WHERE id = :id
-            """),
-            {"id": round_id}
-        ).fetchone()
+        round_row = session.execute(sqlalchemy.text("""
+            SELECT r.id, r.user_id, r.tee_id,
+                   t.rating_18, t.slope_18, t.hole_handicaps
+            FROM "Round" r
+            LEFT JOIN "Tee" t ON t.id = r.tee_id
+            WHERE r.id = :id
+        """), {"id": round_id}).mappings().fetchone()
 
-        if not row:
+        if round_row is None:
             return jsonify({'error': 'Round not found'}), 404
 
-        user_id = str(row[1])
-        slope_rating = float(row[2])
-        course_rating = float(row[3])
-
-        # Verify ownership
+        user_id = str(round_row['user_id'])
         if user_id != requesting_user_id:
             return jsonify({'error': 'Not authorized to modify this round'}), 403
 
-        # Fetch existing hole scores for comparison (to set manually_corrected)
-        existing_holes = {}
-        existing_rows = session.execute(
-            sqlalchemy.text("""
-                SELECT hole_number, strokes, par
-                FROM "GolfHoleScore"
-                WHERE round_id = :round_id
-            """),
-            {"round_id": round_id}
-        ).fetchall()
-        for eh in existing_rows:
-            existing_holes[eh[0]] = {'strokes': eh[1], 'par': eh[2]}
+        rating_18 = float(round_row['rating_18']) if round_row['rating_18'] is not None else None
+        slope_18  = round_row['slope_18']
+        if rating_18 is None or slope_18 is None:
+            return jsonify({'error': 'Round has no tee rating/slope; pick a tee first'}), 400
+        hole_handicaps = list(round_row['hole_handicaps']) if round_row['hole_handicaps'] is not None else None
 
-        # Upsert GolfHoleScore rows
+        # Prior strokes/par -> drive manually_corrected flag.
+        existing_rows = session.execute(sqlalchemy.text("""
+            SELECT hole_number, strokes, par
+            FROM "HoleScore" WHERE round_id = :rid
+        """), {"rid": round_id}).mappings().fetchall()
+        existing = {r['hole_number']: {'strokes': r['strokes'], 'par': r['par']} for r in existing_rows}
+
         for hole in holes:
-            existing = existing_holes.get(hole['hole_number'])
+            prior = existing.get(hole['hole_number'])
             manually_corrected = False
-            if existing:
-                if existing['strokes'] != hole['strokes'] or existing['par'] != hole['par']:
-                    manually_corrected = True
+            if prior and (prior['strokes'] != hole['strokes'] or prior['par'] != hole['par']):
+                manually_corrected = True
+            session.execute(sqlalchemy.text("""
+                INSERT INTO "HoleScore"
+                    (round_id, hole_number, par, strokes, manually_corrected)
+                VALUES (:rid, :hn, :par, :strokes, :corrected)
+                ON CONFLICT (round_id, hole_number) DO UPDATE SET
+                    par = :par, strokes = :strokes, manually_corrected = :corrected
+            """), {
+                "rid": round_id,
+                "hn":  hole['hole_number'],
+                "par": hole['par'],
+                "strokes": hole['strokes'],
+                "corrected": manually_corrected,
+            })
 
-            session.execute(
-                sqlalchemy.text("""
-                    INSERT INTO "GolfHoleScore" (id, round_id, hole_number, par, strokes, manually_corrected)
-                    VALUES (gen_random_uuid(), :round_id, :hole_number, :par, :strokes, :manually_corrected)
-                    ON CONFLICT (round_id, hole_number) DO UPDATE SET
-                        par = :par, strokes = :strokes, manually_corrected = :manually_corrected
-                """),
-                {
-                    "round_id": round_id,
-                    "hole_number": hole['hole_number'],
-                    "par": hole['par'],
-                    "strokes": hole['strokes'],
-                    "manually_corrected": manually_corrected,
-                }
-            )
+        # Current index -> stroke allocation (None when user has no handicap yet).
+        current_index, _, _ = _latest_handicap_snapshot(session, user_id)
+        received = allocate_strokes(current_index, hole_handicaps)
 
-        # Compute adjusted_gross_score and differential
-        adjusted_gross_score = sum(h['strokes'] for h in holes)
-        differential = math.trunc((113 / slope_rating) * (adjusted_gross_score - course_rating) * 10) / 10
+        # Sort holes 1..18 so the received/hole_handicap mapping stays aligned.
+        ordered = sorted(holes, key=lambda h: h['hole_number'])
+        total_raw = 0
+        total_adjusted = 0
+        front = 0
+        back  = 0
+        scores_array = []
+        for i, hole in enumerate(ordered):
+            total_raw += hole['strokes']
+            if received is None:
+                capped = net_double_bogey_cap(par=hole['par'], strokes_received=None, actual=hole['strokes'])
+            else:
+                capped = net_double_bogey_cap(
+                    par=hole['par'], strokes_received=received[i], actual=hole['strokes'],
+                )
+            total_adjusted += capped
+            scores_array.append(hole['strokes'])
+            if i < 9:
+                front += hole['strokes']
+            else:
+                back += hole['strokes']
 
-        # Update round
-        session.execute(
-            sqlalchemy.text("""
-                UPDATE "GolfRound"
-                SET adjusted_gross_score = :score, differential = :diff,
-                    processing_status = 'confirmed', updated_at = now()
-                WHERE id = :id
-            """),
-            {
-                "id": round_id,
-                "score": adjusted_gross_score,
-                "diff": differential,
-            }
+        differential = compute_differential(
+            adjusted_total=total_adjusted, rating=rating_18, slope=slope_18,
         )
+        # Differentials are stored to 1dp per WHS convention.
+        differential_1dp = round(differential, 1)
 
-        # Recalculate handicap
-        handicap_index = _recalculate_handicap(session, user_id)
+        session.execute(sqlalchemy.text("""
+            UPDATE "Round"
+            SET scores = :scores, total_score = :total, front_nine = :front, back_nine = :back,
+                score_differential = :diff, processing_status = 'confirmed', updated_at = now()
+            WHERE id = :id
+        """), {
+            "id": round_id,
+            "scores": scores_array,
+            "total": total_raw,
+            "front": front,
+            "back":  back,
+            "diff":  differential_1dp,
+        })
+
+        handicap_index = _recalculate_handicap(session, user_id, triggered_by_round_id=round_id)
         session.commit()
 
         return jsonify({
             'round_id': round_id,
             'user_id': user_id,
-            'adjusted_gross_score': adjusted_gross_score,
-            'differential': differential,
+            'adjusted_gross_score': total_adjusted,
+            'total_score': total_raw,
+            'score_differential': differential_1dp,
             'processing_status': 'confirmed',
             'handicap_index': handicap_index,
         }), 200
@@ -840,37 +1011,33 @@ def confirm_scores(round_id):
         session.close()
 
 
+# ---------------------------------------------------------------------------
+# DELETE /golf/round/<id>
+# ---------------------------------------------------------------------------
+
+
 @golf_bp.route('/round/<round_id>', methods=['DELETE'])
 def delete_round(round_id):
-    """Delete a golf round. Verify user owns the round."""
-    user_id = request.args.get('user_id')
-    if not user_id:
+    """Delete a round; recalculates handicap (and emits a new snapshot)."""
+    requesting_user_id = request.args.get('user_id')
+    if not requesting_user_id:
         return jsonify({'error': 'user_id query parameter is required'}), 400
 
     session = get_db_connection()
     try:
-        # Verify ownership
-        row = session.execute(
-            sqlalchemy.text("""
-                SELECT user_id FROM "GolfRound" WHERE id = :id
-            """),
-            {"id": round_id}
-        ).fetchone()
-
-        if not row:
+        row = session.execute(sqlalchemy.text("""
+            SELECT user_id FROM "Round" WHERE id = :id
+        """), {"id": round_id}).fetchone()
+        if row is None:
             return jsonify({'error': 'Round not found'}), 404
 
-        if str(row[0]) != user_id:
+        user_id = str(row[0])
+        if user_id != requesting_user_id:
             return jsonify({'error': 'Not authorized to delete this round'}), 403
 
-        # Delete round (cascades to hole scores)
-        session.execute(
-            sqlalchemy.text('DELETE FROM "GolfRound" WHERE id = :id'),
-            {"id": round_id}
-        )
-
-        # Recalculate handicap
-        _recalculate_handicap(session, user_id)
+        session.execute(sqlalchemy.text('DELETE FROM "Round" WHERE id = :id'), {"id": round_id})
+        # triggered_by_round_id becomes None since the round no longer exists.
+        _recalculate_handicap(session, user_id, triggered_by_round_id=None)
         session.commit()
 
         return jsonify({'status': 'deleted'}), 200
@@ -883,99 +1050,112 @@ def delete_round(round_id):
         session.close()
 
 
+# ---------------------------------------------------------------------------
+# GET /golf/rounds?user_id=
+# ---------------------------------------------------------------------------
+
+
 @golf_bp.route('/rounds', methods=['GET'])
 def get_rounds():
-    """
-    Get all confirmed rounds for a user with their hole scores.
+    """List a user's rounds with nested course/tee + hole scores.
 
-    Query params: user_id (required), limit (default 50), offset (default 0)
+    Query params: user_id (required), limit (default 50), offset (default 0).
+    Response includes the user's latest snapshot handicap_index.
     """
     user_id = request.args.get('user_id')
     if not user_id:
         return jsonify({'error': 'user_id query parameter is required'}), 400
 
-    limit = request.args.get('limit', 50, type=int)
-    offset = request.args.get('offset', 0, type=int)
+    limit  = request.args.get('limit',  50, type=int)
+    offset = request.args.get('offset',  0, type=int)
 
     session = get_db_connection()
     try:
-        # Fetch rounds
-        round_rows = session.execute(
-            sqlalchemy.text("""
-                SELECT id, user_id, course_name, slope_rating, course_rating,
-                       adjusted_gross_score, differential, scorecard_image_url,
-                       ocr_confidence, played_at, processing_status,
-                       created_at, updated_at
-                FROM "GolfRound"
-                WHERE user_id = :user_id
-                ORDER BY played_at DESC
-                LIMIT :limit OFFSET :offset
-            """),
-            {"user_id": user_id, "limit": limit, "offset": offset}
-        ).fetchall()
+        rows = session.execute(sqlalchemy.text("""
+            SELECT r.id AS round_id, r.user_id, r.played_on, r.holes AS round_holes,
+                   r.scores, r.total_score, r.front_nine, r.back_nine,
+                   r.score_differential, r.scorecard_image_url, r.ocr_confidence,
+                   r.processing_status, r.created_at, r.updated_at,
+                   c.id AS c_id, c.name AS c_name, c.city, c.state, c.country,
+                   c.latitude, c.longitude, c.holes AS c_holes, c.status AS c_status,
+                   t.id AS t_id, t.name AS t_name, t.color_hex,
+                   t.rating_18, t.slope_18, t.rating_9_front, t.slope_9_front,
+                   t.rating_9_back, t.slope_9_back,
+                   t.yardage, t.par, t.hole_pars, t.hole_yardages, t.hole_handicaps
+            FROM "Round" r
+            JOIN "Course" c ON c.id = r.course_id
+            LEFT JOIN "Tee" t ON t.id = r.tee_id
+            WHERE r.user_id = :uid
+            ORDER BY r.played_on DESC, r.created_at DESC
+            LIMIT :limit OFFSET :offset
+        """), {"uid": user_id, "limit": limit, "offset": offset}).mappings().fetchall()
 
-        # Collect all round IDs for batch hole score fetch
-        round_ids = [str(row[0]) for row in round_rows]
-
-        # Batch fetch all hole scores for these rounds in a single query
+        round_ids = [str(r['round_id']) for r in rows]
         holes_by_round = {}
         if round_ids:
-            all_hole_rows = session.execute(
-                sqlalchemy.text("""
-                    SELECT round_id, hole_number, par, strokes, ocr_confidence, manually_corrected
-                    FROM "GolfHoleScore"
-                    WHERE round_id = ANY(:round_ids)
-                    ORDER BY round_id, hole_number
-                """),
-                {"round_ids": round_ids}
-            ).fetchall()
-
-            for h in all_hole_rows:
-                rid = str(h[0])
-                if rid not in holes_by_round:
-                    holes_by_round[rid] = []
-                holes_by_round[rid].append({
-                    'hole_number': h[1],
-                    'par': h[2],
-                    'strokes': h[3],
-                    'ocr_confidence': float(h[4]) if h[4] is not None else None,
-                    'manually_corrected': h[5],
+            hole_rows = session.execute(sqlalchemy.text("""
+                SELECT round_id, hole_number, par, strokes, ocr_confidence, manually_corrected
+                FROM "HoleScore"
+                WHERE round_id = ANY(:rids)
+                ORDER BY round_id, hole_number
+            """), {"rids": round_ids}).mappings().fetchall()
+            for h in hole_rows:
+                rid = str(h['round_id'])
+                holes_by_round.setdefault(rid, []).append({
+                    'hole_number': h['hole_number'],
+                    'par': h['par'],
+                    'strokes': h['strokes'],
+                    'ocr_confidence':
+                        float(h['ocr_confidence']) if h['ocr_confidence'] is not None else None,
+                    'manually_corrected': h['manually_corrected'],
                 })
 
         rounds = []
-        for row in round_rows:
-            round_id = str(row[0])
-
+        for r in rows:
+            rid = str(r['round_id'])
+            course_block = _course_to_dict({
+                'id': r['c_id'], 'name': r['c_name'],
+                'city': r['city'], 'state': r['state'], 'country': r['country'],
+                'latitude': r['latitude'], 'longitude': r['longitude'],
+                'holes': r['c_holes'], 'status': r['c_status'],
+            })
+            tee_block = _tee_to_dict({
+                'id': r['t_id'], 'name': r['t_name'], 'color_hex': r['color_hex'],
+                'rating_18': r['rating_18'], 'slope_18': r['slope_18'],
+                'rating_9_front': r['rating_9_front'], 'slope_9_front': r['slope_9_front'],
+                'rating_9_back':  r['rating_9_back'],  'slope_9_back':  r['slope_9_back'],
+                'yardage': r['yardage'], 'par': r['par'],
+                'hole_pars': r['hole_pars'], 'hole_yardages': r['hole_yardages'],
+                'hole_handicaps': r['hole_handicaps'],
+            }) if r['t_id'] is not None else _tee_to_dict(None)
             rounds.append({
-                'id': round_id,
-                'user_id': str(row[1]),
-                'course_name': row[2],
-                'slope_rating': float(row[3]),
-                'course_rating': float(row[4]),
-                'adjusted_gross_score': row[5],
-                'differential': float(row[6]) if row[6] is not None else None,
-                'scorecard_image_url': row[7],
-                'ocr_confidence': float(row[8]) if row[8] is not None else None,
-                'played_at': str(row[9]) if row[9] else None,
-                'processing_status': row[10],
-                'created_at': str(row[11]) if row[11] else None,
-                'updated_at': str(row[12]) if row[12] else None,
-                'holes': holes_by_round.get(round_id, []),
+                'id':                  rid,
+                'user_id':             str(r['user_id']),
+                'played_on':           str(r['played_on']) if r['played_on'] else None,
+                'holes':               r['round_holes'],
+                'course':              course_block,
+                'tee':                 tee_block,
+                'hole_scores':         holes_by_round.get(rid, []),
+                'scores':              list(r['scores']) if r['scores'] is not None else None,
+                'total_score':         r['total_score'],
+                'front_nine':          r['front_nine'],
+                'back_nine':           r['back_nine'],
+                'score_differential':
+                    float(r['score_differential']) if r['score_differential'] is not None else None,
+                'scorecard_image_url': r['scorecard_image_url'],
+                'ocr_confidence':
+                    float(r['ocr_confidence']) if r['ocr_confidence'] is not None else None,
+                'processing_status':   r['processing_status'],
+                'needs_tee':           r['t_id'] is None,
+                'created_at':          str(r['created_at']) if r['created_at'] else None,
+                'updated_at':          str(r['updated_at']) if r['updated_at'] else None,
             })
 
-        # Fetch current handicap
-        handicap_row = session.execute(
-            sqlalchemy.text("""
-                SELECT handicap_index FROM "GolfHandicap" WHERE user_id = :user_id
-            """),
-            {"user_id": user_id}
-        ).fetchone()
-
-        handicap_index = float(handicap_row[0]) if handicap_row and handicap_row[0] is not None else None
-
+        handicap_index, rounds_used, _ = _latest_handicap_snapshot(session, user_id)
         return jsonify({
             'rounds': rounds,
             'handicap_index': handicap_index,
+            'rounds_used': rounds_used,
         }), 200
 
     except Exception as e:
@@ -985,34 +1165,47 @@ def get_rounds():
         session.close()
 
 
+# ---------------------------------------------------------------------------
+# GET /golf/handicap/<user_id>
+# ---------------------------------------------------------------------------
+
+
 @golf_bp.route('/handicap/<user_id>', methods=['GET'])
 def get_handicap(user_id):
-    """Get current handicap for a user."""
+    """Return the user's latest HandicapSnapshot."""
     session = get_db_connection()
     try:
-        row = session.execute(
-            sqlalchemy.text("""
-                SELECT user_id, handicap_index, rounds_used, differentials_used,
-                       last_computed_at
-                FROM "GolfHandicap"
-                WHERE user_id = :user_id
-            """),
-            {"user_id": user_id}
-        ).fetchone()
+        row = session.execute(sqlalchemy.text("""
+            SELECT handicap_index, rounds_used, differentials_used, created_at
+            FROM "HandicapSnapshot"
+            WHERE user_id = :uid
+            ORDER BY created_at DESC
+            LIMIT 1
+        """), {"uid": user_id}).mappings().fetchone()
 
-        if not row:
+        if row is None:
             return jsonify({
                 'user_id': user_id,
                 'handicap_index': None,
                 'rounds_used': 0,
                 'differentials_used': [],
+                'created_at': None,
             }), 200
 
+        diffs = row['differentials_used']
+        if isinstance(diffs, str):
+            try:
+                diffs = json.loads(diffs)
+            except json.JSONDecodeError:
+                diffs = []
+
         return jsonify({
-            'user_id': str(row[0]),
-            'handicap_index': float(row[1]) if row[1] is not None else None,
-            'rounds_used': row[2],
-            'differentials_used': row[3] if row[3] else [],
+            'user_id': user_id,
+            'handicap_index':
+                float(row['handicap_index']) if row['handicap_index'] is not None else None,
+            'rounds_used': row['rounds_used'],
+            'differentials_used': diffs or [],
+            'created_at': str(row['created_at']) if row['created_at'] else None,
         }), 200
 
     except Exception as e:
@@ -1022,54 +1215,223 @@ def get_handicap(user_id):
         session.close()
 
 
+# ---------------------------------------------------------------------------
+# GET /golf/leaderboard
+# ---------------------------------------------------------------------------
+
+
 @golf_bp.route('/leaderboard', methods=['GET'])
 def get_leaderboard():
-    """
-    Global handicap leaderboard.
+    """Global leaderboard — latest snapshot per user + 30-day monthly_delta.
 
-    Query params: limit (default 50), offset (default 0)
+    `monthly_delta` = latest.handicap_index − past.handicap_index where `past`
+    is the most-recent snapshot in the [30, 60)-day window. Negative means
+    improvement (handicap went down).
     """
-    limit = request.args.get('limit', 50, type=int)
+    limit  = request.args.get('limit', 50, type=int)
     offset = request.args.get('offset', 0, type=int)
 
     session = get_db_connection()
     try:
-        rows = session.execute(
-            sqlalchemy.text("""
-                SELECT
-                    gh.user_id,
-                    u.name AS user_name,
-                    gh.handicap_index,
-                    gh.rounds_used,
-                    (SELECT COUNT(*) FROM "GolfRound" gr
-                     WHERE gr.user_id = gh.user_id AND gr.processing_status = 'confirmed') AS total_rounds,
-                    (SELECT MIN(gr2.differential) FROM "GolfRound" gr2
-                     WHERE gr2.user_id = gh.user_id AND gr2.processing_status = 'confirmed'
-                       AND gr2.differential IS NOT NULL) AS best_differential
-                FROM "GolfHandicap" gh
-                JOIN "User" u ON u.id = gh.user_id
-                WHERE gh.handicap_index IS NOT NULL
-                ORDER BY gh.handicap_index ASC
-                LIMIT :limit OFFSET :offset
-            """),
-            {"limit": limit, "offset": offset}
-        ).fetchall()
+        rows = session.execute(sqlalchemy.text("""
+            WITH latest AS (
+                SELECT DISTINCT ON (user_id)
+                       user_id, handicap_index, rounds_used, created_at
+                FROM "HandicapSnapshot"
+                WHERE handicap_index IS NOT NULL
+                ORDER BY user_id, created_at DESC
+            ),
+            past AS (
+                SELECT DISTINCT ON (user_id)
+                       user_id, handicap_index AS past_index, created_at AS past_created
+                FROM "HandicapSnapshot"
+                WHERE handicap_index IS NOT NULL
+                  AND created_at <  now() - INTERVAL '30 days'
+                  AND created_at >= now() - INTERVAL '60 days'
+                ORDER BY user_id, created_at DESC
+            ),
+            round_stats AS (
+                SELECT user_id,
+                       COUNT(*)                         AS total_rounds,
+                       MIN(score_differential)          AS best_differential
+                FROM "Round"
+                WHERE score_differential IS NOT NULL
+                GROUP BY user_id
+            )
+            SELECT l.user_id, u.name AS user_name,
+                   l.handicap_index, l.rounds_used, l.created_at,
+                   p.past_index,
+                   COALESCE(rs.total_rounds, 0) AS total_rounds,
+                   rs.best_differential
+            FROM latest l
+            JOIN "User" u ON u.id = l.user_id
+            LEFT JOIN past p ON p.user_id = l.user_id
+            LEFT JOIN round_stats rs ON rs.user_id = l.user_id
+            ORDER BY l.handicap_index ASC
+            LIMIT :limit OFFSET :offset
+        """), {"limit": limit, "offset": offset}).mappings().fetchall()
 
         leaderboard = []
         for i, row in enumerate(rows):
+            past = float(row['past_index']) if row['past_index'] is not None else None
+            latest_idx = float(row['handicap_index'])
+            delta = None
+            if past is not None:
+                delta = round(latest_idx - past, 1)
             leaderboard.append({
-                'rank': offset + i + 1,
-                'user_id': str(row[0]),
-                'user_name': row[1],
-                'handicap_index': float(row[2]),
-                'rounds_played': row[4],
-                'best_differential': float(row[5]) if row[5] is not None else None,
+                'rank':              offset + i + 1,
+                'user_id':           str(row['user_id']),
+                'user_name':         row['user_name'],
+                'handicap_index':    latest_idx,
+                'monthly_delta':     delta,
+                'rounds_played':     row['total_rounds'],
+                'rounds_used':       row['rounds_used'],
+                'best_differential':
+                    float(row['best_differential']) if row['best_differential'] is not None else None,
+                'latest_snapshot_at': str(row['created_at']) if row['created_at'] else None,
             })
 
         return jsonify({'leaderboard': leaderboard}), 200
 
     except Exception as e:
         logger.error(f"Error fetching leaderboard: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+    finally:
+        session.close()
+
+
+# ---------------------------------------------------------------------------
+# GET /golf/courses
+# ---------------------------------------------------------------------------
+
+
+def _parse_near(raw):
+    """Parse ?near=lat,lng → (lat, lng) or None. Malformed input → None."""
+    if not raw:
+        return None
+    try:
+        parts = raw.split(',')
+        if len(parts) != 2:
+            return None
+        return (float(parts[0]), float(parts[1]))
+    except (ValueError, TypeError):
+        return None
+
+
+@golf_bp.route('/courses', methods=['GET'])
+def list_courses():
+    """Fuzzy-search courses by ?q= (and optional ?near=lat,lng)."""
+    q = request.args.get('q', '').strip()
+    if not q:
+        return jsonify({'courses': []}), 200
+
+    near  = _parse_near(request.args.get('near'))
+    limit = request.args.get('limit', 10, type=int)
+
+    session = get_db_connection()
+    try:
+        courses = search_courses(session, q=q, near=near, limit=limit)
+        return jsonify({'courses': courses}), 200
+    except Exception as e:
+        logger.error(f"Error searching courses: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+    finally:
+        session.close()
+
+
+@golf_bp.route('/courses', methods=['POST'])
+def create_course():
+    """Manual unknown-course submission.
+
+    Body: {name, city?, state?, country?, latitude?, longitude?, holes?}.
+    `status` = 'verified' when the caller supplies a user_id (proxy for
+    authenticated), else 'pending'.
+    """
+    data = request.get_json() or {}
+    name = (data.get('name') or '').strip()
+    if not name:
+        return jsonify({'error': 'name is required'}), 400
+
+    city      = data.get('city')
+    state     = data.get('state')
+    country   = data.get('country')
+    latitude  = data.get('latitude')
+    longitude = data.get('longitude')
+    holes     = data.get('holes', 18)
+    if holes not in (9, 18):
+        return jsonify({'error': 'holes must be 9 or 18'}), 400
+
+    user_id = data.get('user_id')
+    status  = 'verified' if user_id else 'pending'
+
+    session = get_db_connection()
+    try:
+        row = session.execute(sqlalchemy.text("""
+            INSERT INTO "Course" (name, city, state, country, latitude, longitude, holes, status)
+            VALUES (:name, :city, :state, :country, :lat, :lng, :holes, :status)
+            RETURNING id, name, city, state, country, latitude, longitude, holes, status
+        """), {
+            "name": name, "city": city, "state": state, "country": country,
+            "lat": latitude, "lng": longitude,
+            "holes": holes, "status": status,
+        }).mappings().fetchone()
+        session.commit()
+        return jsonify({'course': _course_to_dict(row)}), 201
+
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Error creating course: {e}")
+        return jsonify({'error': 'Internal server error'}), 500
+    finally:
+        session.close()
+
+
+# ---------------------------------------------------------------------------
+# GET /golf/users/<user_id>/handicap/history
+# ---------------------------------------------------------------------------
+
+
+_HANDICAP_HISTORY_RANGES = {
+    '6m':  "now() - INTERVAL '6 months'",
+    '12m': "now() - INTERVAL '12 months'",
+    '24m': "now() - INTERVAL '24 months'",
+    'all': None,
+}
+
+
+@golf_bp.route('/users/<user_id>/handicap/history', methods=['GET'])
+def get_handicap_history(user_id):
+    """HandicapSnapshot time-series for a user. ?range=6m|12m|24m|all (default 12m)."""
+    range_key = request.args.get('range', '12m')
+    if range_key not in _HANDICAP_HISTORY_RANGES:
+        return jsonify({'error': "range must be one of '6m','12m','24m','all'"}), 400
+    since_expr = _HANDICAP_HISTORY_RANGES[range_key]
+    where = "WHERE user_id = :uid"
+    if since_expr:
+        where += f" AND created_at >= {since_expr}"
+
+    session = get_db_connection()
+    try:
+        rows = session.execute(sqlalchemy.text(f"""
+            SELECT handicap_index, rounds_used, created_at
+            FROM "HandicapSnapshot"
+            {where}
+            ORDER BY created_at ASC
+        """), {"uid": user_id}).mappings().fetchall()
+
+        history = [
+            {
+                'handicap_index':
+                    float(r['handicap_index']) if r['handicap_index'] is not None else None,
+                'rounds_used': r['rounds_used'],
+                'created_at':  str(r['created_at']) if r['created_at'] else None,
+            }
+            for r in rows
+        ]
+        return jsonify({'history': history, 'range': range_key}), 200
+
+    except Exception as e:
+        logger.error(f"Error fetching handicap history: {e}")
         return jsonify({'error': 'Internal server error'}), 500
     finally:
         session.close()
