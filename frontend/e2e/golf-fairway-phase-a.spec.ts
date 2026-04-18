@@ -1,12 +1,15 @@
-import { test, expect, request, APIRequestContext } from "@playwright/test";
-import fs from "fs";
-import path from "path";
+import { test, expect, Page } from "@playwright/test";
 
 /**
  * Fairway Phase A — visual + UX polish smoke test.
  *
- * Strategy: seed a golf round via the real backend so we have a deterministic
- * round ID to hit, then drive the UI and assert Fairway markers.
+ * Backend is stubbed per-test (the `/golf/upload` route is rate-limited
+ * 10/hr in prod, so we can't realistically seed a fresh round on every
+ * run). Tests that need a specific round/profile/leaderboard response
+ * use `page.route` to serve deterministic JSON.
+ *
+ * Stub URLs target API_URL explicitly so the glob does NOT match the
+ * frontend SPA navigation at the same path (e.g. `/golf/round/<id>`).
  */
 
 const API_URL =
@@ -15,51 +18,80 @@ const API_URL =
 
 test.describe.configure({ mode: "serial" });
 
-// Module-level seed — populated by beforeAll, read by downstream tests.
-let seededRoundId = "";
-let seededUserId = "";
+// Deterministic IDs used across tests.
+const seededRoundId = "00000000-0000-4000-8000-000000000001";
+const seededUserId  = "00000000-0000-4000-8000-000000000002";
 
-test.beforeAll(async () => {
-  const ctx: APIRequestContext = await request.newContext();
-
-  const uniq = Date.now().toString(36);
-  const email = `fairway-phase-a-${uniq}@test.com`;
-  const register = await ctx.post(`${API_URL}/auth/register`, {
-    data: { email, password: "TestPassword123!", name: `Phase A ${uniq}` },
+function stubSeededRound(page: Page, overrides: Record<string, unknown> = {}) {
+  return page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
+    const body = {
+      id: seededRoundId,
+      user_id: seededUserId,
+      course_name: "Phase A Course",
+      slope_rating: 128,
+      course_rating: 71.2,
+      adjusted_gross_score: null,
+      differential: null,
+      scorecard_image_url: null,
+      ocr_confidence: 0.95,
+      processing_status: "ocr_complete",
+      played_at: "2026-04-18",
+      holes: Array.from({ length: 18 }, (_, i) => ({
+        hole_number: i + 1,
+        par: 4,
+        strokes: null,
+        ocr_confidence: 0.99,
+      })),
+      detected_players: [],
+      ...overrides,
+    };
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify(body),
+    });
   });
-  if (!register.ok()) {
-    throw new Error(
-      `Failed to register test user: ${register.status()} ${await register.text()}`
-    );
-  }
+}
 
-  const fixturePath = path.resolve(__dirname, "fixtures/scorecard-test.jpg");
-  const imageBuffer = fs.readFileSync(fixturePath);
-  const upload = await ctx.post(`${API_URL}/golf/upload`, {
-    multipart: {
-      image: {
-        name: "scorecard-test.jpg",
-        mimeType: "image/jpeg",
-        buffer: imageBuffer,
-      },
-      email,
-      course_name: `Phase A Test Course ${uniq}`,
-      slope_rating: "128",
-      course_rating: "71.2",
-      played_at: new Date().toISOString().split("T")[0],
-    },
+function stubProfile(page: Page) {
+  return Promise.all([
+    page.route(`${API_URL}/golf/rounds?user_id=${seededUserId}`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ rounds: [], handicap_index: null }),
+      });
+    }),
+    page.route(`${API_URL}/users/${seededUserId}/profile`, async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: JSON.stringify({ id: seededUserId, name: "Phase A Golfer", email: "" }),
+      });
+    }),
+  ]);
+}
+
+function stubLeaderboard(page: Page) {
+  return page.route(new RegExp(`${API_URL.replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}/golf/leaderboard`), async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        leaderboard: [
+          {
+            rank: 1,
+            user_id: seededUserId,
+            user_name: "Phase A Golfer",
+            handicap_index: 12.4,
+            rounds_played: 5,
+            best_differential: 9.1,
+          },
+        ],
+      }),
+    });
   });
-  if (!upload.ok()) {
-    throw new Error(
-      `Failed to seed round: ${upload.status()} ${await upload.text()}`
-    );
-  }
-  const body = await upload.json();
-  seededRoundId = body.round_id;
-  seededUserId = body.user_id;
-  expect(seededRoundId).toMatch(/^[0-9a-f-]{36}$/);
-  expect(seededUserId).toMatch(/^[0-9a-f-]{36}$/);
-});
+}
 
 test("golf upload page is wrapped in fw-scope", async ({ page }) => {
   await page.goto("/golf/upload");
@@ -106,6 +138,7 @@ test("staged parse progress shows 5 tasks during upload", async ({ page }) => {
 });
 
 test("review cells use Fairway color semantics vs par", async ({ page }) => {
+  await stubSeededRound(page);
   await page.goto(`/golf/review/${seededRoundId}`);
 
   // Find at least one hole input. Because the seeded round is from a tiny
@@ -137,7 +170,7 @@ test("review cells use Fairway color semantics vs par", async ({ page }) => {
 
 test("low-confidence cells get the fw-cell-needs-review glow", async ({ page }) => {
   // Stub the round fetch so hole 3 is low-confidence and holes 1-2 are not.
-  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+  await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
     const body = {
       id: seededRoundId,
       user_id: "stub-user",
@@ -170,7 +203,7 @@ test("low-confidence cells get the fw-cell-needs-review glow", async ({ page }) 
 });
 
 test("N holes need review banner appears when any cell < 0.85", async ({ page }) => {
-  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+  await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
     const body = {
       id: seededRoundId,
       user_id: "stub",
@@ -199,7 +232,7 @@ test("N holes need review banner appears when any cell < 0.85", async ({ page })
 });
 
 test("live differential footer updates as scores change", async ({ page }) => {
-  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+  await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
     const body = {
       id: seededRoundId,
       user_id: "stub",
@@ -237,13 +270,14 @@ test("live differential footer updates as scores change", async ({ page }) => {
 });
 
 test("review page uses Fairway typography and surface styles", async ({ page }) => {
+  await stubSeededRound(page);
   await page.goto(`/golf/review/${seededRoundId}`);
   await expect(page.locator(".fw-scope .fw-h1", { hasText: /review/i })).toBeVisible();
   await expect(page.locator(".fw-surface").first()).toBeVisible();
 });
 
 test("round page shows highlights grid and hole bar chart", async ({ page }) => {
-  await page.route(`**/golf/round/${seededRoundId}`, async (route) => {
+  await page.route(`${API_URL}/golf/round/${seededRoundId}`, async (route) => {
     const body = {
       id: seededRoundId,
       user_id: "stub",
@@ -272,18 +306,24 @@ test("round page shows highlights grid and hole bar chart", async ({ page }) => 
 });
 
 test("profile page uses Fairway stat tiles for rounds played", async ({ page }) => {
+  await stubProfile(page);
   await page.goto(`/golf/profile/${seededUserId}`);
   await expect(page.locator(".fw-scope .fw-h1")).toBeVisible();
   await expect(page.locator('[data-testid="profile-stats"]')).toBeVisible();
 });
 
 test("leaderboard uses Fairway row style", async ({ page }) => {
+  await stubLeaderboard(page);
   await page.goto("/golf/leaderboard");
   await expect(page.locator(".fw-scope .fw-h1", { hasText: /leaderboard/i })).toBeVisible();
   await expect(page.locator('[data-testid="leaderboard-list"]')).toHaveClass(/fw-surface/);
 });
 
 test("full Phase A surface is Fairway-skinned", async ({ page }) => {
+  await stubSeededRound(page);
+  await stubProfile(page);
+  await stubLeaderboard(page);
+
   await page.goto("/golf/upload");
   await expect(page.locator(".fw-scope .fw-h1", { hasText: /log round/i })).toBeVisible();
 
