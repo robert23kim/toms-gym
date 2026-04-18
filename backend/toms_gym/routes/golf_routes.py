@@ -479,8 +479,8 @@ def _find_or_create_guest_golfer(session, raw_name):
 
     new_id = str(uuid.uuid4())
     session.execute(sqlalchemy.text("""
-        INSERT INTO "User" (id, email, name, username, auth_method, status, role, created_at)
-        VALUES (:id, :em, :name, :un, 'guest', 'active', 'user', NOW())
+        INSERT INTO "User" (id, email, name, username, status, role, created_at)
+        VALUES (:id, :em, :name, :un, 'active', 'user', NOW())
     """), {
         'id': new_id, 'em': email, 'name': name, 'un': email_slug,
     })
