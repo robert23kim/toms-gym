@@ -51,7 +51,8 @@ def upload_video():
         "BicepCurl": "Bicep Curl",
         "Clean": "Clean & Jerk",
         "Snatch": "snatch",
-        "Overhead": "Overhead Press"
+        "Overhead": "Overhead Press",
+        "Plank": "Plank",
     }
     
     # Map the lift type or default to "snatch" if not found
