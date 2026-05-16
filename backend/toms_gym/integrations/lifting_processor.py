@@ -12,12 +12,30 @@ Config via environment variables:
 
 import json
 import logging
+import math
 import os
 import threading
 import time
 
 import requests
 import sqlalchemy
+
+
+def _sanitize_for_json(value):
+    """Recursively replace NaN/Infinity floats with None.
+
+    Postgres rejects NaN/Infinity in JSON columns (error 22P02), but Python's
+    json module emits them by default. Analysis pipelines surface NaN whenever
+    a joint angle can't be measured (e.g., elbow on a forearm plank), so we
+    have to scrub before persisting.
+    """
+    if isinstance(value, float):
+        return value if math.isfinite(value) else None
+    if isinstance(value, dict):
+        return {k: _sanitize_for_json(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_sanitize_for_json(v) for v in value]
+    return value
 
 logger = logging.getLogger(__name__)
 
@@ -168,7 +186,7 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             "id": result_id,
             "annotated_video_url": result.get("annotated_video_url"),
             "summary_url": result.get("summary_url"),
-            "report": json.dumps(result.get("report", {})),
+            "report": json.dumps(_sanitize_for_json(result.get("report", {}))),
             "processing_time_s": result.get("processing_time_s"),
         })
         session.commit()
