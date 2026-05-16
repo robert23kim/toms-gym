@@ -354,6 +354,22 @@ const ChallengeDetail: React.FC = () => {
       if (weightClasses.length > 0) {
         setSelectedWeightClass(weightClasses[0]);
       }
+      // Auto-select the challenge's lift type if the form's current selection isn't allowed.
+      const allowedDbValues = challenge.categories.filter(
+        c => !c.includes('kg') && c !== 'Men' && c !== 'Women'
+      );
+      const dbToFormId: Record<string, string> = {
+        'Squat': 'Squat',
+        'Bench Press': 'Bench',
+        'Deadlift': 'Deadlift',
+        'Bicep Curl': 'BicepCurl',
+        'Plank': 'Plank',
+      };
+      const allowedFormIds = allowedDbValues.map(d => dbToFormId[d]).filter(Boolean);
+      if (allowedFormIds.length > 0 && !allowedFormIds.includes(liftType)) {
+        setLiftType(allowedFormIds[0]);
+        setWeight(defaultWeights[allowedFormIds[0]] || "60");
+      }
     }
   }, [challenge]);
 
@@ -700,36 +716,58 @@ const ChallengeDetail: React.FC = () => {
                   />
                 </div>
 
-                <div className={liftType === 'Plank' ? '' : 'grid grid-cols-1 sm:grid-cols-2 gap-4'}>
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Lift Type</label>
-                    <select
-                      value={liftType}
-                      onChange={handleLiftTypeChange}
-                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    >
-                      <option value="Squat">Squat</option>
-                      <option value="Bench">Bench Press</option>
-                      <option value="Deadlift">Deadlift</option>
-                      <option value="BicepCurl">Bicep Curl</option>
-                      <option value="Plank">Plank</option>
-                    </select>
-                  </div>
+                {(() => {
+                  const ALL_LIFT_OPTIONS: { id: string; label: string; dbValue: string }[] = [
+                    { id: 'Squat', label: 'Squat', dbValue: 'Squat' },
+                    { id: 'Bench', label: 'Bench Press', dbValue: 'Bench Press' },
+                    { id: 'Deadlift', label: 'Deadlift', dbValue: 'Deadlift' },
+                    { id: 'BicepCurl', label: 'Bicep Curl', dbValue: 'Bicep Curl' },
+                    { id: 'Plank', label: 'Plank', dbValue: 'Plank' },
+                  ];
+                  const challengeLiftDbValues = (challenge?.categories || []).filter(
+                    c => !c.includes('kg') && c !== 'Men' && c !== 'Women'
+                  );
+                  const liftOptions = challengeLiftDbValues.length > 0
+                    ? ALL_LIFT_OPTIONS.filter(o => challengeLiftDbValues.includes(o.dbValue))
+                    : ALL_LIFT_OPTIONS;
+                  const onlyOne = liftOptions.length === 1;
+                  return (
+                    <div className={liftType === 'Plank' ? '' : 'grid grid-cols-1 sm:grid-cols-2 gap-4'}>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Lift Type</label>
+                        {onlyOne ? (
+                          <div className="w-full px-3 py-2 bg-muted/40 border border-input rounded-lg text-foreground">
+                            {liftOptions[0].label}
+                          </div>
+                        ) : (
+                          <select
+                            value={liftType}
+                            onChange={handleLiftTypeChange}
+                            className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                          >
+                            {liftOptions.map(opt => (
+                              <option key={opt.id} value={opt.id}>{opt.label}</option>
+                            ))}
+                          </select>
+                        )}
+                      </div>
 
-                  {liftType !== 'Plank' && (
-                    <div>
-                      <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
-                      <input
-                        type="number"
-                        value={weight}
-                        onChange={(e) => setWeight(e.target.value)}
-                        placeholder="Enter weight"
-                        min="1"
-                        className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                      />
+                      {liftType !== 'Plank' && (
+                        <div>
+                          <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
+                          <input
+                            type="number"
+                            value={weight}
+                            onChange={(e) => setWeight(e.target.value)}
+                            placeholder="Enter weight"
+                            min="1"
+                            className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                          />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  );
+                })()}
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Video</label>
