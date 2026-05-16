@@ -146,12 +146,17 @@ const ChallengeDetail: React.FC = () => {
                 if (result.processing_status === 'completed' || result.processing_status === 'failed') {
                   clearInterval(pollInterval);
                   setLiftingResults(prev => ({ ...prev, [attemptId]: result }));
+                  const isPlank = result.report?.lift_type === 'plank';
                   toast({
-                    title: result.report?.overall_grade && ['A','B','C','D'].includes(result.report.overall_grade)
-                      ? "Lift Approved!" : "Analysis Complete",
-                    description: result.report
-                      ? `Grade: ${result.report.overall_grade} (${result.report.overall_score?.toFixed(0)}%)`
-                      : "Check your lift for details.",
+                    title: isPlank
+                      ? "Plank Analyzed"
+                      : (result.report?.overall_grade && ['A','B','C','D'].includes(result.report.overall_grade)
+                          ? "Lift Approved!" : "Analysis Complete"),
+                    description: isPlank
+                      ? `Held: ${result.report?.total_in_plank_s?.toFixed(1)}s (form ${((result.report?.overall_form_score ?? 0) * 100).toFixed(0)}%)`
+                      : (result.report
+                          ? `Grade: ${result.report.overall_grade} (${result.report.overall_score?.toFixed(0)}%)`
+                          : "Check your lift for details."),
                     duration: 5000,
                   });
                 }
@@ -626,7 +631,16 @@ const ChallengeDetail: React.FC = () => {
                           <div className="mt-1">
                             {(() => {
                               const lr = liftingResults[video.attempt_id];
-                              const grade = lr?.report?.overall_grade;
+                              const report = lr?.report;
+                              if (report?.lift_type === 'plank') {
+                                const heldS = report.total_in_plank_s ?? 0;
+                                return (
+                                  <span className="inline-block px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-500">
+                                    Held {heldS.toFixed(1)}s
+                                  </span>
+                                );
+                              }
+                              const grade = report?.overall_grade;
                               const isApproved = grade && ['A', 'B', 'C', 'D'].includes(grade);
                               const isFailed = grade === 'F';
                               const badgeClass = isApproved ? 'bg-green-500/10 text-green-500' :

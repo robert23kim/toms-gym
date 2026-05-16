@@ -137,6 +137,14 @@ export interface RepMetrics {
   metrics?: MetricFeedback[];
 }
 
+export interface PlankPerSecond {
+  t: number;
+  state: string;
+  body_line_deg: number;
+  elbow_deg: number;
+  form_score: number;
+}
+
 export interface LiftingReport {
   camera_view: string;
   active_arm: string;
@@ -146,6 +154,19 @@ export interface LiftingReport {
   rep_metrics: RepMetrics[];
   insights: string[];
   lift_type?: string;
+
+  // Plank-specific fields (only present when lift_type === 'plank').
+  // The bicep_curl-style fields above are not meaningful for plank.
+  total_in_plank_s?: number;
+  longest_run_s?: number;
+  overall_form_score?: number;
+  plank_type?: 'forearm' | 'high' | 'transitioning';
+  pose_detection_rate?: number;
+  forearm_s?: number;
+  high_s?: number;
+  body_line_median_deg?: number;
+  body_line_stdev_deg?: number;
+  per_second?: PlankPerSecond[];
 }
 
 export interface LiftingResult {

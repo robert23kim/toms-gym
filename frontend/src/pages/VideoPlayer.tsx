@@ -458,8 +458,66 @@ const VideoPlayer: React.FC = () => {
                           </div>
                         )}
 
-                        {/* Analysis complete — Score Card */}
-                        {hasAnalysis && report && (
+                        {/* Analysis complete — Plank result card */}
+                        {hasAnalysis && report && report.lift_type === 'plank' && (
+                          <>
+                            <div className="bg-card rounded-lg shadow-lg p-6">
+                              <div className="flex items-center gap-4 mb-4">
+                                <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-blue-500/15">
+                                  <span className="text-2xl font-bold text-blue-400">
+                                    {(report.total_in_plank_s ?? 0).toFixed(1)}s
+                                  </span>
+                                </div>
+                                <div className="flex-1">
+                                  <div className="flex justify-between items-center mb-1">
+                                    <span className="font-medium">Total time held</span>
+                                    <span className="text-sm text-muted-foreground">
+                                      Form {((report.overall_form_score ?? 0) * 100).toFixed(0)}%
+                                    </span>
+                                  </div>
+                                  <div className="w-full bg-muted rounded-full h-2.5">
+                                    <div
+                                      className="h-2.5 rounded-full transition-all bg-blue-500"
+                                      style={{ width: `${Math.min((report.overall_form_score ?? 0) * 100, 100)}%` }}
+                                    />
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="grid grid-cols-2 gap-3 text-sm">
+                                <div className="flex flex-col">
+                                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Longest unbroken</span>
+                                  <span className="font-medium">{(report.longest_run_s ?? 0).toFixed(1)}s</span>
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Plank style</span>
+                                  <span className="font-medium capitalize">{report.plank_type ?? 'unknown'}</span>
+                                </div>
+                                <div className="flex flex-col">
+                                  <span className="text-xs text-muted-foreground uppercase tracking-wide">Pose detection</span>
+                                  <span className="font-medium">{((report.pose_detection_rate ?? 0) * 100).toFixed(0)}%</span>
+                                </div>
+                                {report.body_line_median_deg != null && Number.isFinite(report.body_line_median_deg) && (
+                                  <div className="flex flex-col">
+                                    <span className="text-xs text-muted-foreground uppercase tracking-wide">Body line (median)</span>
+                                    <span className="font-medium">{report.body_line_median_deg.toFixed(1)}&deg;</span>
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+
+                            <button
+                              onClick={handleAnalyzeForm}
+                              disabled={isAnalyzing}
+                              className="w-full px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 text-sm"
+                            >
+                              {isAnalyzing ? 'Re-analyzing...' : 'Re-analyze'}
+                            </button>
+                          </>
+                        )}
+
+                        {/* Analysis complete — Score Card (bicep_curl / squat / deadlift) */}
+                        {hasAnalysis && report && report.lift_type !== 'plank' && (
                           <>
                             {/* Score card */}
                             <div className="bg-card rounded-lg shadow-lg p-6">
