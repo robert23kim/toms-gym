@@ -35,6 +35,13 @@ interface VideoData {
   competition_name?: string;
 }
 
+function genderToCategories(gender: string | null | undefined): string[] {
+  if (gender === 'F') return ['Women'];
+  if (gender === 'M') return ['Men'];
+  // 'MF', 'all', empty, or any other value => open to both
+  return ['Men', 'Women'];
+}
+
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
@@ -297,7 +304,7 @@ const ChallengeDetail: React.FC = () => {
           const categories = [
             ...(backendData.lifttypes || []),
             ...(backendData.weightclasses || []),
-            backendData.gender === 'F' ? 'Women' : 'Men'
+            ...genderToCategories(backendData.gender),
           ];
           transformedChallenge.categories = categories;
         }
@@ -311,12 +318,9 @@ const ChallengeDetail: React.FC = () => {
             // Add categories from metadata
             const categories = [
               ...(metadata.lifttypes || []),
-              ...(metadata.weightclasses || [])
+              ...(metadata.weightclasses || []),
+              ...genderToCategories(metadata.gender),
             ];
-
-            if (metadata.gender) {
-              categories.push(metadata.gender === 'F' ? 'Women' : 'Men');
-            }
 
             transformedChallenge.categories = categories;
           } catch (err) {

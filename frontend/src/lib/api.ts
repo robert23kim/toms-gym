@@ -119,31 +119,33 @@ export const transformCompetitionData = (backendData: any): Competition => {
   };
 };
 
+// 'M' → ['Men'], 'F' → ['Women'], anything else (e.g. 'MF', 'all', missing) → both.
+function genderToCategories(gender: string | null | undefined): string[] {
+  if (gender === 'F') return ['Women'];
+  if (gender === 'M') return ['Men'];
+  return ['Men', 'Women'];
+}
+
 // Get competition categories from metadata
 const getCategoriesFromMetadata = (data: any) => {
   if (data.lifttypes || data.weightclasses || data.gender) {
     return [
       ...(data.lifttypes || []),
       ...(data.weightclasses || []),
-      data.gender === 'F' ? 'Women' : 'Men'
+      ...genderToCategories(data.gender),
     ];
   } else if (data.description && data.description.includes(' - ')) {
     try {
       // Extract the JSON part from the description
       const metadataString = data.description.split(' - ')[1];
       const metadata = JSON.parse(metadataString);
-      
+
       // Add categories from metadata
-      const categories = [
+      return [
         ...(metadata.lifttypes || []),
-        ...(metadata.weightclasses || [])
+        ...(metadata.weightclasses || []),
+        ...genderToCategories(metadata.gender),
       ];
-      
-      if (metadata.gender) {
-        categories.push(metadata.gender === 'F' ? 'Women' : 'Men');
-      }
-      
-      return categories;
     } catch (err) {
       console.warn('Failed to parse competition metadata from description', err);
       return ['Powerlifting', 'Open'];
