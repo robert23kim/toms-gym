@@ -696,6 +696,7 @@ const ChallengeDetail: React.FC = () => {
                       <option value="Bench">Bench Press</option>
                       <option value="Deadlift">Deadlift</option>
                       <option value="BicepCurl">Bicep Curl</option>
+                      <option value="Plank">Plank</option>
                     </select>
                   </div>
 

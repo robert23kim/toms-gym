@@ -36,6 +36,7 @@ const ChallengeForm: React.FC<ChallengeFormProps> = ({ onSuccess, onCancel }) =>
     "Power Clean",
     "Push Press",
     "Overhead Press",
+    "Plank",
   ];
 
   const weightClassOptions = [
