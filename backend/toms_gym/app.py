@@ -27,6 +27,7 @@ from toms_gym.integrations.lifting_processor import start_lifting_processor
 from toms_gym.routes.bowling_routes import bowling_bp
 from toms_gym.routes.lifting_routes import lifting_bp
 from toms_gym.routes.golf_routes import golf_bp
+from toms_gym.routes.short_link_routes import short_link_bp
 
 load_dotenv()
 
@@ -120,6 +121,27 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"Annotation columns migration note: {e}")
 
+        # Create ShortLink table if not exists (migration 010)
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "ShortLink" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    short_code TEXT NOT NULL UNIQUE,
+                    target_url TEXT NOT NULL,
+                    created_by_user_id UUID REFERENCES "User"(id) ON DELETE SET NULL,
+                    created_at TIMESTAMPTZ DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_short_link_short_code
+                    ON "ShortLink" (short_code)
+            """))
+            session.commit()
+            logging.info("ShortLink table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"ShortLink migration note: {e}")
+
         session.close()
     except Exception as e:
         logging.warning(f"Startup migration skipped: {e}")
@@ -176,6 +198,7 @@ app.register_blueprint(bowling_bp)
 app.register_blueprint(lifting_bp)
 app.register_blueprint(golf_bp)
 app.register_blueprint(telemetry_bp)
+app.register_blueprint(short_link_bp)
 
 # Start email processor if enabled
 start_background_processor()

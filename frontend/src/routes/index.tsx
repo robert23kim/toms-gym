@@ -23,6 +23,7 @@ import GolfReview from "../pages/GolfReview";
 import GolfRound from "../pages/GolfRound";
 import GolfProfile from "../pages/GolfProfile";
 import GolfLeaderboard from "../pages/GolfLeaderboard";
+import ShortLinkRedirect from "../pages/ShortLinkRedirect";
 import { Navigate, useParams } from "react-router-dom";
 
 // Redirect component for backward compatibility
@@ -63,6 +64,10 @@ export const routes: RouteObject[] = [
   {
     path: "/video-player/:id/:participantId/:videoId",
     element: <VideoPlayerRedirect />,
+  },
+  {
+    path: "/s/:code",
+    element: <ShortLinkRedirect />,
   },
   {
     path: "/athletes",

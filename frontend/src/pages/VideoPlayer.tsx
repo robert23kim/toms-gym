@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Share2 } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL, PROD_API_URL } from "../config";
 import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
+import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult } from '../lib/types';
 
 interface VideoData {
@@ -54,6 +55,29 @@ const VideoPlayer: React.FC = () => {
   const [showRepDetails, setShowRepDetails] = useState(false);
   const [expandedMetric, setExpandedMetric] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState<string | null>(null);
+  const [isCreatingShortLink, setIsCreatingShortLink] = useState(false);
+  const { toast } = useToast();
+
+  const handleShare = async () => {
+    if (isCreatingShortLink) return;
+    setIsCreatingShortLink(true);
+    try {
+      const res = await axios.post(`${API_URL}/short-link`, {
+        target_url: window.location.href,
+      });
+      const shortUrl = `${window.location.origin}/s/${res.data.short_code}`;
+      await navigator.clipboard.writeText(shortUrl);
+      toast({ title: "Short link copied!", description: shortUrl });
+    } catch (err) {
+      toast({
+        title: "Could not create short link",
+        description: err instanceof Error ? err.message : "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setIsCreatingShortLink(false);
+    }
+  };
 
   // We still need device type info for video path transformation
   const isAndroid = /Android/i.test(navigator.userAgent);
@@ -412,7 +436,18 @@ const VideoPlayer: React.FC = () => {
                   <div className="lg:col-span-2 space-y-4">
                     {/* Title + metadata */}
                     <div className="bg-card rounded-lg shadow-lg p-6">
-                      <h1 className="text-2xl font-bold mb-2">{videoData.participant_name}'s {videoData.lift_type}</h1>
+                      <div className="flex items-start justify-between gap-3">
+                        <h1 className="text-2xl font-bold mb-2">{videoData.participant_name}'s {videoData.lift_type}</h1>
+                        <button
+                          onClick={handleShare}
+                          disabled={isCreatingShortLink}
+                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50 text-sm font-medium shrink-0"
+                          title="Copy short link to share"
+                        >
+                          <Share2 className="h-4 w-4" />
+                          {isCreatingShortLink ? 'Creating...' : 'Share'}
+                        </button>
+                      </div>
                       <div className="flex items-center gap-3 text-muted-foreground">
                         <span className="font-medium text-foreground">{videoData.weight} lbs</span>
                         <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>

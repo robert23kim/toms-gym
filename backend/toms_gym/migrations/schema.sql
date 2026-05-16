@@ -166,4 +166,15 @@ CREATE INDEX idx_weekly_max_lift_user_week ON "WeeklyMaxLift"(user_id, week_star
 CREATE TRIGGER update_weekly_max_lift_updated_at
     BEFORE UPDATE ON "WeeklyMaxLift"
     FOR EACH ROW
-    EXECUTE FUNCTION update_updated_at_column(); 
+    EXECUTE FUNCTION update_updated_at_column();
+
+-- ShortLink table for shareable short URLs (migration 010)
+CREATE TABLE IF NOT EXISTS "ShortLink" (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    short_code TEXT NOT NULL UNIQUE,
+    target_url TEXT NOT NULL,
+    created_by_user_id UUID REFERENCES "User"(id) ON DELETE SET NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_short_link_short_code ON "ShortLink" (short_code); 
