@@ -575,16 +575,16 @@ const ChallengeDetail: React.FC = () => {
               {challenge.categories.length > 0 && (() => {
                 const liftTypes = challenge.categories.filter(c => !c.includes('kg') && c !== 'Men' && c !== 'Women');
                 const weightClasses = challenge.categories.filter(c => c.includes('kg'));
-                const gender = challenge.categories.find(c => c === 'Men' || c === 'Women');
+                const genders = challenge.categories.filter(c => c === 'Men' || c === 'Women');
                 return (
                   <div className="mb-6 space-y-2">
                     <div className="flex flex-wrap gap-2">
                       {liftTypes.map((tag) => (
                         <span key={tag} className="px-3 py-1 rounded-full text-sm bg-primary/10 text-primary">{tag}</span>
                       ))}
-                      {gender && (
-                        <span className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-500">{gender}</span>
-                      )}
+                      {genders.map((tag) => (
+                        <span key={tag} className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-500">{tag}</span>
+                      ))}
                     </div>
                     {weightClasses.length > 0 && (
                       <p className="text-xs text-muted-foreground">
