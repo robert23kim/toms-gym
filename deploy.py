@@ -638,7 +638,7 @@ class DeploymentManager:
             "PROD_FRONTEND_URL=https://toms-gym-web-quyiiugyoq-ue.a.run.app",
             # Bowling processor integration (calls bowling-service Cloud Run)
             "BOWLING_PROCESSOR_ENABLED=true",
-            "ANALYSIS_SERVICE_URL=https://analysis-engine-834341357827.us-east1.run.app",
+            "ANALYSIS_SERVICE_URL=https://bowling-service-834341357827.us-east1.run.app",
             "BOWLING_POLL_INTERVAL=5",
             # Lifting processor integration (calls bowling-service /analyze-lift)
             "LIFTING_PROCESSOR_ENABLED=true",
