@@ -449,7 +449,9 @@ const VideoPlayer: React.FC = () => {
                         </button>
                       </div>
                       <div className="flex items-center gap-3 text-muted-foreground">
-                        <span className="font-medium text-foreground">{videoData.weight} lbs</span>
+                        {videoData.lift_type?.toLowerCase() !== 'plank' && videoData.weight ? (
+                          <span className="font-medium text-foreground">{videoData.weight} lbs</span>
+                        ) : null}
                         <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>
                           {badge.label}
                         </span>

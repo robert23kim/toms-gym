@@ -189,6 +189,15 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             "report": json.dumps(_sanitize_for_json(result.get("report", {}))),
             "processing_time_s": result.get("processing_time_s"),
         })
+        # Auto-judge: once analysis finishes successfully, the Attempt is "completed".
+        # Without this the UI badge stays on "Pending" forever for non-judged flows
+        # (e.g., plank uploads where there is no human judge step).
+        session.execute(
+            sqlalchemy.text(
+                'UPDATE "Attempt" SET status = \'completed\' WHERE id = :attempt_id'
+            ),
+            {"attempt_id": attempt_id},
+        )
         session.commit()
         logger.info(f"Lifting analysis completed: result={result_id}")
 

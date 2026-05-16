@@ -698,7 +698,7 @@ const ChallengeDetail: React.FC = () => {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div className={liftType === 'Plank' ? '' : 'grid grid-cols-1 sm:grid-cols-2 gap-4'}>
                   <div>
                     <label className="block text-sm font-medium mb-1">Lift Type</label>
                     <select
@@ -714,17 +714,19 @@ const ChallengeDetail: React.FC = () => {
                     </select>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
-                    <input
-                      type="number"
-                      value={weight}
-                      onChange={(e) => setWeight(e.target.value)}
-                      placeholder="Enter weight"
-                      min="1"
-                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                    />
-                  </div>
+                  {liftType !== 'Plank' && (
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
+                      <input
+                        type="number"
+                        value={weight}
+                        onChange={(e) => setWeight(e.target.value)}
+                        placeholder="Enter weight"
+                        min="1"
+                        className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                      />
+                    </div>
+                  )}
                 </div>
 
                 <div>
