@@ -621,7 +621,9 @@ const ChallengeDetail: React.FC = () => {
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center justify-between mb-1">
                             <h3 className="font-semibold truncate">{participantName}</h3>
-                            <span className="text-lg font-bold text-primary ml-2 shrink-0">{video.weight} lbs</span>
+                            {video.lift_type?.toLowerCase() !== 'plank' && video.weight ? (
+                              <span className="text-lg font-bold text-primary ml-2 shrink-0">{video.weight} lbs</span>
+                            ) : null}
                           </div>
                           <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <span>{video.lift_type}</span>
