@@ -463,6 +463,51 @@ def create_signed_upload_url():
     }), 200
 
 
+@upload_bp.route('/upload/resumable-url', methods=['POST'])
+def create_resumable_upload_url():
+    """Start a GCS resumable upload session for large/unreliable uploads.
+
+    The browser uploads the file in chunks to the returned session URI; a
+    dropped connection resumes from the last confirmed byte instead of
+    restarting. The session is created server-side with the runtime SA
+    (no signing needed), and CORS-scoped to the caller's Origin so the
+    browser's chunk PUTs are allowed. The browser calls /upload/finalize
+    once the upload completes.
+    """
+    data = request.get_json(silent=True) or {}
+    filename = data.get('filename', '')
+    content_type = data.get('content_type') or 'application/octet-stream'
+
+    if not filename or not allowed_file(filename):
+        logger.error(f"Resumable-url request rejected, bad filename: {filename!r}")
+        return jsonify({'error': 'File type not allowed'}), 400
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    object_name = f"videos/{timestamp}_{secure_filename(filename)}"
+    origin = request.headers.get('Origin', '*')
+
+    try:
+        blob = bucket.blob(object_name)
+        session_uri = blob.create_resumable_upload_session(
+            content_type=content_type,
+            origin=origin,
+        )
+    except Exception as e:
+        error_details = traceback.format_exc()
+        logger.error(f"Failed to start resumable upload session: {str(e)}")
+        logger.error(error_details)
+        return jsonify({'error': f'Could not start upload: {str(e)}'}), 500
+
+    public_url = f"https://storage.googleapis.com/{bucket.name}/{object_name}"
+    logger.info(f"Started resumable session for {object_name} (type={content_type})")
+    return jsonify({
+        'session_uri': session_uri,
+        'object_name': object_name,
+        'public_url': public_url,
+        'content_type': content_type,
+    }), 200
+
+
 @upload_bp.route('/upload/finalize', methods=['POST'])
 def finalize_upload():
     """Create the Attempt after a successful direct-to-GCS upload.

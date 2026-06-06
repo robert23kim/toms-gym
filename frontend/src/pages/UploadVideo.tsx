@@ -7,7 +7,7 @@ import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
-import { uploadVideoViaSignedUrl } from "../lib/upload";
+import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
 
 interface UserProfile {
@@ -131,7 +131,7 @@ const UploadVideo: React.FC = () => {
 
       // Direct-to-GCS via signed URL — bypasses Cloud Run's 32 MiB request cap
       // that was silently 413-ing large phone videos.
-      const data = await uploadVideoViaSignedUrl(
+      const data = await uploadVideo(
         selectedFile,
         {
           competition_id: competitionId,

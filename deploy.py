@@ -522,8 +522,13 @@ class DeploymentManager:
             import tempfile
             cors = [{
                 "origin": ["*"],
-                "method": ["GET", "PUT"],
-                "responseHeader": ["Content-Type", "x-goog-resumable"],
+                "method": ["GET", "PUT", "POST"],
+                # Content-Range/Range are needed for chunked resumable uploads
+                # (the browser sends Content-Range and reads the confirmed Range
+                # back from GCS's 308 responses to resume after a dropped chunk).
+                "responseHeader": [
+                    "Content-Type", "x-goog-resumable", "Content-Range", "Range",
+                ],
                 "maxAgeSeconds": 3600,
             }]
             with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as cors_file:

@@ -10,7 +10,7 @@ import { getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
-import { uploadVideoViaSignedUrl } from "../lib/upload";
+import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
 
 // Use the local API URL for competitions
@@ -120,7 +120,7 @@ const ChallengeDetail: React.FC = () => {
     try {
       // Direct-to-GCS via signed URL — bypasses Cloud Run's 32 MiB request cap
       // that was silently 413-ing large phone videos.
-      const data = await uploadVideoViaSignedUrl(
+      const data = await uploadVideo(
         selectedFile,
         {
           competition_id: id || '1',
