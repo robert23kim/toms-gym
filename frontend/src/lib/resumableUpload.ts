@@ -5,12 +5,23 @@ import {
   FinalizeResponse,
   uploadVideoViaSignedUrl,
 } from "./upload";
+import { canCompressVideo, compressVideo } from "./videoCompress";
+import { uploadVideoParallel } from "./parallelUpload";
 
 const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MiB per chunk (must be a multiple of 256 KiB)
 const MAX_CHUNK_RETRIES = 5;
 // Files at/above this size use the resumable chunked path; smaller ones use a
 // single PUT (simpler, and a blip just means re-sending one small request).
 const RESUMABLE_THRESHOLD = 32 * 1024 * 1024; // 32 MiB
+// Files at/above this (after compression) use the parallel composite path —
+// the transfer is parallelized across 4 connections instead of streamed serially.
+const PARALLEL_THRESHOLD = 48 * 1024 * 1024; // 48 MiB
+// Compress videos at/above this size before uploading (smaller files aren't
+// worth the encode time). Best-effort: returns the original if it can't help.
+const COMPRESS_THRESHOLD = 24 * 1024 * 1024; // 24 MiB
+// When we compress, the encode owns the first 40% of the progress bar and the
+// upload the remaining 60%.
+const COMPRESS_PROGRESS_SHARE = 0.4;
 
 interface ResumableSession {
   session_uri: string;
@@ -144,18 +155,53 @@ export async function uploadVideoResumable(
 }
 
 /**
- * Upload a video the best way for its size: large files go through the
- * resumable chunked path (survives mobile network drops); small files use the
- * simpler single-PUT signed URL. Both upload directly to GCS, bypassing Cloud
- * Run's 32 MiB request-body limit.
+ * Upload a video the best way for its size, after optionally compressing it.
+ *
+ * 1. Compress large videos client-side (downscale to 720p) so there's less to
+ *    send — best-effort, falls back to the original on any failure.
+ * 2. Pick the transfer method by the resulting size:
+ *      - >= 48 MiB  → parallel composite (4 parallel connections), falling back
+ *                     to the resumable path if the parallel transfer fails
+ *      - >= 32 MiB  → resumable chunked (survives mobile network drops)
+ *      - otherwise  → single-PUT signed URL (simplest)
+ * All paths upload directly to GCS, bypassing Cloud Run's 32 MiB request cap.
  */
-export function uploadVideo(
+export async function uploadVideo(
   file: File,
   fields: UploadFields,
   onProgress?: (pct: number) => void
 ): Promise<FinalizeResponse> {
-  if (file.size >= RESUMABLE_THRESHOLD) {
-    return uploadVideoResumable(file, fields, onProgress);
+  // Phase 1 — compress (best-effort). When we attempt it, the encode owns the
+  // first COMPRESS_PROGRESS_SHARE of the bar regardless of outcome, so the bar
+  // never jumps backwards if compression turns out not to help.
+  const attemptCompress = canCompressVideo() && file.size >= COMPRESS_THRESHOLD;
+  let toUpload = file;
+  if (attemptCompress) {
+    try {
+      toUpload = await compressVideo(file, { maxHeight: 720 }, (pct) =>
+        onProgress?.(Math.round(pct * COMPRESS_PROGRESS_SHARE))
+      );
+    } catch {
+      toUpload = file;
+    }
   }
-  return uploadVideoViaSignedUrl(file, fields, onProgress);
+
+  // Phase 2 — map the upload's 0..100 into the remaining progress band.
+  const base = attemptCompress ? COMPRESS_PROGRESS_SHARE * 100 : 0;
+  const span = 100 - base;
+  const up = (pct: number) => onProgress?.(Math.round(base + (pct * span) / 100));
+
+  if (toUpload.size >= PARALLEL_THRESHOLD) {
+    try {
+      return await uploadVideoParallel(toUpload, fields, up);
+    } catch {
+      // Parallel parts don't resume mid-part; fall back to the resilient
+      // resumable path (per-chunk retry + resume) if the parallel transfer fails.
+      return await uploadVideoResumable(toUpload, fields, up);
+    }
+  }
+  if (toUpload.size >= RESUMABLE_THRESHOLD) {
+    return uploadVideoResumable(toUpload, fields, up);
+  }
+  return uploadVideoViaSignedUrl(toUpload, fields, up);
 }
