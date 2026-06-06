@@ -6,6 +6,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { useToast } from "../components/ui/use-toast";
+import { reportUploadError } from "../lib/telemetry";
 
 interface UserProfile {
   best_lifts: {
@@ -191,6 +192,10 @@ const UploadVideo: React.FC = () => {
       }
     } catch (err) {
       console.error("Upload error:", err);
+      reportUploadError("UploadVideo", selectedFile, err, {
+        liftType,
+        competitionId: id || "1",
+      });
       const axiosErr = err as { response?: { data?: { error?: string }; status?: number; headers?: unknown }; request?: unknown; message?: string };
 
       if (axiosErr.response) {

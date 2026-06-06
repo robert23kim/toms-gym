@@ -9,6 +9,7 @@ import { API_URL } from "../config";
 import { getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
+import { reportUploadError } from "../lib/telemetry";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -176,6 +177,10 @@ const ChallengeDetail: React.FC = () => {
       }
     } catch (err: any) {
       console.error("Upload error:", err);
+      reportUploadError("ChallengeDetail", selectedFile, err, {
+        liftType,
+        competitionId: id || "1",
+      });
       let errorMsg = "Upload failed. Please try again.";
       if (err.response?.data?.error) {
         errorMsg = err.response.data.error;
