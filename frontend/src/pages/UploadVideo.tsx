@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
+import { uploadVideoViaSignedUrl } from "../lib/upload";
 
 interface UserProfile {
   best_lifts: {
@@ -104,18 +105,13 @@ const UploadVideo: React.FC = () => {
     setError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('video', selectedFile);
-      formData.append('lift_type', liftType);
-      
       // Ensure weight is a valid number and convert to string
       const weightValue = parseFloat(weight);
       if (isNaN(weightValue)) {
         setError("Please enter a valid weight");
         return;
       }
-      formData.append('weight', weightValue.toString());
-      
+
       // Check for user_id or email
       const userId = localStorage.getItem('userId');
       if (!userId && !email) {
@@ -123,48 +119,35 @@ const UploadVideo: React.FC = () => {
         return;
       }
 
-      if (userId) {
-        formData.append('user_id', userId);
-      } else {
-        formData.append('email', email);
-      }
-      
       // For direct uploads, use a default competition_id
       // For challenge uploads, use the provided id
       const competitionId = id || '1'; // Using '1' as default for direct uploads
-      formData.append('competition_id', competitionId);
 
-      console.log("Sending form data:", {
+      // Direct-to-GCS via signed URL — bypasses Cloud Run's 32 MiB request cap
+      // that was silently 413-ing large phone videos.
+      const data = await uploadVideoViaSignedUrl(selectedFile, {
+        competition_id: competitionId,
         lift_type: liftType,
         weight: weightValue.toString(),
-        user_id: userId || '(via email)',
-        email: userId ? undefined : email,
-        competition_id: competitionId
+        ...(userId ? { user_id: userId } : { email }),
       });
 
-      const response = await axios.post(`${API_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
-      });
+      console.log("Upload response:", data);
 
-      console.log("Upload response:", response.data);
-
-      if (response.data.url) {
+      if (data.url) {
         // Store user_id in localStorage for future uploads (especially for email-based uploads)
-        if (response.data.user_id) {
-          localStorage.setItem('userId', response.data.user_id);
-          console.log("Stored user_id:", response.data.user_id);
+        if (data.user_id) {
+          localStorage.setItem('userId', data.user_id);
+          console.log("Stored user_id:", data.user_id);
         }
 
         // Store attempt_id in localStorage if needed for later reference
-        if (response.data.attempt_id) {
-          console.log("Attempt created with ID:", response.data.attempt_id);
-          localStorage.setItem('last_attempt_id', response.data.attempt_id);
+        if (data.attempt_id) {
+          console.log("Attempt created with ID:", data.attempt_id);
+          localStorage.setItem('last_attempt_id', data.attempt_id);
 
           // Show success with link to profile
-          const returnedUserId = response.data.user_id;
-          setUploadSuccess({ userId: returnedUserId });
+          setUploadSuccess({ userId: data.user_id ?? '' });
 
           toast({
             title: "Upload Successful!",
@@ -187,7 +170,7 @@ const UploadVideo: React.FC = () => {
           }
         }
       } else {
-        console.error("No URL in the response:", response.data);
+        console.error("No URL in the response:", data);
         setError("Upload completed but no video URL was returned");
       }
     } catch (err) {

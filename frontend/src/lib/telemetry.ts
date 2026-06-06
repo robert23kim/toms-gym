@@ -45,6 +45,8 @@ interface AxiosLikeError {
   request?: unknown;
   code?: string;
   message?: string;
+  /** Set by uploadVideoViaSignedUrl: which stage failed (signed-url/gcs-put/finalize). */
+  uploadStage?: string;
 }
 
 /**
@@ -80,6 +82,7 @@ export function reportUploadError(
 
   reportError(page, "video-upload", err, {
     phase,
+    uploadStage: axiosErr.uploadStage ?? null,
     httpStatus: axiosErr.response?.status ?? null,
     serverError: axiosErr.response?.data?.error ?? null,
     errorCode: axiosErr.code ?? null,

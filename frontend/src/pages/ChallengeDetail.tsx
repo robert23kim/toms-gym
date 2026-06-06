@@ -10,6 +10,7 @@ import { getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
+import { uploadVideoViaSignedUrl } from "../lib/upload";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -111,20 +112,16 @@ const ChallengeDetail: React.FC = () => {
     setUploadError(null);
 
     try {
-      const formData = new FormData();
-      formData.append('video', selectedFile);
-      formData.append('lift_type', liftType);
-      formData.append('weight', weight);
-      formData.append('email', email);
-      formData.append('competition_id', id || '1');
-
-      const response = await axios.post(`${API_URL}/upload`, formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      // Direct-to-GCS via signed URL — bypasses Cloud Run's 32 MiB request cap
+      // that was silently 413-ing large phone videos.
+      const data = await uploadVideoViaSignedUrl(selectedFile, {
+        competition_id: id || '1',
+        lift_type: liftType,
+        weight,
+        email,
       });
 
-      if (response.data.url) {
+      if (data.url) {
         toast({
           title: "Upload Successful!",
           description: "Analyzing your form automatically...",
@@ -143,7 +140,7 @@ const ChallengeDetail: React.FC = () => {
         setHasJoined(true);
 
         // Auto-trigger analysis for the new upload
-        const attemptId = response.data.attempt_id;
+        const attemptId = data.attempt_id;
         if (attemptId) {
           try {
             await triggerLiftingAnalysis(attemptId);

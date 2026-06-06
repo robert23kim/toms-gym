@@ -499,6 +499,43 @@ class DeploymentManager:
             else:
                 self.log(f"⚠️  Error setting bucket permissions: {str(e)}", Colors.RED)
 
+        # Allow the service account to sign blobs for V4 signed upload URLs.
+        # Cloud Run carries no private key, so blob.generate_signed_url() must
+        # sign through the IAM signBlob API, which needs token-creator on the SA
+        # itself. Without this, POST /upload/signed-url returns 500.
+        try:
+            await self.run_command([
+                "gcloud", "iam", "service-accounts", "add-iam-policy-binding",
+                self.config.service_account,
+                f"--member=serviceAccount:{self.config.service_account}",
+                "--role=roles/iam.serviceAccountTokenCreator",
+                f"--project={self.config.project_id}",
+                "--quiet"
+            ], check=False)
+            self.log("✓ Granted token-creator (signBlob) on service account", Colors.GREEN)
+        except Exception as e:
+            self.log(f"⚠️  token-creator grant yielded a warning, continuing...", Colors.YELLOW)
+
+        # Allow browser PUT uploads straight to GCS via signed URLs by adding PUT
+        # to the bucket CORS policy (existing policy only allowed GET).
+        try:
+            import tempfile
+            cors = [{
+                "origin": ["*"],
+                "method": ["GET", "PUT"],
+                "responseHeader": ["Content-Type", "x-goog-resumable"],
+                "maxAgeSeconds": 3600,
+            }]
+            with tempfile.NamedTemporaryFile("w", suffix=".json", delete=False) as cors_file:
+                json.dump(cors, cors_file)
+                cors_path = cors_file.name
+            await self.run_command([
+                "gsutil", "cors", "set", cors_path, f"gs://{self.config.bucket_name}"
+            ], check=False)
+            self.log(f"✓ Set bucket CORS (GET+PUT) for {self.config.bucket_name}", Colors.GREEN)
+        except Exception as e:
+            self.log(f"⚠️  CORS setup yielded a warning, continuing...", Colors.YELLOW)
+
     async def _get_service_description(self, service: str) -> Dict[str, Any]:
         """Get and cache the full service description"""
         cache_key = f"describe:{service}"
