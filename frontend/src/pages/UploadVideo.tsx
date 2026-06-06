@@ -8,6 +8,7 @@ import { API_URL } from "../config";
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
 import { uploadVideoViaSignedUrl } from "../lib/upload";
+import { useUploadGuard } from "../lib/useUploadGuard";
 
 interface UserProfile {
   best_lifts: {
@@ -26,7 +27,11 @@ const UploadVideo: React.FC = () => {
   const [liftType, setLiftType] = useState<string>("Squat");
   const [weight, setWeight] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
+
+  // Keep the device awake + warn before navigating away during an upload.
+  useUploadGuard(isUploading);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [email, setEmail] = useState<string>("");
   const [uploadSuccess, setUploadSuccess] = useState<{ userId: string } | null>(null);
@@ -102,6 +107,7 @@ const UploadVideo: React.FC = () => {
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
     setError(null);
 
     try {
@@ -125,12 +131,16 @@ const UploadVideo: React.FC = () => {
 
       // Direct-to-GCS via signed URL — bypasses Cloud Run's 32 MiB request cap
       // that was silently 413-ing large phone videos.
-      const data = await uploadVideoViaSignedUrl(selectedFile, {
-        competition_id: competitionId,
-        lift_type: liftType,
-        weight: weightValue.toString(),
-        ...(userId ? { user_id: userId } : { email }),
-      });
+      const data = await uploadVideoViaSignedUrl(
+        selectedFile,
+        {
+          competition_id: competitionId,
+          lift_type: liftType,
+          weight: weightValue.toString(),
+          ...(userId ? { user_id: userId } : { email }),
+        },
+        (pct) => setUploadProgress(pct)
+      );
 
       console.log("Upload response:", data);
 
@@ -330,12 +340,30 @@ const UploadVideo: React.FC = () => {
                   <div className="text-red-500 text-sm">{error}</div>
                 )}
 
+                {isUploading && (
+                  <div className="space-y-1">
+                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full bg-primary transition-all duration-200"
+                        style={{ width: `${uploadProgress >= 100 ? 100 : uploadProgress}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      {uploadProgress < 100
+                        ? `Uploading ${uploadProgress}% — keep this page open`
+                        : 'Finishing up…'}
+                    </p>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={isUploading || !selectedFile}
                   className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {isUploading ? "Uploading..." : "Upload Video"}
+                  {isUploading
+                    ? (uploadProgress < 100 ? `Uploading ${uploadProgress}%` : "Finishing up…")
+                    : "Upload Video"}
                 </button>
               </form>
               )}

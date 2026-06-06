@@ -11,6 +11,7 @@ import { getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
 import { uploadVideoViaSignedUrl } from "../lib/upload";
+import { useUploadGuard } from "../lib/useUploadGuard";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -68,7 +69,11 @@ const ChallengeDetail: React.FC = () => {
   const [weight, setWeight] = useState<string>("60");
   const [email, setEmail] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
+
+  // Keep the device awake + warn before navigating away during an upload.
+  useUploadGuard(isUploading);
 
   // Default weights for each lift type
   const defaultWeights: Record<string, string> = {
@@ -109,17 +114,22 @@ const ChallengeDetail: React.FC = () => {
     }
 
     setIsUploading(true);
+    setUploadProgress(0);
     setUploadError(null);
 
     try {
       // Direct-to-GCS via signed URL — bypasses Cloud Run's 32 MiB request cap
       // that was silently 413-ing large phone videos.
-      const data = await uploadVideoViaSignedUrl(selectedFile, {
-        competition_id: id || '1',
-        lift_type: liftType,
-        weight,
-        email,
-      });
+      const data = await uploadVideoViaSignedUrl(
+        selectedFile,
+        {
+          competition_id: id || '1',
+          lift_type: liftType,
+          weight,
+          email,
+        },
+        (pct) => setUploadProgress(pct)
+      );
 
       if (data.url) {
         toast({
@@ -801,6 +811,22 @@ const ChallengeDetail: React.FC = () => {
                   <div className="text-red-500 text-sm">{uploadError}</div>
                 )}
 
+                {isUploading && (
+                  <div className="space-y-1">
+                    <div className="h-2 w-full rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full bg-blue-500 transition-all duration-200"
+                        style={{ width: `${uploadProgress >= 100 ? 100 : uploadProgress}%` }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground text-center">
+                      {uploadProgress < 100
+                        ? `Uploading ${uploadProgress}% — keep this page open`
+                        : 'Finishing up…'}
+                    </p>
+                  </div>
+                )}
+
                 <button
                   type="submit"
                   disabled={isUploading || !selectedFile}
@@ -808,7 +834,9 @@ const ChallengeDetail: React.FC = () => {
                     shadow-sm transition-all hover:bg-blue-600 hover:shadow
                     ${(isUploading || !selectedFile) ? 'opacity-50 cursor-not-allowed' : 'hover:translate-y-[-1px]'}`}
                 >
-                  {isUploading ? 'Uploading...' : 'Upload Video'}
+                  {isUploading
+                    ? (uploadProgress < 100 ? `Uploading ${uploadProgress}%` : 'Finishing up…')
+                    : 'Upload Video'}
                 </button>
               </form>
             </div>

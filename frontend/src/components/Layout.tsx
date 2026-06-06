@@ -1,6 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion";
+import { APP_VERSION } from "../config";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -33,6 +34,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Contact
             </a>
+            <span className="text-xs text-muted-foreground/60" title="Frontend build">
+              v{APP_VERSION}
+            </span>
           </div>
         </div>
       </footer>

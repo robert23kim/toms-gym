@@ -53,4 +53,13 @@ console.log('Is development?', import.meta.env.DEV);
 console.log('VITE_API_URL from env:', envApiUrl || 'not set');
 
 // Use the same API URL for competitions - no need to recalculate
-export const COMPETITIONS_API_URL = API_URL; 
+export const COMPETITIONS_API_URL = API_URL;
+
+// App build/version stamp — set at deploy time by deploy.py via
+// VITE_BUILD_TIMESTAMP (unix seconds). Surfaced in the footer so you can
+// confirm at a glance which frontend build is actually live.
+const buildTimestamp = Number(import.meta.env.VITE_BUILD_TIMESTAMP) || 0;
+export const APP_VERSION = buildTimestamp
+  ? `${new Date(buildTimestamp * 1000).toISOString().slice(0, 16).replace("T", " ")} UTC`
+  : "dev";
+export const APP_BUILD = buildTimestamp;
