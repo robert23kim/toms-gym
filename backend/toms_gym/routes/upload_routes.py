@@ -564,4 +564,146 @@ def finalize_upload():
         logger.error(error_details)
         return jsonify({'error': str(e)}), 500
     finally:
-        session.close() 
+        session.close()
+
+
+# GCS compose allows at most 32 source objects per call. Larger part counts are
+# composed in batches into temporary intermediates, then those are composed
+# together (see /upload/composite/complete).
+_GCS_COMPOSE_MAX_SOURCES = 32
+
+
+@upload_bp.route('/upload/composite/sign', methods=['POST'])
+def create_composite_upload_urls():
+    """Mint signed PUT URLs for a parallel (composite) direct-to-GCS upload.
+
+    The browser splits the file into N byte-range parts and PUTs them in
+    parallel as separate objects (one signed URL each), then calls
+    /upload/composite/complete to GCS-compose them, in order, into the final
+    object. This parallelizes large phone-video uploads that a single PUT
+    would stream serially.
+    """
+    data = request.get_json(silent=True) or {}
+    filename = data.get('filename', '')
+    content_type = data.get('content_type') or 'application/octet-stream'
+    try:
+        parts = int(data.get('parts', 1))
+    except (ValueError, TypeError):
+        parts = 0
+
+    if not filename or not allowed_file(filename):
+        logger.error(f"Composite-sign request rejected, bad filename: {filename!r}")
+        return jsonify({'error': 'File type not allowed'}), 400
+
+    if parts < 1:
+        logger.error(f"Composite-sign request rejected, bad parts: {data.get('parts')!r}")
+        return jsonify({'error': 'parts must be a positive integer'}), 400
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    final_object = f"videos/{timestamp}_{secure_filename(filename)}"
+
+    try:
+        part_descriptors = []
+        for n in range(1, parts + 1):
+            part_object = f"{final_object}.part{n:03d}"
+            upload_url, _ = _generate_signed_upload_url(part_object, content_type)
+            part_descriptors.append({
+                'part_number': n,
+                'object_name': part_object,
+                'upload_url': upload_url,
+            })
+    except Exception as e:
+        error_details = traceback.format_exc()
+        logger.error(f"Failed to generate composite upload URLs: {str(e)}")
+        logger.error(error_details)
+        return jsonify({'error': f'Could not create upload URLs: {str(e)}'}), 500
+
+    public_url = f"https://storage.googleapis.com/{bucket.name}/{final_object}"
+    logger.info(f"Issued {parts} composite upload URLs for {final_object} (type={content_type})")
+    return jsonify({
+        'final_object': final_object,
+        'public_url': public_url,
+        'content_type': content_type,
+        'parts': part_descriptors,
+    }), 200
+
+
+@upload_bp.route('/upload/composite/complete', methods=['POST'])
+def complete_composite_upload():
+    """GCS-compose the uploaded parts, in order, into the final object.
+
+    Compose concatenates source blobs in the given order. GCS caps each compose
+    call at 32 sources, so for more parts we compose in batches into temporary
+    intermediate objects (`<final>.tmpN`) and then compose those, preserving the
+    overall byte order. Part objects and temp intermediates are deleted after a
+    successful compose. The browser calls /upload/finalize next.
+    """
+    data = request.get_json(silent=True) or {}
+    final_object = data.get('final_object', '')
+    content_type = data.get('content_type') or 'application/octet-stream'
+    part_object_names = data.get('part_object_names') or []
+
+    if not final_object:
+        return jsonify({'error': 'Missing final_object'}), 400
+    if not isinstance(part_object_names, list) or not part_object_names:
+        return jsonify({'error': 'Missing part_object_names'}), 400
+
+    logger.info(f"Composite complete: final={final_object}, parts={len(part_object_names)}")
+
+    temp_objects = []
+    try:
+        # Verify every part landed in GCS before composing, so a missing/failed
+        # part PUT can't produce a truncated final object.
+        part_blobs = []
+        for name in part_object_names:
+            blob = bucket.blob(name)
+            if not blob.exists():
+                logger.error(f"Composite complete rejected: part {name} not found in GCS")
+                return jsonify({'error': f'Uploaded part not found in storage: {name}'}), 400
+            part_blobs.append(blob)
+
+        final_blob = bucket.blob(final_object)
+
+        if len(part_blobs) <= _GCS_COMPOSE_MAX_SOURCES:
+            final_blob.compose(part_blobs)
+        else:
+            # Compose in batches into temp intermediates, then compose those.
+            intermediate_blobs = []
+            for i in range(0, len(part_blobs), _GCS_COMPOSE_MAX_SOURCES):
+                batch = part_blobs[i:i + _GCS_COMPOSE_MAX_SOURCES]
+                tmp_name = f"{final_object}.tmp{len(intermediate_blobs)}"
+                tmp_blob = bucket.blob(tmp_name)
+                tmp_blob.compose(batch)
+                intermediate_blobs.append(tmp_blob)
+                temp_objects.append(tmp_name)
+            # The intermediate count is bounded by ceil(parts/32); for any sane
+            # part count this stays well under the 32-source compose limit.
+            final_blob.compose(intermediate_blobs)
+
+        # Set the final object's content type (compose inherits the first
+        # source's type, which is fine, but make it explicit).
+        final_blob.content_type = content_type
+        final_blob.patch()
+
+        # Clean up parts and temp intermediates; a failure here is non-fatal
+        # since the final object already exists.
+        for name in list(part_object_names) + temp_objects:
+            try:
+                bucket.blob(name).delete()
+            except Exception as del_err:
+                logger.warning(f"Could not delete composite leftover {name}: {del_err}")
+
+        public_url = f"https://storage.googleapis.com/{bucket.name}/{final_object}"
+        logger.info(f"Composite complete succeeded for {final_object}")
+        return jsonify({'public_url': public_url}), 200
+    except Exception as e:
+        error_details = traceback.format_exc()
+        logger.error(f"Composite complete error: {str(e)}")
+        logger.error(error_details)
+        # Best-effort cleanup of any temp intermediates we created before failing.
+        for name in temp_objects:
+            try:
+                bucket.blob(name).delete()
+            except Exception:
+                pass
+        return jsonify({'error': str(e)}), 500
