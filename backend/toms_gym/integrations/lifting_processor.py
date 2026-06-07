@@ -81,12 +81,15 @@ def _poll_and_process(get_connection):
     """Poll for one queued job and process it."""
     session = get_connection()
     try:
-        # Reset stuck jobs (processing > 5 minutes)
+        # Reset stuck jobs (processing > 15 minutes). Must exceed the longest real
+        # analysis (heavy pose model on a multi-minute plank runs several minutes on
+        # Cloud Run CPU); a shorter window re-queues a still-running job and causes
+        # duplicate processing.
         session.execute(sqlalchemy.text("""
             UPDATE "LiftingResult"
             SET processing_status = 'queued', updated_at = now()
             WHERE processing_status = 'processing'
-              AND updated_at < now() - interval '5 minutes'
+              AND updated_at < now() - interval '15 minutes'
         """))
         session.commit()
 
@@ -165,7 +168,9 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             url,
             json=payload,
             headers={"Authorization": f"Bearer {id_token}"},
-            timeout=360,
+            # Must exceed bowling-service's own timeouts (gunicorn 600s / analyze 540s)
+            # so the poller waits for long plank analyses instead of giving up early.
+            timeout=620,
         )
 
         if response.status_code != 200:
