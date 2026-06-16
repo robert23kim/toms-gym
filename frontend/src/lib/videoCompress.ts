@@ -35,6 +35,23 @@ export interface CompressOptions {
 const DEFAULT_MAX_HEIGHT = 720;
 const DEFAULT_VIDEO_BITRATE = 2_500_000;
 
+/**
+ * Max frames allowed to sit unprocessed in the decoder/encoder queues at once.
+ * The feed loop blocks once either queue exceeds this, so we hold only a handful
+ * of in-flight frame buffers instead of the whole video. Without this cap the
+ * loop enqueues every sample synchronously (thousands of frames), pinning that
+ * many decoded/encoding buffers in native memory and OOM-crashing the browser
+ * tab ("Aw, Snap!") on long phone videos — all before any upload begins.
+ */
+const MAX_INFLIGHT_FRAMES = 8;
+
+/**
+ * If the codec queues fail to drain for this long while feeding a single frame,
+ * the encoder is wedged — throw so compressVideo falls back to MediaRecorder /
+ * the original file instead of hanging the upload forever.
+ */
+const QUEUE_STALL_TIMEOUT_MS = 30_000;
+
 /** Require this much shrinkage or we keep the original — re-encoding tiny files isn't worth it. */
 const MIN_SHRINK_RATIO = 0.9;
 
@@ -467,10 +484,27 @@ async function compressWithWebCodecs(
     description,
   });
 
-  // Feed encoded samples in decode order. timestamp/duration in microseconds.
+  // Feed encoded samples in decode order, applying backpressure: never let more
+  // than MAX_INFLIGHT_FRAMES sit unprocessed in the decoder/encoder queues. This
+  // caps native frame-buffer memory to a handful of frames regardless of video
+  // length — the difference between a working upload and an OOM tab crash on a
+  // long phone clip. timestamp/duration in microseconds.
   for (const s of samples) {
     if (decodeError || encodeError) {
       break;
+    }
+    const waitStart = performance.now();
+    while (
+      decoder.decodeQueueSize > MAX_INFLIGHT_FRAMES ||
+      encoder.encodeQueueSize > MAX_INFLIGHT_FRAMES
+    ) {
+      if (decodeError || encodeError) {
+        break;
+      }
+      if (performance.now() - waitStart > QUEUE_STALL_TIMEOUT_MS) {
+        throw new Error("video compression stalled (codec queue did not drain)");
+      }
+      await new Promise((resolve) => setTimeout(resolve, 4));
     }
     const tsMicros = Math.round((s.cts / s.timescale) * 1_000_000);
     const durMicros = Math.round((s.duration / s.timescale) * 1_000_000);
