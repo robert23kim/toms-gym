@@ -1537,7 +1537,7 @@ def get_rounds():
                    t.rating_9_back, t.slope_9_back,
                    t.yardage, t.par, t.hole_pars, t.hole_yardages, t.hole_handicaps
             FROM "Round" r
-            JOIN "Course" c ON c.id = r.course_id
+            LEFT JOIN "Course" c ON c.id = r.course_id
             LEFT JOIN "Tee" t ON t.id = r.tee_id
             WHERE r.user_id = :uid
             ORDER BY r.played_on DESC, r.created_at DESC
@@ -1572,7 +1572,7 @@ def get_rounds():
                 'city': r['city'], 'state': r['state'], 'country': r['country'],
                 'latitude': r['latitude'], 'longitude': r['longitude'],
                 'holes': r['c_holes'], 'status': r['c_status'],
-            })
+            }) if r['c_id'] is not None else None
             tee_block = _tee_to_dict({
                 'id': r['t_id'], 'name': r['t_name'], 'color_hex': r['color_hex'],
                 'rating_18': r['rating_18'], 'slope_18': r['slope_18'],
