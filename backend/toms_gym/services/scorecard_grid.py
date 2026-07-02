@@ -380,31 +380,56 @@ def _letters_of(syms):
     return ''.join(s['text'] for s in syms if s['text'].isalpha()).upper()
 
 
-def _find_par_row(cells, n_rows, n_cols):
-    """Topmost row whose left-side cell spells PAR and which carries 9+ par
-    digits. Returns (row_idx, {col_idx: (value, conf)}, subtotal_cols)."""
-    for r in range(n_rows):
-        label_hit = False
-        for c in range(-1, min(6, n_cols)):
-            txt = _letters_of(cells.get((r, c), []))
-            if txt == 'PAR' or txt.startswith('PAR') and len(txt) <= 5:
-                label_hit = True
-                break
-        if not label_hit:
+def _text_lines(mapped_symbols, page_height):
+    """Cluster rectified symbols into printed text lines by y-proximity.
+
+    Text lines survive where grid rows fail: half-height tee rows and
+    JPEG-softened separators routinely merge grid rows, but each printed
+    line keeps its own baseline after rectification.
+    """
+    if not mapped_symbols:
+        return []
+    thresh = max(12, page_height * 0.012)
+    syms = sorted(mapped_symbols, key=lambda s: s['wy'])
+    lines = [[syms[0]]]
+    for s in syms[1:]:
+        if s['wy'] - lines[-1][-1]['wy'] < thresh:
+            lines[-1].append(s)
+        else:
+            lines.append([s])
+    return [sorted(l, key=lambda s: s['wx']) for l in lines]
+
+
+def _find_par_row(mapped_symbols, col_xs, row_ys, page_height):
+    """Locate the topmost PAR text line and read its digits per grid column.
+
+    Returns (row_idx, {col_idx: (value, conf)}, subtotal_cols). Rows come
+    from the line's own y (mapped into the grid-row index for band math);
+    columns come from the detected vertical lines.
+    """
+    n_cols = len(col_xs) - 1
+    for line in _text_lines(mapped_symbols, page_height):
+        txt = _letters_of(line)
+        if not txt.startswith('PAR') or txt.startswith('PART'):
             continue
+        by_col = {}
+        for s in line:
+            if not s['text'].isdigit():
+                continue
+            c = _interval_index(col_xs, s['wx'])
+            by_col.setdefault(c, []).append(s)
         par_cells = {}
         multi_cols = []
-        for c in range(n_cols):
-            digs = [s for s in cells.get((r, c), []) if s['text'].isdigit()]
-            if not digs:
-                continue
-            joined = ''.join(s['text'] for s in digs)
+        for c, digs in by_col.items():
+            joined = ''.join(d['text'] for d in sorted(digs, key=lambda s: s['wx']))
             if len(joined) == 1 and 3 <= int(joined) <= 6:
                 par_cells[c] = (int(joined), digs[0]['conf'])
             elif len(joined) > 1:
                 multi_cols.append(c)
         if len(par_cells) >= 9:
-            return r, par_cells, multi_cols
+            mid_y = sorted(s['wy'] for s in line)[len(line) // 2]
+            row_idx = _interval_index(row_ys, mid_y)
+            return row_idx, par_cells, multi_cols
     return None, None, None
 
 
@@ -417,7 +442,7 @@ def _find_label_row(cells, n_rows, n_cols, word):
     return None
 
 
-def label_structure(cells, col_xs, row_ys):
+def label_structure(cells, col_xs, row_ys, mapped_symbols, page_height):
     """Identify hole columns, subtotal columns, and structural rows.
 
     Returns a dict with: par_row, handicap_row, hole_cols (ordered col
@@ -426,7 +451,8 @@ def label_structure(cells, col_xs, row_ys):
     n_rows = len(row_ys) - 1
     n_cols = len(col_xs) - 1
 
-    par_row, par_cells, multi_cols = _find_par_row(cells, n_rows, n_cols)
+    par_row, par_cells, multi_cols = _find_par_row(
+        mapped_symbols, col_xs, row_ys, page_height)
     if par_row is None:
         raise GridParseError("PAR row not found in grid")
 
@@ -635,21 +661,9 @@ def extract_tees(mapped_symbols, page_height):
     clips, so grid rows routinely merge them — but after rectification a
     plain y-cluster reproduces each printed line exactly.
     """
-    if not mapped_symbols:
-        return []
-    thresh = max(12, page_height * 0.012)
-    syms = sorted(mapped_symbols, key=lambda s: s['wy'])
-    lines = [[syms[0]]]
-    for s in syms[1:]:
-        if s['wy'] - lines[-1][-1]['wy'] < thresh:
-            lines[-1].append(s)
-        else:
-            lines.append([s])
-
     tees = []
     seen = set()
-    for line in lines:
-        line = sorted(line, key=lambda s: s['wx'])
+    for line in _text_lines(mapped_symbols, page_height):
         letters = _letters_of(line)
         label = next((t.title() for t in TEE_LABELS if letters.startswith(t)), None)
         if not label or label in seen:
@@ -698,7 +712,8 @@ def parse_scorecard_grid(image_bytes, symbols, page_width, page_height):
     mapped = map_symbols(symbols, H)
     cells = build_cell_matrix(mapped, col_xs, row_ys)
 
-    structure = label_structure(cells, col_xs, row_ys)
+    structure = label_structure(cells, col_xs, row_ys, mapped,
+                                len(row_ys) and row_ys[-1] or page_height)
     players = extract_players(cells, structure)
     players = apply_checksums(players)
     tees = extract_tees(mapped, len(row_ys) and row_ys[-1] or page_height)

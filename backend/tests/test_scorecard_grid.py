@@ -102,6 +102,26 @@ class TestSparseCard:
         assert {t['name'] for t in result['tees']} == {t['name'] for t in truth['tees']}
 
 
+class TestOrientedReencode:
+    """The upload route re-encodes images (_auto_orient_image, JPEG q95)
+    before OCR. The softer JPEG drops some thin horizontal grid lines and
+    merges grid rows — the PAR row must still be found via text-line
+    banding. Regression for the prod fallback 'PAR row not found in grid'."""
+
+    def test_sparse_card_reencoded_still_grid_parses(self):
+        image_bytes = (FIXTURES / '1000005117_oriented.jpg').read_bytes()
+        ocr = json.loads((FIXTURES / '1000005117_oriented_ocr.json').read_text())
+        result = sg.parse_scorecard_grid(
+            image_bytes, ocr['symbols'], ocr['width'], ocr['height'])
+        assert result['pars'] == _truth('1000005117')['pars']
+        got = {p['name']: p for p in result['players']}
+        assert set(got) == {'TOM', 'PAUL', 'NICK'}
+        tom = got['TOM']
+        assert all(h['strokes'] is None for h in tom['holes'][:9])
+        assert [h['strokes'] for h in tom['holes'][9:17]] == [4, 5, 5, 7, 7, 5, 5, 6]
+        assert len(result['tees']) == 5
+
+
 class TestFallbackBehavior:
     def test_garbage_image_raises_grid_parse_error(self):
         with pytest.raises(sg.GridParseError):
