@@ -83,7 +83,7 @@ Users upload lifting videos. An analysis service (Cloud Run `bowling-service`) p
 Users upload bowling videos. Analysis detects ball trajectory, lane edges, and entry/pin impact boards. Manual annotation UI at `pages/AnnotationWorkspace.tsx`.
 
 ### Golf (`backend/toms_gym/routes/golf_routes.py` + `pages/Golf*.tsx`)
-Users photograph a scorecard; OCR (Google Vision API `document_text_detection`) extracts hole scores; user confirms to produce a WHS handicap differential. See "Golf Feature" below.
+Users photograph a scorecard — nothing else to type. The grid parser (`services/scorecard_grid.py`: OpenCV rectification + table-line detection + Vision OCR symbols assigned to cells) extracts players, per-hole scores, pars, and tee rating/slopes; the review page resolves course/tee/date; confirming produces a WHS handicap differential. See "Golf Feature" below.
 
 ## Golf Feature
 
@@ -99,9 +99,9 @@ Users photograph a scorecard; OCR (Google Vision API `document_text_detection`) 
 ### API Endpoints
 | Endpoint | Method | Description |
 |----------|--------|-------------|
-| `/golf/upload` | POST | Multipart form with scorecard image + course data. Accepts `user_id` OR `email`. OCR runs, `services.courses.match_or_create_course` + `match_or_create_tee` link the round. Returns `round_id`, `hole_scores` (primary player), `detected_players`, `needs_tee` (true when no tee could be matched and user must supply rating/slope), and `guest_rounds: [{name, user_id, round_id}]` — one entry per detected player (see "Multi-player auto-save" below). |
-| `/golf/round/<id>` | GET | Fetch round with nested `course` and `tee` objects + `hole_scores`, `detected_players`, `needs_tee` for the review UI. |
-| `/golf/round/<id>/scores` | PUT | Confirm/correct holes; computes `score_differential` via `services.handicap.compute_differential`, recalculates WHS index, writes a new `HandicapSnapshot`. (Tee-override persistence is a Phase D follow-up — the route does not yet accept `tee_id` overrides.) |
+| `/golf/upload` | POST | Multipart form: scorecard image + `user_id` OR `email` — everything else optional (photo-only since migration 011). The grid parser extracts players/pars/tees; `course_name` (optional) links via `match_or_create_course`; card-printed tee rating/slopes auto-create `Tee` rows when the course is known. Returns `round_id`, `hole_scores`, `detected_players` (holes carry `flagged`), `detected_tees`, `needs_tee`, `needs_course`, `parser` (`grid`\|`legacy`), and `guest_rounds` (see "Multi-player auto-save"). |
+| `/golf/round/<id>` | GET | Fetch round with nested `course` (nullable) and `tee` objects + `hole_scores`, `detected_players`, `detected_tees`, `needs_tee`, `needs_course` for the review UI. |
+| `/golf/round/<id>/scores` | PUT | Confirm/correct holes; also accepts review-page overrides: `course_id` or `course_name`, `tee_id` or `rating`+`slope` (+`tee_name`), and `played_on` (YYYY-MM-DD). Computes `score_differential`, recalculates WHS index, writes a new `HandicapSnapshot`. |
 | `/golf/round/<id>` | DELETE | Delete a round and write a recalculated `HandicapSnapshot`. |
 | `/golf/rounds?user_id=` | GET | List a user's rounds; each entry carries nested `course` and `tee`. |
 | `/golf/handicap/<user_id>` | GET | Current handicap index + differentials used (reads latest `HandicapSnapshot`). |
@@ -140,7 +140,32 @@ Users photograph a scorecard; OCR (Google Vision API `document_text_detection`) 
 - **9-hole rounds.** Weighted at **0.5** toward the "last 20" pool. `_effective_round_count` = full 18-hole rounds + (nine-hole rounds // 2).
 - **Reference fixtures.** `backend/tests/fixtures/whs_reference_cases.json` + `backend/tests/test_handicap.py` exercise every adjustment-table row plus NDB cap, establishing, 12-month cap, and 9-hole weighting. Any handicap change must re-pass this fixture bit-for-bit.
 
-### OCR Parser (multi-player)
+### Grid parser (primary since 2026-07-02)
+
+`services/scorecard_grid.py` — pure, DB-free. Pipeline: card-quad detection →
+vanishing-point metric rectification from the table's own Hough line families
+(the quad alone is unreliable: clips/pavement pollute it) → morphological
+h/v line profiles → cell matrix → Vision OCR symbols (from ONE pass on the
+original image) mapped through the composed homography into cells → semantic
+labeling (PAR row anchors the 18 hole columns; multi-digit par-row cells are
+OUT/IN/TOT) → per-cell scores with confidence → checksum validation against
+handwritten OUT/IN/TOT (mismatch flags the lowest-confidence hole, never
+silently accepts) → tee rating/slopes from y-banded `NN.N/NNN` text lines
+(grid rows merge under clips; y-banding after rectification doesn't).
+
+Measured on `tests/fixtures/scorecards/`: 55/55 score cells, 36/36 pars,
+10/10 tees (baseline with the legacy parser: 18/55). Tests:
+`venv/bin/python -m pytest tests/test_scorecard_grid.py --noconftest`;
+debug overlays + hit-rate report: `venv/bin/python tools/grid_debug.py`.
+Gotchas learned on real cards: Vision double-emits glyphs (dedupe at <12px
+— wider merges legit repeated digits like slope "116"); handwritten names
+straddle printed row lines (nameless digit rows adopt an adjacent name row);
+tee rows are half the height of header rows so grid rows can merge them.
+
+Falls back to the legacy symbol parser below (`GridParseError`, zero players,
+or any crash), which remains fully functional.
+
+### Legacy OCR Parser (multi-player fallback)
 `_parse_scorecard_symbols(symbols, page_width, page_height)` in `golf_routes.py` operates on **symbol-level** Vision output (not words — Vision tends to concatenate handwritten digits into garbage tokens like `"7864856T65854494444"`).
 
 Pipeline:
