@@ -1,0 +1,36 @@
+{
+  "card": "1000005113",
+  "image": "1000005113.jpg",
+  "ocr_cache": "1000005113_ocr.json",
+  "notes": "Full 18-hole card, pencil, two players. Tom's front-nine cells sum to 48 but the scorer wrote OUT=49 — genuine scorer inconsistency, checksum flag SHOULD fire. Paul hole 18 has a struck-over digit resolved to 8 (sums confirm).",
+  "course_name": null,
+  "date_written": null,
+  "tees": [
+    {"name": "Black", "rating": 72.3, "slope": 142},
+    {"name": "Blue", "rating": 69.8, "slope": 136},
+    {"name": "White", "rating": 66.8, "slope": 123},
+    {"name": "Gold", "rating": 63.5, "slope": 109},
+    {"name": "Red", "rating": 65.9, "slope": 116}
+  ],
+  "pars": [4, 4, 5, 4, 3, 4, 3, 4, 5, 3, 5, 4, 4, 4, 4, 4, 3, 5],
+  "players": [
+    {
+      "name": "TOM",
+      "holes": [6, 4, 7, 8, 4, 5, 4, 5, 5, 3, 8, 8, 5, 6, 4, 5, 7, 5],
+      "out_written": 49,
+      "in_written": 51,
+      "tot_written": 100,
+      "ambiguous_holes": [],
+      "strikeover_holes": []
+    },
+    {
+      "name": "PAUL",
+      "holes": [4, 5, 8, 5, 4, 5, 5, 6, 8, 5, 7, 5, 6, 4, 5, 4, 3, 8],
+      "out_written": 50,
+      "in_written": 47,
+      "tot_written": 97,
+      "ambiguous_holes": [],
+      "strikeover_holes": [18]
+    }
+  ]
+}

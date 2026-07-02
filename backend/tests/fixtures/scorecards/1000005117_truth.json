@@ -1,0 +1,47 @@
+{
+  "card": "1000005117",
+  "image": "1000005117.jpg",
+  "ocr_cache": "1000005117_ocr.json",
+  "notes": "Sparse card: three names (Tom, Paul, Nick) but scores written ONLY on the back nine (holes 10-18). An X/cross mark sits left of hole 10 in the OUT-subtotal column for Tom and Paul — not a score. No handwritten subtotals. Pencil is messy; several cells are genuinely ambiguous to a human reader (listed per player). EZ-GO steering-wheel clip occludes the top-left of the printed header.",
+  "course_name": null,
+  "date_written": null,
+  "tees": [
+    {"name": "Black", "rating": 72.3, "slope": 142},
+    {"name": "Blue", "rating": 69.8, "slope": 136},
+    {"name": "White", "rating": 66.8, "slope": 123},
+    {"name": "Gold", "rating": 63.5, "slope": 109},
+    {"name": "Red", "rating": 65.9, "slope": 116}
+  ],
+  "pars": [4, 4, 5, 4, 3, 4, 3, 4, 5, 3, 5, 4, 4, 4, 4, 4, 3, 5],
+  "players": [
+    {
+      "name": "TOM",
+      "holes": [null, null, null, null, null, null, null, null, null, 4, 5, 5, 7, 7, 5, 5, 6, 2],
+      "out_written": null,
+      "in_written": null,
+      "tot_written": null,
+      "ambiguous_holes": [18],
+      "ambiguous_readings": {"18": [2, 7]},
+      "strikeover_holes": []
+    },
+    {
+      "name": "PAUL",
+      "holes": [null, null, null, null, null, null, null, null, null, 5, 8, 4, 5, 6, 7, 5, 5, 8],
+      "out_written": null,
+      "in_written": null,
+      "tot_written": null,
+      "ambiguous_holes": [13, 18],
+      "ambiguous_readings": {"13": [5, 4], "18": [8, 6]},
+      "strikeover_holes": [18]
+    },
+    {
+      "name": "NICK",
+      "holes": [null, null, null, null, null, null, null, null, null, 5, null, null, null, null, null, null, null, null],
+      "out_written": null,
+      "in_written": null,
+      "tot_written": null,
+      "ambiguous_holes": [],
+      "strikeover_holes": []
+    }
+  ]
+}
