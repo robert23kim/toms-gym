@@ -234,6 +234,15 @@ export interface GolfHole {
   strokes: number | null;
   ocr_confidence: number | null;
   manually_corrected?: boolean;
+  /** OCR checksum/strikeover suspicion — review UI highlights these. */
+  flagged?: boolean;
+}
+
+/** Tee rating/slope read off the card's printed table by the grid parser. */
+export interface GolfDetectedTee {
+  name: string;
+  rating: number;
+  slope: number;
 }
 
 export interface GolfDetectedPlayer {
@@ -283,7 +292,7 @@ export interface GolfRoundDetail {
   user_id: string;
   played_on: string | null;
   holes: number;
-  course: GolfCourse;
+  course: GolfCourse | null;
   tee: GolfTee;
   hole_scores: GolfHole[];
   scores: number[] | null;
@@ -295,6 +304,7 @@ export interface GolfRoundDetail {
   ocr_confidence: number | null;
   processing_status: GolfProcessingStatus;
   needs_tee: boolean;
+  needs_course?: boolean;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -304,7 +314,9 @@ export type GolfRoundListItem = GolfRoundDetail;
 export interface GolfRoundDetailResponse {
   round: GolfRoundDetail;
   detected_players: GolfDetectedPlayer[];
+  detected_tees?: GolfDetectedTee[];
   needs_tee?: boolean;
+  needs_course?: boolean;
 }
 
 export interface GolfRoundListResponse {

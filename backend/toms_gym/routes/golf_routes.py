@@ -1113,13 +1113,15 @@ def _fetch_and_serialize_round(session, round_id, user_id=None, extra=None):
         for h in hole_rows
     ]
 
-    # Parse detected_players from ocr_raw.
+    # Parse detected_players/detected_tees from ocr_raw.
     detected_players = []
+    detected_tees = []
     if row['ocr_raw']:
         try:
             payload = row['ocr_raw'] if isinstance(row['ocr_raw'], dict) else json.loads(row['ocr_raw'])
             if isinstance(payload, dict):
                 detected_players = payload.get('detected_players', []) or []
+                detected_tees = payload.get('detected_tees', []) or []
         except (json.JSONDecodeError, TypeError):
             pass
 
@@ -1170,6 +1172,7 @@ def _fetch_and_serialize_round(session, round_id, user_id=None, extra=None):
     body = {
         'round': round_block,
         'detected_players': detected_players,
+        'detected_tees': detected_tees,
     }
     if user_id is not None:
         body['user_id'] = user_id

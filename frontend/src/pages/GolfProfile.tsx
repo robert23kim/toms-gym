@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Upload, ChevronDown, ChevronUp, Calendar, MapPin } from "lucide-react";
+import { ArrowLeft, Upload, ChevronDown, ChevronUp, Calendar, MapPin, X, ZoomIn } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
@@ -18,6 +18,7 @@ const GolfProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expandedRound, setExpandedRound] = useState<string | null>(null);
+  const [lightboxImage, setLightboxImage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!userId) {
@@ -37,8 +38,9 @@ const GolfProfile: React.FC = () => {
         setRounds(roundsRes.rounds || []);
         setHandicapIndex(roundsRes.handicap_index ?? null);
 
-        if (profileRes?.data) {
-          setUserName(profileRes.data.name || profileRes.data.email || "Golfer");
+        const profileUser = profileRes?.data?.user;
+        if (profileUser) {
+          setUserName(profileUser.name || profileUser.email || "Golfer");
         }
       } catch (err: any) {
         console.error("Error fetching golf profile:", err);
@@ -52,6 +54,20 @@ const GolfProfile: React.FC = () => {
 
     fetchData();
   }, [userId]);
+
+  useEffect(() => {
+    if (!lightboxImage) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setLightboxImage(null);
+    };
+    window.addEventListener("keydown", onKey);
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [lightboxImage]);
 
   const getHoleBgClass = (hole: GolfHole) => {
     if (hole.strokes === null) return "fw-cell";
@@ -168,7 +184,7 @@ const GolfProfile: React.FC = () => {
                 </div>
                 {rounds[0] && (
                   <div className="text-xs fw-text-secondary mt-1 truncate">
-                    {rounds[0].course.name} · {rounds[0].played_on}
+                    {rounds[0].course?.name ?? "Unknown course"} · {rounds[0].played_on}
                   </div>
                 )}
               </div>
@@ -214,7 +230,7 @@ const GolfProfile: React.FC = () => {
                           <div className="flex items-center gap-2">
                             <MapPin className="w-4 h-4 text-green-500 flex-shrink-0" />
                             <span className="font-semibold truncate">
-                              {round.course.name}
+                              {round.course?.name ?? "Unknown course"}
                             </span>
                           </div>
                           <div className="flex items-center gap-2 mt-1 text-sm fw-text-secondary">
@@ -284,6 +300,9 @@ const GolfProfile: React.FC = () => {
                                     )}`}
                                   >
                                     <div className="text-muted-foreground">{hole.hole_number}</div>
+                                    <div className="text-[10px] text-muted-foreground leading-tight">
+                                      Par {hole.par}
+                                    </div>
                                     <div className="font-bold">
                                       {hole.strokes ?? "-"}
                                     </div>
@@ -302,6 +321,9 @@ const GolfProfile: React.FC = () => {
                                     )}`}
                                   >
                                     <div className="text-muted-foreground">{hole.hole_number}</div>
+                                    <div className="text-[10px] text-muted-foreground leading-tight">
+                                      Par {hole.par}
+                                    </div>
                                     <div className="font-bold">
                                       {hole.strokes ?? "-"}
                                     </div>
@@ -309,13 +331,28 @@ const GolfProfile: React.FC = () => {
                                 ))}
                             </div>
 
-                            {/* Scorecard thumbnail */}
+                            {/* Scorecard thumbnail — click to zoom */}
                             {round.scorecard_image_url && (
-                              <img
-                                src={round.scorecard_image_url}
-                                alt="Scorecard"
-                                className="w-full max-h-32 object-contain rounded border border-input bg-black/5"
-                              />
+                              <button
+                                type="button"
+                                onClick={() =>
+                                  setLightboxImage(round.scorecard_image_url!)
+                                }
+                                className="group relative block w-full rounded border border-input bg-black/5 overflow-hidden"
+                                aria-label="View scorecard at full size"
+                              >
+                                <img
+                                  src={round.scorecard_image_url}
+                                  alt="Scorecard"
+                                  className="w-full max-h-32 object-contain"
+                                />
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/0 group-hover:bg-black/30 transition-colors">
+                                  <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-black/70 text-white text-xs px-2 py-1 rounded inline-flex items-center gap-1">
+                                    <ZoomIn className="w-3 h-3" />
+                                    Tap to verify scores
+                                  </div>
+                                </div>
+                              </button>
                             )}
 
                             <Link
@@ -335,6 +372,45 @@ const GolfProfile: React.FC = () => {
           )}
           </div>
         </motion.div>
+
+        <AnimatePresence>
+          {lightboxImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              onClick={() => setLightboxImage(null)}
+              className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4"
+              role="dialog"
+              aria-modal="true"
+              aria-label="Scorecard preview"
+            >
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setLightboxImage(null);
+                }}
+                className="absolute top-4 right-4 h-9 w-9 rounded-full bg-black/60 text-white inline-flex items-center justify-center hover:bg-black/80"
+                aria-label="Close preview"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <motion.img
+                key={lightboxImage}
+                initial={{ scale: 0.95 }}
+                animate={{ scale: 1 }}
+                exit={{ scale: 0.95 }}
+                transition={{ duration: 0.15 }}
+                src={lightboxImage}
+                alt="Scorecard full size"
+                onClick={(e) => e.stopPropagation()}
+                className="max-w-[95vw] max-h-[90vh] object-contain rounded shadow-2xl"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
       </FairwayScope>
     </Layout>
   );

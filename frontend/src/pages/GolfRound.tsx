@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, TrendingDown } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, TrendingDown, Pencil } from "lucide-react";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import HighlightsGrid from "../components/golf/HighlightsGrid";
@@ -128,13 +128,25 @@ const GolfRound: React.FC = () => {
           className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-4xl mx-auto">
-            <button
-              onClick={() => navigate(-1)}
-              className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
-            >
-              <ArrowLeft className="mr-2" size={16} />
-              Back
-            </button>
+            <div className="flex items-center justify-between mb-8">
+              <button
+                onClick={() => navigate(-1)}
+                className="inline-flex items-center text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="mr-2" size={16} />
+                Back
+              </button>
+              {round && round.user_id === (localStorage.getItem("userId") || "") && (
+                <Link
+                  to={`/golf/review/${roundId}`}
+                  data-testid="edit-round-link"
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border-[0.5px] border-[var(--fw-border-secondary)] text-sm hover:border-[var(--fw-border-info)] hover:text-[var(--fw-text-info)]"
+                >
+                  <Pencil className="w-3.5 h-3.5" />
+                  Edit scores
+                </Link>
+              )}
+            </div>
 
             <div className="fw-surface p-6 sm:p-8 space-y-6">
               {/* Header */}
@@ -142,7 +154,7 @@ const GolfRound: React.FC = () => {
                 <div>
                   <h1 className="fw-h1 flex items-center gap-2">
                     <MapPin className="w-5 h-5 text-[var(--fw-text-success)]" />
-                    {round.course.name}
+                    {round.course?.name ?? "Unknown course"}
                   </h1>
                   <div className="flex items-center gap-4 mt-2 text-sm fw-text-secondary">
                     <span className="inline-flex items-center gap-1">

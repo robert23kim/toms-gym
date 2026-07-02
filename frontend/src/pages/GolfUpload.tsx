@@ -13,46 +13,34 @@ const GolfUpload: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
-  const [courseName, setCourseName] = useState<string>("");
-  const [slopeRating, setSlopeRating] = useState<string>("113");
-  const [courseRating, setCourseRating] = useState<string>("72");
-  const [playedAt, setPlayedAt] = useState<string>(
-    new Date().toISOString().split("T")[0]
-  );
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      if (file.size > 20 * 1024 * 1024) {
-        setError("Image must be under 20MB");
-        return;
-      }
-      setSelectedFile(file);
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(URL.createObjectURL(file));
-      setError(null);
+  const acceptFile = (file: File | undefined) => {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      setError("Please choose an image file");
+      return;
     }
+    if (file.size > 20 * 1024 * 1024) {
+      setError("Image must be under 20MB");
+      return;
+    }
+    setSelectedFile(file);
+    if (previewUrl) URL.revokeObjectURL(previewUrl);
+    setPreviewUrl(URL.createObjectURL(file));
+    setError(null);
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    acceptFile(event.target.files?.[0]);
   };
 
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("image/")) {
-      if (file.size > 20 * 1024 * 1024) {
-        setError("Image must be under 20MB");
-        return;
-      }
-      setSelectedFile(file);
-      if (previewUrl) URL.revokeObjectURL(previewUrl);
-      setPreviewUrl(URL.createObjectURL(file));
-      setError(null);
-    } else {
-      setError("Please drop an image file");
-    }
+    acceptFile(e.dataTransfer.files?.[0]);
   };
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -77,33 +65,12 @@ const GolfUpload: React.FC = () => {
       return;
     }
 
-    if (!courseName.trim()) {
-      setError("Please enter the course name");
-      return;
-    }
-
-    const slope = parseFloat(slopeRating);
-    if (isNaN(slope) || slope < 55 || slope > 155) {
-      setError("Slope rating must be between 55 and 155");
-      return;
-    }
-
-    const rating = parseFloat(courseRating);
-    if (isNaN(rating) || rating < 55 || rating > 85) {
-      setError("Course rating must be between 55 and 85");
-      return;
-    }
-
     setIsUploading(true);
     setError(null);
 
     try {
       const formData = new FormData();
       formData.append("image", selectedFile);
-      formData.append("course_name", courseName.trim());
-      formData.append("slope_rating", slopeRating);
-      formData.append("course_rating", courseRating);
-      formData.append("played_at", playedAt);
       if (userId) {
         formData.append("user_id", userId);
       } else {
@@ -154,7 +121,8 @@ const GolfUpload: React.FC = () => {
               <div>
                 <h1 className="fw-h1">Log round</h1>
                 <p className="fw-text-secondary text-sm mt-1">
-                  Snap your scorecard — we'll read it and do the math.
+                  Snap your scorecard — scores, pars, and tee ratings are read
+                  straight off the photo. You confirm on the next screen.
                 </p>
               </div>
 
@@ -174,50 +142,6 @@ const GolfUpload: React.FC = () => {
                     </p>
                   </div>
                 )}
-
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Course</label>
-                  <input
-                    type="text"
-                    value={courseName}
-                    onChange={(e) => setCourseName(e.target.value)}
-                    placeholder="e.g. Pebble Beach Golf Links"
-                    className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm focus:outline-none focus:border-[var(--fw-info)]"
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5">Slope</label>
-                    <input
-                      type="number"
-                      value={slopeRating}
-                      onChange={(e) => setSlopeRating(e.target.value)}
-                      min="55" max="155" step="1"
-                      className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium mb-1.5">Course rating</label>
-                    <input
-                      type="number"
-                      value={courseRating}
-                      onChange={(e) => setCourseRating(e.target.value)}
-                      min="55" max="85" step="0.1"
-                      className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Date</label>
-                  <input
-                    type="date"
-                    value={playedAt}
-                    onChange={(e) => setPlayedAt(e.target.value)}
-                    className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
-                  />
-                </div>
 
                 <div>
                   <label className="block text-sm font-medium mb-1.5">Scorecard photo</label>

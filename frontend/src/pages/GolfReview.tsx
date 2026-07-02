@@ -11,7 +11,15 @@ import TeePickerDrawer, {
 } from "../components/golf/TeePickerDrawer";
 import { API_URL } from "../config";
 import { fetchRound, searchCourses } from "../lib/api";
-import { GolfRoundDetail, GolfHole, GolfDetectedPlayer, GolfTee } from "../lib/types";
+import {
+  GolfRoundDetail,
+  GolfHole,
+  GolfDetectedPlayer,
+  GolfDetectedTee,
+  GolfTee,
+  GolfCourse,
+  GolfCourseSearchResult,
+} from "../lib/types";
 
 const buildFullHoles = (partial: GolfHole[] | undefined): GolfHole[] => {
   const src = partial || [];
@@ -44,6 +52,12 @@ const GolfReview: React.FC = () => {
   } | null>(null);
   const [teePickerOpen, setTeePickerOpen] = useState(false);
   const [teeOverride, setTeeOverride] = useState<TeePickerApplyPayload | null>(null);
+  const [appliedTeeName, setAppliedTeeName] = useState<string | null>(null);
+  const [detectedTees, setDetectedTees] = useState<GolfDetectedTee[]>([]);
+  const [courseChoice, setCourseChoice] = useState<{ id: string | null; name: string } | null>(null);
+  const [courseQuery, setCourseQuery] = useState("");
+  const [courseResults, setCourseResults] = useState<GolfCourseSearchResult[]>([]);
+  const [playedOn, setPlayedOn] = useState<string>("");
 
   useEffect(() => {
     const load = async () => {
@@ -54,9 +68,17 @@ const GolfReview: React.FC = () => {
         setRound(data.round);
         const players: GolfDetectedPlayer[] = data.detected_players || [];
         setDetectedPlayers(players);
-        setHoles(buildFullHoles(data.round.hole_scores));
+        setDetectedTees(data.detected_tees || []);
+        setPlayedOn(
+          data.round.played_on || new Date().toISOString().split("T")[0]
+        );
+        // Prefer the detected-player holes: they carry per-hole `flagged`
+        // (checksum/strikeover suspicion) that HoleScore rows don't.
         if (players.length > 0) {
           setSelectedPlayerName(players[0].name);
+          setHoles(buildFullHoles(players[0].holes));
+        } else {
+          setHoles(buildFullHoles(data.round.hole_scores));
         }
       } catch (err: any) {
         console.error("Error fetching round:", err);
@@ -98,9 +120,16 @@ const GolfReview: React.FC = () => {
     (h) => h.strokes !== null && h.strokes >= 1
   );
 
-  const needsReviewCount = holes.filter(
-    (h) => h.ocr_confidence !== undefined && h.ocr_confidence < 0.85 && h.strokes !== null
-  ).length;
+  const isSuspectHole = (h: GolfHole) =>
+    h.strokes !== null &&
+    (h.flagged === true ||
+      (h.ocr_confidence !== undefined &&
+        h.ocr_confidence !== null &&
+        h.ocr_confidence < 0.85));
+
+  const needsReviewCount = holes.filter(isSuspectHole).length;
+
+  const needsCourse = Boolean(round?.needs_course) && !courseChoice;
 
   const front9 = holes.filter((h) => h.hole_number <= 9);
   const back9 = holes.filter((h) => h.hole_number > 9);
@@ -126,7 +155,62 @@ const GolfReview: React.FC = () => {
       ? ((grandTotal - Number(effectiveRating)) * 113) / Number(effectiveSlope)
       : null;
 
-  const availableTees: GolfTee[] = round?.tee ? [round.tee] : [];
+  const emptyTee: Omit<GolfTee, "id" | "name" | "rating_18" | "slope_18"> = {
+    color_hex: null,
+    rating_9_front: null,
+    slope_9_front: null,
+    rating_9_back: null,
+    slope_9_back: null,
+    yardage: null,
+    par: null,
+    hole_pars: null,
+    hole_yardages: null,
+    hole_handicaps: null,
+  };
+  // Card-printed tees (grid parser) become picker options alongside any tee
+  // already linked to the round. Synthetic ids mark tees that don't exist as
+  // DB rows yet — confirm sends their rating/slope instead of a tee_id.
+  const availableTees: GolfTee[] = [
+    ...(round?.tee?.id ? [round.tee] : []),
+    ...detectedTees
+      .filter((t) => t.name !== round?.tee?.name)
+      .map((t) => ({
+        ...emptyTee,
+        id: `detected-${t.name}`,
+        name: t.name,
+        rating_18: t.rating,
+        slope_18: t.slope,
+      })),
+  ];
+
+  const pickerCourse: GolfCourse | null =
+    round?.course ??
+    (courseChoice
+      ? {
+          id: courseChoice.id ?? "",
+          name: courseChoice.name,
+          city: null,
+          state: null,
+          country: null,
+          latitude: null,
+          longitude: null,
+          holes: 18,
+          status: "pending",
+        }
+      : null);
+
+  const runCourseSearch = async (q: string) => {
+    setCourseQuery(q);
+    if (!q.trim()) {
+      setCourseResults([]);
+      return;
+    }
+    try {
+      setCourseResults(await searchCourses(q, { limit: 5 }));
+    } catch {
+      setCourseResults([]);
+    }
+  };
 
   const getHoleBgClass = (hole: GolfHole) => {
     if (hole.strokes === null) return "fw-cell";
@@ -143,16 +227,38 @@ const GolfReview: React.FC = () => {
 
     try {
       const userId = round?.user_id || localStorage.getItem("userId") || "";
+      const body: Record<string, unknown> = {
+        user_id: userId,
+        holes: holes.map((h) => ({
+          hole_number: h.hole_number,
+          par: h.par,
+          strokes: h.strokes,
+        })),
+      };
+      if (round?.needs_course && courseChoice) {
+        if (courseChoice.id) body.course_id = courseChoice.id;
+        else body.course_name = courseChoice.name;
+      }
+      if (playedOn && playedOn !== round?.played_on) {
+        body.played_on = playedOn;
+      }
+      if (teeOverride) {
+        const isRealTee =
+          teeOverride.tee_id && !teeOverride.tee_id.startsWith("detected-");
+        if (isRealTee) {
+          body.tee_id = teeOverride.tee_id;
+        } else if (
+          teeOverride.rating_18 !== null &&
+          teeOverride.slope_18 !== null
+        ) {
+          body.rating = teeOverride.rating_18;
+          body.slope = teeOverride.slope_18;
+          if (appliedTeeName) body.tee_name = appliedTeeName;
+        }
+      }
       const response = await axios.put(
         `${API_URL}/golf/round/${roundId}/scores`,
-        {
-          user_id: userId,
-          holes: holes.map((h) => ({
-            hole_number: h.hole_number,
-            par: h.par,
-            strokes: h.strokes,
-          })),
-        }
+        body
       );
 
       setResultData({
@@ -219,7 +325,8 @@ const GolfReview: React.FC = () => {
               </div>
               <h1 className="fw-h1 mb-1">Round saved</h1>
               <p className="fw-text-secondary mb-6">
-                {round?.course.name} — {round?.played_on}
+                {round?.course?.name ?? courseChoice?.name ?? "Your round"} —{" "}
+                {playedOn || round?.played_on}
               </p>
               <div className="grid grid-cols-2 gap-3 mb-6 text-left">
                 <div className="fw-surface p-4">
@@ -274,11 +381,7 @@ const GolfReview: React.FC = () => {
             className={`relative p-2 cursor-pointer transition-colors ${getHoleBgClass(
               hole
             )} ${editingHole === hole.hole_number ? "fw-selected" : ""} ${
-              hole.ocr_confidence !== undefined &&
-              hole.ocr_confidence < 0.85 &&
-              hole.strokes !== null
-                ? "fw-cell-needs-review"
-                : ""
+              isSuspectHole(hole) ? "fw-cell-needs-review" : ""
             }`}
           >
             <div className="text-xs text-muted-foreground text-center">
@@ -340,29 +443,47 @@ const GolfReview: React.FC = () => {
         className="min-h-screen py-12 px-4 sm:px-6 lg:px-8"
       >
         <div className="max-w-4xl mx-auto">
-          <Link
-            to="/golf/upload"
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
             className="inline-flex items-center fw-text-secondary hover:text-foreground mb-8"
           >
             <ArrowLeft className="mr-2" size={16} />
-            Back to Upload
-          </Link>
+            Back
+          </button>
 
           <div className="fw-surface p-6 sm:p-8 space-y-5">
             <div>
               <h1 className="fw-h1">Review scores</h1>
-              <div className="flex items-center gap-2 mt-1 text-sm">
+              <div className="flex items-center gap-2 mt-1 text-sm flex-wrap">
                 <p className="fw-text-secondary">
-                  {round?.course.name} — {round?.played_on}
+                  {round?.course?.name ?? courseChoice?.name ?? "Course not identified"}
                 </p>
-                {round && (
+                {courseChoice && !round?.course && (
+                  <button
+                    type="button"
+                    onClick={() => setCourseChoice(null)}
+                    className="text-[var(--fw-text-info)] hover:underline"
+                  >
+                    change course
+                  </button>
+                )}
+                <span className="fw-text-secondary">—</span>
+                <input
+                  type="date"
+                  data-testid="played-on-input"
+                  value={playedOn}
+                  onChange={(e) => setPlayedOn(e.target.value)}
+                  className="h-7 px-2 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm"
+                />
+                {pickerCourse && (
                   <button
                     type="button"
                     data-testid="tee-picker-open"
                     onClick={() => setTeePickerOpen(true)}
                     className="text-[var(--fw-text-info)] hover:underline"
                   >
-                    Change
+                    Change tee
                   </button>
                 )}
               </div>
@@ -381,6 +502,54 @@ const GolfReview: React.FC = () => {
             </div>
 
             <ReviewBanner needsReviewCount={needsReviewCount} />
+
+            {/* Course picker — photo-only uploads don't know the course. */}
+            {needsCourse && (
+              <div
+                data-testid="course-picker"
+                className="rounded-md border-[0.5px] border-[var(--fw-border-info)] bg-[var(--fw-bg-info)] p-3 space-y-2"
+              >
+                <h3 className="text-sm font-semibold">
+                  Which course did you play?
+                </h3>
+                <input
+                  type="text"
+                  value={courseQuery}
+                  onChange={(e) => runCourseSearch(e.target.value)}
+                  placeholder="Search courses…"
+                  className="w-full px-3 h-9 rounded-md border border-[var(--fw-border-tertiary)] bg-[var(--fw-bg-primary)] text-sm focus:outline-none focus:border-[var(--fw-info)]"
+                />
+                {(courseResults.length > 0 || courseQuery.trim()) && (
+                  <div className="flex flex-wrap gap-2">
+                    {courseResults.map((c) => (
+                      <button
+                        key={c.id}
+                        type="button"
+                        onClick={() => setCourseChoice({ id: c.id, name: c.name })}
+                        className="px-3 py-1.5 rounded-md text-sm border-[0.5px] border-[var(--fw-border-secondary)] bg-background hover:border-[var(--fw-border-info)]"
+                      >
+                        {c.name}
+                        {c.city ? <span className="opacity-60 ml-1">· {c.city}</span> : null}
+                      </button>
+                    ))}
+                    {courseQuery.trim() &&
+                      !courseResults.some(
+                        (c) => c.name.toLowerCase() === courseQuery.trim().toLowerCase()
+                      ) && (
+                        <button
+                          type="button"
+                          onClick={() =>
+                            setCourseChoice({ id: null, name: courseQuery.trim() })
+                          }
+                          className="px-3 py-1.5 rounded-md text-sm border-[0.5px] border-dashed border-[var(--fw-border-info)] text-[var(--fw-text-info)]"
+                        >
+                          Add “{courseQuery.trim()}”
+                        </button>
+                      )}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Scorecard image */}
             {round?.scorecard_image_url && (
@@ -499,7 +668,12 @@ const GolfReview: React.FC = () => {
             {/* Confirm button */}
             <button
               onClick={handleConfirm}
-              disabled={!allHolesComplete || confirming}
+              disabled={
+                !allHolesComplete ||
+                confirming ||
+                needsCourse ||
+                (effectiveRating === null || effectiveSlope === null)
+              }
               className="w-full h-11 rounded-md bg-[var(--fw-info)] text-white font-medium text-sm hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {confirming ? "Confirming..." : "Confirm and save"}
@@ -511,18 +685,32 @@ const GolfReview: React.FC = () => {
                 hole(s) still need scores. Tap the cell to enter a score.
               </p>
             )}
+            {allHolesComplete && needsCourse && (
+              <p className="text-xs fw-text-secondary text-center">
+                Pick the course above to save your round.
+              </p>
+            )}
+            {allHolesComplete && !needsCourse &&
+              (effectiveRating === null || effectiveSlope === null) && (
+                <p className="text-xs fw-text-secondary text-center">
+                  Pick a tee (“Change tee”) so we can compute your differential.
+                </p>
+              )}
           </div>
         </div>
       </motion.div>
-      {round && (
+      {round && pickerCourse && (
         <TeePickerDrawer
           open={teePickerOpen}
-          course={round.course}
+          course={pickerCourse}
           tees={availableTees}
           selectedTeeId={effectiveTeeId}
           adjustedGrossScore={grandTotal}
           onApply={(payload) => {
             setTeeOverride(payload);
+            setAppliedTeeName(
+              availableTees.find((t) => t.id === payload.tee_id)?.name ?? null
+            );
             setTeePickerOpen(false);
           }}
           onClose={() => setTeePickerOpen(false)}
