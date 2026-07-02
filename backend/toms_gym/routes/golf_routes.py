@@ -88,7 +88,8 @@ SCORECARD_LABELS = {
     "OUT", "IN", "TOTAL", "TOT", "HCP", "NET", "GROSS", "HDCP", "PAR",
     "HOLE", "SCORE", "PLAYER", "HANDICAP", "SLOPE", "RATING", "COURSE",
     "DATE", "BLACK", "GOLD", "GREEN", "WHITE", "BLUE", "RED", "YELLOW",
-    "SILVER", "CHAMPION", "CHAMPIONSHIP",
+    "SILVER", "CHAMPION", "CHAMPIONSHIP", "PACE", "ATTEST", "SCORER",
+    "JUNIORS", "SENIOR", "MEN",
 }
 
 
@@ -116,19 +117,39 @@ def _extract_symbols(ocr_response):
 
 
 def _group_rows(symbols, page_height):
-    """Group symbols into rows by y-coordinate proximity."""
+    """Group symbols into rows by y-coordinate proximity.
+
+    Chains neighboring symbols within `threshold`, but also caps the total
+    y-span of a row. Without the cap, tight back-to-back rows (e.g. the
+    player row + subtotal row + tee-yardage row on a Sagamore-style card,
+    each ~25 px apart) daisy-chain into one blended mega-row and the parser
+    rejects them all. The cap of ~10% of page height comfortably fits a
+    single tilted row (e.g. Waverly Oaks CHRIS spans ~290 px top-to-bottom)
+    while cutting the chain before it swallows multiple rows.
+    """
     if not symbols:
         return []
     threshold = max(15, min(60, page_height * 0.02)) if page_height else 20
+    # Cap row span at 100 px. A correctly-tilted single row on real-world
+    # scorecards spans at most ~90 px top-to-bottom (e.g. the Waverly Oaks
+    # CHRIS row spans 86 px from the leftmost name letter to the rightmost
+    # score digit). Any more strongly suggests two rows have daisy-chained
+    # via a string of small gaps (common when adjacent rows on a card are
+    # ~25 px apart, e.g. the Sagamore Hampton card where the player row and
+    # the yardage row below sit only ~100 px apart center-to-center).
+    max_span = 100
     syms = sorted(symbols, key=lambda s: s['y'])
     rows = []
     current = [syms[0]]
+    current_min_y = syms[0]['y']
     for s in syms[1:]:
-        if abs(s['y'] - current[-1]['y']) < threshold:
+        if (abs(s['y'] - current[-1]['y']) < threshold
+                and (s['y'] - current_min_y) < max_span):
             current.append(s)
         else:
             rows.append(sorted(current, key=lambda w: w['x']))
             current = [s]
+            current_min_y = s['y']
     rows.append(sorted(current, key=lambda w: w['x']))
     return rows
 
@@ -183,8 +204,11 @@ def _parse_player_row(row_syms, gap_threshold):
     letters = sorted([s for s in row_syms if s['text'].isalpha()], key=lambda x: x['x'])
     digits = sorted([s for s in row_syms if s['text'].isdigit()], key=lambda x: x['x'])
 
-    # A player row must have a name on the left and plenty of digits to the right.
-    if not letters or len(digits) < 15:
+    # A player row must have a name on the left and some digits to the right.
+    # 9 digits covers the common case where only the front 9 was filled in;
+    # raising this higher drops rows where a player's back-9 handwriting
+    # didn't OCR (e.g. Tom's row on the Sagamore Hampton scorecard).
+    if not letters or len(digits) < 9:
         return None
     # Label/tee rows (BLACK, GOLD, HOLE + yardages) carry many more letters
     # than a simple handwritten name; skip those outright.
@@ -259,12 +283,146 @@ def _parse_player_row(row_syms, gap_threshold):
     front_9 += [None] * (9 - len(front_9))
     back_9 += [None] * (9 - len(back_9))
 
-    # Require at least 9 valid scores overall, otherwise it's probably noise.
+    # Require at least 6 valid scores overall, otherwise it's probably noise.
+    # A partial front-9-only row (e.g. 8 out of 9 captured) is still worth
+    # surfacing — the user can fill in the gaps via the Edit UI.
     valid_count = sum(1 for s in front_9 + back_9 if s is not None)
-    if valid_count < 9:
+    if valid_count < 6:
         return None
 
     return {'name': name, 'front_9': front_9, 'back_9': back_9}
+
+
+def _find_par_label(symbols):
+    """Locate the 'PAR' label: three letters P-A-R appearing consecutively in
+    x with consistent y (same row). Returns (p_sym, a_sym, r_sym) or None.
+
+    Rejects matches where a fourth letter immediately follows (e.g. 'PART',
+    'PARK', 'PARTICIPANT') since those aren't the par-row label.
+    """
+    letters = [s for s in symbols if s['text'].isalpha()]
+    for p in letters:
+        if p['text'].upper() != 'P':
+            continue
+        a_cands = [l for l in letters if l['text'].upper() == 'A'
+                   and 0 < l['x'] - p['x'] < 90 and abs(l['y'] - p['y']) < 20]
+        for a in a_cands:
+            r_cands = [l for l in letters if l['text'].upper() == 'R'
+                       and 0 < l['x'] - a['x'] < 90 and abs(l['y'] - a['y']) < 20]
+            for r in r_cands:
+                trailing = [l for l in letters
+                            if 0 < l['x'] - r['x'] < 100
+                            and abs(l['y'] - r['y']) < 20]
+                if trailing:
+                    continue
+                return (p, a, r)
+    return None
+
+
+def _ols_slope(xs, ys):
+    """Ordinary-least-squares slope of y vs x. Returns 0.0 when degenerate."""
+    n = len(xs)
+    if n < 2:
+        return 0.0
+    mean_x = sum(xs) / n
+    mean_y = sum(ys) / n
+    num = sum((x - mean_x) * (y - mean_y) for x, y in zip(xs, ys))
+    den = sum((x - mean_x) ** 2 for x in xs)
+    return num / den if den else 0.0
+
+
+def _fit_row_slope(symbols, anchor_y, anchor_x):
+    """Estimate the y-vs-x slope of the card row that passes through
+    (anchor_x, anchor_y). Iterates: collect digits in a wide y-band, fit OLS,
+    tighten the band and refit. Converges in 2–3 passes on a tilted scorecard.
+    """
+    digits = [s for s in symbols if s['text'].isdigit() and s['x'] > anchor_x]
+    if len(digits) < 4:
+        return 0.0
+    slope = 0.0
+    for half_band in (180, 90, 55):
+        keep = [s for s in digits
+                if abs(s['y'] - (anchor_y + slope * (s['x'] - anchor_x))) < half_band]
+        if len(keep) < 4:
+            break
+        xs = [s['x'] - anchor_x for s in keep]
+        ys = [s['y'] - anchor_y for s in keep]
+        slope = _ols_slope(xs, ys)
+    return slope
+
+
+def _extract_pars(symbols, page_width, page_height, gap_threshold):
+    """Extract the 18 per-hole par values from scorecard OCR symbols.
+
+    Strategy:
+      1. Find the 'PAR' label's (x, y) anchor.
+      2. Estimate card tilt slope (dy/dx) from all digits via OLS.
+      3. Collect digits that lie within a narrow band around the slope-adjusted
+         par-row y-line, and to the right of the label.
+      4. Cluster by x-gap; single-digit clusters with value 3–6 are par values,
+         multi-digit clusters are subtotals (OUT/IN/TOT) and act as 9/9 separators.
+
+    Returns a list of 18 ints (par per hole, with None where OCR missed) or
+    None when no PAR row could be located.
+    """
+    anchor = _find_par_label(symbols)
+    if not anchor:
+        return None
+    p, a, r = anchor
+    label_y = (p['y'] + a['y'] + r['y']) / 3
+    label_x_right = r['x']
+
+    slope = _fit_row_slope(symbols, label_y, label_x_right)
+    tolerance = max(30, page_height * 0.015) if page_height else 45
+
+    candidates = []
+    for s in symbols:
+        if not s['text'].isdigit() or s['x'] <= label_x_right:
+            continue
+        expected_y = label_y + slope * (s['x'] - label_x_right)
+        if abs(s['y'] - expected_y) < tolerance:
+            candidates.append(s)
+
+    if not candidates:
+        return None
+
+    candidates = _deduplicate_symbols(candidates)
+    candidates.sort(key=lambda s: s['x'])
+    clusters = _cluster_by_x(candidates, gap_threshold)
+
+    def _par_value(cluster):
+        if len(cluster) != 1:
+            return None
+        try:
+            v = int(cluster[0]['text'])
+        except ValueError:
+            return None
+        return v if 3 <= v <= 6 else None
+
+    multi_indices = [i for i, c in enumerate(clusters) if len(c) > 1]
+    if multi_indices:
+        out_idx = multi_indices[0]
+        front = [_par_value(c) for c in clusters[:out_idx]]
+        front = [v for v in front if v is not None][:9]
+        if len(multi_indices) >= 2:
+            between = clusters[out_idx + 1:multi_indices[1]]
+        else:
+            between = clusters[out_idx + 1:]
+        back = [_par_value(c) for c in between]
+        back = [v for v in back if v is not None][:9]
+    else:
+        singles = [_par_value(c) for c in clusters]
+        singles = [v for v in singles if v is not None]
+        front = singles[:9]
+        back = singles[9:18]
+
+    front += [None] * (9 - len(front))
+    back += [None] * (9 - len(back))
+    pars = front + back
+
+    if sum(1 for v in pars if v is not None) < 14:
+        return None
+    return pars
 
 
 def _parse_scorecard_symbols(symbols, page_width, page_height):
@@ -274,6 +432,13 @@ def _parse_scorecard_symbols(symbols, page_width, page_height):
     """
     rows = _group_rows(symbols, page_height)
     gap_threshold = max(40, min(90, page_width * 0.018)) if page_width else 70
+
+    pars = _extract_pars(symbols, page_width, page_height, gap_threshold)
+
+    def _par_at(idx):
+        if pars is not None and pars[idx] is not None:
+            return pars[idx]
+        return 4
 
     players = []
     seen_names = set()
@@ -294,7 +459,7 @@ def _parse_scorecard_symbols(symbols, page_width, page_height):
             strokes, conf = (val if val else (None, 0.0))
             holes.append({
                 'hole_number': i + 1,
-                'par': 4,
+                'par': _par_at(i),
                 'strokes': strokes,
                 'ocr_confidence': round(conf, 2),
             })
@@ -302,7 +467,7 @@ def _parse_scorecard_symbols(symbols, page_width, page_height):
             strokes, conf = (val if val else (None, 0.0))
             holes.append({
                 'hole_number': 10 + i,
-                'par': 4,
+                'par': _par_at(9 + i),
                 'strokes': strokes,
                 'ocr_confidence': round(conf, 2),
             })
@@ -711,23 +876,39 @@ def upload_scorecard():
             ocr_response = _run_ocr(gcs_uri)
             detected_players = _extract_players_from_ocr(ocr_response)
 
-            if not detected_players:
+            # If the first OCR pass found nothing — or found suspiciously
+            # few players — try each 90° orientation and keep the one that
+            # yields the most plausibly-detected players. The card was
+            # photographed sideways on at least one known scorecard
+            # (Sagamore Hampton), where -90 rotation returns garbage but
+            # +90 recovers all 4 players.
+            if len(detected_players) < 2:
+                best_rot_bytes = oriented_bytes
+                best_response = ocr_response
                 try:
                     img = Image.open(io.BytesIO(oriented_bytes))
-                    rotated = img.rotate(-90, expand=True)
-                    rot_buf = io.BytesIO()
-                    rotated.save(rot_buf, format='JPEG', quality=95)
-                    rot_bytes = rot_buf.getvalue()
-                    blob.upload_from_string(rot_bytes, content_type='image/jpeg')
-                    ocr_response_rot = _run_ocr(gcs_uri)
-                    players_rot = _extract_players_from_ocr(ocr_response_rot)
-                    if players_rot:
-                        detected_players = players_rot
-                        ocr_response = ocr_response_rot
-                    else:
-                        blob.upload_from_string(oriented_bytes, content_type=content_type)
+                    for angle in (90, -90, 180):
+                        try:
+                            rot_img = img.rotate(angle, expand=True)
+                            rot_buf = io.BytesIO()
+                            rot_img.save(rot_buf, format='JPEG', quality=95)
+                            rot_bytes = rot_buf.getvalue()
+                            blob.upload_from_string(rot_bytes, content_type='image/jpeg')
+                            rot_resp = _run_ocr(gcs_uri)
+                            players_rot = _extract_players_from_ocr(rot_resp)
+                            if len(players_rot) > len(detected_players):
+                                detected_players = players_rot
+                                ocr_response = rot_resp
+                                best_rot_bytes = rot_bytes
+                                best_response = rot_resp
+                        except Exception as inner:
+                            logger.warning(f"Rotation {angle} retry failed: {inner}")
+                    # Ensure GCS has the orientation that produced the best result.
+                    blob.upload_from_string(best_rot_bytes, content_type=content_type)
+                    ocr_response = best_response
                 except Exception as rot_err:
-                    logger.warning(f"Rotation retry failed: {rot_err}")
+                    logger.warning(f"Rotation retry pipeline failed: {rot_err}")
+                    blob.upload_from_string(oriented_bytes, content_type=content_type)
 
             if detected_players:
                 holes = detected_players[0]['holes']
@@ -1340,14 +1521,28 @@ def recompute_user_handicap(user_id):
 
     Used when the engine rules change (e.g. minimum-rounds threshold) and we
     need to refresh existing users' indices without re-confirming rounds.
+
+    Optional query param ?reset_history=1 wipes prior HandicapSnapshot rows
+    for the user before recomputing. This is a recovery lever for the case
+    where bad data (e.g. a bogus test round) polluted the 12-month-low cap
+    and the cap keeps dragging legitimate rounds down. Deletes are logged.
     """
+    reset_history = request.args.get('reset_history') in ('1', 'true', 'yes')
     session = get_db_connection()
     try:
+        if reset_history:
+            deleted = session.execute(sqlalchemy.text("""
+                DELETE FROM "HandicapSnapshot" WHERE user_id = :uid
+            """), {"uid": user_id}).rowcount
+            logger.warning(
+                f"reset_history=1: deleted {deleted} HandicapSnapshot rows for user {user_id}"
+            )
         index = _recalculate_handicap(session, user_id)
         session.commit()
         return jsonify({
             'user_id': user_id,
             'handicap_index': float(index) if index is not None else None,
+            'history_reset': reset_history,
         }), 200
     except Exception as e:
         session.rollback()
