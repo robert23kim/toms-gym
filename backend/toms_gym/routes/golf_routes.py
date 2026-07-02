@@ -34,6 +34,7 @@ from toms_gym.services.courses import (
     match_or_create_tee,
     search_courses,
 )
+from toms_gym.services.scorecard_grid import GridParseError, parse_scorecard_grid
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -495,6 +496,30 @@ def _extract_players_from_ocr(ocr_response):
     return result['players']
 
 
+def _extract_scorecard(image_bytes, ocr_response):
+    """Grid-primary scorecard extraction with legacy fallback.
+
+    Returns (players, extras) where extras carries what only the grid parser
+    can provide: per-hole pars from the card, tee rating/slopes, per-hole
+    `flagged` + `checksums` on players, and which parser produced the result.
+    """
+    symbols, w, h = _extract_symbols(ocr_response)
+    try:
+        grid = parse_scorecard_grid(image_bytes, symbols, w, h)
+        if grid['players']:
+            return grid['players'], {
+                'pars': grid['pars'],
+                'detected_tees': grid['tees'],
+                'parser': 'grid',
+            }
+        logger.info("Grid parser found structure but no players; using legacy parser")
+    except GridParseError as e:
+        logger.info(f"Grid parser fell back to legacy: {e}")
+    except Exception:
+        logger.exception("Grid parser crashed; using legacy parser")
+    return _extract_players_from_ocr(ocr_response), {'parser': 'legacy'}
+
+
 # ---------------------------------------------------------------------------
 # Helpers: row serialization + handicap recalc
 # ---------------------------------------------------------------------------
@@ -713,23 +738,26 @@ def _save_guest_player_round(session, *, raw_name, holes, course_id, tee_id,
 @golf_bp.route('/upload', methods=['POST'])
 @rate_limit('10/hour')
 def upload_scorecard():
-    """Upload a golf scorecard image for OCR processing.
+    """Upload a golf scorecard image — photo-only, everything else optional.
 
     Multipart form:
       image          (file, required)
-      course_name    (required)
+      user_id        (required — OR email)
+      email          (required — OR user_id)
+      course_name    (optional; when absent the round is created without a
+                      course and the review page resolves it — needs_course)
       slope_rating   (optional number; when present with course_rating, an
                       auto-created Tee row is filled with slope_18/rating_18)
       course_rating  (optional number; paired with slope_rating)
       tee_name       (optional, defaults to "Default")
       city, state, country, latitude, longitude (optional — help the fuzzy match)
-      user_id        (required — OR email)
-      email          (required — OR user_id)
 
-    Creates a Round row pointing at a Course + Tee (matched-or-created), runs
-    OCR, inserts HoleScore rows for the primary player, returns nested shape.
-    NOTE: `played_on` defaults to CURRENT_DATE; upload does NOT accept an
-    override (that's a future-phase concern per plan §Task 4).
+    Runs the grid parser (legacy symbol parser as fallback), inserts
+    HoleScore rows for the primary player, auto-creates Tee rows from the
+    card's printed rating/slope table when a course is known, and returns the
+    nested shape plus needs_course/needs_tee/detected_tees for the review UI.
+    `played_on` defaults to CURRENT_DATE; the review confirm (PUT /scores)
+    accepts a played_on override.
     """
     if 'image' not in request.files:
         return jsonify({'error': 'No image file provided'}), 400
@@ -746,9 +774,9 @@ def upload_scorecard():
     if file_size > 20 * 1024 * 1024:
         return jsonify({'error': 'File too large. Maximum 20MB'}), 400
 
-    course_name = request.form.get('course_name')
-    if not course_name:
-        return jsonify({'error': 'course_name is required'}), 400
+    # Photo-only upload: course is optional at upload time and resolved on
+    # the review page when the photo doesn't identify it.
+    course_name = request.form.get('course_name') or None
 
     slope_rating  = request.form.get('slope_rating')
     course_rating = request.form.get('course_rating')
@@ -814,25 +842,32 @@ def upload_scorecard():
         if not user_id:
             return jsonify({'error': 'user_id or email is required'}), 400
 
-        # Match-or-create Course + Tee via the courses service.
+        # Match-or-create Course + Tee via the courses service (only when the
+        # caller supplied a course; photo-only uploads resolve it at review).
         # The service issues its own commits for newly-inserted rows.
-        course_match = match_or_create_course(session, name=course_name, near=near)
-        # Patch city/state/country/lat/lng when we just created a pending course
-        # and the caller provided them — the service only stores (name, lat, lng).
-        if course_match.created and (city or state or country):
-            session.execute(sqlalchemy.text("""
-                UPDATE "Course" SET city = :c, state = :s, country = :co
-                WHERE id = :id
-            """), {"c": city, "s": state, "co": country, "id": course_match.course_id})
-            session.commit()
+        course_id = None
+        if course_name:
+            course_match = match_or_create_course(session, name=course_name, near=near)
+            course_id = course_match.course_id
+            # Patch city/state/country/lat/lng when we just created a pending course
+            # and the caller provided them — the service only stores (name, lat, lng).
+            if course_match.created and (city or state or country):
+                session.execute(sqlalchemy.text("""
+                    UPDATE "Course" SET city = :c, state = :s, country = :co
+                    WHERE id = :id
+                """), {"c": city, "s": state, "co": country, "id": course_id})
+                session.commit()
 
-        tee_match = match_or_create_tee(
-            session,
-            course_id=course_match.course_id,
-            name=tee_name,
-            rating=rating_18,
-            slope=slope_18,
-        )
+        if course_id:
+            tee_match = match_or_create_tee(
+                session,
+                course_id=course_id,
+                name=tee_name,
+                rating=rating_18,
+                slope=slope_18,
+            )
+        else:
+            tee_match = TeeMatch(tee_id=None, created=False, needs_tee=True)
 
         # Create the Round.
         round_id = str(uuid.uuid4())
@@ -843,7 +878,7 @@ def upload_scorecard():
         """), {
             "id":  round_id,
             "uid": user_id,
-            "cid": course_match.course_id,
+            "cid": course_id,
             "tid": tee_match.tee_id,
         })
         session.commit()
@@ -871,10 +906,11 @@ def upload_scorecard():
         ocr_confidence = 0.0
         processing_status = 'ocr_complete'
 
+        parse_extras = {}
         try:
             gcs_uri = f'gs://{bucket.name}/{gcs_path}'
             ocr_response = _run_ocr(gcs_uri)
-            detected_players = _extract_players_from_ocr(ocr_response)
+            detected_players, parse_extras = _extract_scorecard(oriented_bytes, ocr_response)
 
             # If the first OCR pass found nothing — or found suspiciously
             # few players — try each 90° orientation and keep the one that
@@ -895,9 +931,10 @@ def upload_scorecard():
                             rot_bytes = rot_buf.getvalue()
                             blob.upload_from_string(rot_bytes, content_type='image/jpeg')
                             rot_resp = _run_ocr(gcs_uri)
-                            players_rot = _extract_players_from_ocr(rot_resp)
+                            players_rot, extras_rot = _extract_scorecard(rot_bytes, rot_resp)
                             if len(players_rot) > len(detected_players):
                                 detected_players = players_rot
+                                parse_extras = extras_rot
                                 ocr_response = rot_resp
                                 best_rot_bytes = rot_bytes
                                 best_response = rot_resp
@@ -917,9 +954,27 @@ def upload_scorecard():
                 confidences = [h['ocr_confidence'] for h in holes if h['ocr_confidence'] > 0]
                 ocr_confidence = round(sum(confidences) / len(confidences), 2) if confidences else 0.0
 
+            # Grid-extracted tees become real Tee rows so the review page's
+            # tee picker offers the card's printed rating/slope options.
+            # round.tee_id stays as-is — the user confirms which tee they
+            # actually played.
+            if course_id:
+                for tee in parse_extras.get('detected_tees', []):
+                    try:
+                        match_or_create_tee(
+                            session, course_id=course_id, name=tee['name'],
+                            rating=tee['rating'], slope=tee['slope'],
+                        )
+                    except Exception as tee_err:
+                        logger.warning(f"Failed to save detected tee {tee}: {tee_err}")
+                        session.rollback()
+
             ocr_raw_payload = {
                 'text': ocr_response.text if ocr_response else None,
                 'detected_players': detected_players,
+                'detected_tees': parse_extras.get('detected_tees', []),
+                'pars': parse_extras.get('pars'),
+                'parser': parse_extras.get('parser'),
             }
 
             for hole in holes:
@@ -971,7 +1026,7 @@ def upload_scorecard():
                     session,
                     raw_name=player.get('name', ''),
                     holes=player.get('holes', []),
-                    course_id=course_match.course_id,
+                    course_id=course_id,
                     tee_id=tee_match.tee_id,
                     rating=rating_18 if rating_18 else 72.0,
                     slope=slope_18 if slope_18 else 113,
@@ -995,6 +1050,9 @@ def upload_scorecard():
             extra={
                 'detected_players': detected_players,
                 'needs_tee': tee_match.needs_tee,
+                'needs_course': course_id is None,
+                'detected_tees': parse_extras.get('detected_tees', []),
+                'parser': parse_extras.get('parser'),
                 'guest_rounds': guest_rounds,
             },
         )
@@ -1028,7 +1086,7 @@ def _fetch_and_serialize_round(session, round_id, user_id=None, extra=None):
                t.rating_9_front, t.slope_9_front, t.rating_9_back, t.slope_9_back,
                t.yardage, t.par, t.hole_pars, t.hole_yardages, t.hole_handicaps
         FROM "Round" r
-        JOIN "Course" c ON c.id = r.course_id
+        LEFT JOIN "Course" c ON c.id = r.course_id
         LEFT JOIN "Tee" t ON t.id = r.tee_id
         WHERE r.id = :id
     """), {"id": round_id}).mappings().fetchone()
@@ -1071,7 +1129,7 @@ def _fetch_and_serialize_round(session, round_id, user_id=None, extra=None):
         'country': row['country'],   'latitude': row['latitude'],
         'longitude': row['longitude'], 'holes': row['c_holes'],
         'status': row['c_status'],
-    })
+    }) if row['c_id'] is not None else None
     tee_block = _tee_to_dict({
         'id': row['t_id'],
         'name': row['t_name'],
@@ -1104,6 +1162,7 @@ def _fetch_and_serialize_round(session, round_id, user_id=None, extra=None):
             float(row['ocr_confidence']) if row['ocr_confidence'] is not None else None,
         'processing_status':   row['processing_status'],
         'needs_tee':           row['t_id'] is None,
+        'needs_course':        row['c_id'] is None,
         'created_at':          str(row['created_at']) if row['created_at'] else None,
         'updated_at':          str(row['updated_at']) if row['updated_at'] else None,
     }
@@ -1193,7 +1252,7 @@ def confirm_scores(round_id):
     session = get_db_connection()
     try:
         round_row = session.execute(sqlalchemy.text("""
-            SELECT r.id, r.user_id, r.tee_id,
+            SELECT r.id, r.user_id, r.tee_id, r.course_id,
                    t.rating_18, t.slope_18, t.hole_handicaps
             FROM "Round" r
             LEFT JOIN "Tee" t ON t.id = r.tee_id
@@ -1209,9 +1268,76 @@ def confirm_scores(round_id):
 
         rating_18 = float(round_row['rating_18']) if round_row['rating_18'] is not None else None
         slope_18  = round_row['slope_18']
+        hole_handicaps = list(round_row['hole_handicaps']) if round_row['hole_handicaps'] is not None else None
+
+        # Review-page overrides (photo-only flow): resolve course, tee and
+        # date that weren't known at upload time.
+        course_id = str(round_row['course_id']) if round_row['course_id'] else None
+        if data.get('course_id'):
+            course_check = session.execute(
+                sqlalchemy.text('SELECT id FROM "Course" WHERE id = :id'),
+                {"id": data['course_id']}).fetchone()
+            if course_check is None:
+                return jsonify({'error': 'course_id not found'}), 400
+            course_id = str(course_check[0])
+            session.execute(sqlalchemy.text(
+                'UPDATE "Round" SET course_id = :cid, updated_at = now() WHERE id = :id'
+            ), {"cid": course_id, "id": round_id})
+        elif data.get('course_name'):
+            course_match = match_or_create_course(session, name=data['course_name'], near=None)
+            course_id = course_match.course_id
+            session.execute(sqlalchemy.text(
+                'UPDATE "Round" SET course_id = :cid, updated_at = now() WHERE id = :id'
+            ), {"cid": course_id, "id": round_id})
+
+        if data.get('tee_id'):
+            tee_row = session.execute(sqlalchemy.text("""
+                SELECT id, course_id, rating_18, slope_18, hole_handicaps
+                FROM "Tee" WHERE id = :id
+            """), {"id": data['tee_id']}).mappings().fetchone()
+            if tee_row is None:
+                return jsonify({'error': 'tee_id not found'}), 400
+            if course_id and str(tee_row['course_id']) != course_id:
+                return jsonify({'error': 'tee_id belongs to a different course'}), 400
+            session.execute(sqlalchemy.text(
+                'UPDATE "Round" SET tee_id = :tid, updated_at = now() WHERE id = :id'
+            ), {"tid": str(tee_row['id']), "id": round_id})
+            rating_18 = float(tee_row['rating_18']) if tee_row['rating_18'] is not None else None
+            slope_18 = tee_row['slope_18']
+            hole_handicaps = (list(tee_row['hole_handicaps'])
+                              if tee_row['hole_handicaps'] is not None else None)
+        elif data.get('rating') is not None and data.get('slope') is not None and course_id:
+            try:
+                override_rating = float(data['rating'])
+                override_slope = int(float(data['slope']))
+            except (ValueError, TypeError):
+                return jsonify({'error': 'rating and slope must be numbers'}), 400
+            if not (55 <= override_rating <= 85) or not (55 <= override_slope <= 155):
+                return jsonify({'error': 'rating must be 55-85 and slope 55-155'}), 400
+            tee_match = match_or_create_tee(
+                session, course_id=course_id,
+                name=data.get('tee_name') or 'Default',
+                rating=override_rating, slope=override_slope,
+            )
+            session.execute(sqlalchemy.text(
+                'UPDATE "Round" SET tee_id = :tid, updated_at = now() WHERE id = :id'
+            ), {"tid": tee_match.tee_id, "id": round_id})
+            rating_18, slope_18 = override_rating, override_slope
+            hole_handicaps = None
+
+        if data.get('played_on'):
+            try:
+                played_on = datetime.strptime(data['played_on'], '%Y-%m-%d').date()
+            except (ValueError, TypeError):
+                return jsonify({'error': 'played_on must be YYYY-MM-DD'}), 400
+            session.execute(sqlalchemy.text(
+                'UPDATE "Round" SET played_on = :d, updated_at = now() WHERE id = :id'
+            ), {"d": played_on, "id": round_id})
+
+        if course_id is None:
+            return jsonify({'error': 'Round has no course; pick a course first'}), 400
         if rating_18 is None or slope_18 is None:
             return jsonify({'error': 'Round has no tee rating/slope; pick a tee first'}), 400
-        hole_handicaps = list(round_row['hole_handicaps']) if round_row['hole_handicaps'] is not None else None
 
         # Prior strokes/par -> drive manually_corrected flag.
         existing_rows = session.execute(sqlalchemy.text("""
