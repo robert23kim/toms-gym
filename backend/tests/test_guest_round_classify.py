@@ -45,3 +45,11 @@ def test_nine_holes_spanning_both_nines_is_not_a_nine_hole_round():
     holes = _holes({n: 5 for n in list(range(1, 6)) + list(range(10, 14))})
     scoreable, holes_count, _ = _classify_guest_round(holes)
     assert (scoreable, holes_count) == (False, 18)
+
+
+def test_nine_hole_differential_is_doubled_to_18_equivalent():
+    """Back-nine 51 at default 72/113: 9-hole diff (51-36)=15.0 -> stored 30.0."""
+    from toms_gym.services.handicap import compute_differential
+    adjusted = 51
+    nine = compute_differential(adjusted, 72.0 / 2.0, 113)
+    assert round(nine * 2.0, 1) == 30.0

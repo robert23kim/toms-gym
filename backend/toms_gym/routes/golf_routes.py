@@ -689,8 +689,6 @@ def _classify_guest_round(holes):
       - anything else is saved for display but NOT scored: computing an
         18-hole differential from a partial round produced absurd values
         (a back-nine-only card once hit the leaderboard at -42).
-    Only full 18-hole rounds get an auto-computed differential — 9-hole
-    differentials need 9-hole ratings the guest path doesn't have.
     """
     valid = [h for h in holes if h.get('strokes') is not None]
     captured = len(valid)
@@ -723,9 +721,18 @@ def _save_guest_player_round(session, *, raw_name, holes, course_id, tee_id,
     back = sum(int(h['strokes']) for h in valid if h.get('hole_number', 0) > 9)
     total = front + back
     differential = None
-    if scoreable and holes_count == 18:
+    if scoreable:
         adjusted = sum(min(int(h['strokes']), 10) for h in valid)
-        differential = round(compute_differential(adjusted, float(rating), int(slope)), 1)
+        if holes_count == 18:
+            differential = round(compute_differential(adjusted, float(rating), int(slope)), 1)
+        else:
+            # 9-hole rounds: score against half the 18-hole rating, then
+            # double to an 18-hole-equivalent differential (classic WHS
+            # treatment). A raw 9-hole differential is ~half scale and would
+            # always win the lowest-N pool, dragging the index down — the
+            # engine only half-weights 9-hole ROUND COUNT, not values.
+            nine_diff = compute_differential(adjusted, float(rating) / 2.0, int(slope))
+            differential = round(nine_diff * 2.0, 1)
 
     round_id = str(uuid.uuid4())
     session.execute(sqlalchemy.text("""
