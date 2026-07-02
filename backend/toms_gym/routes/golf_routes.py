@@ -678,26 +678,54 @@ def _find_or_create_guest_golfer(session, raw_name):
     return new_id
 
 
+def _classify_guest_round(holes):
+    """Decide how a detected player's captured holes may be scored.
+
+    Returns (scoreable, holes_count, valid_holes):
+      - fewer than 6 captured holes → not saveable at all (stray marks, or a
+        player who only recorded a hole or two);
+      - exactly 9 captured, all within one nine → a 9-hole round;
+      - exactly 18 captured → a full round;
+      - anything else is saved for display but NOT scored: computing an
+        18-hole differential from a partial round produced absurd values
+        (a back-nine-only card once hit the leaderboard at -42).
+    Only full 18-hole rounds get an auto-computed differential — 9-hole
+    differentials need 9-hole ratings the guest path doesn't have.
+    """
+    valid = [h for h in holes if h.get('strokes') is not None]
+    captured = len(valid)
+    if captured < 6:
+        return False, None, valid
+    one_nine = (all(h.get('hole_number', 0) <= 9 for h in valid)
+                or all(h.get('hole_number', 0) > 9 for h in valid))
+    if captured == 9 and one_nine:
+        return True, 9, valid
+    return captured == 18, 18, valid
+
+
 def _save_guest_player_round(session, *, raw_name, holes, course_id, tee_id,
                               rating, slope, scorecard_image_url, ocr_payload):
     """Save a confirmed round for a detected scorecard player.
 
     Creates the guest user (idempotent by name), inserts a Round + HoleScores,
-    auto-confirms via NDB-10 cap, computes the differential, and writes a
-    HandicapSnapshot via _recalculate_handicap. Returns (user_id, round_id).
+    auto-confirms via NDB-10 cap, computes the differential (full 18-hole
+    rounds only — see _classify_guest_round), and writes a HandicapSnapshot
+    via _recalculate_handicap. Returns (user_id, round_id).
     """
     guest_id = _find_or_create_guest_golfer(session, raw_name)
     if not guest_id:
         return None, None
-    valid = [h for h in holes if h.get('strokes') is not None]
-    if not valid:
+    scoreable, holes_count, valid = _classify_guest_round(holes)
+    if holes_count is None:
         return guest_id, None
 
-    adjusted = sum(min(int(h['strokes']), 10) for h in valid)
     front = sum(int(h['strokes']) for h in valid if h.get('hole_number', 0) <= 9)
     back = sum(int(h['strokes']) for h in valid if h.get('hole_number', 0) > 9)
     total = front + back
-    differential = round(compute_differential(adjusted, float(rating), int(slope)), 1)
+    differential = None
+    if scoreable and holes_count == 18:
+        adjusted = sum(min(int(h['strokes']), 10) for h in valid)
+        differential = round(compute_differential(adjusted, float(rating), int(slope)), 1)
 
     round_id = str(uuid.uuid4())
     session.execute(sqlalchemy.text("""
@@ -705,10 +733,11 @@ def _save_guest_player_round(session, *, raw_name, holes, course_id, tee_id,
             (id, user_id, course_id, tee_id, holes, played_on, total_score,
              front_nine, back_nine, score_differential, scorecard_image_url,
              ocr_raw, ocr_confidence, processing_status)
-        VALUES (:id, :uid, :cid, :tid, 18, CURRENT_DATE, :tot,
+        VALUES (:id, :uid, :cid, :tid, :holes, CURRENT_DATE, :tot,
                 :f, :b, :diff, :url, :raw, :conf, 'confirmed')
     """), {
         'id': round_id, 'uid': guest_id, 'cid': course_id, 'tid': tee_id,
+        'holes': holes_count,
         'tot': total, 'f': front, 'b': back, 'diff': differential,
         'url': scorecard_image_url,
         'raw': json.dumps({'name': raw_name, 'holes': holes}),
@@ -725,7 +754,8 @@ def _save_guest_player_round(session, *, raw_name, holes, course_id, tee_id,
             'rid': round_id, 'hn': h['hole_number'], 'par': h['par'],
             's': h['strokes'], 'c': h.get('ocr_confidence', 0),
         })
-    _recalculate_handicap(session, guest_id, round_id)
+    if differential is not None:
+        _recalculate_handicap(session, guest_id, round_id)
     session.commit()
     return guest_id, round_id
 
