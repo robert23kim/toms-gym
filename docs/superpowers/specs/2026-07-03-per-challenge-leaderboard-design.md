@@ -12,54 +12,75 @@ no per-athlete rollup, no way to see who is winning. The only ranked view
 (`/leaderboard`, `Leaderboard.tsx`) flattens every competition into one global
 list, which is not what a participant in a specific challenge wants to see.
 
-Goal: give each challenge its own ranked leaderboard, on the challenge page.
+**The primary driver is the plank challenge** — a plank has no weight, it's ranked
+by how long you hold it. So the leaderboard must rank by *time held* for plank
+challenges, and by *weight* for lifting challenges. Time ranking is a first-class
+path, not an afterthought.
+
+Goal: give each challenge its own ranked leaderboard, on the challenge page,
+that ranks by the metric that fits the challenge.
 
 ## Decisions
-
-Three design questions were raised. One was answered by the user; the other two
-are defaulted below and **flagged for confirmation** — flip either without
-reshaping the design.
 
 | Question | Decision | Confirmed? |
 |---|---|---|
 | Where it lives | **On the challenge page** (`ChallengeDetail.tsx`), as a tab toggle: `Leaderboard \| Lift Feed`, Leaderboard default. | ✅ user |
 | Grouping | **One flat board** — a single ranked list for the whole challenge. No weight-class/gender segmentation this iteration (deferred). | ✅ user |
-| Ranking metric | **Best-lift total** — sum of each athlete's *best completed* attempt per lift type present in the challenge. Reduces to "best single lift" for single-lift challenges. | ⚠️ default |
+| Ranking metric | **Per-challenge metric.** Plank challenge → rank by **longest hold** (`total_in_plank_s`, DESC). Lifting challenge → **best-lift total** (sum of each athlete's best `completed` attempt per lift type). | ✅ user (plank is primary) |
 
-### Why best-lift total (vs. the alternatives)
+### The two metrics
 
-- **Sum of all attempts** (today's `total_weight`) rewards volume — an athlete
-  who uploads ten mediocre squats outranks one who uploads a single huge squat.
-  Wrong incentive for a competition.
-- **Best single lift** throws away information for multi-lift challenges (a
-  squat+bench+deadlift meet should reward the all-round total).
-- **Best-lift total** = classic powerlifting total. It adapts: if the challenge
-  is configured for one lift type, the sum has one term and it behaves like
-  "best single lift"; if three, it's the meet total. One metric, no mode switch.
+A challenge is ranked by exactly one metric, chosen from the challenge's lift
+type (see "Metric selection"). The endpoint returns a `metric` field
+(`"time" | "weight"`) telling the frontend how to render.
 
-Only `status = 'completed'` attempts count (an approved lift). `pending` and
-`failed` attempts are ignored for ranking but still appear in the lift feed.
+**`time` (plank challenges) — the headline path.**
+- Rank by the athlete's **best (longest) hold** across their `completed` plank
+  attempts, descending. Longest hold wins.
+- Held time is read from the analysis result, not the attempt row:
+  `LiftingResult.report->>'total_in_plank_s'`. When the lifting analysis finishes
+  it sets `Attempt.status='completed'` and writes the report in the same commit
+  (`lifting_processor.py:183,202`), so any `completed` plank attempt has a hold
+  time available.
+- `report->>'overall_form_score'` is carried through for display (and as the
+  tiebreak — see below), but ranking is on time.
 
-### Plank / time-based lifts (scope boundary)
+**`weight` (lifting challenges).**
+- Rank by **best-lift total**: for each athlete, take `max(weight_kg)` per
+  `lift_type` among their `completed` attempts, then sum those maxes. Classic
+  powerlifting total. For a single-lift challenge this reduces to "best single
+  lift". Rewards strength over upload volume (unlike today's sum-of-all-attempts
+  `total_weight`).
 
-`Plank` is a `lift_type` but is scored by held-time, not weight (the feed already
-hides weight for planks). For this iteration the leaderboard ranks by
-`weight_kg`; a plank-only challenge would rank everyone at 0. **Out of scope
-now**, called out explicitly: a follow-up can rank plank challenges by
-`total_in_plank_s` from `LiftingResult`. The endpoint returns a `metric` field
-(`"weight" | "time"`) so the frontend and a future iteration can branch without
-a breaking change.
+Only `status = 'completed'` attempts count in either metric; `pending`/`failed`
+are ignored for ranking but still show in the lift feed.
+
+### Metric selection (how the route decides)
+
+`metric = "time"` iff the challenge is **plank-only**, else `"weight"`.
+
+Determination, in order:
+1. The challenge's declared lift types (`lifttypes` parsed from
+   `Competition.description` metadata, as `get_competition_by_id` already does).
+   If that set is exactly `{"Plank"}` → `time`.
+2. Fallback when metadata is absent/empty: infer from `completed` attempts — if
+   every completed attempt is `Plank` → `time`.
+3. Otherwise → `weight`.
+
+Edge case — a challenge that mixes Plank with weighted lifts: ranked by `weight`,
+and plank attempts are excluded from the weight total (you can't add seconds to
+kilograms). Documented, not silently blended.
 
 ## Architecture
 
 Ranking logic lives **server-side** in a new endpoint plus a pure, DB-free
-helper — mirroring the existing `/golf/leaderboard` pattern (ranking is computed
-in one testable place, not smeared across the React component). The frontend
-renders whatever the endpoint returns.
+helper — mirroring the `/golf/leaderboard` pattern (ranking computed in one
+testable place, not smeared across the React component). The frontend renders
+whatever the endpoint returns.
 
 ```
 ChallengeDetail.tsx
-  ├─ Tab: Leaderboard  ──GET──▶ /competitions/:id/leaderboard ──▶ rank_challenge()  (pure)
+  ├─ Tab: Leaderboard  ──GET──▶ /competitions/:id/leaderboard ──▶ rank_challenge(metric=…)  (pure)
   └─ Tab: Lift Feed    (existing feed, unchanged)
 ```
 
@@ -69,116 +90,141 @@ New module `backend/toms_gym/services/challenge_leaderboard.py`. Pure, DB-free,
 unit-testable in isolation.
 
 ```python
-def rank_challenge(participants, *, metric="weight"):
+def rank_challenge(participants, *, metric):
     """
+    metric: "time" | "weight"
     participants: list of {
         user_id, name, weight_class, gender,
-        attempts: [{lift_type, weight_kg, status, created_at}]
+        attempts: [{
+            lift_type, weight_kg, status, created_at,
+            held_s,          # float|None — from LiftingResult report (plank)
+            form_score,      # float|None — report overall_form_score (plank)
+        }]
     }
-    Returns ranked rows:
+    Returns ranked rows sorted best-first:
     [{
         rank, user_id, name, weight_class, gender,
-        total,                         # sum of best completed weight per lift_type
-        best_by_lift: {lift_type: weight}, # per-lift breakdown for the table
-        attempt_count                  # completed attempts (tiebreak / display)
-    }]  sorted by total desc.
+        score,             # metric="time": best hold seconds; "weight": best-lift total kg
+        best_by_lift,      # weight: {lift_type: max_kg}; time: {"Plank": best_hold_s}
+        form_score,        # time only: form % at the best hold (display)
+        attempt_count,     # completed attempts counted
+    }]
     """
 ```
 
-Rules:
+Rules common to both metrics:
 - Consider only `status == 'completed'` attempts.
-- Per athlete, per `lift_type`: take `max(weight_kg)`. `total = sum` of those maxes.
-- Sort by `total` descending.
-- **Tiebreak:** equal totals → the athlete who reached their total *earliest*
-  wins (min `created_at` across their best attempts). Deterministic; rewards
-  getting there first.
-- Athletes with zero completed attempts are returned with `total = 0` at the
-  bottom (they joined but haven't landed a lift) — keeps the "who's joined"
-  signal without polluting the podium. Frontend may choose to dim these rows.
+- Sort by `score` descending.
+- **Tiebreak:** equal score → earliest achievement wins (min `created_at` of the
+  attempt(s) producing the best score). For `time`, form score is a secondary
+  tiebreak before `created_at` (cleaner hold ranks higher on a tie). Deterministic.
+- Athletes with zero qualifying attempts → `score = 0` (time) / `0` (weight),
+  sorted last. Keeps the "who joined" signal off the podium; frontend may dim them.
+
+Metric-specific:
+- `time`: per athlete, `score = max(held_s)` over completed plank attempts with a
+  non-null `held_s`. A completed plank attempt whose analysis hasn't produced a
+  hold time yet (`held_s is None`) doesn't count toward the score.
+- `weight`: per athlete, per `lift_type` → `max(weight_kg)`; `score = sum` of maxes.
 
 ### Component 2 — `GET /competitions/<id>/leaderboard`
 
-New route in `competition_routes.py`. Flat board — no query params this
-iteration.
+New route in `competition_routes.py`. Flat board — no query params this iteration.
 
-- Reuses the same participant+attempt query already backing
-  `/competitions/<id>/participants` (extended to include each attempt's
-  `created_at` for the tiebreak).
+- Loads the challenge (404 if missing), determines `metric` (see selection rules).
+- Loads participants + their `completed` attempts. **LEFT JOINs `LiftingResult`**
+  on `attempt_id` and pulls `report->>'total_in_plank_s'` (as `held_s`) and
+  `report->>'overall_form_score'` (as `form_score`) so the pure helper gets hold
+  times without touching the DB. (This extends the query already backing
+  `/competitions/<id>/participants`, plus each attempt's `created_at`.)
+- Calls `rank_challenge(participants, metric=metric)`.
 - Response:
   ```json
   {
     "competition_id": "...",
-    "metric": "weight",
-    "lift_types": ["Squat", "Bench Press", "Deadlift"],
-    "rows": [ { "rank": 1, "name": "Tom", "total": 520,
-               "best_by_lift": {"Squat":180,"Bench Press":120,"Deadlift":220},
-               "weight_class": "83kg", "gender": "male", "attempt_count": 3 } ]
+    "metric": "time",
+    "lift_types": ["Plank"],
+    "rows": [
+      { "rank": 1, "name": "Tom", "score": 132.4,
+        "best_by_lift": {"Plank": 132.4}, "form_score": 0.91,
+        "weight_class": "83kg", "gender": "male", "attempt_count": 2 }
+    ]
   }
   ```
-- `lift_types` is the distinct set of lift types seen across completed attempts
-  (drives the table's columns). Unit is kg in the DB; the frontend already
-  displays lift weights in lbs elsewhere — **the endpoint returns raw kg and the
-  frontend formats**, matching how the existing feed treats `weight`.
+  For `metric="weight"`, `score` is the best-lift total in kg and `best_by_lift`
+  maps each lift type to its best kg; `form_score` is omitted/null.
+- `lift_types` = the distinct lift types across completed attempts (drives table
+  columns for weight; always `["Plank"]` for a plank board).
+- Weights are returned raw in kg (frontend formats to lbs, matching the existing
+  feed). Hold times are returned raw in **seconds** (frontend formats `m:ss`).
 
 ### Component 3 — Leaderboard tab UI (`ChallengeDetail.tsx`)
 
 - A tab toggle above the current content: `Leaderboard | Lift Feed`. Default
   Leaderboard. The existing feed JSX moves under the "Lift Feed" tab unchanged.
-- Leaderboard table columns: `Rank`, `Athlete` (avatar + name, links to
-  profile), one column per lift type in `lift_types`, `Total`. Medal styling for
-  ranks 1–3 (reuse the visual language already in `GolfLeaderboard`).
+- The table renders by `metric`:
+  - **`time` (plank):** `Rank`, `Athlete` (avatar + name → profile),
+    `Best Hold` (formatted `m:ss`, e.g. `2:12`), `Form` (`form_score` as %).
+  - **`weight`:** `Rank`, `Athlete`, one column per lift type, `Total` (lbs).
+- Medal styling for ranks 1–3 (reuse the visual language in `GolfLeaderboard`).
 - One flat ranked list — no filter chips this iteration.
-- Empty state: "No completed lifts yet — be the first on the board!" with the
-  existing Upload button.
+- Empty state (metric-aware): plank → "No holds recorded yet — be the first to
+  plank!"; weight → "No completed lifts yet — be the first on the board!" Each
+  with the existing Upload button.
 - A thin `getChallengeLeaderboard(id)` is added to `frontend/src/lib/api.ts`.
 
 ## Data flow
 
 1. `ChallengeDetail` mounts → fetches challenge + participants (as today) and, for
    the Leaderboard tab, `GET /competitions/:id/leaderboard`.
-2. Backend loads participants + their completed attempts, calls `rank_challenge()`,
-   returns ranked rows.
-3. Component renders the flat ranked table.
+2. Backend determines the metric, loads participants + completed attempts (LEFT
+   JOIN `LiftingResult` for plank hold times), calls `rank_challenge()`, returns
+   ranked rows + `metric`.
+3. Component renders the flat ranked table in the shape dictated by `metric`.
 
-No schema migration. No new tables. Ranking is derived at read time from
-existing `Attempt` / `UserCompetition` rows.
+No schema migration. No new tables. Ranking is derived at read time from existing
+`Attempt` / `UserCompetition` / `LiftingResult` rows.
 
 ## Error handling
 
 - Unknown `competition_id` → 404 (consistent with sibling endpoints).
-- Challenge with no participants or no completed attempts → 200 with `rows: []`
-  and `lift_types: []`; UI shows the empty state.
-- Endpoint failure → the tab shows an inline error and a retry; the Lift Feed tab
-  is unaffected (independent fetch).
+- Challenge with no participants / no completed attempts → 200 with `rows: []`
+  and the correct `metric` + `lift_types`; UI shows the metric-aware empty state.
+- Plank attempt `completed` but analysis produced no hold time → excluded from the
+  score (not counted), athlete falls to `score = 0` if it was their only attempt.
+- Endpoint failure → the tab shows an inline error + retry; the Lift Feed tab is
+  unaffected (independent fetch).
 
 ## Testing
 
-- **`tests/test_challenge_leaderboard.py`** (pure helper): best-of-per-lift
-  rollup; single-lift challenge reduces to best single lift; `pending`/`failed`
-  excluded; tiebreak by earliest `created_at`; zero-attempt athletes sort last.
-- **Route test** in the competition-routes test suite: happy path shape, 404 on
-  bad id, empty-challenge case.
-- **Frontend**: a render test for the tab toggle + table given a mock leaderboard
-  payload.
+- **`tests/test_challenge_leaderboard.py`** (pure helper):
+  - `time`: longest hold wins; `held_s=None` attempts excluded; best-of-multiple
+    holds per athlete; tiebreak by form score then `created_at`; zero-hold athletes last.
+  - `weight`: best-of-per-lift rollup; single-lift reduces to best single lift;
+    `pending`/`failed` excluded; tiebreak by earliest `created_at`.
+- **Route test** (`test_competition_routes.py`): plank challenge returns
+  `metric="time"` and hold-ranked rows; lifting challenge returns `metric="weight"`;
+  404 on bad id; empty-challenge case; metric-selection (plank-only vs mixed).
+- **Frontend**: render test for the tab toggle + both table shapes (time vs weight)
+  given mock payloads.
 
 ## Out of scope (explicit)
 
 - Weight-class / gender segmentation and filter chips — flat board only for now.
-  The response still carries per-row `weight_class` / `gender`, so adding filters
-  later is additive (no shape change).
-- Plank/time-based ranking (endpoint reserves `metric` for it).
+  The response carries per-row `weight_class` / `gender`, so filters are additive later.
 - Real-time updates / websockets — leaderboard is fetched on tab open.
 - Historical/podium snapshots — computed live each time.
+- Blended/mixed metrics in one board (plank + weighted lifts share no scale).
 - Changes to the global `/leaderboard` page.
 
 ## Files touched
 
 | File | Change |
 |---|---|
-| `backend/toms_gym/services/challenge_leaderboard.py` | **New** — pure `rank_challenge()`. |
-| `backend/toms_gym/routes/competition_routes.py` | **New** `GET /competitions/<id>/leaderboard`; extend participant query with `created_at`. |
-| `backend/tests/test_challenge_leaderboard.py` | **New** — helper unit tests. |
+| `backend/toms_gym/services/challenge_leaderboard.py` | **New** — pure `rank_challenge()` (time + weight). |
+| `backend/toms_gym/routes/competition_routes.py` | **New** `GET /competitions/<id>/leaderboard`; metric selection; participant query extended with `created_at` + LEFT JOIN `LiftingResult` for plank hold time/form. |
+| `backend/tests/test_challenge_leaderboard.py` | **New** — helper unit tests (time + weight). |
 | `backend/tests/test_competition_routes.py` | Add route tests. |
 | `frontend/src/lib/api.ts` | **New** `getChallengeLeaderboard()`. |
-| `frontend/src/pages/ChallengeDetail.tsx` | Tab toggle + Leaderboard table; existing feed moves under a tab. |
-| `frontend/src/lib/types.ts` | `ChallengeLeaderboardRow` type. |
+| `frontend/src/pages/ChallengeDetail.tsx` | Tab toggle + metric-aware Leaderboard table; existing feed moves under a tab. |
+| `frontend/src/lib/types.ts` | `ChallengeLeaderboardRow` / `ChallengeLeaderboard` types. |
