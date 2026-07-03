@@ -7,50 +7,23 @@ import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import FairwayScope from "../components/FairwayScope";
 import StagedParseProgress from "../components/golf/StagedParseProgress";
+import { useMediaUpload } from "../hooks/useMediaUpload";
 
 const GolfUpload: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [email, setEmail] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
-
-  const acceptFile = (file: File | undefined) => {
-    if (!file) return;
-    if (!file.type.startsWith("image/")) {
-      setError("Please choose an image file");
-      return;
-    }
-    if (file.size > 20 * 1024 * 1024) {
-      setError("Image must be under 20MB");
-      return;
-    }
-    setSelectedFile(file);
-    if (previewUrl) URL.revokeObjectURL(previewUrl);
-    setPreviewUrl(URL.createObjectURL(file));
-    setError(null);
-  };
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    acceptFile(event.target.files?.[0]);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    acceptFile(e.dataTransfer.files?.[0]);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
+  const {
+    file: selectedFile,
+    previewUrl,
+    isDragging,
+    error,
+    setError,
+    onInputChange: handleFileSelect,
+    onDrop: handleDrop,
+    onDragOver: handleDragOver,
+    onDragLeave: handleDragLeave,
+  } = useMediaUpload({ accept: "image", maxBytes: 20 * 1024 * 1024 });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

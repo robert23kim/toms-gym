@@ -32,7 +32,7 @@ Any render throw currently white-screens the whole SPA (no boundary exists anywh
 **Interfaces:**
 - Produces: `default export class ErrorBoundary extends React.Component<{children: React.ReactNode}, {error: Error | null}>`. Task 2 nests `Suspense` inside it.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/components/__tests__/ErrorBoundary.test.tsx
@@ -67,12 +67,12 @@ describe("ErrorBoundary", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- src/components/__tests__/ErrorBoundary.test.tsx`
 Expected: FAIL — `Cannot find module '../ErrorBoundary'`
 
-- [ ] **Step 3: Implement the component**
+- [x] **Step 3: Implement the component**
 
 ```tsx
 // src/components/ErrorBoundary.tsx
@@ -125,12 +125,12 @@ export default class ErrorBoundary extends React.Component<
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- src/components/__tests__/ErrorBoundary.test.tsx`
 Expected: 2 PASSED
 
-- [ ] **Step 5: Wire into App.tsx**
+- [x] **Step 5: Wire into App.tsx**
 
 In `src/App.tsx`, add `import ErrorBoundary from "./components/ErrorBoundary";` and wrap everything inside `QueryClientProvider`:
 
@@ -159,7 +159,7 @@ const App = () => {
 };
 ```
 
-- [ ] **Step 6: Validate and commit**
+- [x] **Step 6: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: all green.
@@ -183,7 +183,7 @@ All ~27 page components are eagerly imported in `src/routes/index.tsx`, so the i
 - Consumes: `ErrorBoundary` from Task 1 (already wired outside — Suspense goes inside it).
 - Produces: same `routes: RouteObject[]` export; same paths; page components become `React.lazy`.
 
-- [ ] **Step 1: Rewrite `src/routes/index.tsx`**
+- [x] **Step 1: Rewrite `src/routes/index.tsx`**
 
 Replace the entire file with (route paths are IDENTICAL to the current file — only the import mechanism changes; `ShortLinkRedirect` and the inline `VideoPlayerRedirect` stay eager because redirects should not flash a spinner):
 
@@ -263,7 +263,7 @@ export const routes: RouteObject[] = [
 
 Note: this requires every page to have a `default export` — all current pages do (they're imported as default today).
 
-- [ ] **Step 2: Add Suspense in App.tsx**
+- [x] **Step 2: Add Suspense in App.tsx**
 
 Add `Suspense` to the react import in `src/App.tsx` (`import { useEffect, Suspense } from "react";`) and wrap the `<Routes>` block:
 
@@ -283,16 +283,16 @@ Add `Suspense` to the react import in `src/App.tsx` (`import { useEffect, Suspen
             </Suspense>
 ```
 
-- [ ] **Step 3: Verify chunk splitting**
+- [x] **Step 3: Verify chunk splitting**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: all green, and the build output lists many small `dist/assets/*.js` chunks (one per page) instead of one large bundle. Note the main chunk size before/after in the commit message body.
 
-- [ ] **Step 4: Manual smoke**
+- [x] **Step 4: Manual smoke**
 
 Run: `npm run dev` and load `/`, `/golf/leaderboard`, `/upload` — each renders (spinner may flash on first navigation).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/routes/index.tsx src/App.tsx
@@ -309,12 +309,12 @@ git commit -m "feat(frontend): lazy-load route components to split the bundle"
 - Modify: `src/config.ts` (full rewrite below)
 - Verify: `frontend/.env.production` contains `VITE_API_URL`
 
-- [ ] **Step 1: Check for test/code dependencies**
+- [x] **Step 1: Check for test/code dependencies**
 
 Run: `grep -rn "isMobileDevice\|shouldUseProductionUrl\|isLinux" src/ e2e/ --include="*.ts" --include="*.tsx"`
 Expected: hits only inside `src/config.ts`. If anything else consumes these exports, stop and report — do not delete used exports.
 
-- [ ] **Step 2: Rewrite `src/config.ts`**
+- [x] **Step 2: Rewrite `src/config.ts`**
 
 ```ts
 /// <reference types="vite/client" />
@@ -337,14 +337,14 @@ export const APP_VERSION = buildTimestamp
 export const APP_BUILD = buildTimestamp;
 ```
 
-- [ ] **Step 3: Confirm production env sets the URL**
+- [x] **Step 3: Confirm production env sets the URL**
 
 Run: `grep VITE_API_URL .env.production`
 Expected: `VITE_API_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app` (or equivalent). If missing, add that line — with the UA override gone, this is what keeps production builds pointed at the backend.
 
 Behavior note for the commit body: the old UA sniffing existed to force mobile devices onto prod; since production builds get `VITE_API_URL` at build time, the override only ever mattered for `npm run dev` on a phone — if that workflow comes back, use `VITE_API_URL=... npm run dev`, not UA sniffing.
 
-- [ ] **Step 4: Validate and commit**
+- [x] **Step 4: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: green. Then load `npm run dev` and confirm the console shows zero config logs.
@@ -364,12 +364,12 @@ git commit -m "fix(frontend): single API_URL source; drop UA sniffing and prod c
 - Modify: `src/lib/api.ts` (remove lines 19 and 76–99: `API_BASE_URL`, `export const api = axios.create(...)`, `export const endpoints = {...}`)
 - Check: `src/lib/__tests__/` for tests referencing the removed exports
 
-- [ ] **Step 1: Re-verify the exports are unused**
+- [x] **Step 1: Re-verify the exports are unused**
 
 Run: `grep -rn "endpoints\b" src --include="*.tsx" --include="*.ts" | grep -v "lib/api.ts"` and `grep -rn "import { api" src --include="*.tsx" --include="*.ts"` and `grep -rn "API_BASE_URL" src`
 Expected: no hits outside `src/lib/api.ts` (and possibly `src/lib/__tests__/api.test.ts` — note any test hits for Step 3).
 
-- [ ] **Step 2: Delete**
+- [x] **Step 2: Delete**
 
 In `src/lib/api.ts` remove:
 - Line 19: `const API_BASE_URL = "https://my-app-834341357827.us-east1.run.app";`
@@ -378,11 +378,11 @@ In `src/lib/api.ts` remove:
 
 Keep the top-level `import axios from "axios";` — the rest of the file still uses axios for its exported functions.
 
-- [ ] **Step 3: Fix any tests that asserted on the removed exports**
+- [x] **Step 3: Fix any tests that asserted on the removed exports**
 
 If Step 1 found hits in `src/lib/__tests__/`, delete only those test cases (they test dead code), keeping the rest of the file intact.
 
-- [ ] **Step 4: Validate and commit**
+- [x] **Step 4: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: green.
@@ -407,7 +407,7 @@ react-query is installed and `QueryClientProvider` wraps the app, but there are 
 - Consumes: `API_URL` from `src/config.ts`; `GolfLeaderboardEntry` from `src/lib/types.ts`.
 - Produces: `useGolfLeaderboard(limit?: number)` returning `UseQueryResult<GolfLeaderboardEntry[]>`, and `apiErrorMessage(error: unknown, fallback: string): string`. Future page conversions follow this module's pattern.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/lib/__tests__/queries.test.tsx
@@ -473,12 +473,12 @@ describe("apiErrorMessage", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- src/lib/__tests__/queries.test.tsx`
 Expected: FAIL — `Cannot find module '../queries'`
 
-- [ ] **Step 3: Implement `src/lib/queries.ts`**
+- [x] **Step 3: Implement `src/lib/queries.ts`**
 
 ```ts
 // react-query hooks for server data. New pages should fetch through hooks in
@@ -508,12 +508,12 @@ export function useGolfLeaderboard(limit = 50) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- src/lib/__tests__/queries.test.tsx`
 Expected: 4 PASSED
 
-- [ ] **Step 5: Convert GolfLeaderboard**
+- [x] **Step 5: Convert GolfLeaderboard**
 
 In `src/pages/GolfLeaderboard.tsx`:
 
@@ -549,7 +549,7 @@ and change the condition from `{error && (` to `{error != null && (`.
 
 Everything else in the file (all JSX, `data-testid="leaderboard-list"`, styling) stays byte-identical.
 
-- [ ] **Step 6: Validate and commit**
+- [x] **Step 6: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: green (existing golf component tests unaffected).
@@ -591,7 +591,7 @@ useMediaUpload({ accept: "image" | "video", maxBytes: number }): {
 
 Task 7 consumes the same hook for BowlingUpload.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/hooks/__tests__/useMediaUpload.test.ts
@@ -644,12 +644,12 @@ describe("useMediaUpload", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- src/hooks/__tests__/useMediaUpload.test.ts`
 Expected: FAIL — `Cannot find module '../useMediaUpload'`
 
-- [ ] **Step 3: Implement the hook**
+- [x] **Step 3: Implement the hook**
 
 ```ts
 // src/hooks/useMediaUpload.ts
@@ -719,12 +719,12 @@ export function useMediaUpload({ accept, maxBytes }: UseMediaUploadOptions) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- src/hooks/__tests__/useMediaUpload.test.ts`
 Expected: 3 PASSED
 
-- [ ] **Step 5: Adopt in GolfUpload**
+- [x] **Step 5: Adopt in GolfUpload**
 
 In `src/pages/GolfUpload.tsx`:
 
@@ -749,7 +749,7 @@ Aliasing to the old names means the JSX below (input `onChange={handleFileSelect
 
 Behavior note: the drop-path error message changes from "Please drop an image file" to "Please choose an image file" — acceptable copy unification; confirm no e2e spec asserts the old string (`grep -rn "Please drop" e2e/ src/`).
 
-- [ ] **Step 6: Validate and commit**
+- [x] **Step 6: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`, then `npm run dev` → `/golf/upload`: select a file (preview appears), drag-drop a file, try a >20MB file (error shows).
 
@@ -768,12 +768,12 @@ git commit -m "refactor(frontend): shared useMediaUpload hook; adopt in GolfUplo
 **Interfaces:**
 - Consumes: `useMediaUpload` from Task 6 with `{ accept: "video", maxBytes: <the page's current limit> }`.
 
-- [ ] **Step 1: Map the page's current upload state**
+- [x] **Step 1: Map the page's current upload state**
 
 Run: `grep -n "useState\|const handle\|size >" src/pages/BowlingUpload.tsx`
 Expected: the same quartet as GolfUpload (file/preview/error/isDragging state + select/drop/dragover/dragleave handlers) plus a size check. Note the exact max-size constant the page uses (if it has none, use `500 * 1024 * 1024` and say so in the commit body).
 
-- [ ] **Step 2: Replace state + handlers with the hook**
+- [x] **Step 2: Replace state + handlers with the hook**
 
 Apply the same mechanical replacement as Task 6 Step 5: delete the four state hooks and four handlers, insert
 
@@ -793,7 +793,7 @@ Apply the same mechanical replacement as Task 6 Step 5: delete the four state ho
 
 aliasing to whatever names this page's JSX actually uses (adjust the aliases to match — do not rename anything in the JSX). Keep the page's submit function and its `setError` calls unchanged.
 
-- [ ] **Step 3: Validate and commit**
+- [x] **Step 3: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`, then `npm run dev` → `/bowling/upload`: file select + drop + oversize rejection all behave.
 
@@ -817,12 +817,12 @@ Working dir: `/Users/toka/code/toms_gym` (repo root).
 - Delete: ~23 stray screenshots + `golf_scorecard.jpg` at repo root
 - Untrack: `output_deadlift.mp4` (tracked, 14MB)
 
-- [ ] **Step 1: Confirm the strays are not referenced**
+- [x] **Step 1: Confirm the strays are not referenced**
 
 Run: `grep -rln "golf_scorecard.jpg\|output_deadlift.mp4\|leaderboard-final.png" backend/ frontend/ docs/ --include="*.py" --include="*.ts" --include="*.tsx" --include="*.md" | grep -v node_modules`
 Expected: no hits (they're one-off verification artifacts). If a doc references one, move that file into `docs/images/` instead of deleting it and note it.
 
-- [ ] **Step 2: Extend `.gitignore`**
+- [x] **Step 2: Extend `.gitignore`**
 
 Append to the repo-root `.gitignore`:
 
@@ -837,7 +837,7 @@ Append to the repo-root `.gitignore`:
 frontend/android/
 ```
 
-- [ ] **Step 3: Delete strays and untrack the video**
+- [x] **Step 3: Delete strays and untrack the video**
 
 ```bash
 cd /Users/toka/code/toms_gym
@@ -847,12 +847,12 @@ git rm --cached output_deadlift.mp4
 
 Then confirm: `git status --short` no longer lists any root `*.png`, `golf_scorecard.jpg`, `.playwright-mcp/`, or `frontend/android/`; `git ls-files | grep -c "\.mp4$"` counts only the intentional test fixtures under `backend/tests/` (leave those — the backend suite loads them).
 
-- [ ] **Step 4: Verify nothing broke**
+- [x] **Step 4: Verify nothing broke**
 
 Run: `cd frontend && npm test && npm run build` and `cd ../backend && venv/bin/python tools/run_golf_parser_tests.py`
 Expected: green — the deleted files were never inputs to code or tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 cd /Users/toka/code/toms_gym

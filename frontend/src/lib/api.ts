@@ -16,8 +16,6 @@ import {
   GolfScoresUpdateResponse,
 } from './types';
 
-const API_BASE_URL = "https://my-app-834341357827.us-east1.run.app";
-
 // Collection of default challenge images for variety
 const defaultChallengeImages = [
   'https://images.unsplash.com/photo-1571902943202-507ec2618e8f?w=800&auto=format&fit=crop&q=60', // Gym interior
@@ -72,30 +70,6 @@ export const getGolfAvatar = (
   const seed = encodeURIComponent(key || (fallbackId ?? "golfer").toString());
   return `${AVATAAARS}?seed=${seed}`;
 };
-
-export const api = axios.create({
-  baseURL: API_BASE_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
-});
-
-export const endpoints = {
-  challenges: {
-    list: "/competitions",
-    detail: (id: number) => `/competitions/${id}`,
-    create: "/create_competition",
-  },
-  participants: {
-    list: (challengeId: number) => `/competitions/${challengeId}/participants`,
-    detail: (challengeId: number, participantId: number) => 
-      `/competitions/${challengeId}/participants/${participantId}`,
-  },
-  videos: {
-    get: (challengeId: number, participantId: number, videoId: number) =>
-      `/competitions/${challengeId}/participants/${participantId}/video/${videoId}`,
-  },
-} as const;
 
 // Transform backend data to frontend Competition type
 export const transformCompetitionData = (backendData: any): Competition => {

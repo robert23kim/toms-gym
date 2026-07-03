@@ -6,14 +6,22 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { BowlingResult } from "../lib/types";
+import { useMediaUpload } from "../hooks/useMediaUpload";
 
 const BowlingUpload: React.FC = () => {
   const { competitionId } = useParams<{ competitionId: string }>();
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [email, setEmail] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [isDragging, setIsDragging] = useState(false);
+  const {
+    file: selectedFile,
+    isDragging,
+    error,
+    setError,
+    onInputChange: handleFileSelect,
+    onDrop: handleDrop,
+    onDragOver: handleDragOver,
+    onDragLeave: handleDragLeave,
+  } = useMediaUpload({ accept: "video", maxBytes: 500 * 1024 * 1024 });
 
   // Polling state
   const [attemptId, setAttemptId] = useState<string | null>(null);
@@ -48,35 +56,6 @@ const BowlingUpload: React.FC = () => {
       if (pollRef.current) clearInterval(pollRef.current);
     };
   }, [attemptId]);
-
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setError(null);
-    }
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file && file.type.startsWith("video/")) {
-      setSelectedFile(file);
-      setError(null);
-    } else {
-      setError("Please drop a video file");
-    }
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = () => {
-    setIsDragging(false);
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
