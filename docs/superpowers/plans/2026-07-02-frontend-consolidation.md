@@ -407,7 +407,7 @@ react-query is installed and `QueryClientProvider` wraps the app, but there are 
 - Consumes: `API_URL` from `src/config.ts`; `GolfLeaderboardEntry` from `src/lib/types.ts`.
 - Produces: `useGolfLeaderboard(limit?: number)` returning `UseQueryResult<GolfLeaderboardEntry[]>`, and `apiErrorMessage(error: unknown, fallback: string): string`. Future page conversions follow this module's pattern.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // src/lib/__tests__/queries.test.tsx
@@ -473,12 +473,12 @@ describe("apiErrorMessage", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- src/lib/__tests__/queries.test.tsx`
 Expected: FAIL — `Cannot find module '../queries'`
 
-- [ ] **Step 3: Implement `src/lib/queries.ts`**
+- [x] **Step 3: Implement `src/lib/queries.ts`**
 
 ```ts
 // react-query hooks for server data. New pages should fetch through hooks in
@@ -508,12 +508,12 @@ export function useGolfLeaderboard(limit = 50) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- src/lib/__tests__/queries.test.tsx`
 Expected: 4 PASSED
 
-- [ ] **Step 5: Convert GolfLeaderboard**
+- [x] **Step 5: Convert GolfLeaderboard**
 
 In `src/pages/GolfLeaderboard.tsx`:
 
@@ -549,7 +549,7 @@ and change the condition from `{error && (` to `{error != null && (`.
 
 Everything else in the file (all JSX, `data-testid="leaderboard-list"`, styling) stays byte-identical.
 
-- [ ] **Step 6: Validate and commit**
+- [x] **Step 6: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: green (existing golf component tests unaffected).

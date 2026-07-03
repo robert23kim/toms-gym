@@ -1,43 +1,16 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Trophy, Upload } from "lucide-react";
-import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
-import { API_URL } from "../config";
 import { getGolfAvatar } from "../lib/api";
-import { GolfLeaderboardEntry } from "../lib/types";
+import { apiErrorMessage, useGolfLeaderboard } from "../lib/queries";
 
 const GolfLeaderboard: React.FC = () => {
-  const [entries, setEntries] = useState<GolfLeaderboardEntry[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: entries = [], isLoading, error } = useGolfLeaderboard();
 
-  useEffect(() => {
-    const fetchLeaderboard = async () => {
-      try {
-        setLoading(true);
-        const response = await axios.get(
-          `${API_URL}/golf/leaderboard?limit=50`
-        );
-        setEntries(response.data.leaderboard || []);
-      } catch (err: any) {
-        console.error("Error fetching golf leaderboard:", err);
-        setError(
-          err.response?.data?.error ||
-            err.message ||
-            "Failed to load leaderboard"
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchLeaderboard();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return (
       <Layout>
         <FairwayScope>
@@ -77,9 +50,9 @@ const GolfLeaderboard: React.FC = () => {
               </Link>
             </div>
 
-            {error && (
+            {error != null && (
               <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500 mb-6">
-                {error}
+                {apiErrorMessage(error, "Failed to load leaderboard")}
               </div>
             )}
 
