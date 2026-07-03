@@ -591,7 +591,7 @@ useMediaUpload({ accept: "image" | "video", maxBytes: number }): {
 
 Task 7 consumes the same hook for BowlingUpload.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```ts
 // src/hooks/__tests__/useMediaUpload.test.ts
@@ -644,12 +644,12 @@ describe("useMediaUpload", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `npm test -- src/hooks/__tests__/useMediaUpload.test.ts`
 Expected: FAIL — `Cannot find module '../useMediaUpload'`
 
-- [ ] **Step 3: Implement the hook**
+- [x] **Step 3: Implement the hook**
 
 ```ts
 // src/hooks/useMediaUpload.ts
@@ -719,12 +719,12 @@ export function useMediaUpload({ accept, maxBytes }: UseMediaUploadOptions) {
 }
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `npm test -- src/hooks/__tests__/useMediaUpload.test.ts`
 Expected: 3 PASSED
 
-- [ ] **Step 5: Adopt in GolfUpload**
+- [x] **Step 5: Adopt in GolfUpload**
 
 In `src/pages/GolfUpload.tsx`:
 
@@ -749,7 +749,7 @@ Aliasing to the old names means the JSX below (input `onChange={handleFileSelect
 
 Behavior note: the drop-path error message changes from "Please drop an image file" to "Please choose an image file" — acceptable copy unification; confirm no e2e spec asserts the old string (`grep -rn "Please drop" e2e/ src/`).
 
-- [ ] **Step 6: Validate and commit**
+- [x] **Step 6: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`, then `npm run dev` → `/golf/upload`: select a file (preview appears), drag-drop a file, try a >20MB file (error shows).
 
