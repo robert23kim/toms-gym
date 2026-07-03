@@ -120,8 +120,9 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div>
-            <label className="block text-sm font-medium mb-1">Name</label>
+            <label htmlFor="create-profile-name" className="block text-sm font-medium mb-1">Name</label>
             <input
+              id="create-profile-name"
               type="text"
               name="name"
               value={formData.name}
@@ -132,8 +133,9 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label htmlFor="create-profile-email" className="block text-sm font-medium mb-1">Email</label>
             <input
+              id="create-profile-email"
               type="email"
               name="email"
               value={formData.email}
@@ -161,9 +163,10 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           {wantsPassword && (
             <>
               <div>
-                <label className="block text-sm font-medium mb-1">Password</label>
+                <label htmlFor="create-profile-password" className="block text-sm font-medium mb-1">Password</label>
                 <div className="relative">
                   <input
+                    id="create-profile-password"
                     type={showPassword ? "text" : "password"}
                     name="password"
                     value={formData.password}
@@ -181,9 +184,10 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">Confirm Password</label>
+                <label htmlFor="create-profile-confirm-password" className="block text-sm font-medium mb-1">Confirm Password</label>
                 <div className="relative">
                   <input
+                    id="create-profile-confirm-password"
                     type={showConfirmPassword ? "text" : "password"}
                     name="confirmPassword"
                     value={formData.confirmPassword}
@@ -203,8 +207,9 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           )}
 
           <div>
-            <label className="block text-sm font-medium mb-1">Weight Class</label>
+            <label htmlFor="create-profile-weight-class" className="block text-sm font-medium mb-1">Weight Class</label>
             <select
+              id="create-profile-weight-class"
               name="weight_class"
               value={formData.weight_class}
               onChange={handleChange}
@@ -223,8 +228,9 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Country</label>
+            <label htmlFor="create-profile-country" className="block text-sm font-medium mb-1">Country</label>
             <input
+              id="create-profile-country"
               type="text"
               name="country"
               value={formData.country}
@@ -235,8 +241,9 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Bio</label>
+            <label htmlFor="create-profile-bio" className="block text-sm font-medium mb-1">Bio</label>
             <textarea
+              id="create-profile-bio"
               name="bio"
               value={formData.bio}
               onChange={handleChange}

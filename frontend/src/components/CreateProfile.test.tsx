@@ -41,15 +41,13 @@ describe('CreateProfile Component', () => {
     // Fill out the form with a simple password
     fireEvent.change(screen.getByLabelText(/name/i), { target: { value: 'Test User' } });
     fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'test@example.com' } });
-    
-    // Find password inputs
-    const passwordInputs = screen.getAllByLabelText(/password/i);
-    const passwordInput = passwordInputs[0];
-    const confirmPasswordInput = passwordInputs[1];
-    
+
+    // Password fields only render once "Set a password (optional)" is checked
+    fireEvent.click(screen.getByLabelText(/set a password/i));
+
     // Set both password fields to "a"
-    fireEvent.change(passwordInput, { target: { value: 'a' } });
-    fireEvent.change(confirmPasswordInput, { target: { value: 'a' } });
+    fireEvent.change(screen.getByLabelText('Password'), { target: { value: 'a' } });
+    fireEvent.change(screen.getByLabelText('Confirm Password'), { target: { value: 'a' } });
     
     // Submit the form
     const submitButton = screen.getByRole('button', { name: /create profile/i });
@@ -69,9 +67,9 @@ describe('CreateProfile Component', () => {
       expect(screen.getByText(/profile created successfully/i)).toBeInTheDocument();
     });
     
-    // Verify the component tries to close after success
+    // Verify the component tries to close after success (closes via a 1.5s timeout)
     await waitFor(() => {
       expect(mockOnClose).toHaveBeenCalled();
-    });
+    }, { timeout: 2500 });
   });
 }); 
