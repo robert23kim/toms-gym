@@ -684,10 +684,9 @@ class DeploymentManager:
             "BOWLING_POLL_INTERVAL=5",
             # Lifting processor integration (calls bowling-service /analyze-lift)
             "LIFTING_PROCESSOR_ENABLED=true",
-            # Cloud Tasks analysis dispatch. Flip ANALYSIS_DISPATCH_MODE to
-            # "tasks" only after the analysis-jobs queue + IAM exist (plan
-            # 2026-07-02-analysis-engine-rearchitecture.md Task 10 Step 1).
-            "ANALYSIS_DISPATCH_MODE=poller",
+            # Cloud Tasks analysis dispatch (analysis-jobs queue + IAM created
+            # 2026-07-03). Rollback: set ANALYSIS_DISPATCH_MODE=poller.
+            "ANALYSIS_DISPATCH_MODE=tasks",
             "ANALYSIS_TASKS_QUEUE=projects/toms-gym/locations/us-east1/queues/analysis-jobs",
             "TASKS_TARGET_BASE_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app",
             "TASKS_SERVICE_ACCOUNT=toms-gym-service@toms-gym.iam.gserviceaccount.com",
