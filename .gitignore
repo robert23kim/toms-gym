@@ -287,3 +287,12 @@ temp/
 
 # Custom
 test_db.py
+
+# One-off verification screenshots and local artifacts
+/*.png
+/*.jpg
+/*.mp4
+.playwright-mcp/
+
+# Local Capacitor experiment — commit deliberately if Android becomes a real target
+frontend/android/

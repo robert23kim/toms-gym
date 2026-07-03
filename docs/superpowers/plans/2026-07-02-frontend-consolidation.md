@@ -817,12 +817,12 @@ Working dir: `/Users/toka/code/toms_gym` (repo root).
 - Delete: ~23 stray screenshots + `golf_scorecard.jpg` at repo root
 - Untrack: `output_deadlift.mp4` (tracked, 14MB)
 
-- [ ] **Step 1: Confirm the strays are not referenced**
+- [x] **Step 1: Confirm the strays are not referenced**
 
 Run: `grep -rln "golf_scorecard.jpg\|output_deadlift.mp4\|leaderboard-final.png" backend/ frontend/ docs/ --include="*.py" --include="*.ts" --include="*.tsx" --include="*.md" | grep -v node_modules`
 Expected: no hits (they're one-off verification artifacts). If a doc references one, move that file into `docs/images/` instead of deleting it and note it.
 
-- [ ] **Step 2: Extend `.gitignore`**
+- [x] **Step 2: Extend `.gitignore`**
 
 Append to the repo-root `.gitignore`:
 
@@ -837,7 +837,7 @@ Append to the repo-root `.gitignore`:
 frontend/android/
 ```
 
-- [ ] **Step 3: Delete strays and untrack the video**
+- [x] **Step 3: Delete strays and untrack the video**
 
 ```bash
 cd /Users/toka/code/toms_gym
@@ -847,12 +847,12 @@ git rm --cached output_deadlift.mp4
 
 Then confirm: `git status --short` no longer lists any root `*.png`, `golf_scorecard.jpg`, `.playwright-mcp/`, or `frontend/android/`; `git ls-files | grep -c "\.mp4$"` counts only the intentional test fixtures under `backend/tests/` (leave those — the backend suite loads them).
 
-- [ ] **Step 4: Verify nothing broke**
+- [x] **Step 4: Verify nothing broke**
 
 Run: `cd frontend && npm test && npm run build` and `cd ../backend && venv/bin/python tools/run_golf_parser_tests.py`
 Expected: green — the deleted files were never inputs to code or tests.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 cd /Users/toka/code/toms_gym
