@@ -813,7 +813,7 @@ Add to `requirements.txt`: `google-cloud-tasks==2.16.5` and run `venv/bin/pip in
 Run: `venv/bin/python -m pytest --noconftest tests/unit/test_analysis_dispatch.py -v`
 Expected: 3 PASSED
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add toms_gym/services/analysis_dispatch.py requirements.txt tests/unit/test_analysis_dispatch.py
@@ -833,7 +833,7 @@ git commit -m "feat(backend): Cloud Tasks enqueue service for analysis jobs (fla
 - Consumes: `_process_job(get_connection, result_id, attempt_id, video_url, lift_type)` from `toms_gym.integrations.lifting_processor`; `process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual)` from `toms_gym.integrations.bowling_processor`. Both already write `completed`/`failed` to the DB themselves.
 - Produces: `POST /jobs/lifting/<result_id>` and `POST /jobs/bowling/<result_id>`. Returns 200 when the row finished `completed` (or is gone/already done — don't retry those), 403 on bad OIDC, 500 when the run failed (Cloud Tasks retries up to the queue's max-attempts).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/unit/test_jobs_routes.py
@@ -922,12 +922,12 @@ def test_missing_row_returns_200_no_retry(app, monkeypatch):
     assert resp.status_code == 200
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/test_jobs_routes.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'toms_gym.routes.jobs_routes'`
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # toms_gym/routes/jobs_routes.py
@@ -1060,7 +1060,7 @@ from toms_gym.routes.jobs_routes import jobs_bp
 app.register_blueprint(jobs_bp)
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/ -v`
 Expected: all PASSED (dispatch + jobs tests).

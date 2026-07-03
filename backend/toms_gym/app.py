@@ -28,6 +28,7 @@ from toms_gym.routes.bowling_routes import bowling_bp
 from toms_gym.routes.lifting_routes import lifting_bp
 from toms_gym.routes.golf_routes import golf_bp
 from toms_gym.routes.short_link_routes import short_link_bp
+from toms_gym.routes.jobs_routes import jobs_bp
 
 load_dotenv()
 
@@ -199,6 +200,7 @@ app.register_blueprint(lifting_bp)
 app.register_blueprint(golf_bp)
 app.register_blueprint(telemetry_bp)
 app.register_blueprint(short_link_bp)
+app.register_blueprint(jobs_bp)
 
 # Start email processor if enabled
 start_background_processor()
