@@ -9,6 +9,7 @@ from sqlalchemy import create_engine, text
 # base-schema setup below. Order matters.
 MIGRATIONS_TO_APPLY = [
     "008_fairway_schema.sql",  # Phase B: Course/Tee/Round/HoleScore/HandicapSnapshot
+    "012_tickets.sql",  # File-a-ticket: Ticket table
 ]
 
 

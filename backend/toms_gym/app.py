@@ -29,6 +29,7 @@ from toms_gym.routes.lifting_routes import lifting_bp
 from toms_gym.routes.golf_routes import golf_bp
 from toms_gym.routes.short_link_routes import short_link_bp
 from toms_gym.routes.jobs_routes import jobs_bp
+from toms_gym.routes.ticket_routes import ticket_bp
 
 load_dotenv()
 
@@ -143,6 +144,32 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"ShortLink migration note: {e}")
 
+        # Create Ticket table if not exists (migration 012)
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "Ticket" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    type TEXT NOT NULL CHECK (type IN ('bug', 'feature')),
+                    title TEXT NOT NULL,
+                    description TEXT NOT NULL,
+                    page_url TEXT,
+                    contact_email TEXT,
+                    user_id UUID REFERENCES "User"(id) ON DELETE SET NULL,
+                    status TEXT NOT NULL DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'closed')),
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    updated_at TIMESTAMPTZ DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_ticket_status_created_at
+                    ON "Ticket" (status, created_at DESC)
+            """))
+            session.commit()
+            logging.info("Ticket table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Ticket migration note: {e}")
+
         session.close()
     except Exception as e:
         logging.warning(f"Startup migration skipped: {e}")
@@ -201,6 +228,7 @@ app.register_blueprint(golf_bp)
 app.register_blueprint(telemetry_bp)
 app.register_blueprint(short_link_bp)
 app.register_blueprint(jobs_bp)
+app.register_blueprint(ticket_bp)
 
 # Start email processor if enabled
 start_background_processor()
