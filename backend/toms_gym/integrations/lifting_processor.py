@@ -53,6 +53,10 @@ def _get_id_token():
 
 def start_lifting_processor():
     """Start the lifting processor as a background daemon thread."""
+    if os.environ.get('ANALYSIS_DISPATCH_MODE', 'poller') == 'tasks':
+        logger.info("Lifting processor disabled: Cloud Tasks dispatch mode is active")
+        return
+
     if not LIFTING_PROCESSOR_ENABLED:
         logger.info("Lifting processor is disabled")
         return

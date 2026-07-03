@@ -5,6 +5,7 @@ import uuid
 import sqlalchemy
 from flask import Blueprint, jsonify, request
 from toms_gym.db import get_db_connection
+from toms_gym.services.analysis_dispatch import enqueue_analysis_job
 
 lifting_bp = Blueprint('lifting', __name__, url_prefix='/lifting')
 logger = logging.getLogger(__name__)
@@ -58,6 +59,7 @@ def trigger_analysis(attempt_id):
                     {"id": existing.id}
                 )
                 session.commit()
+                enqueue_analysis_job('lifting', str(existing.id))
                 return jsonify({
                     "lifting_result_id": str(existing.id),
                     "status": "queued",
@@ -80,6 +82,7 @@ def trigger_analysis(attempt_id):
             {"id": result_id, "attempt_id": attempt_id}
         )
         session.commit()
+        enqueue_analysis_job('lifting', result_id)
 
         return jsonify({
             "lifting_result_id": result_id,

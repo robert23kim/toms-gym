@@ -1,6 +1,6 @@
 # Analysis Engine Re-architecture Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Remove the subprocess-per-request + stdout-regex design from `bowling-service` and replace the toms_gym backend's daemon-thread pollers with Cloud Tasks push dispatch, so analyses run warm, return structured results, and get retries/backpressure from managed infrastructure.
 
@@ -33,7 +33,7 @@ The CLI (`scripts/analyze_lift.py`) builds the summary dict inline; the service 
 - Consumes: `LiftAnalysis` (from `src.lifting.pose.data_types`) — has `.report` (LiftReport) and `.plank_result` (dict | None).
 - Produces: `build_lift_summary(analysis: LiftAnalysis) -> dict` — plank shape `{"lift_type": "plank", **plank_result}`; rep-based shape matches the CLI's existing JSON exactly (keys: `camera_view`, `active_arm`, `total_reps`, `overall_grade`, `overall_score`, `lift_type`, `rep_metrics`, `insights`). Task 3 imports this.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/test_lift_summary.py
@@ -98,12 +98,12 @@ def test_rep_summary_matches_cli_shape():
     assert "best_time_s" not in rm["metrics"][0]
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd /Users/toka/code/bowling-app/analysis-engine && .venv/bin/pytest tests/test_lift_summary.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'src.lifting.summary'`
 
-- [ ] **Step 3: Create `src/lifting/summary.py`**
+- [x] **Step 3: Create `src/lifting/summary.py`**
 
 Copy the dict construction verbatim from `scripts/analyze_lift.py` lines 100 and 135–167 into:
 
@@ -152,21 +152,21 @@ def build_lift_summary(analysis) -> dict:
 
 (No type annotation on `analysis` — plank path is duck-typed the same way `scripts/analyze_lift.py` treats it, and importing `LiftAnalysis` would pull cv2 into this leaf module.)
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `.venv/bin/pytest tests/test_lift_summary.py -v`
 Expected: 2 PASSED
 
-- [ ] **Step 5: Use it from the CLI**
+- [x] **Step 5: Use it from the CLI**
 
 In `scripts/analyze_lift.py`: add `from src.lifting.summary import build_lift_summary` next to the existing `from src.lifting.pipeline import analyze_lift` import. Replace the plank-branch summary construction (line 100: `summary = {"lift_type": "plank", **pr}`) with `summary = build_lift_summary(analysis)`, and replace the rep-branch `summary = { ... }` literal (lines 135–167) with `summary = build_lift_summary(analysis)`. Keep all the `print(...)` reporting untouched.
 
-- [ ] **Step 6: Run the fast suite**
+- [x] **Step 6: Run the fast suite**
 
 Run: `.venv/bin/pytest tests/ -v -m "not slow"`
 Expected: all pass (same count as before this task, +2).
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add src/lifting/summary.py scripts/analyze_lift.py tests/test_lift_summary.py
@@ -186,7 +186,7 @@ git commit -m "refactor(lifting): extract build_lift_summary shared by CLI and s
 **Interfaces:**
 - Produces: `_write_service_summary(path, total_frames, detections, birds_eye_renderer, active_lane) -> None` writing JSON `{"total_frames": int, "detections": int, "detection_rate": float|None, "final_board": float|None}`. Task 4 reads this file. (`lane_edges` intentionally stays on the existing stdout-regex path — see Task 4 fallback.)
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/test_service_summary.py
@@ -225,12 +225,12 @@ def test_handles_missing_renderer_and_zero_frames(tmp_path):
     assert data["final_board"] is None
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `.venv/bin/pytest tests/test_service_summary.py -v`
 Expected: FAIL with `ImportError: cannot import name '_write_service_summary'`
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `scripts/debug_ball_motion.py`, add a module-level helper (place it next to `_write_telemetry`, around line 180):
 
@@ -270,16 +270,16 @@ At the end of `main()`, immediately after the trajectory-PNG block (after line ~
         print(f"Service summary written to: {args.output_summary}")
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `.venv/bin/pytest tests/test_service_summary.py -v` → 2 PASSED, then `.venv/bin/pytest tests/ -v -m "not slow"` → all pass.
 
-- [ ] **Step 5: End-to-end sanity check on the fixture video**
+- [x] **Step 5: End-to-end sanity check on the fixture video**
 
 Run: `.venv/bin/python -m scripts.debug_ball_motion sample_input.mp4 /tmp/debug.mp4 --simple-detect --output-summary /tmp/summary.json && cat /tmp/summary.json`
 Expected: JSON with non-null `detection_rate` (fixture historically ~100%) and `final_board`.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add scripts/debug_ball_motion.py tests/test_service_summary.py
@@ -298,7 +298,7 @@ git commit -m "feat(bowling): add --output-summary JSON so the service stops scr
 - Consumes: `analyze_lift(video_path, output_video=, camera_view_override=, no_overlay=, lift_type=) -> LiftAnalysis` from `src.lifting.pipeline`; `build_lift_summary` from Task 1.
 - Produces: unchanged HTTP contract — `POST /analyze-lift` returns `{"annotated_video_url", "summary_url", "report", "processing_time_s"}`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/test_service_app.py
@@ -387,12 +387,12 @@ def test_analyze_lift_pipeline_error_returns_500(client, monkeypatch):
     assert "pose model exploded" in resp.get_json()["error"]
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `.venv/bin/pytest tests/test_service_app.py -v`
 Expected: FAIL — the current implementation shells out to `python -m scripts.analyze_lift`, which "succeeds" or fails differently; the structured-report assertions fail. (If the subprocess path errors first, that also counts as red.)
 
-- [ ] **Step 3: Replace the subprocess block**
+- [x] **Step 3: Replace the subprocess block**
 
 In `service/app.py` `analyze_lift()` route, replace lines 294–333 (the `cmd = [...]` build, `subprocess.run`, stdout/stderr logging, returncode check, and summary-file read) with:
 
@@ -421,11 +421,11 @@ Notes for the implementer:
 - The rest of the route (H.264 re-encode, clip upload loop reading `report['rep_metrics']`, summary upload, response JSON) is unchanged — `report` is now a plain dict exactly like the old `json.load` produced.
 - The subprocess's 540s timeout is gone; gunicorn's `--timeout 600` (Dockerfile line 41) is now the only watchdog and still kills a stuck worker. Add a comment saying exactly that where the timeout comment used to be.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `.venv/bin/pytest tests/test_service_app.py tests/test_lift_summary.py -v` → PASSED, then the fast suite `.venv/bin/pytest tests/ -v -m "not slow"`.
 
-- [ ] **Step 5: Real-video smoke test (slow, local)**
+- [x] **Step 5: Real-video smoke test (slow, local)**
 
 Run: `GCS_BUCKET_NAME= MPLBACKEND=Agg .venv/bin/python -c "
 from src.lifting.pipeline import analyze_lift
@@ -435,7 +435,7 @@ print(build_lift_summary(a))
 "`
 Expected: dict printed with `total_in_plank_s` in the 5.1–6.1s band (matches `test_plank_analyzer.py` sentinels).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add service/app.py tests/test_service_app.py
@@ -454,7 +454,7 @@ git commit -m "refactor(service): run lifting analysis in-process instead of sub
 - Consumes: the summary JSON from Task 2 (`{"total_frames", "detections", "detection_rate", "final_board"}`).
 - Produces: unchanged `POST /analyze` response shape.
 
-- [ ] **Step 1: Write the failing test** (append to `tests/test_service_app.py`)
+- [x] **Step 1: Write the failing test** (append to `tests/test_service_app.py`)
 
 ```python
 def test_analyze_bowling_prefers_summary_json(client, monkeypatch):
@@ -484,12 +484,12 @@ def test_analyze_bowling_prefers_summary_json(client, monkeypatch):
     assert body["board_at_pins"] == 17.5
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `.venv/bin/pytest tests/test_service_app.py::test_analyze_bowling_prefers_summary_json -v`
 Expected: FAIL — `--output-summary` is not in `cmd`, so `cmd.index` raises `ValueError` (the route doesn't pass the flag yet).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In the `analyze()` route:
 1. After `output_path = ...` (line 141) add `summary_path = os.path.join(tmp_dir, 'summary.json')`.
@@ -524,11 +524,11 @@ In the `analyze()` route:
                 logger.warning("Failed to parse lane_edges from stdout")
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `.venv/bin/pytest tests/test_service_app.py -v` → all PASSED; then the fast suite.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add service/app.py tests/test_service_app.py
@@ -549,12 +549,12 @@ Centralize delegate selection so flipping to GPU (L4 quota pending) is a deploy 
 **Interfaces:**
 - Produces: `resolve_pose_delegate() -> mp.tasks.BaseOptions.Delegate` in `src/lifting/pose/estimator.py`, reading env `POSE_DELEGATE` (`cpu` default | `gpu`). Both landmarker construction sites call it.
 
-- [ ] **Step 1: Locate every landmarker construction site**
+- [x] **Step 1: Locate every landmarker construction site**
 
 Run: `grep -rn "BaseOptions\|create_from_options" src/lifting/ | grep -v test`
 Expected: hits in `estimator.py` (~line 129–136) and `plank_analyzer.py`. If `onnx_plank_pose.py`/`cigpose_backend.py` also hit, leave those alone (dead-end backends).
 
-- [ ] **Step 2: Write the failing test**
+- [x] **Step 2: Write the failing test**
 
 ```python
 # tests/test_pose_delegate.py
@@ -579,12 +579,12 @@ def test_gpu_when_requested(monkeypatch):
     assert resolve_pose_delegate() == mp.tasks.BaseOptions.Delegate.GPU
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `.venv/bin/pytest tests/test_pose_delegate.py -v`
 Expected: FAIL with `ImportError: cannot import name 'resolve_pose_delegate'`
 
-- [ ] **Step 4: Implement**
+- [x] **Step 4: Implement**
 
 In `estimator.py`, add near the top (module already imports `os`):
 
@@ -599,11 +599,11 @@ def resolve_pose_delegate():
 
 Then in both construction sites (estimator `__init__` ~line 129 and the plank analyzer's options), add `delegate=resolve_pose_delegate()` as a keyword to the existing `mp.tasks.BaseOptions(...)` call (plank_analyzer imports it: `from src.lifting.pose.estimator import resolve_pose_delegate`). Do not change any other option.
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run: `.venv/bin/pytest tests/test_pose_delegate.py -v` → 2 PASSED, then the fast suite → all pass (CPU default means zero behavior change).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add src/lifting/pose/estimator.py src/lifting/plank_analyzer.py tests/test_pose_delegate.py
@@ -619,7 +619,7 @@ git commit -m "feat(pose): POSE_DELEGATE env flag for CPU/GPU delegate selection
 - Create: `/Users/toka/code/bowling-app/analysis-engine/scripts/fetch_dev_assets.sh`
 - Modify: `/Users/toka/code/bowling-app/analysis-engine/CLAUDE.md` (dev-assets note)
 
-- [ ] **Step 1: Upload the assets to GCS before untracking them**
+- [x] **Step 1: Upload the assets to GCS before untracking them**
 
 ```bash
 cd /Users/toka/code/bowling-app/analysis-engine
@@ -629,7 +629,7 @@ gsutil -m cp yolov8n.pt yolov8s-worldv2.pt yolov9t.pt yolov10n.pt yolo11n.pt \
 ```
 Expected: 8 uploads complete. (Skip any file `git ls-files` says isn't tracked *and* doesn't exist.)
 
-- [ ] **Step 2: Create the fetch script**
+- [x] **Step 2: Create the fetch script**
 
 ```bash
 #!/bin/bash
@@ -642,7 +642,7 @@ gsutil -m cp "gs://jtr-lift-u-4ever-cool-bucket/dev-assets/analysis-engine/*" .
 
 Run `chmod +x scripts/fetch_dev_assets.sh`.
 
-- [ ] **Step 3: Untrack and ignore**
+- [x] **Step 3: Untrack and ignore**
 
 ```bash
 git rm --cached yolov8n.pt yolov8s-worldv2.pt yolov9t.pt yolov10n.pt yolo11n.pt \
@@ -663,7 +663,7 @@ Then verify nothing needed by the fast suite broke: `.venv/bin/pytest tests/ -v 
 
 **Do NOT commit or discard the in-flight `src/bowling/` relocation** (`git status` shows `src/detectors/` → `src/bowling/` moves unstaged) — that's Tom's in-progress refactor; leave it and flag it in the task report.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add .gitignore scripts/fetch_dev_assets.sh CLAUDE.md
@@ -684,7 +684,7 @@ From here on, repo = `/Users/toka/code/toms_gym/backend`.
 **Interfaces:**
 - Produces: `dispatch_enabled() -> bool` (true iff env `ANALYSIS_DISPATCH_MODE == 'tasks'`) and `enqueue_analysis_job(kind: str, result_id: str) -> None` (kind ∈ `'lifting' | 'bowling'`; no-op when disabled; never raises — logs and swallows enqueue errors so job creation still succeeds and the poller/manual retry can pick it up). Tasks 8–9 consume both.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/unit/test_analysis_dispatch.py
@@ -738,12 +738,12 @@ def test_enqueue_errors_are_swallowed(monkeypatch):
     analysis_dispatch.enqueue_analysis_job("bowling", "r-2")  # must not raise
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd /Users/toka/code/toms_gym/backend && venv/bin/python -m pytest --noconftest tests/unit/test_analysis_dispatch.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'toms_gym.services.analysis_dispatch'`
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # toms_gym/services/analysis_dispatch.py
@@ -808,12 +808,12 @@ def enqueue_analysis_job(kind: str, result_id: str) -> None:
 
 Add to `requirements.txt`: `google-cloud-tasks==2.16.5` and run `venv/bin/pip install google-cloud-tasks==2.16.5`.
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/test_analysis_dispatch.py -v`
 Expected: 3 PASSED
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add toms_gym/services/analysis_dispatch.py requirements.txt tests/unit/test_analysis_dispatch.py
@@ -833,7 +833,7 @@ git commit -m "feat(backend): Cloud Tasks enqueue service for analysis jobs (fla
 - Consumes: `_process_job(get_connection, result_id, attempt_id, video_url, lift_type)` from `toms_gym.integrations.lifting_processor`; `process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual)` from `toms_gym.integrations.bowling_processor`. Both already write `completed`/`failed` to the DB themselves.
 - Produces: `POST /jobs/lifting/<result_id>` and `POST /jobs/bowling/<result_id>`. Returns 200 when the row finished `completed` (or is gone/already done — don't retry those), 403 on bad OIDC, 500 when the run failed (Cloud Tasks retries up to the queue's max-attempts).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/unit/test_jobs_routes.py
@@ -922,12 +922,12 @@ def test_missing_row_returns_200_no_retry(app, monkeypatch):
     assert resp.status_code == 200
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/test_jobs_routes.py -v`
 Expected: FAIL with `ModuleNotFoundError: No module named 'toms_gym.routes.jobs_routes'`
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```python
 # toms_gym/routes/jobs_routes.py
@@ -1060,12 +1060,12 @@ from toms_gym.routes.jobs_routes import jobs_bp
 app.register_blueprint(jobs_bp)
 ```
 
-- [ ] **Step 4: Run tests**
+- [x] **Step 4: Run tests**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/ -v`
 Expected: all PASSED (dispatch + jobs tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add toms_gym/routes/jobs_routes.py toms_gym/app.py tests/unit/test_jobs_routes.py
@@ -1085,7 +1085,7 @@ git commit -m "feat(backend): /jobs push handlers for Cloud Tasks analysis dispa
 **Interfaces:**
 - Consumes: `enqueue_analysis_job(kind, result_id)` from Task 7.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/unit/test_enqueue_wiring.py
@@ -1112,12 +1112,12 @@ def test_bowling_poller_stands_down_in_tasks_mode(monkeypatch):
     assert started == []
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/test_enqueue_wiring.py -v`
 Expected: FAIL — threads get created (the poller doesn't check the mode yet). Note: patching `Thread` means the "failure" shows `started` non-empty.
 
-- [ ] **Step 3: Stand down the pollers in tasks mode**
+- [x] **Step 3: Stand down the pollers in tasks mode**
 
 At the top of `start_lifting_processor()` (before the `LIFTING_PROCESSOR_ENABLED` check), add:
 
@@ -1129,7 +1129,7 @@ At the top of `start_lifting_processor()` (before the `LIFTING_PROCESSOR_ENABLED
 
 Mirror the same three lines in `start_bowling_processor()` (bowling_processor.py already imports `os`).
 
-- [ ] **Step 4: Wire enqueue at the three creation/requeue sites**
+- [x] **Step 4: Wire enqueue at the three creation/requeue sites**
 
 `lifting_routes.py` — add the import at the top: `from toms_gym.services.analysis_dispatch import enqueue_analysis_job`, then:
 
@@ -1151,12 +1151,12 @@ Also run `grep -n "'queued'" toms_gym/routes/bowling_routes.py` — if there is 
 
 (Enqueue-after-commit ordering matters: the task handler reads the row, so the row must be committed first. `enqueue_analysis_job` swallows its own errors, so these calls can't break the endpoints; in poller mode they're no-ops.)
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/ -v` → all PASSED.
 Then the full DB-bound suite once: `./run_tests.sh` → same pass/fail state as before this plan (no new failures).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add toms_gym/routes/lifting_routes.py toms_gym/routes/bowling_routes.py \
