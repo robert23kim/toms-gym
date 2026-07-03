@@ -30,6 +30,13 @@ export interface CompressOptions {
   maxHeight?: number;
   /** Target video bitrate in bits/sec passed to the encoder. Default 2_500_000. */
   videoBitrate?: number;
+  /**
+   * When true, only the hardware WebCodecs pipeline may run; the MediaRecorder
+   * fallback (which plays the whole video back in realtime to re-record it) is
+   * skipped and the original file is returned instead. Use when a slow encode
+   * costs more than the transfer bytes it saves. Default false.
+   */
+  fastPathOnly?: boolean;
 }
 
 const DEFAULT_MAX_HEIGHT = 720;
@@ -111,14 +118,18 @@ export async function compressVideo(
   }
 
   // Fallback path: HTMLVideoElement playback → canvas → MediaRecorder.
-  try {
-    const recorded = await compressWithMediaRecorder(file, maxHeight, videoBitrate, report);
-    if (recorded && isWorthwhile(recorded, file)) {
-      report(100);
-      return recorded;
+  // Runs at ~realtime (it literally plays the video), so fast-only callers
+  // would rather ship the original bytes than pay it.
+  if (!opts?.fastPathOnly) {
+    try {
+      const recorded = await compressWithMediaRecorder(file, maxHeight, videoBitrate, report);
+      if (recorded && isWorthwhile(recorded, file)) {
+        report(100);
+        return recorded;
+      }
+    } catch {
+      // Swallow — fall through to returning the original.
     }
-  } catch {
-    // Swallow — fall through to returning the original.
   }
 
   // Final fallback: the untouched original.

@@ -170,20 +170,30 @@ export async function uploadVideo(
   file: File,
   fields: UploadFields,
   onProgress?: (pct: number) => void,
-  options?: { skipCompression?: boolean }
+  options?: {
+    /**
+     * 'auto' (default) — hardware WebCodecs encode when supported, slow
+     *   MediaRecorder fallback otherwise;
+     * 'fast-only' — hardware encode or nothing: never pay the realtime
+     *   MediaRecorder fallback (right for analyzers that downsample anyway);
+     * 'off' — always upload the original bytes.
+     */
+    compression?: 'auto' | 'fast-only' | 'off';
+  }
 ): Promise<FinalizeResponse> {
   // Phase 1 — compress (best-effort). When we attempt it, the encode owns the
   // first COMPRESS_PROGRESS_SHARE of the bar regardless of outcome, so the bar
   // never jumps backwards if compression turns out not to help.
-  // Callers can skip it when the consumer downsamples anyway (the plank
-  // analyzer reads 15fps pose — a blocking 720p re-encode buys nothing).
+  const mode = options?.compression ?? 'auto';
   const attemptCompress =
-    !options?.skipCompression && canCompressVideo() && file.size >= COMPRESS_THRESHOLD;
+    mode !== 'off' && canCompressVideo() && file.size >= COMPRESS_THRESHOLD;
   let toUpload = file;
   if (attemptCompress) {
     try {
-      toUpload = await compressVideo(file, { maxHeight: 720 }, (pct) =>
-        onProgress?.(Math.round(pct * COMPRESS_PROGRESS_SHARE))
+      toUpload = await compressVideo(
+        file,
+        { maxHeight: 720, fastPathOnly: mode === 'fast-only' },
+        (pct) => onProgress?.(Math.round(pct * COMPRESS_PROGRESS_SHARE))
       );
     } catch {
       toUpload = file;

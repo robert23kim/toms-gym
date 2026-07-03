@@ -189,9 +189,11 @@ const ChallengeDetail: React.FC = () => {
           email,
         },
         (pct) => setUploadProgress(pct),
-        // The plank analyzer samples 15fps pose — a blocking client-side 720p
-        // re-encode delays the upload without helping it.
-        { skipCompression: liftType === 'Plank' }
+        // Planks: hardware WebCodecs compression is a big transfer win (phone
+        // 1080p → 720p ≈ 3-5× fewer bytes) and near-free, but the realtime
+        // MediaRecorder fallback costs more than it saves — the analyzer only
+        // samples 15fps pose, so ship the original when hardware is missing.
+        { compression: liftType === 'Plank' ? 'fast-only' : 'auto' }
       );
 
       if (data.url) {
