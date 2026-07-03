@@ -183,7 +183,7 @@ All ~27 page components are eagerly imported in `src/routes/index.tsx`, so the i
 - Consumes: `ErrorBoundary` from Task 1 (already wired outside — Suspense goes inside it).
 - Produces: same `routes: RouteObject[]` export; same paths; page components become `React.lazy`.
 
-- [ ] **Step 1: Rewrite `src/routes/index.tsx`**
+- [x] **Step 1: Rewrite `src/routes/index.tsx`**
 
 Replace the entire file with (route paths are IDENTICAL to the current file — only the import mechanism changes; `ShortLinkRedirect` and the inline `VideoPlayerRedirect` stay eager because redirects should not flash a spinner):
 
@@ -263,7 +263,7 @@ export const routes: RouteObject[] = [
 
 Note: this requires every page to have a `default export` — all current pages do (they're imported as default today).
 
-- [ ] **Step 2: Add Suspense in App.tsx**
+- [x] **Step 2: Add Suspense in App.tsx**
 
 Add `Suspense` to the react import in `src/App.tsx` (`import { useEffect, Suspense } from "react";`) and wrap the `<Routes>` block:
 
@@ -283,16 +283,16 @@ Add `Suspense` to the react import in `src/App.tsx` (`import { useEffect, Suspen
             </Suspense>
 ```
 
-- [ ] **Step 3: Verify chunk splitting**
+- [x] **Step 3: Verify chunk splitting**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: all green, and the build output lists many small `dist/assets/*.js` chunks (one per page) instead of one large bundle. Note the main chunk size before/after in the commit message body.
 
-- [ ] **Step 4: Manual smoke**
+- [x] **Step 4: Manual smoke**
 
 Run: `npm run dev` and load `/`, `/golf/leaderboard`, `/upload` — each renders (spinner may flash on first navigation).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add src/routes/index.tsx src/App.tsx
