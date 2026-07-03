@@ -32,6 +32,9 @@ jobs:
           # toms_gym/db.py builds a Cloud SQL connector at import time unless
           # DATABASE_URL is set; the suite never actually queries this engine.
           DATABASE_URL: 'sqlite:///test.db'
+          # storage.py's designed mock hatch: 'none' selects MockStorageClient
+          # instead of building a real GCS client (needs ADC) at import time.
+          GOOGLE_APPLICATION_CREDENTIALS: 'none'
 
   frontend-tests:
     runs-on: ubuntu-latest
