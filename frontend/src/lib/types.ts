@@ -386,6 +386,56 @@ export interface GolfCreateCourseRequest {
   user_id?: string;
 }
 
+/**
+ * Per-challenge leaderboard — mirrors
+ * `GET /competitions/<id>/leaderboard` in
+ * `backend/toms_gym/routes/competition_routes.py` +
+ * `backend/toms_gym/services/challenge_leaderboard.py`.
+ */
+export type ChallengeMetric = "time" | "weight";
+
+export interface ChallengeLeaderboardHistoryPoint {
+  /** held seconds (time) or weight_kg (weight). */
+  score: number;
+  date: string | null;
+}
+
+export interface ChallengeLeaderboardRow {
+  rank: number;
+  user_id: string;
+  name: string | null;
+  /** time: best hold seconds; weight: best-lift total. */
+  score: number;
+  /** weight: {lift_type: max}; time: {"Plank": best_hold}. */
+  best_by_lift: Record<string, number>;
+  /** time only; null otherwise. */
+  form_score: number | null;
+  /** id of the score-setting attempt; null when the athlete has no qualifying attempt. */
+  attempt_id: string | null;
+  clip_url: string | null;
+  thumbnail_url: string | null;
+  /** ISO date of the best attempt. */
+  date: string | null;
+  weight_class: string | null;
+  gender: string | null;
+  attempt_count: number;
+  /** chronological qualifying attempts — powers the (step 3) sparkline. */
+  history: ChallengeLeaderboardHistoryPoint[];
+}
+
+export interface ChallengeLeaderboardMomentum {
+  joined: number;
+  uploaded_today: number;
+}
+
+export interface ChallengeLeaderboard {
+  competition_id: string;
+  metric: ChallengeMetric;
+  lift_types: string[];
+  momentum: ChallengeLeaderboardMomentum;
+  rows: ChallengeLeaderboardRow[];
+}
+
 export interface GolfLeaderboardEntry {
   rank: number;
   user_id: string;

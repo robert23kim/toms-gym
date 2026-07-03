@@ -4,6 +4,7 @@ import {
   Competition,
   Participant,
   Challenge,
+  ChallengeLeaderboard,
   LiftingResult,
   GolfCourse,
   GolfCourseSearchResult,
@@ -357,6 +358,13 @@ export const getTopLifts = async (): Promise<Record<string, any[]>> => {
     return { squat: [], bench: [], deadlift: [] };
   }
 };
+
+// Per-challenge leaderboard (podium + ranked table). Server ranks by the
+// challenge's single metric; the frontend renders whatever it returns.
+export async function getChallengeLeaderboard(id: string): Promise<ChallengeLeaderboard> {
+  const response = await axios.get(`${API_URL}/competitions/${id}/leaderboard`);
+  return response.data;
+}
 
 export async function triggerLiftingAnalysis(attemptId: string): Promise<{ lifting_result_id: string; status: string }> {
   const response = await axios.post(`${API_URL}/lifting/analyze/${attemptId}`);

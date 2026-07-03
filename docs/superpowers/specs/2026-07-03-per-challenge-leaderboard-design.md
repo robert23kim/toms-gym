@@ -44,13 +44,27 @@ telling the frontend how to render the score.
 - Held time comes from the analysis result, not the attempt row:
   `LiftingResult.report->>'total_in_plank_s'`. The pipeline sets
   `Attempt.status='completed'` and writes the report in the same commit
-  (`lifting_processor.py:183,202`), so any `completed` plank attempt has a hold time.
+  (`backend/toms_gym/integrations/lifting_processor.py`, the post-analysis
+  UPDATE block), so any `completed` plank attempt has a hold time.
+  **In-flight caveat:** the analysis-engine rearchitecture branch (Cloud Tasks
+  dispatch via new `/jobs` push handlers, worktree `agent-aff540cd876aa0517`)
+  moves *how* analysis is triggered but keeps this same-commit invariant in
+  `lifting_processor.py` — re-verify the invariant if that branch merges first.
 - `report->>'overall_form_score'` is carried through for display and as a tiebreak.
 
 **`weight` (lifting challenges).**
 - Rank by **best-lift total**: per athlete, `max(weight_kg)` per `lift_type`
   among `completed` attempts, summed. Classic powerlifting total; reduces to "best
   single lift" for a single-lift challenge. Score column labeled "Total" (lbs).
+- **Unit caveat (RESOLVED 2026-07-03):** `weight_kg` stores whatever the user
+  typed, unconverted — and the two upload forms disagree: `ChallengeDetail`'s
+  form is labeled "Weight (lbs)" while `UploadVideo.tsx` is labeled
+  "Weight (kg)". The column is therefore mixed-unit and no retroactive
+  conversion is possible. **Leaderboard decision: display raw values with the
+  "lbs" label, no conversion** — this agrees with the existing feed and with
+  the challenge upload form (the flow that feeds challenges). Unifying the two
+  upload forms / migrating the column is a separate product fix, out of scope
+  here.
 
 Only `status = 'completed'` attempts count; `pending`/`failed` are ignored for
 ranking (they still surface their clip if we choose to show them — MVP shows only
@@ -164,8 +178,9 @@ New route in `competition_routes.py`. Flat board, no query params this iteration
 - `momentum` powers the hero social-proof line ("4 uploaded today · 12 joined"):
   `joined` = participants in the challenge; `uploaded_today` = attempts created
   today (server date). Both computed in the route with COUNT queries.
-- Weights returned raw in kg (frontend → lbs); hold times raw in seconds
-  (frontend → `65.8s`).
+- Weights returned raw from `weight_kg` and displayed unconverted with the
+  "lbs" label (see the resolved unit caveat under "The two metrics"); hold
+  times raw in seconds (frontend → `65.8s`).
 - **Viewer standing is derived on the frontend from `rows`** — no server-side
   viewer awareness. Given the logged-in `user_id`: find their row (rank + score +
   history), read `rows.length` for "of N", and the row directly above for the
@@ -206,7 +221,7 @@ Top → bottom (mobile `#3a`, primary):
    (with blue **play badge** → opens that entrant's clip), name, score, pedestal
    bar (heights 1st=96 / 2nd=70 / 3rd=56 mobile; larger on desktop). Champion has a
    gold crown/trophy above the avatar. Medal colors gold/silver/bronze.
-4. **"Everyone else" table** — ranks 4+. Row: rank number, **clip thumbnail**
+5. **"Everyone else" table** — ranks 4+. Row: rank number, **clip thumbnail**
    (44×44 mobile / 30×30 desktop, play glyph → opens clip), name + date, score
    right-aligned. Desktop header row: `RANK · ATHLETE · HOLD · CLIP`
    (label "HOLD" for time, "TOTAL" for weight).

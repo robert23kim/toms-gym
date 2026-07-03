@@ -1,17 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, Users, Dumbbell, CheckCircle2, Upload, Play } from "lucide-react";
+import { ArrowLeft, Dumbbell, Upload } from "lucide-react";
 import axios from "axios";
-import { Challenge, LiftingResult } from "../lib/types";
+import { Challenge, ChallengeLeaderboard, ChallengeLeaderboardRow, LiftingResult } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
-import { getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
+import { getChallengeLeaderboard, getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
 import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
+import StatusPill from "../components/challenge/StatusPill";
+import Podium from "../components/challenge/Podium";
+import LeaderboardRow from "../components/challenge/LeaderboardRow";
+import YouRow from "../components/challenge/YouRow";
+import MomentumLine from "../components/challenge/MomentumLine";
+import StandingCard from "../components/challenge/StandingCard";
+import { scoreColumnLabel } from "../components/challenge/metric";
+import { deriveStanding, ctaLabelFor } from "../lib/standing";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -62,6 +70,9 @@ const ChallengeDetail: React.FC = () => {
   const [showUpload, setShowUpload] = useState(false);
   const uploadRef = useRef<HTMLDivElement>(null);
   const [liftingResults, setLiftingResults] = useState<Record<string, LiftingResult>>({});
+  const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboard | null>(null);
+  const [leaderboardError, setLeaderboardError] = useState<string | null>(null);
+  const viewerId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
 
   // Upload form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -143,8 +154,9 @@ const ChallengeDetail: React.FC = () => {
         setUploadError(null);
         setShowUpload(false);
 
-        // Refresh videos to show the new upload
+        // Refresh videos + leaderboard to show the new upload
         await fetchVideos();
+        fetchLeaderboard();
 
         // Update hasJoined status
         setHasJoined(true);
@@ -244,6 +256,21 @@ const ChallengeDetail: React.FC = () => {
     }
   };
 
+  // Leaderboard is a separate fetch: its failure must not block the page (the
+  // hero + upload CTA still render so the user can upload) — hence its own state.
+  const fetchLeaderboard = async () => {
+    try {
+      const data = await getChallengeLeaderboard(id || "");
+      setLeaderboard(data);
+      setLeaderboardError(null);
+    } catch (err: any) {
+      console.error("Error fetching leaderboard:", err);
+      setLeaderboardError(
+        err.response?.data?.error || err.message || "Failed to load the leaderboard"
+      );
+    }
+  };
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -251,6 +278,9 @@ const ChallengeDetail: React.FC = () => {
         setError(null);
 
         const userId = localStorage.getItem('userId');
+
+        // Fire the leaderboard fetch alongside the challenge load.
+        fetchLeaderboard();
 
         // Fetch challenge, participants, and check if user has joined
         const [challengeData, participantsData, liftsData] = await Promise.all([
@@ -463,6 +493,28 @@ const ChallengeDetail: React.FC = () => {
     }
   };
 
+  const openUpload = () => {
+    setShowUpload(true);
+    setTimeout(() => uploadRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
+  };
+
+  // The video player route is keyed by attempt id, which each leaderboard row
+  // now carries. Fall back to matching the row's clip URL against the fetched
+  // lifts for responses cached from before attempt_id was added.
+  const resolveClipHref = (row: ChallengeLeaderboardRow): string | null => {
+    if (!row.clip_url) return null;
+    if (row.attempt_id) {
+      return `/challenges/${id}/participants/${row.user_id}/video/${row.attempt_id}`;
+    }
+    const mine = attempts.filter(
+      (a: any) => String(a.participant_id) === String(row.user_id) && a.video_url
+    );
+    if (mine.length === 0) return null;
+    const exact = mine.find((a: any) => a.video_url === row.clip_url);
+    const chosen = exact || mine[0];
+    return `/challenges/${id}/participants/${row.user_id}/video/${chosen.id}`;
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -508,206 +560,189 @@ const ChallengeDetail: React.FC = () => {
     );
   }
 
+  // Derive the viewer's standing once (drives the card, the "You" row subtitle,
+  // and the goal-reframed CTA). Null when the viewer isn't entered.
+  const standing = leaderboard ? deriveStanding(leaderboard, viewerId) : null;
+  const uploadCta = leaderboard
+    ? ctaLabelFor(standing, leaderboard.metric)
+    : "Upload Lift";
+  const heroDescription = challenge.description
+    ? challenge.description.split(" - ")[0]
+    : "";
+
+  // Desktop-only hero date range, e.g. "May 9 – Jul 31, 2026" (#1b).
+  const dateRange = (() => {
+    const start = new Date(`${challenge.date}T00:00:00`);
+    const end = new Date(`${challenge.registrationDeadline}T00:00:00`);
+    if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) return "";
+    const md: Intl.DateTimeFormatOptions = { month: "short", day: "numeric" };
+    return `${start.toLocaleDateString(undefined, md)} – ${end.toLocaleDateString(
+      undefined,
+      { ...md, year: "numeric" },
+    )}`;
+  })();
+
   return (
     <Layout>
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
+        className="min-h-screen bg-background pt-8 pb-28 px-4 sm:px-6 lg:px-8"
       >
-        <div className="max-w-5xl mx-auto">
+        <div className="max-w-xl lg:max-w-6xl mx-auto">
+          {/* Hero */}
           <Link
             to="/challenges"
-            className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
+            className="inline-flex items-center text-sm text-muted-foreground hover:text-foreground mb-5"
           >
             <ArrowLeft className="mr-2" size={16} />
             Back to Challenges
           </Link>
 
-          <div className="bg-card rounded-lg shadow-lg overflow-hidden mb-8">
-            <div className="p-6 sm:p-8">
-              {/* Header: title + status + upload button */}
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4">
-                <div className="flex items-center gap-3 mb-2 sm:mb-0">
-                  <h1 className="text-3xl font-bold">{challenge.title}</h1>
-                  <span
-                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${
-                      challenge.status === "upcoming"
-                        ? "bg-blue-500/10 text-blue-500"
-                        : challenge.status === "ongoing"
-                        ? "bg-green-500/10 text-green-500"
-                        : "bg-gray-500/10 text-gray-500"
-                    }`}
-                  >
-                    {challenge.status.charAt(0).toUpperCase() + challenge.status.slice(1)}
+          <div className="mb-6">
+            <div className="mb-3 flex items-center justify-between gap-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <StatusPill
+                  status={challenge.status}
+                  startDate={challenge.date}
+                  endDate={challenge.registrationDeadline}
+                />
+                {dateRange && (
+                  <span className="hidden text-[12.5px] font-medium text-white/45 lg:inline">
+                    {dateRange}
                   </span>
-                  {hasJoined && (
-                    <div className="flex items-center gap-1 bg-green-500/10 text-green-500 px-3 py-1.5 rounded-full text-sm font-medium">
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>Joined</span>
-                    </div>
-                  )}
-                </div>
-                {(challenge.status === "upcoming" || challenge.status === "ongoing") && (
-                  <button
-                    onClick={handleUploadClick}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600 transition-colors"
-                  >
-                    <Upload className="w-4 h-4" />
-                    Upload Lift
-                  </button>
                 )}
               </div>
-
-              {challenge.status === "completed" && (
-                <div className="mb-4 text-center text-muted-foreground p-3 bg-gray-100 rounded-lg text-sm">
-                  This challenge has ended
-                </div>
-              )}
-
-              {/* Metadata row */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground mb-4">
-                <div className="flex items-center gap-1">
-                  <Calendar size={14} />
-                  <span>{new Date(challenge.date).toLocaleDateString()} &mdash; {new Date(challenge.registrationDeadline).toLocaleDateString()}</span>
-                </div>
-                {challenge.location && (
-                  <div className="flex items-center gap-1">
-                    <MapPin size={14} />
-                    <span>{challenge.location}</span>
-                  </div>
-                )}
-                <div className="flex items-center gap-1">
-                  <Users size={14} />
-                  <span>{challenge.participants} participants</span>
-                </div>
-              </div>
-
-              {/* Tags: lift types prominent, weight classes compact */}
-              {challenge.categories.length > 0 && (() => {
-                const liftTypes = challenge.categories.filter(c => !c.includes('kg') && c !== 'Men' && c !== 'Women');
-                const weightClasses = challenge.categories.filter(c => c.includes('kg'));
-                const genders = challenge.categories.filter(c => c === 'Men' || c === 'Women');
-                return (
-                  <div className="mb-6 space-y-2">
-                    <div className="flex flex-wrap gap-2">
-                      {liftTypes.map((tag) => (
-                        <span key={tag} className="px-3 py-1 rounded-full text-sm bg-primary/10 text-primary">{tag}</span>
-                      ))}
-                      {genders.map((tag) => (
-                        <span key={tag} className="px-3 py-1 rounded-full text-sm bg-purple-500/10 text-purple-500">{tag}</span>
-                      ))}
-                    </div>
-                    {weightClasses.length > 0 && (
-                      <p className="text-xs text-muted-foreground">
-                        Weight classes: {weightClasses.join(', ')}
-                      </p>
-                    )}
-                  </div>
-                );
-              })()}
-
-            </div>
-          </div>
-
-          {/* Unified Lift Feed */}
-          <div className="mt-6">
-            <h2 className="text-xl font-semibold mb-4 flex items-center">
-              <Dumbbell className="mr-2" size={20} />
-              Lifts ({videoData.length})
-            </h2>
-
-            {videoData.length > 0 ? (
-              <div className="space-y-3">
-                {videoData
-                  .sort((a, b) => b.weight - a.weight)
-                  .map((video) => {
-                    // Find participant name for this lift
-                    const participant = participants.find((p: any) => p.id === video.user_id);
-                    const participantName = participant?.name || 'Unknown';
-
-                    return (
-                      <Link
-                        key={video.attempt_id}
-                        to={`/challenges/${id}/participants/${video.user_id}/video/${video.attempt_id}`}
-                        className="flex items-center gap-4 bg-card rounded-lg shadow hover:shadow-lg transition-shadow p-4 group"
-                      >
-                        {/* Video thumbnail */}
-                        <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-lg bg-black overflow-hidden shrink-0 relative">
-                          <video
-                            src={video.video_url}
-                            muted
-                            playsInline
-                            preload="metadata"
-                            className="w-full h-full object-cover"
-                            onLoadedData={(e) => { (e.target as HTMLVideoElement).currentTime = 0.5; }}
-                          />
-                          <div className="absolute inset-0 flex items-center justify-center bg-black/20 group-hover:bg-black/30 transition-colors">
-                            <div className="w-8 h-8 rounded-full bg-white/90 flex items-center justify-center">
-                              <Play className="w-4 h-4 text-primary ml-0.5" fill="currentColor" />
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Lift info */}
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-semibold truncate">{participantName}</h3>
-                            {video.lift_type?.toLowerCase() !== 'plank' && video.weight ? (
-                              <span className="text-lg font-bold text-primary ml-2 shrink-0">{video.weight} lbs</span>
-                            ) : null}
-                          </div>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <span>{video.lift_type}</span>
-                            <span>&middot;</span>
-                            <span>{new Date(video.created_at).toLocaleDateString()}</span>
-                          </div>
-                          <div className="mt-1">
-                            {(() => {
-                              const lr = liftingResults[video.attempt_id];
-                              const report = lr?.report;
-                              if (report?.lift_type === 'plank') {
-                                const heldS = report.total_in_plank_s ?? 0;
-                                return (
-                                  <span className="inline-block px-2 py-0.5 rounded-full text-xs bg-blue-500/10 text-blue-500">
-                                    Held {heldS.toFixed(1)}s
-                                  </span>
-                                );
-                              }
-                              const grade = report?.overall_grade;
-                              const isApproved = grade && ['A', 'B', 'C', 'D'].includes(grade);
-                              const isFailed = grade === 'F';
-                              const badgeClass = isApproved ? 'bg-green-500/10 text-green-500' :
-                                                 isFailed ? 'bg-red-500/10 text-red-500' :
-                                                 'bg-yellow-500/10 text-yellow-500';
-                              const badgeText = isApproved ? `Approved (${grade})` :
-                                                isFailed ? 'Failed' : 'Pending';
-                              return (
-                                <span className={`inline-block px-2 py-0.5 rounded-full text-xs ${badgeClass}`}>
-                                  {badgeText}
-                                </span>
-                              );
-                            })()}
-                          </div>
-                        </div>
-                      </Link>
-                    );
-                  })}
-              </div>
-            ) : (
-              <div className="bg-card rounded-lg shadow p-8 text-center">
-                <Dumbbell className="w-10 h-10 text-muted-foreground mx-auto mb-3" />
-                <p className="text-muted-foreground mb-4">No lifts uploaded yet. Be the first!</p>
+              {(challenge.status === "upcoming" || challenge.status === "ongoing") && (
                 <button
-                  onClick={() => { setShowUpload(true); setTimeout(() => uploadRef.current?.scrollIntoView({ behavior: 'smooth' }), 100); }}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600"
+                  onClick={handleUploadClick}
+                  className="hidden sm:inline-flex flex-none items-center gap-2 rounded-lg bg-[#2f7bf6] px-4 py-2 font-medium text-white transition-colors hover:bg-blue-600 lg:gap-2.5 lg:rounded-xl lg:px-[22px] lg:py-3.5 lg:text-[15px] lg:shadow-[0_10px_26px_-6px_rgba(47,123,246,.7)]"
                 >
-                  <Upload className="w-4 h-4" />
-                  Upload Lift
+                  <Upload className="w-4 h-4 lg:h-[18px] lg:w-[18px]" />
+                  {uploadCta}
                 </button>
-              </div>
+              )}
+            </div>
+            <h1 className="mb-2 text-[27px] sm:text-4xl lg:text-[42px] lg:leading-[1.05] font-bold leading-tight tracking-tight">
+              {challenge.title}
+            </h1>
+            {heroDescription && (
+              <p className="text-sm text-muted-foreground lg:max-w-[560px] lg:text-[14.5px] lg:leading-relaxed">
+                {heroDescription}
+              </p>
+            )}
+            {leaderboard && (
+              <MomentumLine rows={leaderboard.rows} momentum={leaderboard.momentum} />
             )}
           </div>
+
+          {/* Leaderboard */}
+          {(() => {
+            if (leaderboardError && !leaderboard) {
+              return (
+                <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
+                  <p className="mb-3">{leaderboardError}</p>
+                  <button
+                    onClick={fetchLeaderboard}
+                    className="inline-flex items-center gap-2 rounded-lg border border-red-500/30 px-3 py-1.5 font-medium text-red-300 hover:bg-red-500/10"
+                  >
+                    Retry
+                  </button>
+                </div>
+              );
+            }
+            if (!leaderboard) {
+              return (
+                <div className="flex items-center justify-center py-16">
+                  <div className="h-8 w-8 animate-spin rounded-full border-b-2 border-[#2f7bf6]" />
+                </div>
+              );
+            }
+
+            const { metric, rows } = leaderboard;
+            const scoredRows = rows.filter((r) => r.score > 0);
+            const podiumRows = scoredRows.slice(0, 3);
+            const tableRows = rows.filter((r) => r.rank > 3);
+            const viewerRow = viewerId
+              ? rows.find((r) => String(r.user_id) === String(viewerId))
+              : undefined;
+            const viewerEntered = !!viewerRow;
+
+            if (scoredRows.length === 0) {
+              return (
+                <div className="rounded-xl border border-white/[.07] bg-card p-8 text-center">
+                  <Dumbbell className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
+                  <p className="mb-4 text-muted-foreground">
+                    No entries yet. Be the first on the podium!
+                  </p>
+                  {(challenge.status === "upcoming" || challenge.status === "ongoing") && (
+                    <button
+                      onClick={openUpload}
+                      className="inline-flex items-center gap-2 rounded-lg bg-[#2f7bf6] px-4 py-2 font-medium text-white hover:bg-blue-600"
+                    >
+                      <Upload className="h-4 w-4" />
+                      {uploadCta}
+                    </button>
+                  )}
+                </div>
+              );
+            }
+
+            const showTable = tableRows.length > 0 || !viewerEntered;
+
+            return (
+              <>
+                {standing && <StandingCard standing={standing} metric={metric} />}
+
+                <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
+
+                {showTable && (
+                  <div>
+                    <div className="mb-2 flex items-center justify-between px-1 lg:mb-3">
+                      <h2 className="text-sm font-semibold text-white/70 lg:text-base lg:text-white/85">
+                        Everyone else
+                      </h2>
+                      <span className="text-[11px] font-semibold uppercase tracking-wide text-white/40 lg:hidden">
+                        {scoreColumnLabel(metric)}
+                      </span>
+                    </div>
+                    <div className="flex flex-col divide-y divide-white/[.06] overflow-hidden rounded-xl border border-white/[.07]">
+                      {/* Desktop-only table header (#1b): RANK · ATHLETE · HOLD/TOTAL · CLIP. */}
+                      <div
+                        data-testid="leaderboard-header"
+                        className="hidden bg-white/[.03] px-[18px] py-2.5 text-[11px] font-semibold uppercase tracking-[.04em] text-white/40 lg:grid lg:grid-cols-[52px_1fr_120px_90px] lg:gap-3.5"
+                      >
+                        <div>Rank</div>
+                        <div>Athlete</div>
+                        <div>{scoreColumnLabel(metric)}</div>
+                        <div className="text-right">Clip</div>
+                      </div>
+                      {tableRows.map((row) =>
+                        viewerEntered && String(row.user_id) === String(viewerId) ? (
+                          <YouRow
+                            key={row.user_id}
+                            entered
+                            row={row}
+                            metric={metric}
+                            clipHref={resolveClipHref(row)}
+                            subtitle={standing?.goalSubtitle}
+                          />
+                        ) : (
+                          <LeaderboardRow
+                            key={row.user_id}
+                            row={row}
+                            metric={metric}
+                            clipHref={resolveClipHref(row)}
+                          />
+                        )
+                      )}
+                      {!viewerEntered && <YouRow entered={false} onUpload={openUpload} />}
+                    </div>
+                  </div>
+                )}
+              </>
+            );
+          })()}
 
           {/* Upload form - toggled via header button */}
           {showUpload && (challenge.status === "upcoming" || challenge.status === "ongoing") && (
@@ -842,6 +877,19 @@ const ChallengeDetail: React.FC = () => {
             </div>
           )}
         </div>
+
+        {/* Mobile sticky CTA — opens the existing upload flow. */}
+        {(challenge.status === "upcoming" || challenge.status === "ongoing") && (
+          <div className="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-6 pt-8 bg-gradient-to-t from-background via-background to-transparent">
+            <button
+              onClick={handleUploadClick}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2f7bf6] py-4 font-semibold text-white shadow-[0_8px_22px_-6px_rgba(47,123,246,.7)]"
+            >
+              <Upload className="h-4 w-4" />
+              {uploadCta}
+            </button>
+          </div>
+        )}
       </motion.div>
     </Layout>
   );
