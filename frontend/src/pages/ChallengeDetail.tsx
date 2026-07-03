@@ -86,6 +86,55 @@ const ChallengeDetail: React.FC = () => {
   // Keep the device awake + warn before navigating away during an upload.
   useUploadGuard(isUploading);
 
+  // Analysis poll timer — a ref so unmount can cancel it (a dead analysis must
+  // not keep the tab polling forever).
+  const pollTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => () => {
+    if (pollTimerRef.current) clearTimeout(pollTimerRef.current);
+  }, []);
+
+  // Poll a triggered analysis with backoff (3s → 10s, capped at 10 min).
+  // On completion: store the result AND refresh the leaderboard so the new
+  // score/rank appears without a manual reload.
+  const pollAnalysis = (attemptId: string) => {
+    const startedAt = Date.now();
+    let delay = 3000;
+    const tick = async () => {
+      if (Date.now() - startedAt > 10 * 60 * 1000) {
+        toast({
+          title: "Analysis still running",
+          description: "Taking longer than expected — check back in a bit to see your score.",
+          duration: 6000,
+        });
+        return;
+      }
+      try {
+        const result = await getLiftingResult(attemptId);
+        if (result.processing_status === 'completed' || result.processing_status === 'failed') {
+          setLiftingResults(prev => ({ ...prev, [attemptId]: result }));
+          fetchLeaderboard();
+          const isPlank = result.report?.lift_type === 'plank';
+          toast({
+            title: isPlank
+              ? "Plank Analyzed"
+              : (result.report?.overall_grade && ['A','B','C','D'].includes(result.report.overall_grade)
+                  ? "Lift Approved!" : "Analysis Complete"),
+            description: isPlank
+              ? `Held: ${result.report?.total_in_plank_s?.toFixed(1)}s (form ${((result.report?.overall_form_score ?? 0) * 100).toFixed(0)}%)`
+              : (result.report
+                  ? `Grade: ${result.report.overall_grade} (${result.report.overall_score?.toFixed(0)}%)`
+                  : "Check your lift for details."),
+            duration: 5000,
+          });
+          return;
+        }
+      } catch { /* transient — keep polling */ }
+      delay = Math.min(delay * 1.5, 10000);
+      pollTimerRef.current = setTimeout(tick, delay);
+    };
+    pollTimerRef.current = setTimeout(tick, delay);
+  };
+
   // Default weights for each lift type
   const defaultWeights: Record<string, string> = {
     "Squat": "60",
@@ -139,10 +188,25 @@ const ChallengeDetail: React.FC = () => {
           weight,
           email,
         },
-        (pct) => setUploadProgress(pct)
+        (pct) => setUploadProgress(pct),
+        // The plank analyzer samples 15fps pose — a blocking client-side 720p
+        // re-encode delays the upload without helping it.
+        { skipCompression: liftType === 'Plank' }
       );
 
       if (data.url) {
+        // Kick off analysis first — it's the long pole; UI refreshes can wait
+        // the extra second.
+        const attemptId = data.attempt_id;
+        if (attemptId) {
+          try {
+            await triggerLiftingAnalysis(attemptId);
+            pollAnalysis(attemptId);
+          } catch (err) {
+            console.error("Auto-analyze failed:", err);
+          }
+        }
+
         toast({
           title: "Upload Successful!",
           description: "Analyzing your form automatically...",
@@ -160,39 +224,6 @@ const ChallengeDetail: React.FC = () => {
 
         // Update hasJoined status
         setHasJoined(true);
-
-        // Auto-trigger analysis for the new upload
-        const attemptId = data.attempt_id;
-        if (attemptId) {
-          try {
-            await triggerLiftingAnalysis(attemptId);
-            // Poll until complete, then refresh results
-            const pollInterval = setInterval(async () => {
-              try {
-                const result = await getLiftingResult(attemptId);
-                if (result.processing_status === 'completed' || result.processing_status === 'failed') {
-                  clearInterval(pollInterval);
-                  setLiftingResults(prev => ({ ...prev, [attemptId]: result }));
-                  const isPlank = result.report?.lift_type === 'plank';
-                  toast({
-                    title: isPlank
-                      ? "Plank Analyzed"
-                      : (result.report?.overall_grade && ['A','B','C','D'].includes(result.report.overall_grade)
-                          ? "Lift Approved!" : "Analysis Complete"),
-                    description: isPlank
-                      ? `Held: ${result.report?.total_in_plank_s?.toFixed(1)}s (form ${((result.report?.overall_form_score ?? 0) * 100).toFixed(0)}%)`
-                      : (result.report
-                          ? `Grade: ${result.report.overall_grade} (${result.report.overall_score?.toFixed(0)}%)`
-                          : "Check your lift for details."),
-                    duration: 5000,
-                  });
-                }
-              } catch { /* continue polling */ }
-            }, 3000);
-          } catch (err) {
-            console.error("Auto-analyze failed:", err);
-          }
-        }
       }
     } catch (err: any) {
       console.error("Upload error:", err);

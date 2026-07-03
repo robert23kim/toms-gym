@@ -169,12 +169,16 @@ export async function uploadVideoResumable(
 export async function uploadVideo(
   file: File,
   fields: UploadFields,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  options?: { skipCompression?: boolean }
 ): Promise<FinalizeResponse> {
   // Phase 1 — compress (best-effort). When we attempt it, the encode owns the
   // first COMPRESS_PROGRESS_SHARE of the bar regardless of outcome, so the bar
   // never jumps backwards if compression turns out not to help.
-  const attemptCompress = canCompressVideo() && file.size >= COMPRESS_THRESHOLD;
+  // Callers can skip it when the consumer downsamples anyway (the plank
+  // analyzer reads 15fps pose — a blocking 720p re-encode buys nothing).
+  const attemptCompress =
+    !options?.skipCompression && canCompressVideo() && file.size >= COMPRESS_THRESHOLD;
   let toUpload = file;
   if (attemptCompress) {
     try {
