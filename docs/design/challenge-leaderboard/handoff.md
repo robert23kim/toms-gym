@@ -6,9 +6,11 @@ Redesign of the challenge detail page (e.g. "Summer plank challenge"). The curre
 ## About the Design Files
 `Challenge Redesign.dc.html` is a **design reference created in HTML** — a prototype showing intended look and behavior, not production code to copy directly. Recreate these designs in the target codebase using its existing framework, component library, and patterns (React/Vue/SwiftUI/etc.). If no environment exists yet, choose the most appropriate framework and implement there. Do not ship the HTML as-is.
 
-The file contains four mockups arranged as anchored option cards. The **approved direction is the podium layout**:
+The file contains six mockups arranged as anchored option cards. The **approved direction is the podium layout with the motivation layer**:
+- **`#3a`** — mobile podium **+ personal-progress / motivation layer** (PRIMARY — build this first)
+- **`#3b`** — annotated close-up of the personal-progress card
+- **`#2b`** — mobile podium without the motivation layer (the base 3a builds on)
 - **`#1b`** — desktop podium + ranked table
-- **`#2b`** — mobile podium (PRIMARY — build this first)
 
 `#1a` / `#2a` are an alternate "ranked list" direction, kept for reference only.
 
@@ -19,7 +21,21 @@ The file contains four mockups arranged as anchored option cards. The **approved
 
 ## Screens / Views
 
-### 1. Mobile — Challenge Detail w/ Podium (`#2b`, PRIMARY)
+### 0. Mobile — Challenge Detail w/ Motivation Layer (`#3a`, PRIMARY)
+Same structure as `#2b` below, plus a motivation layer whose goal is to drive repeat participation by putting the viewer's own status first. Build order top → bottom:
+1. Status bar + app bar (as `#2b`).
+2. **Hero** — Back, status pill, H1 (25px), and a **momentum line**: 3 overlapping mini-avatars + "4 uploaded today · 12 joined" (`rgba(255,255,255,.5)`, 12px). Social proof.
+3. **Personal-progress card** (the centerpiece — detailed in `#3b`): gradient fill `linear-gradient(160deg, rgba(47,123,246,.18), rgba(47,123,246,.05))`, border `rgba(47,123,246,.32)`, radius 16px. Three parts:
+   - **Standing** — "Your standing" eyebrow (uppercase, `#9fc2ff`) + big rank ("#7" in Space Grotesk 30px) + "of 12"; right side "Your best" + best time (22px).
+   - **Trend** — inset dark panel (`rgba(0,0,0,.22)`, radius 10px) with an SVG sparkline (green `#4ade80` polyline, dot on last point) + "↑ +9.4s in 3 tries" and the raw series "9.2s → 14.1s → 18.6s".
+   - **Gap-to-next-rank** — "Hold **3.9s longer** to pass Devon for **#6**" (accent spans `#7fb0ff`) above a progress bar (track `rgba(255,255,255,.12)`, fill `linear-gradient(90deg,#2f7bf6,#7fb0ff)`, ~83%).
+4. **Podium** (compact variant of `#2b`).
+5. **List rows 4–6 + the "You" row inline** — the You row is highlighted (`rgba(47,123,246,.14)` fill, `rgba(47,123,246,.35)` top border) and shows the live goal subtitle "3.9s to reach #6".
+6. **Sticky CTA** reframed to the personal goal: **"Beat your best — 18.6s"**.
+
+**Data needed for this layer:** viewer's rank, participantCount, viewer's best score, viewer's attempt history (for sparkline + delta), the next-higher entrant (name + score) to compute the gap, and today's upload/join counts for the momentum line.
+
+### 1. Mobile — Challenge Detail w/ Podium (`#2b`, base for 3a)
 - **Purpose:** View a challenge, see the ranked leaderboard, watch entrants' clips, upload your own attempt.
 - **Frame:** 390px wide (iPhone-class). Vertical scroll, sticky bottom CTA.
 - **Layout (top → bottom):**
@@ -85,4 +101,4 @@ The file contains four mockups arranged as anchored option cards. The **approved
 - **Fonts:** Space Grotesk + Inter (Google Fonts) — or map to the codebase's equivalent display/body pairing.
 
 ## Files
-- `Challenge Redesign.dc.html` — all four mockups. Build `#2b` (mobile) first, then `#1b` (desktop). Ignore `#1a`/`#2a`.
+- `Challenge Redesign.dc.html` — all six mockups. Build `#3a` (mobile + motivation layer) first, referencing `#3b` for the progress-card detail; then `#2b`/`#1b` for the base podium. Ignore `#1a`/`#2a`.
