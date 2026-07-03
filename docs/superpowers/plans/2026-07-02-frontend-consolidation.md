@@ -309,12 +309,12 @@ git commit -m "feat(frontend): lazy-load route components to split the bundle"
 - Modify: `src/config.ts` (full rewrite below)
 - Verify: `frontend/.env.production` contains `VITE_API_URL`
 
-- [ ] **Step 1: Check for test/code dependencies**
+- [x] **Step 1: Check for test/code dependencies**
 
 Run: `grep -rn "isMobileDevice\|shouldUseProductionUrl\|isLinux" src/ e2e/ --include="*.ts" --include="*.tsx"`
 Expected: hits only inside `src/config.ts`. If anything else consumes these exports, stop and report — do not delete used exports.
 
-- [ ] **Step 2: Rewrite `src/config.ts`**
+- [x] **Step 2: Rewrite `src/config.ts`**
 
 ```ts
 /// <reference types="vite/client" />
@@ -337,14 +337,14 @@ export const APP_VERSION = buildTimestamp
 export const APP_BUILD = buildTimestamp;
 ```
 
-- [ ] **Step 3: Confirm production env sets the URL**
+- [x] **Step 3: Confirm production env sets the URL**
 
 Run: `grep VITE_API_URL .env.production`
 Expected: `VITE_API_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app` (or equivalent). If missing, add that line — with the UA override gone, this is what keeps production builds pointed at the backend.
 
 Behavior note for the commit body: the old UA sniffing existed to force mobile devices onto prod; since production builds get `VITE_API_URL` at build time, the override only ever mattered for `npm run dev` on a phone — if that workflow comes back, use `VITE_API_URL=... npm run dev`, not UA sniffing.
 
-- [ ] **Step 4: Validate and commit**
+- [x] **Step 4: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: green. Then load `npm run dev` and confirm the console shows zero config logs.
