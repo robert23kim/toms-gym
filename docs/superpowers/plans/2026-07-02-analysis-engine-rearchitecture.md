@@ -1169,9 +1169,11 @@ git commit -m "feat(backend): enqueue Cloud Tasks at job creation; pollers stand
 
 ### Task 10: Provision, deploy, and cut over
 
+> **Executed 2026-07-03.** Cloud Tasks API enabled (was off), `analysis-jobs` queue + both IAM bindings created, engine and backend deployed, cutover to `ANALYSIS_DISPATCH_MODE=tasks` verified live (pollers stood down; lifting job enqueued -> `/jobs/lifting/<id>` OIDC dispatch -> completed; bowling re-verified via `/reanalyze`). Rollback remains `ANALYSIS_DISPATCH_MODE=poller`. Task 11 is scheduled after ~1 week of clean runs (from 2026-07-03).
+
 No code — infra + verification. Run from `/Users/toka/code/toms_gym` unless noted.
 
-- [ ] **Step 1: Create the queue and grant IAM**
+- [x] **Step 1: Create the queue and grant IAM**
 
 ```bash
 gcloud tasks queues create analysis-jobs --location=us-east1 --project=toms-gym \
@@ -1190,13 +1192,13 @@ gcloud iam service-accounts add-iam-policy-binding \
 
 `--max-concurrent-dispatches=3` deliberately matches the engine's `--max-instances=3 --concurrency=1` so tasks queue instead of piling onto cold starts.
 
-- [ ] **Step 2: Deploy the engine** (new in-process/summary code from Tasks 1–5)
+- [x] **Step 2: Deploy the engine** (new in-process/summary code from Tasks 1–5)
 
 ```bash
 cd /Users/toka/code/bowling-app/analysis-engine && ./deploy.sh
 ```
 
-- [ ] **Step 3: Add backend env vars and deploy**
+- [x] **Step 3: Add backend env vars and deploy**
 
 Locate where `deploy.py` builds backend `--set-env-vars` (grep for `ANALYSIS_SERVICE_URL` in `deploy.py` / `deploy-config.json`) and add, alongside it:
 
@@ -1209,7 +1211,7 @@ TASKS_SERVICE_ACCOUNT=toms-gym-service@toms-gym.iam.gserviceaccount.com
 
 Then: `python3 deploy.py --backend-only --skip-iam`
 
-- [ ] **Step 4: Verify in production**
+- [x] **Step 4: Verify in production**
 
 1. Upload a lifting video (plank) through the frontend, or re-trigger an existing attempt: `curl -X POST https://my-python-backend-quyiiugyoq-ue.a.run.app/lifting/analyze/<attempt_id>`.
 2. Confirm a task appears and drains: `gcloud tasks queues describe analysis-jobs --location=us-east1 --project=toms-gym` and `gcloud logging read 'resource.labels.service_name="my-python-backend" "Enqueued lifting"' --project=toms-gym --limit=5 --freshness=15m`.
@@ -1217,7 +1219,7 @@ Then: `python3 deploy.py --backend-only --skip-iam`
 4. Repeat once for bowling.
 5. Confirm the pollers stood down: `gcloud logging read '"Lifting processor disabled: Cloud Tasks dispatch mode is active"' --project=toms-gym --limit=1 --freshness=1h`.
 
-- [ ] **Step 5: Commit deploy config and record the soak**
+- [x] **Step 5: Commit deploy config and record the soak**
 
 ```bash
 git add deploy.py deploy-config.json
