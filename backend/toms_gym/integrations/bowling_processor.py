@@ -40,6 +40,10 @@ def _get_id_token():
 
 def start_bowling_processor():
     """Start the bowling processor as a background daemon thread."""
+    if os.environ.get('ANALYSIS_DISPATCH_MODE', 'poller') == 'tasks':
+        logger.info("Bowling processor disabled: Cloud Tasks dispatch mode is active")
+        return
+
     if not BOWLING_PROCESSOR_ENABLED:
         logger.info("Bowling processor is disabled")
         return

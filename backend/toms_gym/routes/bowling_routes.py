@@ -16,6 +16,7 @@ import sqlalchemy
 
 from toms_gym.db import get_db_connection
 from toms_gym.storage import bucket, ALLOWED_EXTENSIONS
+from toms_gym.services.analysis_dispatch import enqueue_analysis_job
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -157,6 +158,7 @@ def upload_bowling_video():
             }
         )
         session.commit()
+        enqueue_analysis_job('bowling', bowling_result_id)
 
         logger.info(f"Created bowling attempt={attempt_id}, result={bowling_result_id}")
 
@@ -348,6 +350,7 @@ def reanalyze_bowling(result_id):
             WHERE id = :id
         """), {"id": result_id})
         session.commit()
+        enqueue_analysis_job('bowling', result_id)
 
         return jsonify({'status': 'queued'}), 200
     except Exception as e:

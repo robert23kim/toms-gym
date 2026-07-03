@@ -1065,7 +1065,7 @@ app.register_blueprint(jobs_bp)
 Run: `venv/bin/python -m pytest --noconftest tests/unit/ -v`
 Expected: all PASSED (dispatch + jobs tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add toms_gym/routes/jobs_routes.py toms_gym/app.py tests/unit/test_jobs_routes.py
@@ -1085,7 +1085,7 @@ git commit -m "feat(backend): /jobs push handlers for Cloud Tasks analysis dispa
 **Interfaces:**
 - Consumes: `enqueue_analysis_job(kind, result_id)` from Task 7.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```python
 # tests/unit/test_enqueue_wiring.py
@@ -1112,12 +1112,12 @@ def test_bowling_poller_stands_down_in_tasks_mode(monkeypatch):
     assert started == []
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/test_enqueue_wiring.py -v`
 Expected: FAIL — threads get created (the poller doesn't check the mode yet). Note: patching `Thread` means the "failure" shows `started` non-empty.
 
-- [ ] **Step 3: Stand down the pollers in tasks mode**
+- [x] **Step 3: Stand down the pollers in tasks mode**
 
 At the top of `start_lifting_processor()` (before the `LIFTING_PROCESSOR_ENABLED` check), add:
 
@@ -1129,7 +1129,7 @@ At the top of `start_lifting_processor()` (before the `LIFTING_PROCESSOR_ENABLED
 
 Mirror the same three lines in `start_bowling_processor()` (bowling_processor.py already imports `os`).
 
-- [ ] **Step 4: Wire enqueue at the three creation/requeue sites**
+- [x] **Step 4: Wire enqueue at the three creation/requeue sites**
 
 `lifting_routes.py` — add the import at the top: `from toms_gym.services.analysis_dispatch import enqueue_analysis_job`, then:
 
@@ -1151,12 +1151,12 @@ Also run `grep -n "'queued'" toms_gym/routes/bowling_routes.py` — if there is 
 
 (Enqueue-after-commit ordering matters: the task handler reads the row, so the row must be committed first. `enqueue_analysis_job` swallows its own errors, so these calls can't break the endpoints; in poller mode they're no-ops.)
 
-- [ ] **Step 5: Run tests**
+- [x] **Step 5: Run tests**
 
 Run: `venv/bin/python -m pytest --noconftest tests/unit/ -v` → all PASSED.
 Then the full DB-bound suite once: `./run_tests.sh` → same pass/fail state as before this plan (no new failures).
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add toms_gym/routes/lifting_routes.py toms_gym/routes/bowling_routes.py \
