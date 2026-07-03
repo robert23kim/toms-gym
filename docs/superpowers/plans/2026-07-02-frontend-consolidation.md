@@ -768,12 +768,12 @@ git commit -m "refactor(frontend): shared useMediaUpload hook; adopt in GolfUplo
 **Interfaces:**
 - Consumes: `useMediaUpload` from Task 6 with `{ accept: "video", maxBytes: <the page's current limit> }`.
 
-- [ ] **Step 1: Map the page's current upload state**
+- [x] **Step 1: Map the page's current upload state**
 
 Run: `grep -n "useState\|const handle\|size >" src/pages/BowlingUpload.tsx`
 Expected: the same quartet as GolfUpload (file/preview/error/isDragging state + select/drop/dragover/dragleave handlers) plus a size check. Note the exact max-size constant the page uses (if it has none, use `500 * 1024 * 1024` and say so in the commit body).
 
-- [ ] **Step 2: Replace state + handlers with the hook**
+- [x] **Step 2: Replace state + handlers with the hook**
 
 Apply the same mechanical replacement as Task 6 Step 5: delete the four state hooks and four handlers, insert
 
@@ -793,7 +793,7 @@ Apply the same mechanical replacement as Task 6 Step 5: delete the four state ho
 
 aliasing to whatever names this page's JSX actually uses (adjust the aliases to match — do not rename anything in the JSX). Keep the page's submit function and its `setError` calls unchanged.
 
-- [ ] **Step 3: Validate and commit**
+- [x] **Step 3: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`, then `npm run dev` → `/bowling/upload`: file select + drop + oversize rejection all behave.
 
