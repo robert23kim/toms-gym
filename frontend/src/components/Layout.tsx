@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import { motion } from "framer-motion";
 import { APP_VERSION } from "../config";
@@ -31,9 +32,9 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Privacy
             </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Contact
-            </a>
+            <Link to="/feedback" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+              Feedback
+            </Link>
             <span className="text-xs text-muted-foreground/60" title="Frontend build">
               v{APP_VERSION}
             </span>

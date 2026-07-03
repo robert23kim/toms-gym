@@ -27,6 +27,8 @@ const GolfReview = lazy(() => import("../pages/GolfReview"));
 const GolfRound = lazy(() => import("../pages/GolfRound"));
 const GolfProfile = lazy(() => import("../pages/GolfProfile"));
 const GolfLeaderboard = lazy(() => import("../pages/GolfLeaderboard"));
+const FileTicket = lazy(() => import("../pages/FileTicket"));
+const TicketList = lazy(() => import("../pages/TicketList"));
 
 // Redirect component for backward compatibility
 const VideoPlayerRedirect = () => {
@@ -67,5 +69,7 @@ export const routes: RouteObject[] = [
   { path: "/golf/profile", element: <GolfProfile /> },
   { path: "/golf/profile/:userId", element: <GolfProfile /> },
   { path: "/golf/leaderboard", element: <GolfLeaderboard /> },
+  { path: "/feedback", element: <FileTicket /> },
+  { path: "/feedback/list", element: <TicketList /> },
   { path: "*", element: <NotFound /> },
 ];

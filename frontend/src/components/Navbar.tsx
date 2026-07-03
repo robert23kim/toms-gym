@@ -47,6 +47,7 @@ const Navbar: React.FC = () => {
     { href: "/challenges", label: "Challenges", icon: <Trophy className="w-4 h-4" /> },
     { href: "/leaderboard", label: "Leaderboard" },
     { href: "/golf/leaderboard", label: "Golf" },
+    { href: "/feedback", label: "Feedback" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },
   ];
 

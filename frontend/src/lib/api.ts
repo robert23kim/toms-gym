@@ -433,3 +433,61 @@ export async function getHandicapHistory(
   );
   return response.data;
 }
+
+// ---------------------------------------------------------------------------
+// Tickets — bug reports & feature requests.
+// Mirrors backend/toms_gym/routes/ticket_routes.py.
+// ---------------------------------------------------------------------------
+
+export type TicketType = "bug" | "feature";
+export type TicketStatus = "open" | "in_progress" | "closed";
+
+export interface Ticket {
+  id: string;
+  type: TicketType;
+  title: string;
+  description: string;
+  page_url: string | null;
+  contact_email: string | null;
+  user_id: string | null;
+  status: TicketStatus;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateTicketInput {
+  type: TicketType;
+  title: string;
+  description: string;
+  page_url?: string;
+  email?: string;
+  user_id?: string;
+}
+
+export async function createTicket(
+  input: CreateTicketInput,
+): Promise<{ ticket_id: string }> {
+  const response = await axios.post(`${API_URL}/tickets`, input);
+  return response.data;
+}
+
+export async function fetchTickets(
+  filters: { status?: TicketStatus; type?: TicketType } = {},
+): Promise<Ticket[]> {
+  const params = new URLSearchParams();
+  if (filters.status) params.set("status", filters.status);
+  if (filters.type) params.set("type", filters.type);
+  const query = params.toString();
+  const response = await axios.get(
+    `${API_URL}/tickets${query ? `?${query}` : ""}`,
+  );
+  return response.data.tickets || [];
+}
+
+export async function updateTicketStatus(
+  id: string,
+  status: TicketStatus,
+): Promise<Ticket> {
+  const response = await axios.put(`${API_URL}/tickets/${id}/status`, { status });
+  return response.data;
+}
