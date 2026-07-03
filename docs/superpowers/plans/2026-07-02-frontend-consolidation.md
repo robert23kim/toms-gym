@@ -364,12 +364,12 @@ git commit -m "fix(frontend): single API_URL source; drop UA sniffing and prod c
 - Modify: `src/lib/api.ts` (remove lines 19 and 76–99: `API_BASE_URL`, `export const api = axios.create(...)`, `export const endpoints = {...}`)
 - Check: `src/lib/__tests__/` for tests referencing the removed exports
 
-- [ ] **Step 1: Re-verify the exports are unused**
+- [x] **Step 1: Re-verify the exports are unused**
 
 Run: `grep -rn "endpoints\b" src --include="*.tsx" --include="*.ts" | grep -v "lib/api.ts"` and `grep -rn "import { api" src --include="*.tsx" --include="*.ts"` and `grep -rn "API_BASE_URL" src`
 Expected: no hits outside `src/lib/api.ts` (and possibly `src/lib/__tests__/api.test.ts` — note any test hits for Step 3).
 
-- [ ] **Step 2: Delete**
+- [x] **Step 2: Delete**
 
 In `src/lib/api.ts` remove:
 - Line 19: `const API_BASE_URL = "https://my-app-834341357827.us-east1.run.app";`
@@ -378,11 +378,11 @@ In `src/lib/api.ts` remove:
 
 Keep the top-level `import axios from "axios";` — the rest of the file still uses axios for its exported functions.
 
-- [ ] **Step 3: Fix any tests that asserted on the removed exports**
+- [x] **Step 3: Fix any tests that asserted on the removed exports**
 
 If Step 1 found hits in `src/lib/__tests__/`, delete only those test cases (they test dead code), keeping the rest of the file intact.
 
-- [ ] **Step 4: Validate and commit**
+- [x] **Step 4: Validate and commit**
 
 Run: `npx tsc --noEmit && npm test && npm run build`
 Expected: green.
