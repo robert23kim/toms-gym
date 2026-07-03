@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet data-dc-atomics>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body{margin:0;background:#e9e7e2;font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  .dv-turn{padding:44px 48px 40px;scroll-margin-top:16px}
+  .dv-thd{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}
+  .dv-tid{font:600 10px ui-monospace,Menlo,monospace;padding:3px 7px;background:#1a1a1a;color:#fff;border-radius:4px;text-decoration:none}
+  .dv-tname{font:600 13px/1.2 'Inter',sans-serif;color:#1a1a1a}
+  .dv-tsub{font:400 12.5px/1.5 'Inter',sans-serif;color:rgba(0,0,0,.5);max-width:720px;margin:0 0 26px}
+  .dv-opts{display:flex;flex-wrap:wrap;gap:40px;align-items:flex-start}
+  .dv-opt{flex:none;display:flex;flex-direction:column;gap:11px;scroll-margin-top:16px}
+  .dv-olabel{display:flex;align-items:baseline;gap:9px;font:400 11.5px/1.3 'Inter',sans-serif;color:rgba(0,0,0,.55)}
+  .dv-oid{font:600 10.5px ui-monospace,Menlo,monospace;padding:3px 7px;background:rgba(0,0,0,.09);color:#1a1a1a;border-radius:5px;text-decoration:none}
+  .dv-opt:target .dv-oid{background:#2f7bf6;color:#fff}
+  .dv-card{background:#0a0a0b;border:1px solid rgba(0,0,0,.12);border-radius:14px;box-shadow:0 20px 50px -20px rgba(0,0,0,.45);overflow:hidden}
+  .dv-next{margin:26px 0 0;font:12px/1.6 'Inter',sans-serif;color:rgba(0,0,0,.5)}
+  .dv-next a{color:rgba(0,0,0,.5)}
+  /* ---- shared app chrome ---- */
+  .ap{width:1160px;color:#fafafa}
+  .ap-nav{display:flex;align-items:center;gap:34px;padding:20px 34px;border-bottom:1px solid rgba(255,255,255,.07)}
+  .ap-brand{display:flex;align-items:center;gap:10px;font:700 19px 'Space Grotesk',sans-serif;letter-spacing:-.02em}
+  .ap-logo{width:26px;height:26px;border-radius:7px;background:#2f7bf6;display:flex;align-items:center;justify-content:center;font:700 13px 'Space Grotesk';color:#fff}
+  .ap-navlinks{display:flex;gap:26px;margin-left:14px;font:500 14px 'Inter';color:rgba(255,255,255,.62)}
+  .ap-navlinks .on{color:#fff}
+  .ap-search{margin-left:auto;display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid rgba(255,255,255,.12);border-radius:9px;font:500 13px 'Inter';color:rgba(255,255,255,.5)}
+  .ap-back{display:flex;align-items:center;gap:8px;font:500 13.5px 'Inter';color:rgba(255,255,255,.5);padding:0}
+  .pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;font-weight:600;white-space:nowrap}
+  .tag{padding:5px 12px;border-radius:999px;font:500 12.5px 'Inter'}
+</style>
+</helmet>
+
+<section class="dv-turn" id="t2">
+  <div class="dv-thd"><a class="dv-tid" href="#t2">2</a><span class="dv-tname">Mobile — the same two directions on a phone</span></div>
+  <p class="dv-tsub">Since most views are mobile: nav collapses to a bar, the stat strip becomes a 2×2 grid, and the leaderboard rows stack with the score kept big and right-aligned so it stays scannable one-handed. A sticky "Upload" button sits at the bottom. <a class="dv-oid" href="#2a">2a</a> is the ranked list, <a class="dv-oid" href="#2b">2b</a> the podium.</p>
+  <div class="dv-opts">
+
+    <!-- ===== 2A mobile list ===== -->
+    <div class="dv-opt" id="2a">
+      <div class="dv-olabel"><a class="dv-oid" href="#2a">2a</a>Mobile — ranked list (from <a class="dv-oid" href="#1a">1a</a>)</div>
+      <div style="width:390px;background:#0a0a0b;border-radius:34px;border:9px solid #1c1c1f;box-shadow:0 26px 60px -20px rgba(0,0,0,.55);overflow:hidden;position:relative;color:#fafafa">
+        <!-- status bar -->
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;font:600 13px 'Inter'"><span>9:41</span><span style="display:flex;gap:5px;opacity:.8"><svg width="16" height="11" viewBox="0 0 24 16" fill="#fff"><rect x="0" y="4" width="4" height="8" rx="1"/><rect x="6" y="2" width="4" height="10" rx="1"/><rect x="12" y="0" width="4" height="12" rx="1"/><rect x="18" y="0" width="4" height="12" rx="1" opacity=".4"/></svg><svg width="18" height="11" viewBox="0 0 24 16" fill="none" stroke="#fff" stroke-width="1.6"><rect x="1" y="3" width="18" height="10" rx="2.5"/><rect x="21" y="6" width="2" height="4" rx="1" fill="#fff"/><rect x="3" y="5" width="12" height="6" rx="1" fill="#fff"/></svg></span></div>
+        <!-- mobile nav -->
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 18px 12px;border-bottom:1px solid rgba(255,255,255,.07)">
+          <div class="ap-brand" style="font-size:16px"><span class="ap-logo" style="width:22px;height:22px;font-size:11px">T</span>Tom's Gym</div>
+          <div style="margin-left:auto;display:flex;gap:14px;color:rgba(255,255,255,.6)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+        </div>
+
+        <div style="padding:16px 18px 96px">
+          <div class="ap-back" style="margin-bottom:16px;font-size:13px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>Back to Challenges</div>
+
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span class="pill" style="padding:4px 10px;background:rgba(52,199,89,.14);color:#4ade80;font-size:11px"><span style="width:5px;height:5px;border-radius:50%;background:#4ade80"></span>Ongoing</span><span style="font:500 11.5px 'Inter';color:rgba(255,255,255,.42)">23 days left</span></div>
+          <h1 style="margin:0 0 8px;font:700 26px/1.05 'Space Grotesk';letter-spacing:-.02em">Summer plank challenge</h1>
+          <p style="margin:0 0 16px;font:400 13px/1.5 'Inter';color:rgba(255,255,255,.6)">Hold as long as you can. Form scored automatically — just hit Upload.</p>
+
+          <!-- 2x2 stat grid -->
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:24px">
+            <div style="background:#141416;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 14px"><div style="font:400 11px 'Inter';color:rgba(255,255,255,.45);margin-bottom:5px">Top hold</div><div style="font:600 20px 'Space Grotesk'">65.8<span style="font-size:12px;color:rgba(255,255,255,.5)">s</span></div></div>
+            <div style="background:linear-gradient(135deg,rgba(47,123,246,.16),rgba(47,123,246,.04));border:1px solid rgba(47,123,246,.28);border-radius:11px;padding:12px 14px"><div style="font:400 11px 'Inter';color:rgba(255,255,255,.55);margin-bottom:5px">Ends in</div><div style="font:600 20px 'Space Grotesk';color:#7fb0ff">23 days</div></div>
+            <div style="background:#141416;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 14px"><div style="font:400 11px 'Inter';color:rgba(255,255,255,.45);margin-bottom:5px">Participants</div><div style="font:600 20px 'Space Grotesk'">12</div></div>
+            <div style="background:#141416;border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:12px 14px"><div style="font:400 11px 'Inter';color:rgba(255,255,255,.45);margin-bottom:5px">Lifts</div><div style="font:600 20px 'Space Grotesk'">6</div></div>
+          </div>
+
+          <h2 style="margin:0 0 12px;font:600 15px 'Inter'">Leaderboard <span style="color:rgba(255,255,255,.4)">· 6</span></h2>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <!-- top 3 accented -->
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 12px"><div style="width:20px;text-align:center;font:700 15px 'Space Grotesk';color:#f5c542">1</div><div style="width:34px;height:34px;border-radius:50%;background:#3a3f52;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#cbd3e6">RK</div><div style="flex:1;min-width:0"><div style="font:600 14px 'Inter'">robert23kim</div><div style="font:400 11.5px 'Inter';color:rgba(255,255,255,.42)">Jul 3</div></div><div style="font:600 20px 'Space Grotesk'">65.8<span style="font-size:11px;color:rgba(255,255,255,.5)">s</span></div></div>
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 12px"><div style="width:20px;text-align:center;font:700 15px 'Space Grotesk';color:#cbd5e1">2</div><div style="width:34px;height:34px;border-radius:50%;background:#4a3f52;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#e6cbeb">PK</div><div style="flex:1;min-width:0"><div style="font:600 14px 'Inter'">Priya Kapoor</div><div style="font:400 11.5px 'Inter';color:rgba(255,255,255,.42)">Jul 2</div></div><div style="font:600 20px 'Space Grotesk'">61.2<span style="font-size:11px;color:rgba(255,255,255,.5)">s</span></div></div>
+            <div style="display:flex;align-items:center;gap:12px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:11px;padding:10px 12px"><div style="width:20px;text-align:center;font:700 15px 'Space Grotesk';color:#cd7f52">3</div><div style="width:34px;height:34px;border-radius:50%;background:#3f4a44;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#c9e6d3">MA</div><div style="flex:1;min-width:0"><div style="font:600 14px 'Inter'">Marcus Alvarez</div><div style="font:400 11.5px 'Inter';color:rgba(255,255,255,.42)">Jul 2</div></div><div style="font:600 20px 'Space Grotesk'">54.7<span style="font-size:11px;color:rgba(255,255,255,.5)">s</span></div></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px"><div style="width:20px;text-align:center;font:700 14px 'Space Grotesk';color:rgba(255,255,255,.4)">4</div><div style="width:34px;height:34px;border-radius:50%;background:#3a3f52;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#cbd3e6">JO</div><div style="flex:1;min-width:0"><div style="font:600 14px 'Inter'">Jade Okafor</div><div style="font:400 11.5px 'Inter';color:rgba(255,255,255,.42)">Jul 1</div></div><div style="font:600 18px 'Space Grotesk';color:rgba(255,255,255,.85)">43.1<span style="font-size:11px;color:rgba(255,255,255,.45)">s</span></div></div>
+            <div style="display:flex;align-items:center;gap:12px;padding:10px 12px"><div style="width:20px;text-align:center;font:700 14px 'Space Grotesk';color:rgba(255,255,255,.4)">5</div><div style="width:34px;height:34px;border-radius:50%;background:#52463a;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#e6d6c9">TK</div><div style="flex:1;min-width:0"><div style="font:600 14px 'Inter'">Toka</div><div style="font:400 11.5px 'Inter';color:rgba(255,255,255,.42)">Jul 3</div></div><div style="font:600 18px 'Space Grotesk';color:rgba(255,255,255,.85)">38.9<span style="font-size:11px;color:rgba(255,255,255,.45)">s</span></div></div>
+          </div>
+        </div>
+
+        <!-- sticky upload -->
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 18px 22px;background:linear-gradient(180deg,transparent,#0a0a0b 40%)"><button style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#2f7bf6;color:#fff;border:none;border-radius:13px;padding:15px;font:600 15px 'Inter';box-shadow:0 8px 22px -6px rgba(47,123,246,.7)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13"/><path d="m6 9 6-6 6 6"/><path d="M4 21h16"/></svg>Upload Lift</button></div>
+      </div>
+    </div>
+
+    <!-- ===== 2B mobile podium ===== -->
+    <div class="dv-opt" id="2b">
+      <div class="dv-olabel"><a class="dv-oid" href="#2b">2b</a>Mobile — podium (from <a class="dv-oid" href="#1b">1b</a>)</div>
+      <div style="width:390px;background:#0a0a0b;border-radius:34px;border:9px solid #1c1c1f;box-shadow:0 26px 60px -20px rgba(0,0,0,.55);overflow:hidden;position:relative;color:#fafafa">
+        <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 22px 4px;font:600 13px 'Inter'"><span>9:41</span><span style="display:flex;gap:5px;opacity:.8"><svg width="16" height="11" viewBox="0 0 24 16" fill="#fff"><rect x="0" y="4" width="4" height="8" rx="1"/><rect x="6" y="2" width="4" height="10" rx="1"/><rect x="12" y="0" width="4" height="12" rx="1"/><rect x="18" y="0" width="4" height="12" rx="1" opacity=".4"/></svg><svg width="18" height="11" viewBox="0 0 24 16" fill="none" stroke="#fff" stroke-width="1.6"><rect x="1" y="3" width="18" height="10" rx="2.5"/><rect x="21" y="6" width="2" height="4" rx="1" fill="#fff"/><rect x="3" y="5" width="12" height="6" rx="1" fill="#fff"/></svg></span></div>
+        <div style="display:flex;align-items:center;gap:10px;padding:8px 18px 12px;border-bottom:1px solid rgba(255,255,255,.07)">
+          <div class="ap-brand" style="font-size:16px"><span class="ap-logo" style="width:22px;height:22px;font-size:11px">T</span>Tom's Gym</div>
+          <div style="margin-left:auto;display:flex;gap:14px;color:rgba(255,255,255,.6)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h16"/></svg></div>
+        </div>
+
+        <div style="padding:16px 18px 96px;background:radial-gradient(120% 60% at 50% 0%,rgba(47,123,246,.18),transparent 55%)">
+          <div class="ap-back" style="margin-bottom:14px;font-size:13px"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"/></svg>Back</div>
+          <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px"><span class="pill" style="padding:4px 10px;background:rgba(52,199,89,.14);color:#4ade80;font-size:11px"><span style="width:5px;height:5px;border-radius:50%;background:#4ade80"></span>Ongoing · 23d left</span></div>
+          <h1 style="margin:0 0 18px;font:700 27px/1.05 'Space Grotesk';letter-spacing:-.02em">Summer plank challenge</h1>
+
+          <!-- mobile podium -->
+          <div style="display:flex;align-items:flex-end;justify-content:center;gap:8px;margin-bottom:26px">
+            <div style="display:flex;flex-direction:column;align-items:center;width:104px">
+              <div style="position:relative;margin-bottom:7px"><div style="width:44px;height:44px;border-radius:50%;background:#4a3f52;display:flex;align-items:center;justify-content:center;font:600 14px 'Inter';color:#e6cbeb;border:2.5px solid #cbd5e1">PK</div><div style="position:absolute;right:-3px;bottom:-3px;width:19px;height:19px;border-radius:50%;background:#2f7bf6;border:2px solid #0a0a0b;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+              <div style="font:600 12px 'Inter';margin-bottom:1px;text-align:center">Priya K</div>
+              <div style="font:700 18px 'Space Grotesk';color:#cbd5e1;margin-bottom:8px">61.2s</div>
+              <div style="width:100%;height:70px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(203,213,225,.2),rgba(203,213,225,.03));border:1px solid rgba(203,213,225,.28);border-bottom:none;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;font:700 17px 'Space Grotesk';color:#cbd5e1">2</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;width:114px">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="#f5c542" style="margin-bottom:4px"><path d="M5 16 3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm0 3h14v2H5v-2z"/></svg>
+              <div style="position:relative;margin-bottom:7px"><div style="width:54px;height:54px;border-radius:50%;background:#3a3f52;display:flex;align-items:center;justify-content:center;font:600 16px 'Inter';color:#cbd3e6;border:2.5px solid #f5c542">RK</div><div style="position:absolute;right:-3px;bottom:-3px;width:21px;height:21px;border-radius:50%;background:#2f7bf6;border:2px solid #0a0a0b;display:flex;align-items:center;justify-content:center"><svg width="9" height="9" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+              <div style="font:600 12.5px 'Inter';margin-bottom:1px;text-align:center">robert23kim</div>
+              <div style="font:700 23px 'Space Grotesk';color:#f5c542;margin-bottom:8px">65.8s</div>
+              <div style="width:100%;height:96px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(245,197,66,.22),rgba(245,197,66,.04));border:1px solid rgba(245,197,66,.38);border-bottom:none;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;font:700 19px 'Space Grotesk';color:#f5c542">1</div>
+            </div>
+            <div style="display:flex;flex-direction:column;align-items:center;width:104px">
+              <div style="position:relative;margin-bottom:7px"><div style="width:40px;height:40px;border-radius:50%;background:#3f4a44;display:flex;align-items:center;justify-content:center;font:600 13px 'Inter';color:#c9e6d3;border:2.5px solid #cd7f52">MA</div><div style="position:absolute;right:-3px;bottom:-3px;width:18px;height:18px;border-radius:50%;background:#2f7bf6;border:2px solid #0a0a0b;display:flex;align-items:center;justify-content:center"><svg width="8" height="8" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div></div>
+              <div style="font:600 12px 'Inter';margin-bottom:1px;text-align:center">Marcus A</div>
+              <div style="font:700 17px 'Space Grotesk';color:#cd7f52;margin-bottom:8px">54.7s</div>
+              <div style="width:100%;height:56px;border-radius:10px 10px 0 0;background:linear-gradient(180deg,rgba(205,127,82,.18),rgba(205,127,82,.03));border:1px solid rgba(205,127,82,.3);border-bottom:none;display:flex;align-items:flex-start;justify-content:center;padding-top:8px;font:700 15px 'Space Grotesk';color:#cd7f52">3</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:2px;border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden">
+            <div style="display:flex;align-items:center;gap:11px;padding:9px 14px"><div style="width:18px;font:700 14px 'Space Grotesk';color:rgba(255,255,255,.4)">4</div><div style="position:relative;width:44px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#2a3340,#171b22);flex:none;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" opacity=".9"><path d="M8 5v14l11-7z"/></svg></div><div style="flex:1;min-width:0"><div style="font:600 13.5px 'Inter'">Jade Okafor</div><div style="font:400 11px 'Inter';color:rgba(255,255,255,.4)">Jul 1</div></div><span style="font:600 16px 'Space Grotesk'">43.1s</span></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:9px 14px;border-top:1px solid rgba(255,255,255,.06)"><div style="width:18px;font:700 14px 'Space Grotesk';color:rgba(255,255,255,.4)">5</div><div style="position:relative;width:44px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#38322b,#1d1913);flex:none;display:flex;align-items:center;justify-content:center"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff" opacity=".9"><path d="M8 5v14l11-7z"/></svg></div><div style="flex:1;min-width:0"><div style="font:600 13.5px 'Inter'">Toka</div><div style="font:400 11px 'Inter';color:rgba(255,255,255,.4)">Jul 3</div></div><span style="font:600 16px 'Space Grotesk'">38.9s</span></div>
+            <div style="display:flex;align-items:center;gap:11px;padding:11px 14px;border-top:1px solid rgba(47,123,246,.3);background:rgba(47,123,246,.1)"><div style="width:18px;font:700 13px 'Space Grotesk';color:#7fb0ff">—</div><div style="width:30px;height:30px;border-radius:50%;background:#2f7bf6;display:flex;align-items:center;justify-content:center;font:600 10px 'Inter';color:#fff">YOU</div><span style="flex:1;font:600 12.5px 'Inter';color:#7fb0ff">Not logged yet</span><span style="font:600 11.5px 'Inter';color:#7fb0ff">Upload →</span></div>
+          </div>
+        </div>
+
+        <div style="position:absolute;left:0;right:0;bottom:0;padding:14px 18px 22px;background:linear-gradient(180deg,transparent,#0a0a0b 40%)"><button style="width:100%;display:flex;align-items:center;justify-content:center;gap:9px;background:#2f7bf6;color:#fff;border:none;border-radius:13px;padding:15px;font:600 15px 'Inter';box-shadow:0 8px 22px -6px rgba(47,123,246,.7)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13"/><path d="m6 9 6-6 6 6"/><path d="M4 21h16"/></svg>Upload your plank</button></div>
+      </div>
+    </div>
+
+  </div>
+  <p class="dv-next">Try next: "add a bottom tab bar to the mobile screens" · "make the score even bigger on mobile" · "show what the Upload sheet looks like" · "new directions"</p>
+</section>
+
+<section class="dv-turn" id="t1">
+  <div class="dv-thd"><a class="dv-tid" href="#t1">1</a><span class="dv-tname">Challenge detail — two redesign directions</span></div>
+  <p class="dv-tsub">Both fix the core issues: dead right-side space, a challenge that's really a leaderboard shown as a flat feed, and low-contrast metadata. <a class="dv-oid" href="#1a">1a</a> keeps your dark/blue system and tightens hierarchy. <a class="dv-oid" href="#1b">1b</a> goes leaderboard-forward with a podium and ranked table.</p>
+
+  <div class="dv-opts">
+
+    <!-- ============ OPTION 1A ============ -->
+    <div class="dv-opt" id="1a">
+      <div class="dv-olabel"><a class="dv-oid" href="#1a">1a</a>Refined — same system, fixed hierarchy + ranked list</div>
+      <div class="dv-card">
+        <div class="ap">
+          <!-- nav -->
+          <div class="ap-nav">
+            <div class="ap-brand"><span class="ap-logo">T</span>Tom's Gym</div>
+            <div class="ap-navlinks"><span>Home</span><span>About</span><span class="on" style="border-bottom:2px solid #2f7bf6;padding-bottom:2px">Challenges</span><span>Leaderboard</span><span>Store</span></div>
+            <div class="ap-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>Find a profile…</div>
+          </div>
+
+          <div style="padding:26px 34px 40px">
+            <div class="ap-back" style="margin-bottom:26px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>Back to Challenges</div>
+
+            <!-- header band -->
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:24px;margin-bottom:22px">
+              <div>
+                <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px">
+                  <h1 style="margin:0;font:700 34px/1 'Space Grotesk';letter-spacing:-.02em">Summer plank challenge</h1>
+                  <span class="pill" style="padding:5px 11px;background:rgba(52,199,89,.14);color:#4ade80;font-size:12px"><span style="width:6px;height:6px;border-radius:50%;background:#4ade80"></span>Ongoing</span>
+                </div>
+                <p style="margin:0 0 16px;max-width:640px;font:400 14.5px/1.55 'Inter';color:rgba(255,255,255,.6)">Hold the position as long as you can. Form is scored automatically — no weight to enter, just hit Upload.</p>
+                <div style="display:flex;gap:8px">
+                  <span class="tag" style="background:rgba(255,255,255,.08);color:rgba(255,255,255,.85)">Plank</span>
+                  <span class="tag" style="background:rgba(147,112,255,.14);color:#b39dff">Men</span>
+                  <span class="tag" style="background:rgba(147,112,255,.14);color:#b39dff">Women</span>
+                </div>
+              </div>
+              <button style="display:flex;align-items:center;gap:9px;background:#2f7bf6;color:#fff;border:none;border-radius:11px;padding:13px 20px;font:600 14.5px 'Inter';cursor:pointer;white-space:nowrap;box-shadow:0 8px 20px -6px rgba(47,123,246,.6)"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13"></path><path d="m6 9 6-6 6 6"></path><path d="M4 21h16"></path></svg>Upload Lift</button>
+            </div>
+
+            <!-- stat strip fills the old dead space -->
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:34px">
+              <div style="background:#141416;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px">
+                <div style="font:400 12px 'Inter';color:rgba(255,255,255,.45);margin-bottom:7px">Top hold</div>
+                <div style="font:600 24px 'Space Grotesk';color:#fafafa">65.8<span style="font-size:15px;color:rgba(255,255,255,.5)">s</span></div>
+              </div>
+              <div style="background:#141416;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px">
+                <div style="font:400 12px 'Inter';color:rgba(255,255,255,.45);margin-bottom:7px">Participants</div>
+                <div style="font:600 24px 'Space Grotesk';color:#fafafa">12</div>
+              </div>
+              <div style="background:#141416;border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:16px 18px">
+                <div style="font:400 12px 'Inter';color:rgba(255,255,255,.45);margin-bottom:7px">Lifts logged</div>
+                <div style="font:600 24px 'Space Grotesk';color:#fafafa">6</div>
+              </div>
+              <div style="background:linear-gradient(135deg,rgba(47,123,246,.16),rgba(47,123,246,.04));border:1px solid rgba(47,123,246,.28);border-radius:12px;padding:16px 18px">
+                <div style="font:400 12px 'Inter';color:rgba(255,255,255,.55);margin-bottom:7px">Ends in</div>
+                <div style="font:600 24px 'Space Grotesk';color:#7fb0ff">23 days</div>
+              </div>
+            </div>
+
+            <!-- section head -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px">
+              <h2 style="margin:0;font:600 17px 'Inter'">Leaderboard <span style="color:rgba(255,255,255,.4)">· 6 lifts</span></h2>
+              <div style="display:flex;gap:6px;font:500 12.5px 'Inter'"><span style="padding:6px 12px;background:rgba(255,255,255,.08);border-radius:8px">Ranked</span><span style="padding:6px 12px;color:rgba(255,255,255,.45);border-radius:8px">Recent</span></div>
+            </div>
+
+            <!-- ranked rows -->
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <!-- row template -->
+              <div style="display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:11px 16px">
+                <div style="width:26px;text-align:center;font:700 16px 'Space Grotesk';color:#f5c542">1</div>
+                <div style="position:relative;width:64px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#2a3340,#171b22);flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" opacity=".85"><path d="M8 5v14l11-7z"></path></svg></div>
+                <div style="width:32px;height:32px;border-radius:50%;background:#3a3f52;flex:none;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#cbd3e6">RK</div>
+                <div style="flex:1;min-width:0"><div style="font:600 15px 'Inter'">robert23kim</div><div style="font:400 12.5px 'Inter';color:rgba(255,255,255,.42)">Plank · Jul 3</div></div>
+                <div style="text-align:right"><div style="font:600 22px 'Space Grotesk';color:#fafafa">65.8<span style="font-size:13px;color:rgba(255,255,255,.5)">s</span></div></div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:11px 16px">
+                <div style="width:26px;text-align:center;font:700 16px 'Space Grotesk';color:#cbd5e1">2</div>
+                <div style="position:relative;width:64px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#3a2c3a,#20161f);flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" opacity=".85"><path d="M8 5v14l11-7z"></path></svg></div>
+                <div style="width:32px;height:32px;border-radius:50%;background:#4a3f52;flex:none;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#e6cbeb">PK</div>
+                <div style="flex:1;min-width:0"><div style="font:600 15px 'Inter'">Priya Kapoor</div><div style="font:400 12.5px 'Inter';color:rgba(255,255,255,.42)">Plank · Jul 2</div></div>
+                <div style="text-align:right"><div style="font:600 22px 'Space Grotesk';color:#fafafa">61.2<span style="font-size:13px;color:rgba(255,255,255,.5)">s</span></div></div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:16px;background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:11px 16px">
+                <div style="width:26px;text-align:center;font:700 16px 'Space Grotesk';color:#cd7f52">3</div>
+                <div style="position:relative;width:64px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#2a3340,#171b22);flex:none;display:flex;align-items:center;justify-content:center"><svg width="18" height="18" viewBox="0 0 24 24" fill="#fff" opacity=".85"><path d="M8 5v14l11-7z"></path></svg></div>
+                <div style="width:32px;height:32px;border-radius:50%;background:#3f4a44;flex:none;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#c9e6d3">MA</div>
+                <div style="flex:1;min-width:0"><div style="font:600 15px 'Inter'">Marcus Alvarez</div><div style="font:400 12.5px 'Inter';color:rgba(255,255,255,.42)">Plank · Jul 2</div></div>
+                <div style="text-align:right"><div style="font:600 22px 'Space Grotesk';color:#fafafa">54.7<span style="font-size:13px;color:rgba(255,255,255,.5)">s</span></div></div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:16px;padding:11px 16px">
+                <div style="width:26px;text-align:center;font:700 15px 'Space Grotesk';color:rgba(255,255,255,.4)">4</div>
+                <div style="position:relative;width:64px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#2b2f38,#16181d);flex:none;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" opacity=".7"><path d="M8 5v14l11-7z"></path></svg></div>
+                <div style="width:32px;height:32px;border-radius:50%;background:#3a3f52;flex:none;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#cbd3e6">JO</div>
+                <div style="flex:1;min-width:0"><div style="font:600 15px 'Inter'">Jade Okafor</div><div style="font:400 12.5px 'Inter';color:rgba(255,255,255,.42)">Plank · Jul 1</div></div>
+                <div style="text-align:right"><div style="font:600 20px 'Space Grotesk';color:rgba(255,255,255,.85)">43.1<span style="font-size:12px;color:rgba(255,255,255,.45)">s</span></div></div>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:16px;padding:11px 16px">
+                <div style="width:26px;text-align:center;font:700 15px 'Space Grotesk';color:rgba(255,255,255,.4)">5</div>
+                <div style="position:relative;width:64px;height:44px;border-radius:8px;overflow:hidden;background:linear-gradient(135deg,#38322b,#1d1913);flex:none;display:flex;align-items:center;justify-content:center"><svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" opacity=".7"><path d="M8 5v14l11-7z"></path></svg></div>
+                <div style="width:32px;height:32px;border-radius:50%;background:#52463a;flex:none;display:flex;align-items:center;justify-content:center;font:600 12px 'Inter';color:#e6d6c9">TK</div>
+                <div style="flex:1;min-width:0"><div style="font:600 15px 'Inter'">Toka</div><div style="font:400 12.5px 'Inter';color:rgba(255,255,255,.42)">Plank · Jul 3</div></div>
+                <div style="text-align:right"><div style="font:600 20px 'Space Grotesk';color:rgba(255,255,255,.85)">38.9<span style="font-size:12px;color:rgba(255,255,255,.45)">s</span></div></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============ OPTION 1B ============ -->
+    <div class="dv-opt" id="1b">
+      <div class="dv-olabel"><a class="dv-oid" href="#1b">1b</a>Leaderboard-forward — podium + ranked table</div>
+      <div class="dv-card">
+        <div class="ap">
+          <div class="ap-nav">
+            <div class="ap-brand"><span class="ap-logo">T</span>Tom's Gym</div>
+            <div class="ap-navlinks"><span>Home</span><span>About</span><span class="on" style="border-bottom:2px solid #2f7bf6;padding-bottom:2px">Challenges</span><span>Leaderboard</span><span>Store</span></div>
+            <div class="ap-search"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"></circle><path d="m21 21-4.3-4.3"></path></svg>Find a profile…</div>
+          </div>
+
+          <!-- hero band -->
+          <div style="padding:26px 34px 30px;background:radial-gradient(120% 140% at 80% -20%,rgba(47,123,246,.22),transparent 60%)">
+            <div class="ap-back" style="margin-bottom:22px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6"></path></svg>Back to Challenges</div>
+            <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:24px">
+              <div>
+                <div style="display:flex;align-items:center;gap:11px;margin-bottom:10px">
+                  <span class="pill" style="padding:5px 11px;background:rgba(52,199,89,.14);color:#4ade80;font-size:12px"><span style="width:6px;height:6px;border-radius:50%;background:#4ade80"></span>Ongoing · 23 days left</span>
+                  <span style="font:500 12.5px 'Inter';color:rgba(255,255,255,.45)">May 9 – Jul 31, 2026</span>
+                </div>
+                <h1 style="margin:0 0 12px;font:700 42px/1 'Space Grotesk';letter-spacing:-.025em">Summer plank challenge</h1>
+                <p style="margin:0;max-width:560px;font:400 14.5px/1.55 'Inter';color:rgba(255,255,255,.62)">Hold as long as you can. Form scored automatically — no weight to enter, just hit Upload.</p>
+              </div>
+              <button style="display:flex;align-items:center;gap:9px;background:#2f7bf6;color:#fff;border:none;border-radius:11px;padding:14px 22px;font:600 15px 'Inter';cursor:pointer;white-space:nowrap;box-shadow:0 10px 26px -6px rgba(47,123,246,.7)"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v13"></path><path d="m6 9 6-6 6 6"></path><path d="M4 21h16"></path></svg>Upload your plank</button>
+            </div>
+          </div>
+
+          <div style="padding:8px 34px 40px">
+            <!-- podium -->
+            <div style="display:flex;align-items:flex-end;justify-content:center;gap:18px;margin:14px 0 38px">
+              <!-- 2nd -->
+              <div style="display:flex;flex-direction:column;align-items:center;width:200px">
+                <div style="width:56px;height:56px;border-radius:50%;background:#4a3f52;display:flex;align-items:center;justify-content:center;font:600 18px 'Inter';color:#e6cbeb;border:3px solid #cbd5e1;margin-bottom:10px">PK</div>
+                <div style="font:600 14px 'Inter';margin-bottom:2px">Priya Kapoor</div>
+                <div style="font:700 26px 'Space Grotesk';color:#cbd5e1;margin-bottom:12px">61.2s</div>
+                <div style="width:100%;height:96px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,rgba(203,213,225,.22),rgba(203,213,225,.04));border:1px solid rgba(203,213,225,.3);border-bottom:none;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font:700 22px 'Space Grotesk';color:#cbd5e1">2</div>
+              </div>
+              <!-- 1st -->
+              <div style="display:flex;flex-direction:column;align-items:center;width:210px">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="#f5c542" style="margin-bottom:6px"><path d="M5 16 3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5zm0 3h14v2H5v-2z"></path></svg>
+                <div style="width:68px;height:68px;border-radius:50%;background:#3a3f52;display:flex;align-items:center;justify-content:center;font:600 21px 'Inter';color:#cbd3e6;border:3px solid #f5c542;margin-bottom:10px">RK</div>
+                <div style="font:600 15px 'Inter';margin-bottom:2px">robert23kim</div>
+                <div style="font:700 32px 'Space Grotesk';color:#f5c542;margin-bottom:12px">65.8s</div>
+                <div style="width:100%;height:132px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,rgba(245,197,66,.24),rgba(245,197,66,.05));border:1px solid rgba(245,197,66,.4);border-bottom:none;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font:700 26px 'Space Grotesk';color:#f5c542">1</div>
+              </div>
+              <!-- 3rd -->
+              <div style="display:flex;flex-direction:column;align-items:center;width:200px">
+                <div style="width:52px;height:52px;border-radius:50%;background:#3f4a44;display:flex;align-items:center;justify-content:center;font:600 17px 'Inter';color:#c9e6d3;border:3px solid #cd7f52;margin-bottom:10px">MA</div>
+                <div style="font:600 14px 'Inter';margin-bottom:2px">Marcus Alvarez</div>
+                <div style="font:700 24px 'Space Grotesk';color:#cd7f52;margin-bottom:12px">54.7s</div>
+                <div style="width:100%;height:76px;border-radius:12px 12px 0 0;background:linear-gradient(180deg,rgba(205,127,82,.2),rgba(205,127,82,.04));border:1px solid rgba(205,127,82,.32);border-bottom:none;display:flex;align-items:flex-start;justify-content:center;padding-top:12px;font:700 20px 'Space Grotesk';color:#cd7f52">3</div>
+              </div>
+            </div>
+
+            <!-- the rest, as a table -->
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+              <h2 style="margin:0;font:600 16px 'Inter';color:rgba(255,255,255,.85)">Everyone else</h2>
+              <div style="display:flex;gap:8px"><span class="tag" style="background:rgba(255,255,255,.08)">Plank</span><span class="tag" style="background:rgba(147,112,255,.14);color:#b39dff">Men</span><span class="tag" style="background:rgba(147,112,255,.14);color:#b39dff">Women</span></div>
+            </div>
+
+            <div style="border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden">
+              <div style="display:grid;grid-template-columns:52px 1fr 120px 90px;gap:14px;padding:10px 18px;background:rgba(255,255,255,.03);font:600 11px 'Inter';letter-spacing:.04em;text-transform:uppercase;color:rgba(255,255,255,.4)"><div>Rank</div><div>Athlete</div><div>Hold</div><div style="text-align:right">Clip</div></div>
+
+              <div style="display:grid;grid-template-columns:52px 1fr 120px 90px;gap:14px;padding:13px 18px;align-items:center;border-top:1px solid rgba(255,255,255,.06)"><div style="font:600 15px 'Space Grotesk';color:rgba(255,255,255,.5)">4</div><div style="display:flex;align-items:center;gap:11px"><div style="width:30px;height:30px;border-radius:50%;background:#3a3f52;display:flex;align-items:center;justify-content:center;font:600 11px 'Inter';color:#cbd3e6">JO</div><span style="font:600 14.5px 'Inter'">Jade Okafor</span></div><div style="font:600 17px 'Space Grotesk'">43.1s</div><div style="text-align:right"><span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.08);align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="#fff" opacity=".8"><path d="M8 5v14l11-7z"></path></svg></span></div></div>
+
+              <div style="display:grid;grid-template-columns:52px 1fr 120px 90px;gap:14px;padding:13px 18px;align-items:center;border-top:1px solid rgba(255,255,255,.06)"><div style="font:600 15px 'Space Grotesk';color:rgba(255,255,255,.5)">5</div><div style="display:flex;align-items:center;gap:11px"><div style="width:30px;height:30px;border-radius:50%;background:#52463a;display:flex;align-items:center;justify-content:center;font:600 11px 'Inter';color:#e6d6c9">TK</div><span style="font:600 14.5px 'Inter'">Toka</span></div><div style="font:600 17px 'Space Grotesk'">38.9s</div><div style="text-align:right"><span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.08);align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="#fff" opacity=".8"><path d="M8 5v14l11-7z"></path></svg></span></div></div>
+
+              <div style="display:grid;grid-template-columns:52px 1fr 120px 90px;gap:14px;padding:13px 18px;align-items:center;border-top:1px solid rgba(255,255,255,.06)"><div style="font:600 15px 'Space Grotesk';color:rgba(255,255,255,.5)">6</div><div style="display:flex;align-items:center;gap:11px"><div style="width:30px;height:30px;border-radius:50%;background:#3a4352;display:flex;align-items:center;justify-content:center;font:600 11px 'Inter';color:#cbd8e6">DR</div><span style="font:600 14.5px 'Inter'">Devon Reyes</span></div><div style="font:600 17px 'Space Grotesk'">22.4s</div><div style="text-align:right"><span style="display:inline-flex;width:30px;height:30px;border-radius:8px;background:rgba(255,255,255,.08);align-items:center;justify-content:center"><svg width="13" height="13" viewBox="0 0 24 24" fill="#fff" opacity=".8"><path d="M8 5v14l11-7z"></path></svg></span></div></div>
+
+              <!-- your row highlighted -->
+              <div style="display:grid;grid-template-columns:52px 1fr 120px 90px;gap:14px;padding:13px 18px;align-items:center;border-top:1px solid rgba(47,123,246,.3);background:rgba(47,123,246,.1)"><div style="font:600 15px 'Space Grotesk';color:#7fb0ff">—</div><div style="display:flex;align-items:center;gap:11px"><div style="width:30px;height:30px;border-radius:50%;background:#2f7bf6;display:flex;align-items:center;justify-content:center;font:600 11px 'Inter';color:#fff">YOU</div><span style="font:600 14.5px 'Inter';color:#7fb0ff">You haven't logged a plank yet</span></div><div style="font:500 13px 'Inter';color:rgba(255,255,255,.5)">—</div><div style="text-align:right"><span style="font:600 12px 'Inter';color:#7fb0ff">Upload →</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="dv-next">Try next: "make <a class="dv-oid" href="#1a">1a</a> a two-column layout with the leaderboard on the right" · "combine the podium from <a class="dv-oid" href="#1b">1b</a> with the stat strip from <a class="dv-oid" href="#1a">1a</a>" · "show the recent/chronological view" · "new directions"</p>
+</section>
+</x-dc>
+</body>
+</html>
