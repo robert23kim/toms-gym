@@ -7,6 +7,8 @@ module.exports = {
   },
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testMatch: ['**/?(*.)+(spec|test).(js|ts|tsx)'],
+  // e2e/ holds Playwright specs — they cannot run under jest.
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/e2e/'],
   transform: {
     '^.+\\.(ts|tsx)$': ['ts-jest', { tsconfig: 'tsconfig.app.json' }],
     '^.+\\.(js|jsx)$': 'babel-jest',
