@@ -57,7 +57,7 @@ const ChallengeVideos: React.FC = () => {
           weight: lift.weight,
           status: lift.status,
           video_url: lift.video_url,
-          created_at: lift.timestamp || new Date().toISOString(),
+          created_at: lift.created_at || new Date().toISOString(),
           competition_id: id || '',
           competition_name: backendData.name
         }));

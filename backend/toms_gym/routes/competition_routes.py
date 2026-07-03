@@ -365,7 +365,7 @@ def get_competition_lifts(competition_id):
             sqlalchemy.text("""
                 SELECT a.id, uc.user_id as participant_id, uc.competition_id,
                        a.lift_type, a.weight_kg as weight, a.status,
-                       a.video_url
+                       a.video_url, a.created_at
                 FROM "Attempt" a
                 JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
                 WHERE uc.competition_id = :competition_id
