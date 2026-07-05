@@ -1,4 +1,5 @@
 import * as React from "react";
+import { reportError } from "../lib/telemetry";
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -22,6 +23,9 @@ export default class ErrorBoundary extends React.Component<
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
     console.error("Unhandled render error:", error, info.componentStack);
+    reportError("ErrorBoundary", "render-error", error, {
+      componentStack: info.componentStack ?? "",
+    });
   }
 
   render() {

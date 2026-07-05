@@ -1,5 +1,7 @@
-from flask import Blueprint, request
+import json
 import logging
+
+from flask import Blueprint, request
 
 logger = logging.getLogger(__name__)
 
@@ -13,7 +15,16 @@ def log_frontend_error():
     if request.content_length and request.content_length > 2048:
         return '', 204
 
-    data = request.get_json(silent=True) or {}
+    # sendBeacon payloads arrive as text/plain (the only CORS-safelisted way to
+    # beacon cross-origin without a preflight) — fall back to parsing raw bytes.
+    data = request.get_json(silent=True)
+    if data is None:
+        try:
+            data = json.loads(request.get_data(as_text=True))
+        except (ValueError, UnicodeDecodeError):
+            data = {}
+    if not isinstance(data, dict):
+        data = {}
 
     page = data.get('page', 'unknown')
     action = data.get('action', 'unknown')
