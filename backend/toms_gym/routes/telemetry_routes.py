@@ -32,10 +32,13 @@ def log_frontend_error():
     details = data.get('details', {})
     user_agent = data.get('userAgent', '')
     url = data.get('url', '')
+    build = data.get('build', 0)
+    platform = data.get('platform', 'unknown')
 
     logger.warning(
-        "FRONTEND_ERROR page=%s action=%s error=%s url=%s details=%s userAgent=%s",
-        page, action, error, url, details, user_agent[:200]
+        "FRONTEND_ERROR page=%s action=%s error=%s url=%s build=%s platform=%s "
+        "details=%s userAgent=%s",
+        page, action, error, url, build, platform, details, user_agent[:200]
     )
 
     return '', 204

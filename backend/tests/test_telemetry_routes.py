@@ -25,7 +25,18 @@ def _payload():
         "details": {"fileSizeMB": 412.5},
         "userAgent": "test-agent",
         "url": "https://t30g.com/upload",
+        "build": 1783091547,
+        "platform": "web",
     }
+
+
+def test_log_line_carries_build_and_platform(client, caplog):
+    # The build stamp is how a stale client in the wild gets identified —
+    # it must survive into the Cloud Run log line, not just the payload.
+    resp = client.post("/log-error", json=_payload())
+    assert resp.status_code == 204
+    assert "build=1783091547" in caplog.text
+    assert "platform=web" in caplog.text
 
 
 def test_accepts_application_json(client, caplog):
