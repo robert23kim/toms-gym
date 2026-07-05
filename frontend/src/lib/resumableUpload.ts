@@ -7,6 +7,8 @@ import {
 } from "./upload";
 import { canCompressVideo, compressVideo } from "./videoCompress";
 import { uploadVideoParallel } from "./parallelUpload";
+import { shouldCompress } from "./compressionPolicy";
+import { beginJourney, markStage, endJourney } from "./uploadJourney";
 
 const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MiB per chunk (must be a multiple of 256 KiB)
 const MAX_CHUNK_RETRIES = 5;
@@ -181,14 +183,53 @@ export async function uploadVideo(
     compression?: 'auto' | 'fast-only' | 'off';
   }
 ): Promise<FinalizeResponse> {
+  // Crash breadcrumbs: persisted at every stage so a page death mid-upload
+  // (iOS jetsam during compression, tab OOM) is reported on the next boot.
+  beginJourney({
+    fileName: file.name,
+    fileSizeMB: Number((file.size / (1024 * 1024)).toFixed(2)),
+    fileType: file.type || "unknown",
+  });
+  try {
+    const result = await runUpload(file, fields, onProgress, options);
+    endJourney();
+    return result;
+  } catch (err) {
+    // A thrown error is handled (and reported) by the caller — clear the
+    // journey so the next boot doesn't double-report it as a page death.
+    endJourney();
+    throw err;
+  }
+}
+
+async function runUpload(
+  file: File,
+  fields: UploadFields,
+  onProgress?: (pct: number) => void,
+  options?: { compression?: 'auto' | 'fast-only' | 'off' }
+): Promise<FinalizeResponse> {
   // Phase 1 — compress (best-effort). When we attempt it, the encode owns the
   // first COMPRESS_PROGRESS_SHARE of the bar regardless of outcome, so the bar
   // never jumps backwards if compression turns out not to help.
+  //
+  // Gated by shouldCompress: the WebCodecs demux buffers the whole file in
+  // memory, which OOM-kills the tab on iOS (Safari then auto-reloads the page)
+  // and on very large files anywhere. Skipped files upload as originals via
+  // the chunked paths below, which slice the Blob and are memory-safe.
   const mode = options?.compression ?? 'auto';
+  const decision = shouldCompress(
+    file.size,
+    navigator.userAgent,
+    navigator.maxTouchPoints ?? 0
+  );
   const attemptCompress =
-    mode !== 'off' && canCompressVideo() && file.size >= COMPRESS_THRESHOLD;
+    mode !== 'off' &&
+    decision.compress &&
+    canCompressVideo() &&
+    file.size >= COMPRESS_THRESHOLD;
   let toUpload = file;
   if (attemptCompress) {
+    markStage("compress-start", { compressDecision: decision.reason });
     try {
       toUpload = await compressVideo(
         file,
@@ -198,24 +239,42 @@ export async function uploadVideo(
     } catch {
       toUpload = file;
     }
+    markStage("compress-done", {
+      compressedMB: Number((toUpload.size / (1024 * 1024)).toFixed(2)),
+    });
+  } else {
+    markStage("compress-skipped", { compressDecision: decision.reason });
   }
 
   // Phase 2 — map the upload's 0..100 into the remaining progress band.
   const base = attemptCompress ? COMPRESS_PROGRESS_SHARE * 100 : 0;
   const span = 100 - base;
-  const up = (pct: number) => onProgress?.(Math.round(base + (pct * span) / 100));
+  // Breadcrumb every 10% so a mid-transfer death records how far it got.
+  let lastMarkedDecile = -1;
+  const up = (pct: number) => {
+    const decile = Math.floor(pct / 10);
+    if (decile > lastMarkedDecile) {
+      lastMarkedDecile = decile;
+      markStage("put-progress", { pct });
+    }
+    onProgress?.(Math.round(base + (pct * span) / 100));
+  };
 
   if (toUpload.size >= PARALLEL_THRESHOLD) {
+    markStage("transfer-start", { method: "parallel" });
     try {
       return await uploadVideoParallel(toUpload, fields, up);
     } catch {
       // Parallel parts don't resume mid-part; fall back to the resilient
       // resumable path (per-chunk retry + resume) if the parallel transfer fails.
+      markStage("transfer-start", { method: "resumable-fallback" });
       return await uploadVideoResumable(toUpload, fields, up);
     }
   }
   if (toUpload.size >= RESUMABLE_THRESHOLD) {
+    markStage("transfer-start", { method: "resumable" });
     return uploadVideoResumable(toUpload, fields, up);
   }
+  markStage("transfer-start", { method: "single-put" });
   return uploadVideoViaSignedUrl(toUpload, fields, up);
 }
