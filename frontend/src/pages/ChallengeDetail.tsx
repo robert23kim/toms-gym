@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Dumbbell, Upload } from "lucide-react";
+import VideoCaptureInput from "../components/challenge/VideoCaptureInput";
 import axios from "axios";
 import { Challenge, ChallengeLeaderboard, ChallengeLeaderboardRow, LiftingResult } from "../lib/types";
 import Layout from "../components/Layout";
@@ -873,24 +874,10 @@ const ChallengeDetail: React.FC = () => {
 
                 <div>
                   <label className="block text-sm font-medium mb-1">Video</label>
-                  <div className="border-2 border-dashed border-input rounded-lg p-4 text-center hover:border-primary/50 transition-colors">
-                    <input
-                      type="file"
-                      accept="video/*"
-                      onChange={handleFileSelect}
-                      className="hidden"
-                      id="challenge-video-upload"
-                    />
-                    <label
-                      htmlFor="challenge-video-upload"
-                      className="cursor-pointer flex flex-col items-center"
-                    >
-                      <Dumbbell className="w-6 h-6 text-muted-foreground mb-2" />
-                      <span className="text-sm text-muted-foreground">
-                        {selectedFile ? selectedFile.name : "Click to select a video file"}
-                      </span>
-                    </label>
-                  </div>
+                  <VideoCaptureInput
+                    selectedFileName={selectedFile ? selectedFile.name : null}
+                    onFileSelect={handleFileSelect}
+                  />
                 </div>
 
                 {uploadError && (
