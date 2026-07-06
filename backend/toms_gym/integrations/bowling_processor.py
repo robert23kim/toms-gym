@@ -206,6 +206,15 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
         finally:
             session.close()
 
+        # Best-effort: email the uploader a short link. Never blocks/fails
+        # completion — notify_analysis_complete swallows all errors (T9).
+        try:
+            from toms_gym.db import get_db_connection as _get_conn
+            from toms_gym.integrations.analysis_notify import notify_analysis_complete
+            notify_analysis_complete(_get_conn, 'bowling', str(attempt_id))
+        except Exception as notify_err:
+            logger.warning(f"Analysis-ready email hook failed: {notify_err}")
+
     except Exception as e:
         processing_time = time.time() - start_time
         logger.error(f"Bowling processing failed for result_id={result_id}: {e}")

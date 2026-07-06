@@ -210,6 +210,14 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
         session.commit()
         logger.info(f"Lifting analysis completed: result={result_id}")
 
+        # Best-effort: email the uploader a short link. Never blocks/fails
+        # completion — notify_analysis_complete swallows all errors (T9).
+        try:
+            from toms_gym.integrations.analysis_notify import notify_analysis_complete
+            notify_analysis_complete(get_connection, 'lifting', str(attempt_id))
+        except Exception as notify_err:
+            logger.warning(f"Analysis-ready email hook failed: {notify_err}")
+
     except Exception as e:
         error_msg = str(e)[:1000]
         logger.error(f"Lifting analysis failed: result={result_id}: {error_msg}")
