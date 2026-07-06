@@ -108,6 +108,7 @@ def _prow(**kw):
         "annotated_video_url": kw.get("annotated_video_url"),
         "held_s": kw.get("held_s"),
         "form_score": kw.get("form_score"),
+        "steadiness": kw.get("steadiness"),
     }
     return base
 
@@ -124,7 +125,7 @@ def test_leaderboard_plank_challenge_metric_time(test_client):
         _prow(user_id="u2", name="bob", attempt_id="b1", lift_type="Plank",
               weight_kg=0, status="completed", created_at="2026-07-01",
               video_url="v2", annotated_video_url="ann2",
-              held_s="65.8", form_score="0.91"),
+              held_s="65.8", form_score="0.91", steadiness="1.5"),
     ]
     session = _make_session(description, rows, uploaded_today=2)
     with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
@@ -142,6 +143,7 @@ def test_leaderboard_plank_challenge_metric_time(test_client):
     assert top["clip_url"] == "ann2"
     assert top["date"] == "2026-07-01"
     assert top["best_by_lift"] == {"Plank": 65.8}
+    assert top["steadiness"] == 1.5  # best attempt's body_line_stdev_deg surfaces
 
 
 def test_leaderboard_lifting_challenge_metric_weight(test_client):
