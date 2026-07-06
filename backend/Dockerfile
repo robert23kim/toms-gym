@@ -79,4 +79,7 @@ COPY . .
 # Worker timeout must exceed the Cloud Tasks analysis-job hold: the /jobs
 # handlers wait up to 620s for bowling-service, and dispatch_deadline is 900s.
 # At 300s gunicorn killed workers mid-analysis (503) on large raw videos.
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "--timeout", "900", "--graceful-timeout", "900", "toms_gym.wsgi:app"]
+# gthread with 2x8 threads: the default single sync worker serialized ALL
+# requests behind an in-flight analysis hold, stalling the whole API for the
+# duration of the job.
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "--workers", "2", "--threads", "8", "--worker-class", "gthread", "--timeout", "900", "--graceful-timeout", "900", "toms_gym.wsgi:app"]
