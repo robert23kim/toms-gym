@@ -105,6 +105,16 @@ Full plan + task breakdown: `docs/plans/2026-07-06-ux-roadmap.md`. Realigned the
 
 Startup migrations now run through `013` (is_test) and `014` (magic-link tokens). CI test suites added: `test_analysis_notify.py`, `test_og_card.py`, `test_magic_link.py` (all registered in `tools/run_ci_tests.sh`, DB-free). New frontend jest suites for `bowlingStats`, `liftCoaching`, `AnalysisStatus`, `MagicLink`.
 
+## Easy Upload Flows (shipped 2026-07-06)
+
+Frontend-only, camera-first capture. Plan: `docs/superpowers/plans/2026-07-06-easy-upload-flows.md`; spec: `docs/superpowers/specs/2026-07-06-easy-upload-flows-design.md`. No backend changes.
+
+- **Camera-first scorecard capture.** `GolfUpload.tsx` now renders two hidden inputs — `#golf-scorecard-upload` (library, no `capture`) and `#golf-scorecard-camera` (`capture="environment"`); "Capture photo" targets the camera one. New `autoCamera` prop auto-clicks the camera input on mount (browsers that need a user gesture ignore it — the button remains). New route `/golf/snap` = `<GolfUpload autoCamera />`, wired as a PWA `shortcuts` entry in `public/manifest.json` and as GolfHub's primary CTA (`/golf/upload` still works).
+- **Handicap-first post-confirm screen.** New `components/golf/HandicapResultCard.tsx` leads with the hero handicap index + a signed ▲/▼ delta vs. the pre-confirm snapshot (lower = green improvement, matching GolfLeaderboard's pill). `GolfReview.tsx` fetches the previous index via `GET /golf/handicap/<user_id>` (non-fatal read, doesn't touch snapshot history) and renders the card in the confirmed state. OCR review logic is untouched — no auto-confirm.
+- **Record-now challenge video.** New `components/challenge/VideoCaptureInput.tsx` = two affordances: "Record now" (`#challenge-video-camera`, `capture="environment"`) opens the phone camera directly, "Choose existing video" (`#challenge-video-upload`, unchanged id) keeps the library picker. Wired into `ChallengeDetail.tsx`. Plank lift-type pre-set/lock was already implemented.
+- **LiftHub plank quick link.** `LiftHub.tsx` fetches `getCompetitions()` and prepends a "Plank challenge" secondary link → `/challenges/<id>` when an ongoing challenge has the `Plank` category (uses the transformed shape: `title`/`status`/`categories`).
+- **Tests.** New jest suites: `GolfUpload`, `HandicapResultCard`, `VideoCaptureInput`, `LiftHub` (page tests mock `../../config` — Vite `import.meta` — and stub `Layout`/`FairwayScope` for CSS/tree isolation). Full suite: 40 suites / 272 tests green. Camera `capture` behavior itself is only truly verifiable on a real phone.
+
 ## Golf Feature
 
 > **Phase B schema migration landed 2026-04-18** (branch `golf/fairway-phase-b`, migration `008_fairway_schema.sql`). The flat `GolfRound` / `GolfHoleScore` / `GolfHandicap` tables were dropped and replaced with the normalized `Course` / `Tee` / `Round` / `HoleScore` / `HandicapSnapshot` model below. PRs or docs written before that date refer to the old shape — see the Field Rename Map at the end of this section.

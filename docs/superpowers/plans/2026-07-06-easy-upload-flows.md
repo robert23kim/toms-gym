@@ -1,6 +1,6 @@
 # Easy Upload Flows Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Camera-first capture for golf scorecards and plank videos, plus a handicap-first confirmation screen — per spec `docs/superpowers/specs/2026-07-06-easy-upload-flows-design.md`.
 
@@ -29,7 +29,7 @@
 **Interfaces:**
 - Produces: hidden inputs `#golf-scorecard-upload` (library, no `capture`) and `#golf-scorecard-camera` (`capture="environment"`); a `cameraInputRef` and optional `autoCamera` prop consumed by Task 2.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/pages/__tests__/GolfUpload.test.tsx
@@ -70,12 +70,12 @@ describe("GolfUpload capture inputs", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/pages/__tests__/GolfUpload.test.tsx`
 Expected: FAIL — camera element is null (first test); autoCamera prop unknown/no click (second test).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 In `GolfUpload.tsx`:
 
@@ -112,12 +112,12 @@ const GolfUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) 
 onClick={() => cameraInputRef.current?.click()}
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd frontend && npx jest src/pages/__tests__/GolfUpload.test.tsx`
 Expected: PASS (2 tests). If render fails on unmocked network calls, add `(axios.get as jest.Mock).mockResolvedValue({ data: {} })` in a `beforeEach`.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/pages/GolfUpload.tsx frontend/src/pages/__tests__/GolfUpload.test.tsx
@@ -137,7 +137,7 @@ git commit -m "feat(golf): camera-first capture input on scorecard upload"
 - Consumes: `GolfUpload` `autoCamera` prop (Task 1).
 - Produces: route `/golf/snap`.
 
-- [ ] **Step 1: Add the route**
+- [x] **Step 1: Add the route**
 
 In `frontend/src/routes/index.tsx`, after `{ path: "/golf/upload", element: <GolfUpload /> },`:
 
@@ -148,7 +148,7 @@ In `frontend/src/routes/index.tsx`, after `{ path: "/golf/upload", element: <Gol
 
 Note: `GolfUpload` is lazy-imported already; reuse that import.
 
-- [ ] **Step 2: Add the manifest shortcut**
+- [x] **Step 2: Add the manifest shortcut**
 
 In `frontend/public/manifest.json`, add after `"background_color": "#1a1b1e"` (inside the root object):
 
@@ -164,16 +164,16 @@ In `frontend/public/manifest.json`, add after `"background_color": "#1a1b1e"` (i
 ]
 ```
 
-- [ ] **Step 3: Point GolfHub's primary CTA at the snap route**
+- [x] **Step 3: Point GolfHub's primary CTA at the snap route**
 
 In `frontend/src/pages/GolfHub.tsx`, change the `primary.to` value from `"/golf/upload"` to `"/golf/snap"` and keep label/description ("Snap a scorecard" wording stays accurate).
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 Run: `cd frontend && npx jest src/pages/__tests__/GolfUpload.test.tsx && npx vite build`
 Expected: tests PASS; build succeeds; `manifest.json` is valid JSON (build copies it).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/routes/index.tsx frontend/public/manifest.json frontend/src/pages/GolfHub.tsx
@@ -193,7 +193,7 @@ git commit -m "feat(golf): /golf/snap fast route + PWA shortcut, hub CTA"
   `{ handicapIndex: number | null; prevIndex: number | null; totalScore: number; differential: number | null; profileTo: string; roundTo: string }`.
   Consumed by Task 4 (GolfReview confirmed state).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/components/golf/__tests__/HandicapResultCard.test.tsx
@@ -256,12 +256,12 @@ describe("HandicapResultCard", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/components/golf/__tests__/HandicapResultCard.test.tsx`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```tsx
 // frontend/src/components/golf/HandicapResultCard.tsx
@@ -365,12 +365,12 @@ const HandicapResultCard: React.FC<Props> = ({
 export default HandicapResultCard;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd frontend && npx jest src/components/golf/__tests__/HandicapResultCard.test.tsx`
 Expected: PASS (6 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/components/golf/HandicapResultCard.tsx frontend/src/components/golf/__tests__/HandicapResultCard.test.tsx
@@ -387,7 +387,7 @@ git commit -m "feat(golf): HandicapResultCard — handicap-first post-confirm pa
 **Interfaces:**
 - Consumes: `HandicapResultCard` (Task 3), `GET /golf/handicap/<user_id>` (existing endpoint, response `{ handicap_index: number | null, ... }`).
 
-- [ ] **Step 1: Fetch the previous index before confirm**
+- [x] **Step 1: Fetch the previous index before confirm**
 
 In `GolfReview.tsx`, add state and fetch it when the round loads (inside the existing round-fetch effect, after `setRound(...)`, using the fetched round's `user_id`):
 
@@ -411,7 +411,7 @@ try {
 
 (`data` = the round payload variable already in that effect; match the local name in the file.)
 
-- [ ] **Step 2: Replace the confirmed-state body**
+- [x] **Step 2: Replace the confirmed-state body**
 
 In the `if (confirmed && resultData)` block, replace the two stat cards + handicap card + links markup (keep the surrounding Layout/FairwayScope/motion wrapper, the ✓ badge, the "Round saved" heading, and the course/date line) with:
 
@@ -428,12 +428,12 @@ In the `if (confirmed && resultData)` block, replace the two stat cards + handic
 
 Add the import: `import HandicapResultCard from "../components/golf/HandicapResultCard";`
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Run: `cd frontend && npx jest src/components/golf/__tests__/HandicapResultCard.test.tsx && npx vite build && npx tsc --noEmit`
 Expected: tests PASS, build clean, no type errors (checks the JSX wiring compiles).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add frontend/src/pages/GolfReview.tsx
@@ -452,7 +452,7 @@ git commit -m "feat(golf): confirmed screen leads with handicap + delta"
 **Interfaces:**
 - Produces: `VideoCaptureInput` component, props `{ selectedFileName: string | null; onFileSelect: (e: React.ChangeEvent<HTMLInputElement>) => void }`. Two inputs: `#challenge-video-camera` (`accept="video/*" capture="environment"`) and `#challenge-video-upload` (library, unchanged id so existing behavior/tests keep working).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/components/challenge/__tests__/VideoCaptureInput.test.tsx
@@ -482,12 +482,12 @@ describe("VideoCaptureInput", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/components/challenge/__tests__/VideoCaptureInput.test.tsx`
 Expected: FAIL — module not found.
 
-- [ ] **Step 3: Implement the component**
+- [x] **Step 3: Implement the component**
 
 ```tsx
 // frontend/src/components/challenge/VideoCaptureInput.tsx
@@ -546,12 +546,12 @@ const VideoCaptureInput: React.FC<Props> = ({ selectedFileName, onFileSelect }) 
 export default VideoCaptureInput;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd frontend && npx jest src/components/challenge/__tests__/VideoCaptureInput.test.tsx`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Wire into ChallengeDetail**
+- [x] **Step 5: Wire into ChallengeDetail**
 
 In `ChallengeDetail.tsx` (~line 875), replace the existing `<div className="border-2 border-dashed ...">...</div>` video-input block (the one containing `#challenge-video-upload`) with:
 
@@ -565,12 +565,12 @@ In `ChallengeDetail.tsx` (~line 875), replace the existing `<div className="bord
 Add the import: `import VideoCaptureInput from "../components/challenge/VideoCaptureInput";`
 The `Dumbbell` icon import stays (used elsewhere in the file).
 
-- [ ] **Step 6: Verify**
+- [x] **Step 6: Verify**
 
 Run: `cd frontend && npx jest src/components/challenge/__tests__/VideoCaptureInput.test.tsx && npx vite build && npx tsc --noEmit`
 Expected: PASS + clean build.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add frontend/src/components/challenge/VideoCaptureInput.tsx frontend/src/components/challenge/__tests__/VideoCaptureInput.test.tsx frontend/src/pages/ChallengeDetail.tsx
@@ -588,7 +588,7 @@ git commit -m "feat(challenges): record-now camera input for challenge video upl
 **Interfaces:**
 - Consumes: `getCompetitions()` from `frontend/src/lib/api.ts` (existing). VERIFIED mapped shape (`transformCompetitionData`, api.ts:77): `{ id, title, status: 'upcoming'|'ongoing'|'completed', categories: string[], ... }` — note `title` (not `name`) and the pre-computed `status`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/pages/__tests__/LiftHub.test.tsx
@@ -632,12 +632,12 @@ describe("LiftHub plank quick link", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/pages/__tests__/LiftHub.test.tsx`
 Expected: FAIL — no plank link rendered (LiftHub is static today).
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Rework `LiftHub.tsx` to fetch and append the quick link (shape mirrors the existing secondary entries):
 
@@ -690,12 +690,12 @@ const LiftHub: React.FC = () => {
 
 (Keep the existing entries verbatim; the plank link goes first so it's the visible quick action.)
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd frontend && npx jest src/pages/__tests__/LiftHub.test.tsx`
 Expected: PASS (2 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/pages/LiftHub.tsx frontend/src/pages/__tests__/LiftHub.test.tsx
@@ -708,21 +708,21 @@ git commit -m "feat(lift): plank-challenge quick link on the Lift hub"
 
 **Files:** none new.
 
-- [ ] **Step 1: Full validation gate**
+- [x] **Step 1: Full validation gate**
 
 Run: `cd frontend && npx jest && npx vite build && npx tsc --noEmit`
 Expected: all suites pass (existing 36+ suites + 4 new), clean build, 0 type errors.
 
-- [ ] **Step 2: Spec-coverage check**
+- [x] **Step 2: Spec-coverage check**
 
 Confirm against `docs/superpowers/specs/2026-07-06-easy-upload-flows-design.md`: A1 (Task 1), A2 (Task 2), A3 (no change — verify no diff touches the review logic), A4 (Tasks 3-4), B1 (Task 6), B2 (Task 5), B3 (pre-verified, no diff), B4 (no change).
 
-- [ ] **Step 3: Deploy + phone verification (project convention)**
+- [x] **Step 3: Deploy + phone verification (project convention)**
 
 Run: `python3 deploy.py --frontend-only --skip-iam`
 Then on a phone (or Playwright mobile viewport for the non-camera parts): `/golf/snap` opens camera or one-tap button; scorecard confirm screen leads with handicap + delta; plank challenge page shows "Record now"; LiftHub shows the plank quick link. Ask the user to confirm the camera behavior on a real device — emulators can't fully verify `capture`.
 
-- [ ] **Step 4: Commit any fixups**
+- [x] **Step 4: Commit any fixups**
 
 ```bash
 git add -A && git commit -m "fix(upload-flows): post-verification fixups"
