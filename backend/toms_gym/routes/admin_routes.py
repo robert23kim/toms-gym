@@ -185,6 +185,60 @@ def delete_gcs_blob(bucket, url, dry_run=True):
         return False
 
 
+@admin_bp.route('/admin/sweep-stuck-analysis', methods=['POST'])
+def sweep_stuck_analysis():
+    """Mark analysis rows stranded in 'queued'/'processing' as failed.
+
+    A job whose Cloud Tasks retries are exhausted (or whose task was lost)
+    leaves its LiftingResult/BowlingResult row in a non-terminal status
+    forever: invisible to users and un-requeueable, because /analyze only
+    re-queues terminal rows. Sweeping them to 'failed' makes the attempt
+    re-triggerable and the failure visible. Intended for Cloud Scheduler,
+    harmless to run manually.
+
+    Query params:
+        older_than_minutes: only sweep rows untouched for at least this long
+            (default 30 — comfortably above the 900s job deadline).
+    """
+    raw_threshold = request.args.get('older_than_minutes', '30')
+    try:
+        older_than_minutes = int(raw_threshold)
+    except ValueError:
+        return jsonify({"error": "older_than_minutes must be a positive integer"}), 400
+    if older_than_minutes < 1:
+        return jsonify({"error": "older_than_minutes must be a positive integer"}), 400
+
+    swept = {}
+    session = get_db_connection()
+    try:
+        for key, table in (("lifting", "LiftingResult"), ("bowling", "BowlingResult")):
+            rows = session.execute(
+                sqlalchemy.text(f'''
+                    UPDATE "{table}"
+                    SET processing_status = 'failed',
+                        error_message = 'swept: stuck in ' || processing_status ||
+                                        ' for over ' || :mins || ' minutes',
+                        updated_at = now()
+                    WHERE processing_status IN ('queued', 'processing')
+                      AND updated_at < now() - (:mins || ' minutes')::interval
+                    RETURNING id
+                '''),
+                {"mins": older_than_minutes},
+            ).fetchall()
+            swept[key] = [str(r.id) for r in rows]
+        session.commit()
+        total = sum(len(v) for v in swept.values())
+        if total:
+            logger.warning(f"Swept {total} stuck analysis rows: {swept}")
+        return jsonify({"swept": swept, "older_than_minutes": older_than_minutes}), 200
+    except Exception as e:
+        session.rollback()
+        logger.error(f"Sweep failed: {e}")
+        return jsonify({"error": str(e)}), 500
+    finally:
+        session.close()
+
+
 @admin_bp.route('/admin/cleanup-orphaned-videos', methods=['POST', 'DELETE'])
 def cleanup_orphaned_videos():
     """
