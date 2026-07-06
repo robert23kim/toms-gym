@@ -1,6 +1,6 @@
 # Home Redesign + Quiet-Gym Cohesion Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Rebuild the home page as a minimal centered experience (Top Lifts gone, demo loop, icon tiles, open-challenges strip) and extend the same visual language across Layout, hubs, UploadChooser, Challenges, and Leaderboard — per spec `docs/superpowers/specs/2026-07-06-home-redesign-cohesion-design.md`.
 
@@ -32,7 +32,7 @@
 **Interfaces:**
 - Produces: `IconTile` props `{ to: string; icon: React.ReactNode; title: string; description: string }`; `RowCard` props `{ to: string; icon?: React.ReactNode; title: string; pill?: string; trailing?: string }` (trailing defaults `"Open"`). Consumed by Tasks 5–8.
 
-- [ ] **Step 1: Write the failing tests**
+- [x] **Step 1: Write the failing tests**
 
 ```tsx
 // frontend/src/components/__tests__/IconTile.test.tsx
@@ -90,12 +90,12 @@ describe("RowCard", () => {
 });
 ```
 
-- [ ] **Step 2: Run tests to verify they fail**
+- [x] **Step 2: Run tests to verify they fail**
 
 Run: `cd frontend && npx jest src/components/__tests__/IconTile.test.tsx src/components/__tests__/RowCard.test.tsx`
 Expected: FAIL — Cannot find module '../IconTile' / '../RowCard'.
 
-- [ ] **Step 3: Implement both components**
+- [x] **Step 3: Implement both components**
 
 ```tsx
 // frontend/src/components/IconTile.tsx
@@ -169,12 +169,12 @@ const RowCard: React.FC<Props> = ({ to, icon, title, pill, trailing = "Open" }) 
 export default RowCard;
 ```
 
-- [ ] **Step 4: Run tests to verify they pass**
+- [x] **Step 4: Run tests to verify they pass**
 
 Run: `cd frontend && npx jest src/components/__tests__/IconTile.test.tsx src/components/__tests__/RowCard.test.tsx`
 Expected: PASS (3 tests).
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/components/IconTile.tsx frontend/src/components/RowCard.tsx frontend/src/components/__tests__/IconTile.test.tsx frontend/src/components/__tests__/RowCard.test.tsx
@@ -194,7 +194,7 @@ git commit -m "feat(ui): IconTile + RowCard quiet-gym primitives"
 **Interfaces:**
 - Produces: `<AmbientBackground />` (no props), mounted once in `Layout`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/components/__tests__/AmbientBackground.test.tsx
@@ -216,12 +216,12 @@ describe("AmbientBackground", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/components/__tests__/AmbientBackground.test.tsx`
 Expected: FAIL — Cannot find module '../AmbientBackground'.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Append to `frontend/src/index.css` (bottom of file):
 
@@ -296,12 +296,12 @@ import AmbientBackground from "./AmbientBackground";
       <Navbar />
 ```
 
-- [ ] **Step 4: Run test + build**
+- [x] **Step 4: Run test + build**
 
 Run: `cd frontend && npx jest src/components/__tests__/AmbientBackground.test.tsx && npx vite build`
 Expected: PASS (1 test); clean build.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/components/AmbientBackground.tsx frontend/src/components/__tests__/AmbientBackground.test.tsx frontend/src/components/Layout.tsx frontend/src/index.css
@@ -319,7 +319,7 @@ git commit -m "feat(ui): ambient glows + sports-doodle backdrop app-wide"
 **Interfaces:**
 - Consumes: existing `/feedback`, `/terms`, `/privacy` routes; `APP_VERSION` from `../config`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/components/__tests__/LayoutFooter.test.tsx
@@ -354,12 +354,12 @@ describe("Layout footer", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/components/__tests__/LayoutFooter.test.tsx`
 Expected: FAIL — no "report a bug" link (current footer says "Feedback").
 
-- [ ] **Step 3: Replace the footer block**
+- [x] **Step 3: Replace the footer block**
 
 In `Layout.tsx`, add `Bug` to imports (`import { Bug } from "lucide-react";`) and replace the entire existing `<footer>...</footer>` with:
 
@@ -389,12 +389,12 @@ In `Layout.tsx`, add `Bug` to imports (`import { Bug } from "lucide-react";`) an
       </footer>
 ```
 
-- [ ] **Step 4: Run test + build**
+- [x] **Step 4: Run test + build**
 
 Run: `cd frontend && npx jest src/components/__tests__/LayoutFooter.test.tsx && npx vite build`
 Expected: PASS; clean build.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 git add frontend/src/components/Layout.tsx frontend/src/components/__tests__/LayoutFooter.test.tsx
@@ -413,7 +413,7 @@ git commit -m "feat(ui): centered minimal footer with report-a-bug link"
 **Interfaces:**
 - Produces: `<DemoLoop />` (no props). Consumed by Task 5 (Index).
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/components/__tests__/DemoLoop.test.tsx
@@ -437,12 +437,12 @@ describe("DemoLoop", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/components/__tests__/DemoLoop.test.tsx`
 Expected: FAIL — Cannot find module '../DemoLoop'.
 
-- [ ] **Step 3: Append demo CSS to `frontend/src/index.css`**
+- [x] **Step 3: Append demo CSS to `frontend/src/index.css`**
 
 ```css
 /* Quiet-gym demo loop (DemoLoop.tsx) — 12s cycle: plank 0-4s, bowl 4-8s, golf 8-12s */
@@ -507,7 +507,7 @@ Expected: FAIL — Cannot find module '../DemoLoop'.
 }
 ```
 
-- [ ] **Step 4: Implement the component**
+- [x] **Step 4: Implement the component**
 
 ```tsx
 // frontend/src/components/DemoLoop.tsx
@@ -630,12 +630,12 @@ const DemoLoop: React.FC = () => (
 export default DemoLoop;
 ```
 
-- [ ] **Step 5: Run test + build**
+- [x] **Step 5: Run test + build**
 
 Run: `cd frontend && npx jest src/components/__tests__/DemoLoop.test.tsx && npx vite build`
 Expected: PASS (1 test); clean build.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add frontend/src/components/DemoLoop.tsx frontend/src/components/__tests__/DemoLoop.test.tsx frontend/src/index.css
@@ -653,7 +653,7 @@ git commit -m "feat(home): animated plank/bowl/golf demo loop"
 **Interfaces:**
 - Consumes: `IconTile`, `RowCard` (Task 1), `DemoLoop` (Task 4), `getCompetitions()` from `../lib/api`.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 ```tsx
 // frontend/src/pages/__tests__/Index.test.tsx
@@ -730,12 +730,12 @@ describe("Index (quiet-gym home)", () => {
 });
 ```
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run: `cd frontend && npx jest src/pages/__tests__/Index.test.tsx`
 Expected: FAIL — current page renders TopLifts/photo cards; tile hrefs point at old targets; no row cards.
 
-- [ ] **Step 3: Rewrite `Index.tsx`**
+- [x] **Step 3: Rewrite `Index.tsx`**
 
 Replace the whole file with:
 
@@ -854,17 +854,17 @@ const Index = () => {
 export default Index;
 ```
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run: `cd frontend && npx jest src/pages/__tests__/Index.test.tsx`
 Expected: PASS (4 tests).
 
-- [ ] **Step 5: Full-suite sanity + build**
+- [x] **Step 5: Full-suite sanity + build**
 
 Run: `cd frontend && npx jest && npx vite build`
 Expected: all suites pass (nothing else imports Index; TopLifts/getFeaturedChallenges now unused by Index but still exported — fine); clean build.
 
-- [ ] **Step 6: Commit**
+- [x] **Step 6: Commit**
 
 ```bash
 git add frontend/src/pages/Index.tsx frontend/src/pages/__tests__/Index.test.tsx
@@ -881,7 +881,7 @@ git commit -m "feat(home): minimal centered home — demo loop, icon tiles, open
 **Interfaces:**
 - Consumes: `RowCard` (Task 1). `HubPageProps` / `HubLink` types unchanged (LiftHub/BowlHub/GolfHub compile as-is; `description` on secondary links is accepted but no longer rendered).
 
-- [ ] **Step 1: Restyle**
+- [x] **Step 1: Restyle**
 
 Replace the component body's JSX (keep the interfaces and imports, add `import RowCard from "./RowCard";`, drop the now-unused `ArrowRight` import ONLY if unused after the edit — the primary CTA still uses it, so keep it):
 
@@ -937,12 +937,12 @@ const HubPage: React.FC<HubPageProps> = ({ title, subtitle, icon, primary, secon
 };
 ```
 
-- [ ] **Step 2: Verify LiftHub test still green + build**
+- [x] **Step 2: Verify LiftHub test still green + build**
 
 Run: `cd frontend && npx jest src/pages/__tests__/LiftHub.test.tsx && npx vite build`
 Expected: PASS (the plank quick link renders its `label` through RowCard's `title`); clean build.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/src/components/HubPage.tsx
@@ -959,7 +959,7 @@ git commit -m "feat(hubs): centered quiet-gym hub layout with row-card links"
 **Interfaces:**
 - Consumes: `IconTile` (Task 1).
 
-- [ ] **Step 1: Restyle**
+- [x] **Step 1: Restyle**
 
 Replace the whole file with:
 
@@ -1024,12 +1024,12 @@ export default UploadChooser;
 
 Note: golf now routes to `/golf/snap` (camera-first), consistent with home.
 
-- [ ] **Step 2: Verify build**
+- [x] **Step 2: Verify build**
 
 Run: `cd frontend && npx vite build`
 Expected: clean build.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/src/pages/UploadChooser.tsx
@@ -1046,7 +1046,7 @@ git commit -m "feat(upload): chooser uses home icon tiles, golf snap route"
 **Interfaces:**
 - Consumes: `RowCard` (Task 1); the page's existing `challenges` state (transformed `Challenge` objects with `id`, `title`, `status`, `categories`).
 
-- [ ] **Step 1: Restyle header + add Open-now strip**
+- [x] **Step 1: Restyle header + add Open-now strip**
 
 In `Challenges.tsx`:
 
@@ -1115,12 +1115,12 @@ import { Timer } from "lucide-react";
                 }`}
 ```
 
-- [ ] **Step 2: Verify build + full jest**
+- [x] **Step 2: Verify build + full jest**
 
 Run: `cd frontend && npx jest && npx vite build`
 Expected: all suites pass; clean build.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/src/pages/Challenges.tsx
@@ -1134,7 +1134,7 @@ git commit -m "feat(challenges): centered header, open-now strip, pill filters"
 **Files:**
 - Modify: `frontend/src/pages/Leaderboard.tsx` (filter buttons only, ~lines 103-115)
 
-- [ ] **Step 1: Restyle the category filter buttons**
+- [x] **Step 1: Restyle the category filter buttons**
 
 Replace the button `className` template (in the `['total','squat','bench','deadlift']` map) with:
 
@@ -1148,12 +1148,12 @@ Replace the button `className` template (in the `['total','squat','bench','deadl
 
 (Header is already centered; selects and table untouched.)
 
-- [ ] **Step 2: Verify build**
+- [x] **Step 2: Verify build**
 
 Run: `cd frontend && npx vite build`
 Expected: clean build.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 git add frontend/src/pages/Leaderboard.tsx
@@ -1167,21 +1167,21 @@ git commit -m "feat(leaderboard): pill-language filter styling"
 **Files:**
 - Modify: `CLAUDE.md` (add shipped section)
 
-- [ ] **Step 1: Full validation gate**
+- [x] **Step 1: Full validation gate**
 
 Run: `cd frontend && npx jest && npx vite build && npx tsc --noEmit`
 Expected: all suites pass (existing + 6 new), clean build, 0 type errors.
 
-- [ ] **Step 2: Spec-coverage check**
+- [x] **Step 2: Spec-coverage check**
 
 Confirm against `docs/superpowers/specs/2026-07-06-home-redesign-cohesion-design.md`: AmbientBackground (Task 2), IconTile/RowCard (Task 1), DemoLoop (Task 4), Index rebuild (Task 5), Layout footer (Task 3), HubPage (Task 6), UploadChooser (Task 7), Challenges (Task 8), Leaderboard (Task 9). Golf fw-* internals: verify `git diff --stat` shows no `Golf*.tsx` page changes.
 
-- [ ] **Step 3: Deploy + prod verification (project convention)**
+- [x] **Step 3: Deploy + prod verification (project convention)**
 
 Run: `python3 deploy.py --frontend-only --skip-iam`
 Then verify on the prod URL: home shows hero + demo loop + tiles + strip (or no strip if nothing ongoing); footer shows "Report a bug"; hubs/chooser/challenges/leaderboard render the new styling; a golf fw-* page still renders correctly over the ambient background. Check the served page chunks contain marker strings (e.g. `Plank · hold + form`, `Report a bug`).
 
-- [ ] **Step 4: Update CLAUDE.md + mark plan complete, commit**
+- [x] **Step 4: Update CLAUDE.md + mark plan complete, commit**
 
 Add a "Home Redesign + Quiet-Gym Cohesion (shipped 2026-07-06)" section to `CLAUDE.md` summarizing: new components (AmbientBackground/IconTile/RowCard/DemoLoop), Layout footer, Index rebuild (TopLifts removed from page, component file retained), page passes, and test suites added. Mark all checkboxes in this plan.
 
