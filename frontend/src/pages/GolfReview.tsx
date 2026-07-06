@@ -9,6 +9,7 @@ import ReviewBanner from "../components/golf/ReviewBanner";
 import TeePickerDrawer, {
   TeePickerApplyPayload,
 } from "../components/golf/TeePickerDrawer";
+import HandicapResultCard from "../components/golf/HandicapResultCard";
 import { API_URL } from "../config";
 import { fetchRound, searchCourses } from "../lib/api";
 import {
@@ -58,6 +59,7 @@ const GolfReview: React.FC = () => {
   const [courseQuery, setCourseQuery] = useState("");
   const [courseResults, setCourseResults] = useState<GolfCourseSearchResult[]>([]);
   const [playedOn, setPlayedOn] = useState<string>("");
+  const [prevIndex, setPrevIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -66,6 +68,18 @@ const GolfReview: React.FC = () => {
         setLoading(true);
         const data = await fetchRound(roundId);
         setRound(data.round);
+        // Previous handicap (pre-confirm) so the confirmed screen can show a
+        // delta. Snapshot history is untouched by this read; failure is
+        // non-fatal.
+        try {
+          const uid = data.round.user_id || localStorage.getItem("userId");
+          if (uid) {
+            const h = await axios.get(`${API_URL}/golf/handicap/${uid}`);
+            setPrevIndex(h.data?.handicap_index ?? null);
+          }
+        } catch {
+          setPrevIndex(null);
+        }
         const players: GolfDetectedPlayer[] = data.detected_players || [];
         setDetectedPlayers(players);
         setDetectedTees(data.detected_tees || []);
@@ -328,40 +342,14 @@ const GolfReview: React.FC = () => {
                 {round?.course?.name ?? courseChoice?.name ?? "Your round"} —{" "}
                 {playedOn || round?.played_on}
               </p>
-              <div className="grid grid-cols-2 gap-3 mb-6 text-left">
-                <div className="fw-surface p-4">
-                  <div className="text-2xl font-medium">{resultData.adjusted_gross_score}</div>
-                  <div className="text-xs fw-text-secondary">Total score</div>
-                </div>
-                <div className="fw-surface p-4">
-                  <div className="text-2xl font-medium text-[var(--fw-text-success)]">
-                    {resultData.differential !== null ? resultData.differential.toFixed(1) : "N/A"}
-                  </div>
-                  <div className="text-xs fw-text-secondary">Differential</div>
-                </div>
-              </div>
-              {resultData.handicap_index !== null && (
-                <div className="fw-surface p-4 mb-6 text-left">
-                  <div className="text-xs fw-text-secondary">Handicap index</div>
-                  <div className="text-3xl font-medium text-[var(--fw-text-success)]">
-                    {resultData.handicap_index.toFixed(1)}
-                  </div>
-                </div>
-              )}
-              <div className="flex gap-3 justify-center">
-                <Link
-                  to={userId ? `/golf/profile/${userId}` : "/golf/profile"}
-                  className="h-9 px-4 rounded-md bg-[var(--fw-info)] text-white text-sm inline-flex items-center"
-                >
-                  View profile
-                </Link>
-                <Link
-                  to={`/golf/round/${roundId}`}
-                  className="h-9 px-4 rounded-md border-[0.5px] border-[var(--fw-border-secondary)] text-sm inline-flex items-center"
-                >
-                  View round
-                </Link>
-              </div>
+              <HandicapResultCard
+                handicapIndex={resultData.handicap_index}
+                prevIndex={prevIndex}
+                totalScore={resultData.adjusted_gross_score}
+                differential={resultData.differential}
+                profileTo={userId ? `/golf/profile/${userId}` : "/golf/profile"}
+                roundTo={`/golf/round/${roundId}`}
+              />
             </div>
           </motion.div>
         </FairwayScope>
