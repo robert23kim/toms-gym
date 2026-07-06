@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
 from toms_gym.db import get_db_connection, Session
+from toms_gym.services.lift_history import shape_lift_row
 from google.cloud import storage
 import random
 import datetime
@@ -97,25 +98,53 @@ def get_user_competitions(user_id):
 
 @user_bp.route('/users/<string:user_id>/lifts')
 def get_user_lifts(user_id):
+    """Paginated lift history with analysis payoffs (grade / plank hold).
+
+    The LEFT JOIN pulls only scalar fields out of the JSONB report via ->>
+    so per_second never ships on list rows. Public read, like the profile.
     """
-    Endpoint that queries all lifts for a specific user.
-    """
+    try:
+        limit = min(max(int(request.args.get('limit', 20)), 1), 50)
+        offset = max(int(request.args.get('offset', 0)), 0)
+    except ValueError:
+        return jsonify({"error": "limit/offset must be integers"}), 400
+
     session = None
     try:
         session = get_db_connection()
-        result = session.execute(
+        rows = session.execute(
             sqlalchemy.text("""
-                SELECT a.id, uc.competition_id,
-                       a.lift_type, a.weight_kg as weight, a.status,
-                       a.video_url
+                SELECT a.id AS attempt_id, a.lift_type, a.weight_kg AS weight,
+                       a.video_url, a.created_at, a.status,
+                       uc.competition_id, c.name AS competition_name,
+                       lr.processing_status AS analysis_status,
+                       lr.report->>'overall_grade'    AS grade,
+                       lr.report->>'lift_type'        AS report_lift_type,
+                       lr.report->>'total_reps'       AS total_reps,
+                       lr.report->>'total_in_plank_s' AS hold_s
                 FROM "Attempt" a
                 JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
-                WHERE uc.user_id = :user_id
+                JOIN "Competition" c ON uc.competition_id = c.id
+                LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
+                WHERE uc.user_id = :user_id AND a.video_url IS NOT NULL
+                ORDER BY a.created_at DESC
+                LIMIT :limit OFFSET :offset
+            """),
+            {"user_id": user_id, "limit": limit, "offset": offset}
+        ).fetchall()
+
+        total = session.execute(
+            sqlalchemy.text("""
+                SELECT COUNT(*)
+                FROM "Attempt" a
+                JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                WHERE uc.user_id = :user_id AND a.video_url IS NOT NULL
             """),
             {"user_id": user_id}
-        )
-        results = [dict(row) for row in result]
-        return {"lifts": results}
+        ).scalar() or 0
+
+        lifts = [shape_lift_row(row._mapping) for row in rows]
+        return jsonify({"lifts": lifts, "total": int(total), "limit": limit, "offset": offset})
     except Exception as e:
         if session:
             session.rollback()
