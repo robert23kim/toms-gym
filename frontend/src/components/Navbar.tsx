@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy } from "lucide-react";
+import { Menu, X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy, CircleDot, Flag } from "lucide-react";
 import FindProfile from "./FindProfile";
 import { useAuth } from "../auth/AuthContext";
 
@@ -43,10 +43,11 @@ const Navbar: React.FC = () => {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/about", label: "About" },
+    // Primary analysis verticals — each lands on a hub whose CTA is Upload
+    { href: "/lift", label: "Lift", icon: <Dumbbell className="w-4 h-4" /> },
+    { href: "/bowl", label: "Bowl", icon: <CircleDot className="w-4 h-4" /> },
+    { href: "/golf", label: "Golf", icon: <Flag className="w-4 h-4" /> },
     { href: "/challenges", label: "Challenges", icon: <Trophy className="w-4 h-4" /> },
-    { href: "/leaderboard", label: "Leaderboard" },
-    { href: "/golf/leaderboard", label: "Golf" },
     { href: "/feedback", label: "Feedback" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },
   ];
