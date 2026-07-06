@@ -104,8 +104,26 @@ const GolfLeaderboard: React.FC = () => {
                     />
                     <div className="flex-1 min-w-0">
                       <div className="font-medium truncate">{entry.user_name}</div>
-                      <div className="text-xs fw-text-secondary">
-                        {entry.rounds_played} round{entry.rounds_played !== 1 ? "s" : ""}
+                      <div className="flex items-center gap-2 text-xs fw-text-secondary">
+                        <span>
+                          {entry.rounds_played} round{entry.rounds_played !== 1 ? "s" : ""}
+                        </span>
+                        {entry.monthly_delta !== null && entry.monthly_delta !== 0 && (
+                          <span
+                            data-testid="monthly-delta"
+                            title="30-day handicap change"
+                            className="inline-flex items-center gap-0.5 font-medium"
+                            style={{
+                              color:
+                                entry.monthly_delta < 0
+                                  ? "var(--fw-text-success)"
+                                  : "var(--fw-danger)",
+                            }}
+                          >
+                            {entry.monthly_delta < 0 ? "▼" : "▲"}{" "}
+                            {Math.abs(entry.monthly_delta).toFixed(1)}
+                          </span>
+                        )}
                       </div>
                     </div>
                     <div className="text-right">
