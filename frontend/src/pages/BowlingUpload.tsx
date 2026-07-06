@@ -1,15 +1,15 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState } from "react";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Upload } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
-import { BowlingResult } from "../lib/types";
 import { useMediaUpload } from "../hooks/useMediaUpload";
 
 const BowlingUpload: React.FC = () => {
   const { competitionId } = useParams<{ competitionId: string }>();
+  const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
   const {
@@ -22,40 +22,6 @@ const BowlingUpload: React.FC = () => {
     onDragOver: handleDragOver,
     onDragLeave: handleDragLeave,
   } = useMediaUpload({ accept: "video", maxBytes: 500 * 1024 * 1024 });
-
-  // Polling state
-  const [attemptId, setAttemptId] = useState<string | null>(null);
-  const [result, setResult] = useState<BowlingResult | null>(null);
-  const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!attemptId) return;
-
-    const poll = async () => {
-      try {
-        const response = await axios.get(`${API_URL}/bowling/result/${attemptId}`);
-        setResult(response.data);
-        if (response.data.processing_status === "completed" || response.data.processing_status === "failed") {
-          if (pollRef.current) clearInterval(pollRef.current);
-        }
-      } catch (err) {
-        console.error("Error polling result:", err);
-      }
-    };
-
-    poll();
-    pollRef.current = setInterval(poll, 3000);
-
-    return () => {
-      if (pollRef.current) clearInterval(pollRef.current);
-    };
-  }, [attemptId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,7 +55,10 @@ const BowlingUpload: React.FC = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setAttemptId(response.data.attempt_id);
+      // Analysis is enqueued server-side on upload. Send the user to the status
+      // page instead of a dead-end wait; it polls by attempt id and survives
+      // reload via its URL (T8).
+      navigate(`/bowling/status/${response.data.attempt_id}`);
     } catch (err: any) {
       console.error("Upload error:", err);
       let errorMsg = "Upload failed";
@@ -103,114 +72,6 @@ const BowlingUpload: React.FC = () => {
       setIsUploading(false);
     }
   };
-
-  // Polling / result view
-  if (attemptId) {
-    return (
-      <Layout>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
-        >
-          <div className="max-w-2xl mx-auto">
-            {!result || result.processing_status === "queued" ? (
-              <div className="bg-card rounded-lg shadow-lg p-8 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-                <h2 className="text-xl font-semibold mb-2">Queued...</h2>
-                <p className="text-muted-foreground">Your bowling video is waiting to be processed.</p>
-              </div>
-            ) : result.processing_status === "processing" ? (
-              <div className="bg-card rounded-lg shadow-lg p-8 text-center">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
-                <h2 className="text-xl font-semibold mb-2">Processing your bowling video...</h2>
-                <p className="text-muted-foreground">This usually takes a minute or two.</p>
-              </div>
-            ) : result.processing_status === "failed" ? (
-              <div className="bg-card rounded-lg shadow-lg p-8">
-                <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-4 text-red-500 mb-4">
-                  <h2 className="text-xl font-semibold mb-2">Processing Failed</h2>
-                  <p>{result.error_message || "An unexpected error occurred."}</p>
-                </div>
-                <button
-                  onClick={() => {
-                    setAttemptId(null);
-                    setResult(null);
-                    setSelectedFile(null);
-                  }}
-                  className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90"
-                >
-                  Try Again
-                </button>
-              </div>
-            ) : (
-              <div className="bg-card rounded-lg shadow-lg p-6 sm:p-8 space-y-6">
-                <h2 className="text-2xl font-bold">Results</h2>
-
-                {result.debug_video_url && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Debug Video</h3>
-                    <video
-                      src={result.debug_video_url}
-                      controls
-                      autoPlay
-                      muted
-                      className="w-full rounded-lg"
-                    />
-                  </div>
-                )}
-
-                {result.trajectory_png_url && (
-                  <div>
-                    <h3 className="text-lg font-semibold mb-2">Trajectory</h3>
-                    <img
-                      src={result.trajectory_png_url}
-                      alt="Ball trajectory"
-                      className="w-full rounded-lg"
-                    />
-                  </div>
-                )}
-
-                <div className="grid grid-cols-2 gap-4">
-                  {result.board_at_pins != null && (
-                    <div className="bg-primary/5 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-primary">{result.board_at_pins}</div>
-                      <div className="text-sm text-muted-foreground">Board at Pins</div>
-                    </div>
-                  )}
-                  {result.entry_board != null && (
-                    <div className="bg-primary/5 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-primary">{result.entry_board}</div>
-                      <div className="text-sm text-muted-foreground">Entry Board</div>
-                    </div>
-                  )}
-                  {result.detection_rate != null && (
-                    <div className="bg-primary/5 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-primary">{(result.detection_rate * 100).toFixed(1)}%</div>
-                      <div className="text-sm text-muted-foreground">Detection Rate</div>
-                    </div>
-                  )}
-                  {result.processing_time_s != null && (
-                    <div className="bg-primary/5 rounded-lg p-4 text-center">
-                      <div className="text-2xl font-bold text-primary">{result.processing_time_s.toFixed(1)}s</div>
-                      <div className="text-sm text-muted-foreground">Processing Time</div>
-                    </div>
-                  )}
-                </div>
-
-                <Link
-                  to={`/bowling/result/${attemptId}`}
-                  className="block w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
-                >
-                  View Full Result
-                </Link>
-              </div>
-            )}
-          </div>
-        </motion.div>
-      </Layout>
-    );
-  }
 
   // Upload form view
   return (

@@ -9,6 +9,7 @@ import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
 import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
+import { triggerLiftingAnalysis } from "../lib/api";
 
 interface UserProfile {
   best_lifts: {
@@ -34,7 +35,6 @@ const UploadVideo: React.FC = () => {
   useUploadGuard(isUploading);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [email, setEmail] = useState<string>("");
-  const [uploadSuccess, setUploadSuccess] = useState<{ userId: string } | null>(null);
 
   // Default weights for each lift type
   const defaultWeights = {
@@ -156,14 +156,22 @@ const UploadVideo: React.FC = () => {
           console.log("Attempt created with ID:", data.attempt_id);
           localStorage.setItem('last_attempt_id', data.attempt_id);
 
-          // Show success with link to profile
-          setUploadSuccess({ userId: data.user_id ?? '' });
+          // Kick off analysis, then send the user to the status page so the
+          // minutes-long wait isn't a dead end. The page polls by attempt id
+          // and survives reload via its URL (T8).
+          try {
+            await triggerLiftingAnalysis(data.attempt_id);
+          } catch (analyzeErr) {
+            console.error("Auto-analyze failed:", analyzeErr);
+          }
 
           toast({
             title: "Upload Successful!",
-            description: "Your lift has been submitted. View your profile to see all your uploads.",
+            description: "Analyzing your form — hang tight or check back in a couple minutes.",
             duration: 5000,
           });
+
+          navigate(`/lift/status/${data.attempt_id}`);
         } else {
           console.warn("No attempt_id received in the response");
           toast({
@@ -250,29 +258,6 @@ const UploadVideo: React.FC = () => {
                 <h1 className="text-2xl font-bold">Upload Your Lift</h1>
               </div>
 
-              {uploadSuccess ? (
-                <div className="text-center py-8">
-                  <div className="mb-4 text-green-500 text-lg font-semibold">Upload Successful!</div>
-                  <p className="text-muted-foreground mb-6">Your lift has been submitted and linked to your profile.</p>
-                  <div className="flex flex-col gap-3">
-                    <Link
-                      to={`/profile/${uploadSuccess.userId}`}
-                      className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
-                    >
-                      View Your Profile
-                    </Link>
-                    <button
-                      onClick={() => {
-                        setUploadSuccess(null);
-                        setSelectedFile(null);
-                      }}
-                      className="w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90"
-                    >
-                      Upload Another Video
-                    </button>
-                  </div>
-                </div>
-              ) : (
               <form onSubmit={handleSubmit} className="space-y-6">
                 {!localStorage.getItem('userId') && (
                   <div>
@@ -366,7 +351,6 @@ const UploadVideo: React.FC = () => {
                     : "Upload Video"}
                 </button>
               </form>
-              )}
             </div>
           </div>
         </div>
