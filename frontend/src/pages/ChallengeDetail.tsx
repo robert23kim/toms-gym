@@ -16,6 +16,8 @@ import { useUploadGuard } from "../lib/useUploadGuard";
 import StatusPill from "../components/challenge/StatusPill";
 import Podium from "../components/challenge/Podium";
 import LeaderboardRow from "../components/challenge/LeaderboardRow";
+import NicknameBadge from "../components/challenge/NicknameBadge";
+import { athleteNickname } from "../lib/plankStats";
 import YouRow from "../components/challenge/YouRow";
 import AttemptHistory from "../components/challenge/AttemptHistory";
 import MomentumLine from "../components/challenge/MomentumLine";
@@ -555,6 +557,16 @@ const ChallengeDetail: React.FC = () => {
     return `/challenges/${id}/participants/${row.user_id}/video/${chosen.id}`;
   };
 
+  // Steadiness nickname for a podium athlete (time/plank challenges only).
+  const rowNickname = (r: ChallengeLeaderboardRow) =>
+    metric === "time"
+      ? athleteNickname({
+          stdevDeg: r.steadiness,
+          attemptCount: r.attempt_count,
+          uploadDates: r.history.map((h) => h.date),
+        })
+      : null;
+
   if (loading) {
     return (
       <Layout>
@@ -751,16 +763,31 @@ const ChallengeDetail: React.FC = () => {
 
                 <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
 
-                {/* Podium members' attempt history — the podium cards stay pure
-                    visuals, so multi-attempt athletes get chips below instead. */}
-                {podiumRows.some((r) => r.attempt_count > 1) && (
+                {/* Podium members' steadiness nickname + attempt history — the
+                    podium cards stay pure visuals, so athletes get chips below:
+                    a nickname badge (plank/time) and, for multi-attempt lifters,
+                    an expandable attempts toggle. */}
+                {podiumRows.some((r) => r.attempt_count > 1 || rowNickname(r)) && (
                   <div className="mb-6 -mt-2 space-y-2">
                     <div className="flex flex-wrap justify-center gap-2">
                       {podiumRows
-                        .filter((r) => r.attempt_count > 1)
+                        .filter((r) => r.attempt_count > 1 || rowNickname(r))
                         .map((r) => {
                           const expanded = expandedAttemptsUserId === String(r.user_id);
-                          return (
+                          const nickname = rowNickname(r);
+                          const multi = r.attempt_count > 1;
+                          const inner = (
+                            <>
+                              <span className="text-white/70">{r.name || "Athlete"}</span>
+                              {nickname && <NicknameBadge nickname={nickname} />}
+                              {multi && (
+                                <span className="text-white/50">
+                                  · {r.attempt_count} attempts {expanded ? "▴" : "▾"}
+                                </span>
+                              )}
+                            </>
+                          );
+                          return multi ? (
                             <button
                               key={r.user_id}
                               type="button"
@@ -768,10 +795,17 @@ const ChallengeDetail: React.FC = () => {
                               onClick={() =>
                                 setExpandedAttemptsUserId(expanded ? null : String(r.user_id))
                               }
-                              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                             >
-                              {r.name || "Athlete"} · {r.attempt_count} attempts {expanded ? "▴" : "▾"}
+                              {inner}
                             </button>
+                          ) : (
+                            <span
+                              key={r.user_id}
+                              className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/60"
+                            >
+                              {inner}
+                            </span>
                           );
                         })}
                     </div>
