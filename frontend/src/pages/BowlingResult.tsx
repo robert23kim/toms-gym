@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, PencilRuler } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import LaneEdgeEditor from "../components/LaneEdgeEditor";
+import BowlingStatCard from "../components/BowlingStatCard";
 import { API_URL } from "../config";
 import { BowlingResult as BowlingResultType, LaneEdges, Annotation } from "../lib/types";
+import {
+  deriveEntryBoard,
+  derivePocket,
+  deriveSpeedMph,
+  deriveHook,
+} from "../lib/bowlingStats";
+
+const HOOK_ARROW: Record<"left" | "right" | "straight", string> = {
+  left: "←",
+  right: "→",
+  straight: "↑",
+};
 
 const BowlingResult: React.FC = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
@@ -18,6 +31,7 @@ const BowlingResult: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [polling, setPolling] = useState(false);
   const [annotation, setAnnotation] = useState<Annotation | null>(null);
+  const [showAdvanced, setShowAdvanced] = useState(false);
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -139,6 +153,14 @@ const BowlingResult: React.FC = () => {
     );
   }
 
+  // --- Consumer-facing derived stats (see lib/bowlingStats.ts) ---------------
+  const entryBoard = deriveEntryBoard(result);
+  const pocket = derivePocket(entryBoard);
+  const speedMph = deriveSpeedMph(annotation);
+  const hook = deriveHook(result);
+
+  const annotateHref = `/bowling/result/${attemptId}/annotate`;
+
   return (
     <Layout>
       <motion.div
@@ -157,7 +179,7 @@ const BowlingResult: React.FC = () => {
 
           <div className="bg-card rounded-lg shadow-lg overflow-hidden">
             <div className="p-6 sm:p-8 space-y-6">
-              <h1 className="text-2xl font-bold">Bowling Result</h1>
+              <h1 className="text-2xl font-bold">Your Throw</h1>
 
               {result.processing_status === "queued" || result.processing_status === "processing" ? (
                 <div className="text-center py-8">
@@ -175,114 +197,178 @@ const BowlingResult: React.FC = () => {
                 </div>
               ) : (
                 <>
-                  {/* Top row: video left, trajectory + stats right */}
+                  {/* ============================================================
+                      DEFAULT (consumer) view: headline stats + annotated video
+                      + ball path. No debug jargon lives above the Advanced fold.
+                     ============================================================ */}
+
+                  {/* Headline stats a bowler cares about */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                    <BowlingStatCard
+                      value={entryBoard != null ? Math.round(entryBoard) : "—"}
+                      label="Entry Board"
+                    />
+                    <BowlingStatCard
+                      value={pocket ? pocket.label : "—"}
+                      label="Pocket"
+                      tone={pocket ? (pocket.hit ? "good" : "warn") : "default"}
+                    />
+                    <BowlingStatCard
+                      value={speedMph != null ? speedMph.toFixed(1) : "—"}
+                      label="Ball Speed"
+                      sublabel={speedMph != null ? "est. · mph" : "mph"}
+                    />
+                    <BowlingStatCard
+                      value={
+                        hook
+                          ? hook.direction === "straight"
+                            ? "Straight"
+                            : `${HOOK_ARROW[hook.direction]} ${hook.boards}`
+                          : "—"
+                      }
+                      label="Hook"
+                      sublabel={hook && hook.direction !== "straight" ? "boards" : undefined}
+                    />
+                  </div>
+
+                  {/* T12 SEAM: low-confidence filming tips + retry CTA render here
+                      (gated on result.detection_rate below a threshold). Owned by
+                      task T12 — intentionally not implemented in T10. */}
+
+                  {/* Annotated video + ball path */}
                   <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    {/* Debug Video — 3 cols */}
                     <div className="lg:col-span-3">
                       {result.debug_video_url ? (
-                        <div>
-                          <h3 className="text-lg font-semibold mb-2">Debug Video</h3>
-                          <video
-                            src={result.debug_video_url}
-                            controls
-                            autoPlay
-                            muted
-                            className="w-full rounded-lg"
-                          />
-                        </div>
+                        <video
+                          src={result.debug_video_url}
+                          controls
+                          autoPlay
+                          muted
+                          className="w-full rounded-lg"
+                        />
                       ) : (
                         <div className="w-full aspect-video bg-muted rounded-lg flex items-center justify-center">
-                          <span className="text-muted-foreground">No debug video available</span>
+                          <span className="text-muted-foreground">No video available</span>
                         </div>
                       )}
                     </div>
 
-                    {/* Right panel: trajectory + stats — 2 cols */}
-                    <div className="lg:col-span-2 space-y-4">
-                      {/* Trajectory */}
-                      <div>
-                        <h3 className="text-lg font-semibold mb-2">Trajectory</h3>
-                        {result.trajectory_png_url ? (
-                          <img
-                            src={result.trajectory_png_url}
-                            alt="Ball trajectory"
-                            className="w-full rounded-lg"
-                          />
-                        ) : (
-                          <div className="w-full aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
-                            <span className="text-muted-foreground text-sm">No trajectory available</span>
-                          </div>
-                        )}
-                      </div>
-
-                      {/* Stats 2x2 */}
-                      <div className="grid grid-cols-2 gap-3">
-                        {result.board_at_pins != null && (
-                          <div className="bg-primary/5 rounded-lg p-3 text-center">
-                            <div className="text-2xl font-bold text-primary">{result.board_at_pins}</div>
-                            <div className="text-xs text-muted-foreground">Board at Pins</div>
-                          </div>
-                        )}
-                        {result.entry_board != null && (
-                          <div className="bg-primary/5 rounded-lg p-3 text-center">
-                            <div className="text-2xl font-bold text-primary">{result.entry_board}</div>
-                            <div className="text-xs text-muted-foreground">Entry Board</div>
-                          </div>
-                        )}
-                        {result.detection_rate != null && (
-                          <div className="bg-primary/5 rounded-lg p-3 text-center">
-                            <div className="text-2xl font-bold text-primary">
-                              {result.detection_rate.toFixed(1)}%
-                            </div>
-                            <div className="text-xs text-muted-foreground">Detection Rate</div>
-                          </div>
-                        )}
-                        {result.processing_time_s != null && (
-                          <div className="bg-primary/5 rounded-lg p-3 text-center">
-                            <div className="text-2xl font-bold text-primary">
-                              {result.processing_time_s.toFixed(1)}s
-                            </div>
-                            <div className="text-xs text-muted-foreground">Processing Time</div>
-                          </div>
-                        )}
-                      </div>
+                    <div className="lg:col-span-2 space-y-2">
+                      <h3 className="text-lg font-semibold">Ball Path</h3>
+                      {result.trajectory_png_url ? (
+                        <img
+                          src={result.trajectory_png_url}
+                          alt="Ball trajectory"
+                          className="w-full rounded-lg"
+                        />
+                      ) : (
+                        <div className="w-full aspect-[3/4] bg-muted rounded-lg flex items-center justify-center">
+                          <span className="text-muted-foreground text-sm">No ball path available</span>
+                        </div>
+                      )}
                     </div>
                   </div>
 
-                  {/* Lane Edges — full width */}
-                  {result.frame_url && (result.lane_edges_auto || result.lane_edges_manual) && (
+                  {/* Prominent manual-annotate CTA (tracking correction) */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 bg-primary/5 rounded-lg p-4">
                     <div>
-                      <h3 className="text-lg font-semibold mb-2">Lane Edges</h3>
-                      <LaneEdgeEditor
-                        frameUrl={result.frame_url}
-                        laneEdges={editedEdges || result.lane_edges_manual || result.lane_edges_auto!}
-                        onChange={setEditedEdges}
-                      />
-                      <div className="flex gap-3 mt-3">
-                        <button
-                          onClick={handleSaveAndReanalyze}
-                          disabled={saving || !editedEdges}
-                          className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
-                        >
-                          {saving ? "Saving..." : "Save & Re-analyze"}
-                        </button>
-                        {result.lane_edges_manual && (
-                          <button
-                            onClick={handleResetEdges}
-                            className="px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80"
-                          >
-                            Reset to Auto
-                          </button>
-                        )}
-                      </div>
+                      <h3 className="text-base font-semibold">Tracking look off?</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Fine-tune the ball path frame by frame to sharpen your stats.
+                      </p>
                     </div>
-                  )}
+                    <a
+                      href={annotateHref}
+                      className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md whitespace-nowrap"
+                    >
+                      <PencilRuler className="mr-2" size={16} />
+                      Annotate Frames
+                    </a>
+                  </div>
 
-                  {/* Annotation bar — compact row */}
-                  {result.processing_status === 'completed' && (
-                    <div className="bg-primary/5 rounded-lg p-4">
-                      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div className="flex-1">
+                  {/* ============================================================
+                      ADVANCED (dev) view — collapsed by default. Everything
+                      engineer-facing lives here: raw numbers, detection/timing,
+                      lane-edge editor, annotation frame internals.
+                     ============================================================ */}
+                  <div className="border-t border-border pt-4">
+                    <button
+                      onClick={() => setShowAdvanced((v) => !v)}
+                      className="inline-flex items-center text-sm font-medium text-muted-foreground hover:text-foreground"
+                    >
+                      {showAdvanced ? (
+                        <ChevronDown size={16} className="mr-1" />
+                      ) : (
+                        <ChevronRight size={16} className="mr-1" />
+                      )}
+                      Advanced
+                    </button>
+
+                    {showAdvanced && (
+                      <div className="mt-4 space-y-6">
+                        {/* Raw analysis numbers */}
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+                          {result.board_at_pins != null && (
+                            <BowlingStatCard
+                              value={result.board_at_pins.toFixed(1)}
+                              label="Board at Pins"
+                              tone="muted"
+                            />
+                          )}
+                          {result.entry_board != null && (
+                            <BowlingStatCard
+                              value={result.entry_board.toFixed(1)}
+                              label="Entry Board (raw)"
+                              tone="muted"
+                            />
+                          )}
+                          {result.detection_rate != null && (
+                            <BowlingStatCard
+                              value={`${result.detection_rate.toFixed(1)}%`}
+                              label="Detection Rate"
+                              tone="muted"
+                            />
+                          )}
+                          {result.processing_time_s != null && (
+                            <BowlingStatCard
+                              value={`${result.processing_time_s.toFixed(1)}s`}
+                              label="Processing Time"
+                              tone="muted"
+                            />
+                          )}
+                        </div>
+
+                        {/* Lane edge editor + re-analyze */}
+                        {result.frame_url && (result.lane_edges_auto || result.lane_edges_manual) && (
+                          <div>
+                            <h3 className="text-lg font-semibold mb-2">Lane Edges</h3>
+                            <LaneEdgeEditor
+                              frameUrl={result.frame_url}
+                              laneEdges={editedEdges || result.lane_edges_manual || result.lane_edges_auto!}
+                              onChange={setEditedEdges}
+                            />
+                            <div className="flex gap-3 mt-3">
+                              <button
+                                onClick={handleSaveAndReanalyze}
+                                disabled={saving || !editedEdges}
+                                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                              >
+                                {saving ? "Saving..." : "Save & Re-analyze"}
+                              </button>
+                              {result.lane_edges_manual && (
+                                <button
+                                  onClick={handleResetEdges}
+                                  className="px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80"
+                                >
+                                  Reset to Auto
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
+                        {/* Annotation frame internals */}
+                        <div className="bg-muted/40 rounded-lg p-4">
                           {(() => {
                             const total = annotation?.video_metadata?.total_frames || 0;
                             const annotated = Object.keys(annotation?.ball_annotations || {}).length;
@@ -324,16 +410,16 @@ const BowlingResult: React.FC = () => {
                               )}
                             </div>
                           )}
+                          <a
+                            href={annotateHref}
+                            className="inline-block mt-3 text-sm text-blue-500 hover:underline"
+                          >
+                            Open annotation workspace →
+                          </a>
                         </div>
-                        <a
-                          href={`/bowling/result/${attemptId}/annotate`}
-                          className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md whitespace-nowrap"
-                        >
-                          Annotate Frames
-                        </a>
                       </div>
-                    </div>
-                  )}
+                    )}
+                  </div>
                 </>
               )}
             </div>
