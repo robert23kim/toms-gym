@@ -76,4 +76,7 @@ ENTRYPOINT ["docker-entrypoint.sh"]
 COPY . .
 
 # Run the application
-CMD ["gunicorn", "-b", "0.0.0.0:8080", "--timeout", "300", "--graceful-timeout", "300", "toms_gym.wsgi:app"]
+# Worker timeout must exceed the Cloud Tasks analysis-job hold: the /jobs
+# handlers wait up to 620s for bowling-service, and dispatch_deadline is 900s.
+# At 300s gunicorn killed workers mid-analysis (503) on large raw videos.
+CMD ["gunicorn", "-b", "0.0.0.0:8080", "--timeout", "900", "--graceful-timeout", "900", "toms_gym.wsgi:app"]
