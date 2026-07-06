@@ -3,7 +3,6 @@ export const APP_NAME = "Tom's Gym";
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Challenges", href: "/challenges" },
-  { label: "Athletes", href: "/athletes" },
   { label: "Leaderboard", href: "/leaderboard" },
   { label: "Store", href: "/store" },
   { label: "About", href: "/about" },

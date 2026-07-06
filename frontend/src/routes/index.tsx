@@ -5,7 +5,6 @@ import ShortLinkRedirect from "../pages/ShortLinkRedirect";
 
 const Index = lazy(() => import("../pages/Index"));
 const Challenges = lazy(() => import("../pages/Challenges"));
-const Athletes = lazy(() => import("../pages/Athletes"));
 const About = lazy(() => import("../pages/About"));
 const ChallengeDetail = lazy(() => import("../pages/ChallengeDetail"));
 const ChallengeVideos = lazy(() => import("../pages/ChallengeVideos"));
@@ -29,6 +28,10 @@ const GolfProfile = lazy(() => import("../pages/GolfProfile"));
 const GolfLeaderboard = lazy(() => import("../pages/GolfLeaderboard"));
 const FileTicket = lazy(() => import("../pages/FileTicket"));
 const TicketList = lazy(() => import("../pages/TicketList"));
+// T5 nav restructure — Lift / Bowl / Golf vertical hub pages
+const LiftHub = lazy(() => import("../pages/LiftHub"));
+const BowlHub = lazy(() => import("../pages/BowlHub"));
+const GolfHub = lazy(() => import("../pages/GolfHub"));
 
 // Redirect component for backward compatibility
 const VideoPlayerRedirect = () => {
@@ -49,7 +52,6 @@ export const routes: RouteObject[] = [
   },
   { path: "/video-player/:id/:participantId/:videoId", element: <VideoPlayerRedirect /> },
   { path: "/s/:code", element: <ShortLinkRedirect /> },
-  { path: "/athletes", element: <Athletes /> },
   { path: "/about", element: <About /> },
   { path: "/leaderboard", element: <Leaderboard /> },
   { path: "/store", element: <Store /> },
@@ -69,6 +71,10 @@ export const routes: RouteObject[] = [
   { path: "/golf/profile", element: <GolfProfile /> },
   { path: "/golf/profile/:userId", element: <GolfProfile /> },
   { path: "/golf/leaderboard", element: <GolfLeaderboard /> },
+  // T5 nav restructure — Lift / Bowl / Golf hub landing pages (primary nav)
+  { path: "/lift", element: <LiftHub /> },
+  { path: "/bowl", element: <BowlHub /> },
+  { path: "/golf", element: <GolfHub /> },
   { path: "/feedback", element: <FileTicket /> },
   { path: "/feedback/list", element: <TicketList /> },
   { path: "*", element: <NotFound /> },
