@@ -9,6 +9,26 @@ import type { Annotation, BowlingResult } from "./types";
 // and where the data can't support a stat we return null and the UI shows "—"
 // rather than inventing a number.
 
+/**
+ * Below this ball-detection rate the tracker saw the ball in too few frames for
+ * the derived stats to be trustworthy, so the result page swaps the numbers for
+ * filming tips + a retry CTA (T12). 0.25 = ball tracked in under a quarter of
+ * frames; the "1.1% detected" cards seen in the field sit far below this.
+ */
+export const LOW_DETECTION_THRESHOLD = 0.25;
+
+/**
+ * True when detection_rate is present AND below the low-confidence threshold.
+ * A missing detection_rate is treated as healthy (no tips) so we never nag on
+ * results that simply don't carry the field.
+ */
+export function isLowDetection(result: BowlingResult): boolean {
+  return (
+    result.detection_rate != null &&
+    result.detection_rate < LOW_DETECTION_THRESHOLD
+  );
+}
+
 /** 1-3 pocket target board (between board 17 and 18), measured from the right. */
 export const POCKET_BOARD = 17.5;
 /** How many boards off the pocket still counts as "in the pocket". */
