@@ -90,6 +90,8 @@ export const routes: RouteObject[] = [
   { path: "/bowling/result/:attemptId/annotate", element: <AnnotationWorkspace /> },
   { path: "/bowling/challenge/:id", element: <BowlingChallenge /> },
   { path: "/golf/upload", element: <GolfUpload /> },
+  // Easy-upload flows: camera-first scorecard capture (PWA shortcut target)
+  { path: "/golf/snap", element: <GolfUpload autoCamera /> },
   { path: "/golf/review/:roundId", element: <GolfReview /> },
   { path: "/golf/round/:roundId", element: <GolfRound /> },
   { path: "/golf/profile", element: <GolfProfile /> },

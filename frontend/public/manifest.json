@@ -21,5 +21,14 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#1a1b1e",
-  "background_color": "#1a1b1e"
+  "background_color": "#1a1b1e",
+  "shortcuts": [
+    {
+      "name": "Snap scorecard",
+      "short_name": "Snap card",
+      "description": "Open the camera to photograph a golf scorecard",
+      "url": "/golf/snap",
+      "icons": [{ "src": "logo192.png", "sizes": "192x192" }]
+    }
+  ]
 }

@@ -11,7 +11,7 @@ const GolfHub: React.FC = () => {
       subtitle="Snap a photo of your scorecard — we read the scores and compute your handicap."
       icon={<Flag className="w-8 h-8" />}
       primary={{
-        to: "/golf/upload",
+        to: "/golf/snap",
         label: "Upload a scorecard",
         description: "Photo-only — no typing. Get an instant handicap differential.",
         icon: <Camera className="w-7 h-7" />,
