@@ -106,8 +106,8 @@ const Leaderboard = () => {
                 onClick={() => setActiveCategory(category)}
                 className={`px-4 py-2 rounded-full transition-all ${
                   activeCategory === category
-                    ? "bg-accent text-white shadow-sm"
-                    : "bg-secondary hover:bg-secondary/70 text-foreground"
+                    ? "bg-accent/15 text-accent border border-accent/30"
+                    : "bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent"
                 }`}
               >
                 {category.charAt(0).toUpperCase() + category.slice(1)}
