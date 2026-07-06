@@ -19,6 +19,7 @@ exec "$PYTHON" -m pytest \
   tests/test_guest_round_classify.py \
   tests/test_golf_parser.py \
   tests/test_competition_routes.py \
+  tests/test_analysis_notify.py \
   --noconftest -q \
   --deselect tests/test_golf_parser.py::test_rate_limit_bypass_is_wired \
   --deselect tests/test_golf_parser.py::test_upload_resolves_existing_course_by_name \
