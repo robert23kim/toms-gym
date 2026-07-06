@@ -225,3 +225,108 @@ def test_leaderboard_metric_mixed_excludes_planks(test_client):
     assert data["rows"][0]["best_by_lift"] == {"Squat": 100.0}
     assert data["rows"][0]["score"] == 100.0
     assert data["rows"][0]["attempt_count"] == 1
+
+
+# --------------------------------------------------------------------------- #
+# T1: bot/e2e users (User.is_test = true) must be excluded from every public
+# lifting surface — Top Lifts, /leaderboard, and challenge leaderboards — while
+# their own profile stays visible. These surfaces are all fed by three
+# competition_routes queries, so we assert the exclusion clause is present in
+# each executed SQL statement (DB-free; the mock captures the SQL text).
+# --------------------------------------------------------------------------- #
+
+_IS_TEST_EXCLUSION = "COALESCE(u.is_test, false) = false"
+
+
+def _capturing_session(participant_rows=None):
+    """Fake session that records every SQL string it executes."""
+    session = MagicMock()
+    session.executed_sql = []
+
+    def execute(statement, params=None):
+        sql = str(statement)
+        session.executed_sql.append(sql)
+        result = MagicMock()
+        result.__iter__ = lambda self: iter([])
+        result.mappings.return_value.fetchall.return_value = participant_rows or []
+        return result
+
+    session.execute.side_effect = execute
+    return session
+
+
+def test_participants_query_excludes_test_users(test_client):
+    """GET /competitions/<id>/participants feeds Top Lifts + /leaderboard."""
+    session = _capturing_session()
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/participants")
+    assert resp.status_code == 200
+    joined = " ".join(session.executed_sql)
+    assert _IS_TEST_EXCLUSION in joined
+    assert '"UserCompetition"' in joined
+
+
+def test_lifts_query_excludes_test_users(test_client):
+    """GET /competitions/<id>/lifts feeds Top Lifts This Month."""
+    session = _capturing_session()
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/lifts")
+    assert resp.status_code == 200
+    joined = " ".join(session.executed_sql)
+    assert _IS_TEST_EXCLUSION in joined
+    # The lifts query must join User to filter it.
+    assert 'JOIN "User" u' in joined
+
+
+def test_leaderboard_query_excludes_test_users(test_client):
+    """GET /competitions/<id>/leaderboard is the per-challenge leaderboard."""
+    description = 'Gym - {"lifttypes": ["Squat"], "weightclasses": [], "gender": "M"}'
+    session = _make_session(description, [], uploaded_today=0)
+    session.executed_sql = []
+    original = session.execute.side_effect
+
+    def spy(statement, params=None):
+        session.executed_sql.append(str(statement))
+        return original(statement, params)
+
+    session.execute.side_effect = spy
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+    assert resp.status_code == 200
+    participant_sql = [s for s in session.executed_sql
+                       if 'FROM "UserCompetition" uc' in s and 'COUNT(*)' not in s]
+    assert participant_sql, "leaderboard did not run the participant/attempt query"
+    assert _IS_TEST_EXCLUSION in participant_sql[0]
+
+
+def test_test_user_still_visible_on_own_profile():
+    """A designated test account (is_test=true) must still see its own uploads
+    via its direct profile URL — the profile query must NOT filter on is_test."""
+    from toms_gym.routes.user_routes import user_bp
+    from flask import Flask
+
+    app = Flask(__name__)
+    app.config['TESTING'] = True
+    app.register_blueprint(user_bp)
+    client = app.test_client()
+
+    user_id = str(uuid.uuid4())
+    executed = []
+
+    def execute(statement, params=None):
+        executed.append(str(statement))
+        result = MagicMock()
+        result.fetchone.return_value = None  # user not found -> early 404, but SQL captured
+        result.mappings.return_value.fetchall.return_value = []
+        result.__iter__ = lambda self: iter([])
+        return result
+
+    session = MagicMock()
+    session.execute.side_effect = execute
+    with patch("toms_gym.routes.user_routes.get_db_connection", return_value=session):
+        client.get(f"/users/{user_id}/profile")
+
+    user_lookup = [s for s in executed if 'FROM "User"' in s]
+    assert user_lookup, "profile route did not query the User table"
+    assert all("is_test" not in s for s in user_lookup), \
+        "profile route must not filter test users out of their own profile"
