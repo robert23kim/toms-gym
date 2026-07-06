@@ -22,7 +22,7 @@ const features = [
     image: liftAnalysis,
     imageAlt: "AI rep breakdown grading a deadlift with per-metric scores",
     icon: Dumbbell,
-    uploadTo: "/upload",
+    uploadTo: "/lift/upload",
     uploadLabel: "Upload a lift",
     hubTo: "/lift",
   },

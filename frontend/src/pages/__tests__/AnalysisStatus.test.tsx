@@ -86,6 +86,6 @@ describe("AnalysisStatus", () => {
     expect(screen.getByText(/pose model crashed/i)).toBeInTheDocument();
     expect(
       screen.getByRole("link", { name: /Upload Again/i })
-    ).toHaveAttribute("href", "/upload");
+    ).toHaveAttribute("href", "/lift/upload");
   });
 });

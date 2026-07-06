@@ -38,17 +38,17 @@ const KIND_CONFIG: Record<AnalysisKind, KindConfig> = {
     label: "your lift",
     resultEndpoint: (id) => `${API_URL}/lifting/result/${id}`,
     resultPath: () => null, // no dedicated lifting result page; link to profile
-    uploadPath: "/upload",
-    backPath: "/",
-    backLabel: "Back to Home",
+    uploadPath: "/lift/upload",
+    backPath: "/lift",
+    backLabel: "Back to Lift",
   },
   bowling: {
     label: "your bowling video",
     resultEndpoint: (id) => `${API_URL}/bowling/result/${id}`,
     resultPath: (id) => `/bowling/result/${id}`,
     uploadPath: "/bowling/upload",
-    backPath: "/",
-    backLabel: "Back to Home",
+    backPath: "/bowl",
+    backLabel: "Back to Bowl",
   },
 };
 
