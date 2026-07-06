@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown, ChevronRight, PencilRuler } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, PencilRuler, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import LaneEdgeEditor from "../components/LaneEdgeEditor";
@@ -13,6 +13,7 @@ import {
   derivePocket,
   deriveSpeedMph,
   deriveHook,
+  isLowDetection,
 } from "../lib/bowlingStats";
 
 const HOOK_ARROW: Record<"left" | "right" | "straight", string> = {
@@ -231,9 +232,33 @@ const BowlingResult: React.FC = () => {
                     />
                   </div>
 
-                  {/* T12 SEAM: low-confidence filming tips + retry CTA render here
-                      (gated on result.detection_rate below a threshold). Owned by
-                      task T12 — intentionally not implemented in T10. */}
+                  {/* T12: low-confidence filming tips + retry CTA. Gated on
+                      isLowDetection() (detection_rate < LOW_DETECTION_THRESHOLD,
+                      0.25). Healthy results skip this entirely. */}
+                  {isLowDetection(result) && (
+                    <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+                      <div className="flex items-start gap-3">
+                        <AlertTriangle className="mt-0.5 shrink-0 text-amber-500" size={20} />
+                        <div className="flex-1 space-y-3">
+                          <div>
+                            <h3 className="font-semibold">Low tracking confidence</h3>
+                            <p className="text-sm text-muted-foreground mt-1">
+                              We only tracked the ball in{" "}
+                              {Math.round((result.detection_rate ?? 0) * 100)}% of frames, so these
+                              stats may be off. Re-record for better tracking: whole lane in frame,
+                              steady phone, landscape from behind the approach.
+                            </p>
+                          </div>
+                          <Link
+                            to="/bowling/upload"
+                            className="inline-flex items-center justify-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-md text-sm font-medium"
+                          >
+                            Upload Again
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Annotated video + ball path */}
                   <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">

@@ -3,6 +3,8 @@ import {
   derivePocket,
   deriveSpeedMph,
   deriveHook,
+  isLowDetection,
+  LOW_DETECTION_THRESHOLD,
 } from "../bowlingStats";
 import type { Annotation, BowlingResult } from "../types";
 
@@ -106,5 +108,21 @@ describe("deriveHook", () => {
   });
   test("null when a board is missing", () => {
     expect(deriveHook(makeResult({ entry_board: 17 }))).toBeNull();
+  });
+});
+
+describe("isLowDetection (T12 filming-tips gate)", () => {
+  test("shows tips below the threshold", () => {
+    expect(isLowDetection(makeResult({ detection_rate: 0.011 }))).toBe(true);
+    expect(
+      isLowDetection(makeResult({ detection_rate: LOW_DETECTION_THRESHOLD - 0.01 }))
+    ).toBe(true);
+  });
+  test("hides tips at or above the threshold", () => {
+    expect(isLowDetection(makeResult({ detection_rate: LOW_DETECTION_THRESHOLD }))).toBe(false);
+    expect(isLowDetection(makeResult({ detection_rate: 0.9 }))).toBe(false);
+  });
+  test("hides tips when detection_rate is absent (treated as healthy)", () => {
+    expect(isLowDetection(makeResult())).toBe(false);
   });
 });

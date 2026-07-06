@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Share2 } from "lucide-react";
+import { ArrowLeft, Share2, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL, PROD_API_URL } from "../config";
@@ -351,6 +351,20 @@ const VideoPlayer: React.FC = () => {
             const hasAnnotatedVideo = hasAnalysis && liftingResult?.annotated_video_url;
             const report = liftingResult?.report;
 
+            // T12: very-low-confidence detection -> filming tips + retry CTA.
+            // Plank exposes an explicit pose_detection_rate (mirror bowling's
+            // 0.25 threshold); rep-based lifts have no detection rate, so their
+            // low-confidence signal is "no reps detected at all" (total_reps 0).
+            const LOW_POSE_DETECTION = 0.25;
+            const lowConfidenceLift = !!(
+              hasAnalysis && report && (
+                report.lift_type === 'plank'
+                  ? report.pose_detection_rate != null &&
+                    report.pose_detection_rate < LOW_POSE_DETECTION
+                  : report.total_reps === 0
+              )
+            );
+
             const gradeColor = (grade: string) =>
               grade === 'A' ? 'text-green-500' :
               grade === 'B' ? 'text-green-400' :
@@ -493,6 +507,32 @@ const VideoPlayer: React.FC = () => {
                             <div className="animate-spin h-8 w-8 border-[3px] border-blue-500 border-t-transparent rounded-full mx-auto mb-3" />
                             <p className="font-medium">Analyzing your form...</p>
                             <p className="text-sm text-muted-foreground mt-1">This usually takes 30-60 seconds.</p>
+                          </div>
+                        )}
+
+                        {/* T12: low-confidence detection — filming tips + retry.
+                            Healthy results (reps detected / good pose rate) skip this. */}
+                        {lowConfidenceLift && (
+                          <div className="rounded-lg border border-amber-500/30 bg-amber-500/10 p-4">
+                            <div className="flex items-start gap-3">
+                              <AlertTriangle className="mt-0.5 shrink-0 text-amber-500" size={20} />
+                              <div className="flex-1 space-y-3">
+                                <div>
+                                  <h3 className="font-semibold">Low tracking confidence</h3>
+                                  <p className="text-sm text-muted-foreground mt-1">
+                                    We couldn't reliably track your {report?.lift_type === 'plank' ? 'body' : 'reps'} in
+                                    this video, so the analysis may be off. Re-record: keep the whole
+                                    bar/body in frame, steady phone, landscape.
+                                  </p>
+                                </div>
+                                <Link
+                                  to="/lift/upload"
+                                  className="inline-flex items-center justify-center px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-md text-sm font-medium"
+                                >
+                                  Upload Again
+                                </Link>
+                              </div>
+                            </div>
                           </div>
                         )}
 
