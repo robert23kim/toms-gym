@@ -2,12 +2,14 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
-import { Calendar, MapPin, Trophy, Activity, Award, ArrowLeft, Users, BarChart2, User, Dumbbell, Play, TrendingUp } from "lucide-react";
+import { Calendar, Trophy, Award, ArrowLeft, User, Dumbbell, Play, TrendingUp, CircleDot, Flag, Upload } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
 import VideoGallery from '../components/VideoGallery';
 import GhibliAvatar from '../components/GhibliAvatar';
+import { fetchRounds, fetchBowlingResultsByUser } from "../lib/api";
+import { GolfRoundListItem, BowlingResult } from "../lib/types";
 
 // Interfaces for API response data
 interface UserData {
@@ -66,35 +68,51 @@ interface ProfileData {
   uploaded_videos?: UploadedVideo[];
 }
 
+type SportTab = "lift" | "bowl" | "golf";
+
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading } = useAuth();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  
+  const [activeTab, setActiveTab] = useState<SportTab>("lift");
+
+  // Golf + bowling activity (per-sport sections of the unified hub)
+  const [golfRounds, setGolfRounds] = useState<GolfRoundListItem[]>([]);
+  const [golfHandicap, setGolfHandicap] = useState<number | null>(null);
+  const [bowlingResults, setBowlingResults] = useState<BowlingResult[]>([]);
+
+  const resolvedUserId = id || localStorage.getItem('userId') || null;
+
   const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
-      
-      // Use the id from URL params or the authenticated user's id
+
       const userId = id || localStorage.getItem('userId');
-      
+
       if (!userId) {
         setError("No user ID found");
         setLoading(false);
         return;
       }
-      
-      console.log(`Fetching profile data for user ID: ${userId}`);
-      
-      // Fetch user profile data from the API (no auth required)
-      const response = await axios.get(`${API_URL}/users/${userId}/profile`);
-      
-      console.log('Profile response:', response.data);
-      setProfileData(response.data);
+
+      // User profile (lifting + competitions). Golf/bowling are fetched in
+      // parallel and are non-fatal — a user may have activity in only one sport.
+      const [profileRes, golfRes, bowlRes] = await Promise.all([
+        axios.get(`${API_URL}/users/${userId}/profile`),
+        fetchRounds(userId).catch(() => null),
+        fetchBowlingResultsByUser(userId).catch(() => []),
+      ]);
+
+      setProfileData(profileRes.data);
+      if (golfRes) {
+        setGolfRounds(golfRes.rounds || []);
+        setGolfHandicap(golfRes.handicap_index ?? null);
+      }
+      setBowlingResults(bowlRes || []);
     } catch (err: any) {
       console.error('Error fetching profile data:', err);
       const errorMessage = err.response?.data?.error || 'Failed to load profile data';
@@ -103,9 +121,8 @@ const Profile = () => {
       setLoading(false);
     }
   }, [id]);
-  
+
   useEffect(() => {
-    // Fetch profile data if an ID is provided or userId is in localStorage
     if (!authLoading) {
       const userId = id || localStorage.getItem('userId');
       if (userId || isAuthenticated) {
@@ -144,7 +161,7 @@ const Profile = () => {
       <Layout>
         <div className="flex flex-col justify-center items-center h-[60vh]">
           <p className="text-red-500 mb-4">{error}</p>
-          <button 
+          <button
             onClick={() => fetchProfileData()}
             className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
           >
@@ -158,17 +175,24 @@ const Profile = () => {
   // Check if we have any way to identify a user (via URL, localStorage, or auth)
   const hasUserId = id || localStorage.getItem('userId');
   if (!isAuthenticated && !hasUserId) {
-    // Show a message with option to find profile by email
     return (
       <Layout>
         <div className="flex flex-col justify-center items-center h-[60vh]">
           <p className="text-muted-foreground mb-4">No profile found. Upload a video to create your profile!</p>
-          <Link
-            to="/upload"
-            className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
-          >
-            Upload a Video
-          </Link>
+          <div className="flex gap-3">
+            <Link
+              to="/upload"
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
+            >
+              Upload
+            </Link>
+            <Link
+              to="/find-profile"
+              className="px-4 py-2 border border-border rounded-md hover:bg-secondary/50"
+            >
+              Find my profile
+            </Link>
+          </div>
         </div>
       </Layout>
     );
@@ -183,6 +207,17 @@ const Profile = () => {
       </Layout>
     );
   }
+
+  const userId = profileData.user.id;
+  const videoCount = profileData.uploaded_videos?.length ?? 0;
+  const golfCount = golfRounds.length;
+  const bowlCount = bowlingResults.length;
+
+  const tabs: { key: SportTab; label: string; icon: React.ReactNode; count: number }[] = [
+    { key: "lift", label: "Lift", icon: <Dumbbell size={16} />, count: videoCount },
+    { key: "bowl", label: "Bowl", icon: <CircleDot size={16} />, count: bowlCount },
+    { key: "golf", label: "Golf", icon: <Flag size={16} />, count: golfCount },
+  ];
 
   return (
     <Layout>
@@ -205,9 +240,9 @@ const Profile = () => {
         {/* Profile Header */}
         <div className="bg-card rounded-xl p-6 mb-6 shadow-sm">
           <div className="flex items-center gap-6">
-            <GhibliAvatar 
-              id={profileData.user.id} 
-              name={profileData.user.name} 
+            <GhibliAvatar
+              id={profileData.user.id}
+              name={profileData.user.name}
               size="xl"
             />
             <div>
@@ -229,197 +264,362 @@ const Profile = () => {
           </div>
         </div>
 
-        {/* Stats Section */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-          <div className="bg-card rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-4">
-              <Trophy className="text-accent" size={24} />
-              <h2 className="text-xl font-semibold">Competition Stats</h2>
-            </div>
-            <div className="space-y-2">
-              <p>Total Competitions: {profileData.achievements.total_competitions}</p>
-              <p>Successful Lifts: {profileData.achievements.total_successful_lifts}</p>
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-4">
-              <Dumbbell className="text-accent" size={24} />
-              <h2 className="text-xl font-semibold">Personal Bests</h2>
-            </div>
-            <div className="space-y-2">
-              {profileData.best_lifts.map(lift => (
-                <p key={lift.type}>
-                  {lift.type}: {lift.best_weight} lbs
-                </p>
-              ))}
-              {profileData.best_lifts.length === 0 && (
-                <p className="text-muted-foreground">No personal bests recorded yet</p>
-              )}
-            </div>
-          </div>
-          <div className="bg-card rounded-xl p-6 shadow-sm">
-            <div className="flex items-center gap-3 mb-4">
-              <Award className="text-accent" size={24} />
-              <h2 className="text-xl font-semibold">Achievements</h2>
-            </div>
-            <div className="space-y-2">
-              <p>Heaviest Lift: {profileData.achievements.heaviest_lift} lbs</p>
-              {profileData.achievements.best_snatch > 0 && (
-                <p>Best Snatch: {profileData.achievements.best_snatch} lifts</p>
-              )}
-              {profileData.achievements.best_clean_and_jerk > 0 && (
-                <p>Best Clean & Jerk: {profileData.achievements.best_clean_and_jerk} lifts</p>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Weekly Lifts Tracker Link */}
-        <div className="mb-6">
-          <Link
-            to={`/profile/${profileData.user.id}/weekly-lifts`}
-            className="flex items-center justify-between bg-card rounded-xl p-4 shadow-sm hover:bg-secondary/50 transition-colors"
-          >
-            <div className="flex items-center gap-3">
-              <TrendingUp className="text-accent" size={24} />
-              <div>
-                <h2 className="text-lg font-semibold">Track Weekly Lifts</h2>
-                <p className="text-sm text-muted-foreground">Log your weekly max bench, squat, deadlift & more</p>
-              </div>
-            </div>
-            <ArrowLeft size={20} className="rotate-180 text-muted-foreground" />
-          </Link>
-        </div>
-
-        {/* Uploaded Videos */}
-        <div className="bg-card rounded-xl p-6 shadow-sm mb-6">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <Play className="text-accent" size={24} />
-              <h2 className="text-xl font-semibold">My Videos</h2>
-              {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 && (
-                <span className="text-sm text-muted-foreground">
-                  ({profileData.uploaded_videos.length} {profileData.uploaded_videos.length === 1 ? 'video' : 'videos'})
+        {/* Sport tabs — one unified identity across Lift / Bowl / Golf */}
+        <div className="flex gap-2 mb-6 border-b border-border">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              onClick={() => setActiveTab(tab.key)}
+              className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 -mb-px transition-colors ${
+                activeTab === tab.key
+                  ? "border-accent text-accent"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {tab.icon}
+              <span>{tab.label}</span>
+              {tab.count > 0 && (
+                <span className="text-xs bg-secondary text-secondary-foreground rounded-full px-2 py-0.5">
+                  {tab.count}
                 </span>
               )}
-            </div>
-            <Link to="/lift/upload" className="text-accent hover:underline text-sm">
-              Upload new video →
-            </Link>
-          </div>
+            </button>
+          ))}
+        </div>
 
-          {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 ? (
-            <VideoGallery
-              videos={profileData.uploaded_videos.map(video => ({
-                ...video,
-                user_id: profileData.user.id
-              }))}
-              maxVideos={100}
-              showCompetitionName={true}
-              userId={profileData.user.id}
-              showDeleteButton={false}
-            />
-          ) : (
-            <div className="text-center py-8">
-              <p className="text-muted-foreground mb-4">No videos uploaded yet</p>
+        {/* ---- LIFT ---- */}
+        {activeTab === "lift" && (
+          <div>
+            {/* Stats Section */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div className="bg-card rounded-xl p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <Trophy className="text-accent" size={24} />
+                  <h2 className="text-xl font-semibold">Competition Stats</h2>
+                </div>
+                <div className="space-y-2">
+                  <p>Total Competitions: {profileData.achievements.total_competitions}</p>
+                  <p>Successful Lifts: {profileData.achievements.total_successful_lifts}</p>
+                </div>
+              </div>
+              <div className="bg-card rounded-xl p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <Dumbbell className="text-accent" size={24} />
+                  <h2 className="text-xl font-semibold">Personal Bests</h2>
+                </div>
+                <div className="space-y-2">
+                  {profileData.best_lifts.map(lift => (
+                    <p key={lift.type}>
+                      {lift.type}: {lift.best_weight} lbs
+                    </p>
+                  ))}
+                  {profileData.best_lifts.length === 0 && (
+                    <p className="text-muted-foreground">No personal bests recorded yet</p>
+                  )}
+                </div>
+              </div>
+              <div className="bg-card rounded-xl p-6 shadow-sm">
+                <div className="flex items-center gap-3 mb-4">
+                  <Award className="text-accent" size={24} />
+                  <h2 className="text-xl font-semibold">Achievements</h2>
+                </div>
+                <div className="space-y-2">
+                  <p>Heaviest Lift: {profileData.achievements.heaviest_lift} lbs</p>
+                  {profileData.achievements.best_snatch > 0 && (
+                    <p>Best Snatch: {profileData.achievements.best_snatch} lifts</p>
+                  )}
+                  {profileData.achievements.best_clean_and_jerk > 0 && (
+                    <p>Best Clean & Jerk: {profileData.achievements.best_clean_and_jerk} lifts</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Weekly Lifts Tracker Link */}
+            <div className="mb-6">
               <Link
-                to="/lift/upload"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
+                to={`/profile/${userId}/weekly-lifts`}
+                className="flex items-center justify-between bg-card rounded-xl p-4 shadow-sm hover:bg-secondary/50 transition-colors"
               >
-                <Play size={18} />
-                Upload Your First Video
+                <div className="flex items-center gap-3">
+                  <TrendingUp className="text-accent" size={24} />
+                  <div>
+                    <h2 className="text-lg font-semibold">Track Weekly Lifts</h2>
+                    <p className="text-sm text-muted-foreground">Log your weekly max bench, squat, deadlift & more</p>
+                  </div>
+                </div>
+                <ArrowLeft size={20} className="rotate-180 text-muted-foreground" />
               </Link>
             </div>
-          )}
-        </div>
 
-        {/* Recent Competitions */}
-        <div className="bg-card rounded-xl p-6 shadow-sm">
-          <h2 className="text-xl font-semibold mb-4">Competition History</h2>
-          <div className="space-y-4">
-            {profileData.competitions.length > 0 ? (
-              profileData.competitions.map((competition) => {
-                // Find videos for this competition
-                const competitionVideos = profileData.uploaded_videos?.filter(
-                  video => video.competition_id === competition.id
-                ) || [];
-                
-                return (
-                  <div
-                    key={competition.id}
-                    className="flex flex-col p-4 bg-background rounded-lg"
+            {/* Uploaded Videos */}
+            <div className="bg-card rounded-xl p-6 shadow-sm mb-6">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <Play className="text-accent" size={24} />
+                  <h2 className="text-xl font-semibold">Lift Videos</h2>
+                  {videoCount > 0 && (
+                    <span className="text-sm text-muted-foreground">
+                      ({videoCount} {videoCount === 1 ? 'video' : 'videos'})
+                    </span>
+                  )}
+                </div>
+                <Link to="/lift/upload" className="text-accent hover:underline text-sm">
+                  Upload new video →
+                </Link>
+              </div>
+
+              {profileData.uploaded_videos && profileData.uploaded_videos.length > 0 ? (
+                <VideoGallery
+                  videos={profileData.uploaded_videos.map(video => ({
+                    ...video,
+                    user_id: userId
+                  }))}
+                  maxVideos={100}
+                  showCompetitionName={true}
+                  userId={userId}
+                  showDeleteButton={false}
+                />
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">No videos uploaded yet</p>
+                  <Link
+                    to="/lift/upload"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
                   >
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <Link 
-                          to={`/competitions/${competition.id}`}
-                          className="font-medium hover:text-accent"
-                        >
-                          {competition.name}
-                        </Link>
-                        <p className="text-sm text-muted-foreground">
-                          {formatDate(competition.start_date)} • {competition.weight_class}
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <span className={`px-2 py-1 rounded-full text-xs ${
-                          competition.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                          competition.status === 'upcoming' ? 'bg-blue-100 text-blue-800' : 
-                          'bg-gray-100 text-gray-800'
-                        }`}>
-                          {competition.status}
-                        </span>
-                        {competition.total_weight > 0 && (
-                          <p className="text-accent font-medium mt-1">{competition.total_weight} lbs total</p>
+                    <Play size={18} />
+                    Upload Your First Video
+                  </Link>
+                </div>
+              )}
+            </div>
+
+            {/* Recent Competitions */}
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <h2 className="text-xl font-semibold mb-4">Competition History</h2>
+              <div className="space-y-4">
+                {profileData.competitions.length > 0 ? (
+                  profileData.competitions.map((competition) => {
+                    const competitionVideos = profileData.uploaded_videos?.filter(
+                      video => video.competition_id === competition.id
+                    ) || [];
+
+                    return (
+                      <div
+                        key={competition.id}
+                        className="flex flex-col p-4 bg-background rounded-lg"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Link
+                              to={`/competitions/${competition.id}`}
+                              className="font-medium hover:text-accent"
+                            >
+                              {competition.name}
+                            </Link>
+                            <p className="text-sm text-muted-foreground">
+                              {formatDate(competition.start_date)} • {competition.weight_class}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              competition.status === 'completed' ? 'bg-green-100 text-green-800' :
+                              competition.status === 'upcoming' ? 'bg-blue-100 text-blue-800' :
+                              'bg-gray-100 text-gray-800'
+                            }`}>
+                              {competition.status}
+                            </span>
+                            {competition.total_weight > 0 && (
+                              <p className="text-accent font-medium mt-1">{competition.total_weight} lbs total</p>
+                            )}
+                          </div>
+                        </div>
+
+                        {competitionVideos.length > 0 && (
+                          <div className="mt-3">
+                            <p className="text-sm font-medium mb-2">
+                              {competitionVideos.length} {competitionVideos.length === 1 ? 'video' : 'videos'} submitted:
+                            </p>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                              {competitionVideos.map((video) => (
+                                <Link
+                                  key={video.attempt_id}
+                                  to={`/challenges/${video.competition_id}/participants/${userId}/video/${video.attempt_id}`}
+                                  className="flex items-center p-2 bg-accent/5 rounded-md hover:bg-accent/10 transition-colors"
+                                >
+                                  <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center mr-3">
+                                    <Play size={16} className="text-accent" />
+                                  </div>
+                                  <div>
+                                    <p className="font-medium text-sm">{video.lift_type} - {video.weight} lbs</p>
+                                    <p className="text-xs text-muted-foreground">
+                                      {new Date(video.created_at).toLocaleDateString()}
+                                    </p>
+                                  </div>
+                                  <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
+                                    video.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                    video.status === 'failed' ? 'bg-red-100 text-red-800' :
+                                    'bg-gray-100 text-gray-800'
+                                  }`}>
+                                    {video.status}
+                                  </span>
+                                </Link>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
-                    </div>
-                    
-                    {/* Videos for this competition */}
-                    {competitionVideos.length > 0 && (
-                      <div className="mt-3">
-                        <p className="text-sm font-medium mb-2">
-                          {competitionVideos.length} {competitionVideos.length === 1 ? 'video' : 'videos'} submitted:
-                        </p>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                          {competitionVideos.map((video) => (
-                            <Link 
-                              key={video.attempt_id}
-                              to={`/challenges/${video.competition_id}/participants/${profileData.user.id}/video/${video.attempt_id}`}
-                              className="flex items-center p-2 bg-accent/5 rounded-md hover:bg-accent/10 transition-colors"
-                            >
-                              <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center mr-3">
-                                <Play size={16} className="text-accent" />
-                              </div>
-                              <div>
-                                <p className="font-medium text-sm">{video.lift_type} - {video.weight} lbs</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {new Date(video.created_at).toLocaleDateString()}
-                                </p>
-                              </div>
-                              <span className={`ml-auto text-xs px-2 py-0.5 rounded-full ${
-                                video.status === 'completed' ? 'bg-green-100 text-green-800' : 
-                                video.status === 'failed' ? 'bg-red-100 text-red-800' : 
-                                'bg-gray-100 text-gray-800'
-                              }`}>
-                                {video.status}
-                              </span>
-                            </Link>
-                          ))}
-                        </div>
+                    );
+                  })
+                ) : (
+                  <p className="text-muted-foreground text-center py-4">No competitions yet</p>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ---- BOWL ---- */}
+        {activeTab === "bowl" && (
+          <div className="bg-card rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <CircleDot className="text-accent" size={24} />
+                <h2 className="text-xl font-semibold">Bowling Attempts</h2>
+                {bowlCount > 0 && (
+                  <span className="text-sm text-muted-foreground">({bowlCount})</span>
+                )}
+              </div>
+              <Link to="/bowling/upload" className="text-accent hover:underline text-sm">
+                Upload new →
+              </Link>
+            </div>
+
+            {bowlingResults.length > 0 ? (
+              <div className="space-y-2">
+                {bowlingResults.map((r) => (
+                  <Link
+                    key={r.id}
+                    to={`/bowling/result/${r.attempt_id}`}
+                    className="flex items-center justify-between p-3 bg-background rounded-lg hover:bg-secondary/50 transition-colors"
+                  >
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="w-10 h-10 bg-accent/10 rounded flex items-center justify-center flex-shrink-0">
+                        <CircleDot size={18} className="text-accent" />
                       </div>
-                    )}
-                  </div>
-                );
-              })
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {r.competition_name || "Bowling attempt"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {r.created_at ? new Date(r.created_at).toLocaleDateString() : ""}
+                          {r.entry_board != null && ` • entry board ${r.entry_board.toFixed(1)}`}
+                        </p>
+                      </div>
+                    </div>
+                    <span className={`ml-auto text-xs px-2 py-0.5 rounded-full flex-shrink-0 ${
+                      r.processing_status === 'completed' ? 'bg-green-100 text-green-800' :
+                      r.processing_status === 'failed' ? 'bg-red-100 text-red-800' :
+                      'bg-gray-100 text-gray-800'
+                    }`}>
+                      {r.processing_status}
+                    </span>
+                  </Link>
+                ))}
+              </div>
             ) : (
-              <p className="text-muted-foreground text-center py-4">No competitions yet</p>
+              <div className="text-center py-8">
+                <p className="text-muted-foreground mb-4">No bowling attempts yet</p>
+                <Link
+                  to="/bowling/upload"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
+                >
+                  <Upload size={18} />
+                  Upload a Bowling Video
+                </Link>
+              </div>
             )}
           </div>
-        </div>
+        )}
+
+        {/* ---- GOLF ---- */}
+        {activeTab === "golf" && (
+          <div className="space-y-6">
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <Flag className="text-accent" size={24} />
+                  <div>
+                    <h2 className="text-xl font-semibold">Golf</h2>
+                    <p className="text-sm text-muted-foreground">
+                      Handicap index{" "}
+                      <span className="font-medium text-foreground">
+                        {golfHandicap !== null ? golfHandicap.toFixed(1) : "—"}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                {/* Cross-link into the dedicated golf profile surface */}
+                <Link
+                  to={`/golf/profile/${userId}`}
+                  className="text-accent hover:underline text-sm"
+                >
+                  Full golf profile →
+                </Link>
+              </div>
+            </div>
+
+            <div className="bg-card rounded-xl p-6 shadow-sm">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-lg font-semibold">Rounds</h2>
+                <Link to="/golf/upload" className="text-accent hover:underline text-sm">
+                  Upload scorecard →
+                </Link>
+              </div>
+
+              {golfRounds.length > 0 ? (
+                <div className="space-y-2">
+                  {golfRounds.map((round) => (
+                    <Link
+                      key={round.id}
+                      to={`/golf/round/${round.id}`}
+                      className="flex items-center justify-between p-3 bg-background rounded-lg hover:bg-secondary/50 transition-colors"
+                    >
+                      <div className="min-w-0">
+                        <p className="font-medium text-sm truncate">
+                          {round.course?.name ?? "Unknown course"}
+                        </p>
+                        <p className="text-xs text-muted-foreground">{round.played_on}</p>
+                      </div>
+                      <div className="text-right flex-shrink-0">
+                        <div className="font-bold">{round.total_score ?? "-"}</div>
+                        {round.score_differential !== null && (
+                          <div className="text-xs text-green-600">
+                            {round.score_differential.toFixed(1)}
+                          </div>
+                        )}
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <p className="text-muted-foreground mb-4">No golf rounds yet</p>
+                  <Link
+                    to="/golf/upload"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
+                  >
+                    <Upload size={18} />
+                    Upload a Scorecard
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </motion.div>
     </Layout>
   );
 };
 
-export default Profile; 
+export default Profile;

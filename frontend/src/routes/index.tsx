@@ -16,6 +16,8 @@ const NotFound = lazy(() => import("../pages/NotFound"));
 const Leaderboard = lazy(() => import("../pages/Leaderboard"));
 const Store = lazy(() => import("../pages/Store"));
 const Profile = lazy(() => import("../pages/Profile"));
+// T14 — full-page "Who am I?" profile recovery (dialog logic, own route)
+const FindProfilePage = lazy(() => import("../pages/FindProfilePage"));
 const WeeklyLifts = lazy(() => import("../pages/WeeklyLifts"));
 const AuthCallback = lazy(() => import("../pages/AuthCallback"));
 const AuthError = lazy(() => import("../pages/AuthError"));
@@ -65,8 +67,10 @@ export const routes: RouteObject[] = [
   { path: "/about", element: <About /> },
   { path: "/leaderboard", element: <Leaderboard /> },
   { path: "/store", element: <Store /> },
+  // T14 — unified profile hub (Lift / Bowl / Golf sections) + recovery route
   { path: "/profile", element: <Profile /> },
   { path: "/profile/:id", element: <Profile /> },
+  { path: "/find-profile", element: <FindProfilePage /> },
   { path: "/profile/:id/weekly-lifts", element: <WeeklyLifts /> },
   { path: "/auth/callback", element: <AuthCallback /> },
   { path: "/auth/error", element: <AuthError /> },

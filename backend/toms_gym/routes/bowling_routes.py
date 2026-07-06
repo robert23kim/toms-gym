@@ -225,42 +225,79 @@ def get_bowling_result(attempt_id):
 @bowling_bp.route('/results', methods=['GET'])
 def get_bowling_results():
     """
-    Get all bowling results for a competition.
+    Get bowling results, filtered by competition OR by user.
 
-    Query param: competition_id (required)
-    Returns array of results with user info.
+    Query params (exactly one required):
+      - competition_id: all results for a competition (with user info)
+      - user_id: all of a single user's bowling attempts (for the profile hub)
+
+    Returns array of results.
     """
     competition_id = request.args.get('competition_id')
-    if not competition_id:
-        return jsonify({'error': 'competition_id query parameter is required'}), 400
+    user_id = request.args.get('user_id')
+    if not competition_id and not user_id:
+        return jsonify({'error': 'competition_id or user_id query parameter is required'}), 400
 
     session = get_db_connection()
     try:
-        rows = session.execute(
-            sqlalchemy.text("""
-                SELECT
-                    br.id,
-                    br.attempt_id,
-                    br.processing_status,
-                    br.debug_video_url,
-                    br.trajectory_png_url,
-                    br.board_at_pins,
-                    br.entry_board,
-                    br.processing_time_s,
-                    br.detection_rate,
-                    br.error_message,
-                    br.created_at,
-                    u.name AS user_name,
-                    u.email AS user_email
-                FROM "BowlingResult" br
-                JOIN "Attempt" a ON a.id = br.attempt_id
-                JOIN "UserCompetition" uc ON uc.id = a.user_competition_id
-                JOIN "User" u ON u.id = uc.user_id
-                WHERE uc.competition_id = :competition_id
-                ORDER BY br.created_at DESC
-            """),
-            {"competition_id": competition_id}
-        ).fetchall()
+        if user_id:
+            rows = session.execute(
+                sqlalchemy.text("""
+                    SELECT
+                        br.id,
+                        br.attempt_id,
+                        br.processing_status,
+                        br.debug_video_url,
+                        br.trajectory_png_url,
+                        br.board_at_pins,
+                        br.entry_board,
+                        br.processing_time_s,
+                        br.detection_rate,
+                        br.error_message,
+                        br.created_at,
+                        u.name AS user_name,
+                        u.email AS user_email,
+                        uc.competition_id AS competition_id,
+                        c.name AS competition_name
+                    FROM "BowlingResult" br
+                    JOIN "Attempt" a ON a.id = br.attempt_id
+                    JOIN "UserCompetition" uc ON uc.id = a.user_competition_id
+                    JOIN "User" u ON u.id = uc.user_id
+                    LEFT JOIN "Competition" c ON c.id = uc.competition_id
+                    WHERE uc.user_id = :user_id
+                    ORDER BY br.created_at DESC
+                """),
+                {"user_id": user_id}
+            ).fetchall()
+        else:
+            rows = session.execute(
+                sqlalchemy.text("""
+                    SELECT
+                        br.id,
+                        br.attempt_id,
+                        br.processing_status,
+                        br.debug_video_url,
+                        br.trajectory_png_url,
+                        br.board_at_pins,
+                        br.entry_board,
+                        br.processing_time_s,
+                        br.detection_rate,
+                        br.error_message,
+                        br.created_at,
+                        u.name AS user_name,
+                        u.email AS user_email,
+                        uc.competition_id AS competition_id,
+                        c.name AS competition_name
+                    FROM "BowlingResult" br
+                    JOIN "Attempt" a ON a.id = br.attempt_id
+                    JOIN "UserCompetition" uc ON uc.id = a.user_competition_id
+                    JOIN "User" u ON u.id = uc.user_id
+                    LEFT JOIN "Competition" c ON c.id = uc.competition_id
+                    WHERE uc.competition_id = :competition_id
+                    ORDER BY br.created_at DESC
+                """),
+                {"competition_id": competition_id}
+            ).fetchall()
 
         results = []
         for row in rows:
@@ -278,6 +315,8 @@ def get_bowling_results():
                 'created_at': str(row[10]) if row[10] else None,
                 'user_name': row[11],
                 'user_email': row[12],
+                'competition_id': str(row[13]) if row[13] else None,
+                'competition_name': row[14],
             })
 
         return jsonify(results), 200
