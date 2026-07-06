@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
 import AmbientBackground from "./AmbientBackground";
 import { motion } from "framer-motion";
+import { Bug } from "lucide-react";
 import { APP_VERSION } from "../config";
 
 interface LayoutProps {
@@ -23,24 +24,26 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
         {children}
       </motion.main>
       <footer className="py-6 px-4 border-t border-border/40 mt-auto">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center">
-          <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} Tom's Gym. All rights reserved.
-          </p>
-          <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Terms
-            </Link>
-            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Privacy
-            </Link>
-            <Link to="/feedback" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-              Feedback
-            </Link>
-            <span className="text-xs text-muted-foreground/60" title="Frontend build">
-              v{APP_VERSION}
-            </span>
-          </div>
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm text-muted-foreground">
+          <Link to="/feedback" className="inline-flex items-center gap-1.5 hover:text-foreground transition-colors">
+            <Bug className="w-3.5 h-3.5" />
+            Report a bug
+          </Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/feedback" className="hover:text-foreground transition-colors">
+            Request a feature
+          </Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/terms" className="hover:text-foreground transition-colors">
+            Terms
+          </Link>
+          <span aria-hidden="true">·</span>
+          <Link to="/privacy" className="hover:text-foreground transition-colors">
+            Privacy
+          </Link>
+          <span className="text-xs text-muted-foreground/60" title="Frontend build">
+            v{APP_VERSION}
+          </span>
         </div>
       </footer>
     </div>
