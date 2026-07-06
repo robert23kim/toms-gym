@@ -36,6 +36,8 @@ const BowlHub = lazy(() => import("../pages/BowlHub"));
 const GolfHub = lazy(() => import("../pages/GolfHub"));
 const Terms = lazy(() => import("../pages/Terms"));
 const Privacy = lazy(() => import("../pages/Privacy"));
+// T8 — post-upload status page (shared component, one route per analysis kind)
+const AnalysisStatus = lazy(() => import("../pages/AnalysisStatus"));
 
 // Redirect component for backward compatibility
 const VideoPlayerRedirect = () => {
@@ -71,6 +73,10 @@ export const routes: RouteObject[] = [
   { path: "/bowling/upload", element: <BowlingUpload /> },
   { path: "/bowling/upload/:competitionId", element: <BowlingUpload /> },
   { path: "/bowling/result/:attemptId", element: <BowlingResult /> },
+  // T8 — post-upload analysis status pages (poll existing per-attempt result
+  // endpoints; survive reload via the attemptId in the URL)
+  { path: "/lift/status/:attemptId", element: <AnalysisStatus kind="lifting" /> },
+  { path: "/bowling/status/:attemptId", element: <AnalysisStatus kind="bowling" /> },
   { path: "/bowling/result/:attemptId/annotate", element: <AnnotationWorkspace /> },
   { path: "/bowling/challenge/:id", element: <BowlingChallenge /> },
   { path: "/golf/upload", element: <GolfUpload /> },
