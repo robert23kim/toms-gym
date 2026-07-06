@@ -1,0 +1,517 @@
+<title>Home Page Redesign — Mockup</title>
+<style>
+  /* Tokens lifted from the real app (frontend/src/index.css) — dark-only,
+     matching production. This mockup deliberately commits to the app's theme. */
+  :root {
+    --bg: hsl(240 10% 3.9%);
+    --fg: hsl(0 0% 98%);
+    --muted: hsl(240 5% 64.9%);
+    --card: hsl(240 3.7% 12%);
+    --card-hover: hsl(240 3.7% 15.9%);
+    --border: hsl(240 4% 18%);
+    --accent: hsl(220 90% 56%);
+    --accent-soft: hsl(220 90% 56% / 0.12);
+  }
+  html { background: var(--bg); }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    margin: 0;
+    -webkit-font-smoothing: antialiased;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* ---- Background option A: ambient glows ---- */
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(90px);
+    pointer-events: none;
+    z-index: -1;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  body.bg-glow .glow, body.bg-both .glow { opacity: 1; }
+  .glow-1 {
+    width: 480px; height: 480px;
+    left: -140px; top: 60px;
+    background: hsl(220 90% 56% / 0.16);
+    animation: drift1 26s ease-in-out infinite alternate;
+  }
+  .glow-2 {
+    width: 420px; height: 420px;
+    right: -160px; top: 340px;
+    background: hsl(160 70% 45% / 0.10);
+    animation: drift2 32s ease-in-out infinite alternate;
+  }
+  .glow-3 {
+    width: 380px; height: 380px;
+    left: 30%; bottom: -180px;
+    background: hsl(30 90% 55% / 0.08);
+    animation: drift1 38s ease-in-out infinite alternate-reverse;
+  }
+  @keyframes drift1 { from { transform: translate(0, 0); } to { transform: translate(70px, 40px); } }
+  @keyframes drift2 { from { transform: translate(0, 0); } to { transform: translate(-60px, 50px); } }
+
+  /* ---- Background option B: sports doodle wallpaper ----
+     A repeating SVG tile of faint line-art from the app's world:
+     dumbbell, bowling ball & pin, golf flag, stopwatch. */
+  .doodles {
+    position: fixed;
+    inset: 0;
+    z-index: -2;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.6s;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='320' height='320' viewBox='0 0 320 320'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cg transform='translate(38 44) rotate(-18)'%3E%3Crect x='0' y='6' width='7' height='16' rx='2'/%3E%3Crect x='33' y='6' width='7' height='16' rx='2'/%3E%3Cline x1='7' y1='14' x2='33' y2='14'/%3E%3C/g%3E%3Cg transform='translate(220 60) rotate(12)'%3E%3Ccircle cx='14' cy='14' r='14'/%3E%3Ccircle cx='9' cy='9' r='1.4'/%3E%3Ccircle cx='16' cy='7' r='1.4'/%3E%3Ccircle cx='15' cy='14' r='1.4'/%3E%3C/g%3E%3Cg transform='translate(150 150) rotate(-8)'%3E%3Cline x1='4' y1='34' x2='4' y2='0'/%3E%3Cpath d='M4 2 L26 8 L4 15'/%3E%3Cellipse cx='9' cy='36' rx='9' ry='2.4'/%3E%3C/g%3E%3Cg transform='translate(48 218) rotate(14)'%3E%3Ccircle cx='12' cy='16' r='11'/%3E%3Cline x1='9' y1='2' x2='15' y2='2'/%3E%3Cline x1='12' y1='2' x2='12' y2='5'/%3E%3Cline x1='12' y1='16' x2='17' y2='11'/%3E%3C/g%3E%3Cg transform='translate(238 220) rotate(-10)'%3E%3Cpath d='M8 0 C4 6 12 10 8 16 C4 22 12 26 8 32'/%3E%3Cpath d='M8 0 C12 6 4 10 8 16 C12 22 4 26 8 32' transform='translate(6 0)'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+    background-size: 320px 320px;
+  }
+  body.bg-doodles .doodles, body.bg-both .doodles { opacity: 0.05; }
+
+  /* Toggle bar (mockup chrome only, not part of the design) */
+  .bg-picker {
+    display: flex; gap: 6px; justify-content: center; align-items: center;
+    padding: 10px 16px;
+    font-size: 12px; color: var(--muted);
+  }
+  .bg-picker button {
+    font: inherit; color: var(--muted);
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 999px; padding: 4px 12px; cursor: pointer;
+  }
+  .bg-picker button.active { color: var(--fg); border-color: var(--accent); background: var(--accent-soft); }
+
+  /* ---- Animated demo loop (12s cycle: lift 0-4s, bowl 4-8s, golf 8-12s) ---- */
+  .demo {
+    position: relative;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    overflow: hidden;
+    height: 190px;
+  }
+  .demo .scene {
+    position: absolute; inset: 0;
+    opacity: 0;
+    animation: sceneCycle 12s infinite;
+  }
+  .demo .scene svg { width: 100%; height: 100%; display: block; }
+  .scene-bowl { animation-delay: 4s !important; }
+  .scene-golf { animation-delay: 8s !important; }
+  @keyframes sceneCycle {
+    0% { opacity: 0; } 4% { opacity: 1; } 32% { opacity: 1; } 36% { opacity: 0; } 100% { opacity: 0; }
+  }
+  .scene .caption {
+    position: absolute; top: 12px; left: 16px;
+    font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  /* plank figure holds with a subtle bob during its 4s window */
+  .plank-bob { animation: plankBob 3s ease-in-out infinite; }
+  @keyframes plankBob {
+    0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); }
+  }
+  /* hold timer counts up: three states swap within the scene window (0-33%) */
+  .timer-t { opacity: 0; animation: 12s infinite; }
+  .timer-1 { animation-name: timer1; }
+  .timer-2 { animation-name: timer2; }
+  .timer-3 { animation-name: timer3; }
+  @keyframes timer1 { 0% { opacity: 1; } 11% { opacity: 1; } 12%, 100% { opacity: 0; } }
+  @keyframes timer2 { 0%, 11% { opacity: 0; } 12%, 22% { opacity: 1; } 23%, 100% { opacity: 0; } }
+  @keyframes timer3 { 0%, 22% { opacity: 0; } 23%, 32% { opacity: 1; } 36%, 100% { opacity: 0; } }
+  /* form-check pill pops mid-hold; base = final state, keyframes animate in */
+  .pill-pop { opacity: 0; animation: pillPop 12s infinite; }
+  @keyframes pillPop {
+    0%, 14% { opacity: 0; transform: translateY(4px); }
+    17%, 32% { opacity: 1; transform: translateY(0); }
+    36%, 100% { opacity: 0; }
+  }
+  /* bowling trace draws as the ball travels (scene window 33-66%) */
+  .trace {
+    stroke-dasharray: 150;
+    stroke-dashoffset: 150;
+    animation: draw 12s infinite;
+  }
+  @keyframes draw {
+    0%, 38% { stroke-dashoffset: 150; }
+    56% { stroke-dashoffset: 0; }
+    66%, 100% { stroke-dashoffset: 0; }
+  }
+  .pill-bowl { opacity: 0; animation: pillBowl 12s infinite; }
+  @keyframes pillBowl {
+    0%, 57% { opacity: 0; transform: translateY(4px); }
+    60%, 65% { opacity: 1; transform: translateY(0); }
+    69%, 100% { opacity: 0; }
+  }
+  /* golf scan line sweeps the scorecard (scene window 66-100%) */
+  .scanline { animation: scan 12s infinite; }
+  @keyframes scan {
+    0%, 69% { transform: translateX(0); }
+    86%, 100% { transform: translateX(380px); }
+  }
+  .pill-golf { opacity: 0; animation: pillGolf 12s infinite; }
+  @keyframes pillGolf {
+    0%, 87% { opacity: 0; transform: translateY(4px); }
+    90%, 98% { opacity: 1; transform: translateY(0); }
+    100% { opacity: 0; }
+  }
+  .demo-dots { display: flex; gap: 6px; justify-content: center; margin-top: 12px; }
+  .demo-dots span {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--border);
+    animation: dotCycle 12s infinite;
+  }
+  .demo-dots span:nth-child(2) { animation-delay: 4s; }
+  .demo-dots span:nth-child(3) { animation-delay: 8s; }
+  @keyframes dotCycle {
+    0%, 4% { background: var(--accent); } 32% { background: var(--accent); }
+    36%, 100% { background: var(--border); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .demo .scene, .plank-bob, .timer-t, .pill-pop, .trace, .pill-bowl,
+    .scanline, .pill-golf, .demo-dots span { animation: none; }
+    .scene-lift { opacity: 1; }
+    .pill-pop, .timer-3 { opacity: 1; }
+  }
+
+  /* Footer */
+  .footer {
+    display: flex; gap: 10px; justify-content: center; align-items: center;
+    flex-wrap: wrap;
+    font-size: 13px; color: var(--muted);
+    border-top: 1px solid var(--border);
+    padding-top: 24px;
+  }
+  .footer a {
+    color: inherit; text-decoration: none;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .footer a:hover { color: var(--fg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .glow-1, .glow-2, .glow-3 { animation: none; }
+  }
+  .note {
+    position: sticky; top: 0;
+    text-align: center;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: hsl(240 10% 3.9% / 0.92);
+    backdrop-filter: blur(4px);
+    padding: 8px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+  .navbar {
+    display: flex; align-items: center; justify-content: space-between;
+    max-width: 960px; margin: 0 auto; padding: 16px 24px;
+    font-size: 14px; color: var(--muted);
+  }
+  .navbar .brand { color: var(--fg); font-weight: 700; font-size: 16px; }
+  .navbar .links { display: flex; gap: 20px; }
+  .navbar a { color: inherit; text-decoration: none; }
+
+  main {
+    max-width: 640px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+    text-align: center;
+    display: flex; flex-direction: column; gap: 56px;
+  }
+
+  /* Hero */
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+    margin: 0 0 12px;
+    text-wrap: balance;
+  }
+  .hero p {
+    font-size: 17px;
+    color: var(--muted);
+    margin: 0 auto;
+    max-width: 44ch;
+    line-height: 1.55;
+  }
+
+  /* Icon tiles */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+  }
+  @media (max-width: 520px) { .tiles { grid-template-columns: 1fr; } }
+  .tile {
+    display: flex; flex-direction: column; align-items: center; gap: 10px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 26px 16px 22px;
+    text-decoration: none;
+    color: var(--fg);
+    transition: background 0.15s, border-color 0.15s, transform 0.15s;
+  }
+  .tile:hover { background: var(--card-hover); border-color: hsl(240 4% 26%); transform: translateY(-2px); }
+  .tile:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .tile .icon {
+    width: 44px; height: 44px;
+    display: grid; place-items: center;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+  .tile .icon svg { width: 22px; height: 22px; }
+  .tile h2 { font-size: 16px; font-weight: 600; margin: 0; }
+  .tile p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.45; }
+
+  /* Open challenges strip */
+  .challenges { display: flex; flex-direction: column; gap: 10px; }
+  .challenges .label {
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 4px;
+  }
+  .challenges .label::before, .challenges .label::after {
+    content: ""; flex: 1; height: 1px; background: var(--border);
+  }
+  .challenge-row {
+    display: flex; align-items: center; gap: 12px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    text-decoration: none;
+    color: var(--fg);
+    transition: background 0.15s, border-color 0.15s;
+    text-align: left;
+  }
+  .challenge-row:hover { background: var(--card-hover); border-color: hsl(240 4% 26%); }
+  .challenge-row:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .challenge-row .c-icon { color: var(--accent); flex-shrink: 0; display: grid; place-items: center; }
+  .challenge-row .c-icon svg { width: 18px; height: 18px; }
+  .challenge-row .c-name { font-size: 15px; font-weight: 600; flex: 1; min-width: 0; }
+  .pill {
+    font-size: 11px; font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    white-space: nowrap;
+  }
+  .challenge-row .go {
+    font-size: 14px; color: var(--muted);
+    display: flex; align-items: center; gap: 4px;
+    white-space: nowrap;
+  }
+  .challenge-row:hover .go { color: var(--fg); }
+  .all-link {
+    font-size: 14px; color: var(--muted);
+    text-decoration: none; margin-top: 6px;
+  }
+  .all-link:hover { color: var(--fg); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .tile, .challenge-row { transition: none; }
+    .tile:hover { transform: none; }
+  }
+</style>
+
+<div class="note">Mockup — proposed home page (Top Lifts removed · minimal · centered)</div>
+<div class="bg-picker" role="group" aria-label="Background style">
+  <span>Background:</span>
+  <button data-bg="" >None</button>
+  <button data-bg="bg-glow">Glows</button>
+  <button data-bg="bg-doodles">Doodles</button>
+  <button data-bg="bg-both" class="active">Both</button>
+</div>
+
+<div class="doodles" aria-hidden="true"></div>
+<div class="glow glow-1" aria-hidden="true"></div>
+<div class="glow glow-2" aria-hidden="true"></div>
+<div class="glow glow-3" aria-hidden="true"></div>
+
+<script>
+  document.body.classList.add("bg-both");
+  document.querySelectorAll(".bg-picker button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      document.body.classList.remove("bg-glow", "bg-doodles", "bg-both");
+      if (btn.dataset.bg) document.body.classList.add(btn.dataset.bg);
+      document.querySelectorAll(".bg-picker button").forEach((b) => b.classList.toggle("active", b === btn));
+    });
+  });
+</script>
+
+<div class="navbar">
+  <span class="brand">Tom's Gym</span>
+  <span class="links"><a href="#">Lift</a><a href="#">Bowl</a><a href="#">Golf</a><a href="#">Find Profile</a></span>
+</div>
+
+<main>
+  <!-- 1. Hero -->
+  <section class="hero">
+    <h1>AI analysis of your lift, bowl, or round — in minutes.</h1>
+    <p>Upload a video or snap a photo and get annotated feedback. No signup — just your email.</p>
+  </section>
+
+  <!-- 1.5 Animated demo loop -->
+  <section aria-label="Analysis demo">
+    <div class="demo">
+      <!-- Scene 1: Plank — figure holds, timer counts up, form check pops -->
+      <div class="scene scene-lift">
+        <span class="caption">Plank · hold + form</span>
+        <svg viewBox="0 0 560 190" aria-hidden="true">
+          <line x1="80" y1="160" x2="480" y2="160" stroke="hsl(240 4% 22%)" stroke-width="2"/>
+          <g class="plank-bob" stroke="hsl(0 0% 80%)" stroke-width="5" stroke-linecap="round" fill="none">
+            <!-- head -->
+            <circle cx="176" cy="116" r="11" fill="hsl(0 0% 80%)" stroke="none"/>
+            <!-- torso + legs: one straight plank line, shoulders to ankles -->
+            <line x1="196" y1="124" x2="352" y2="142"/>
+            <!-- forearm on the ground -->
+            <line x1="200" y1="126" x2="192" y2="156"/>
+            <line x1="178" y1="157" x2="212" y2="157"/>
+            <!-- toes -->
+            <line x1="352" y1="142" x2="362" y2="158"/>
+          </g>
+          <!-- hold timer counting up -->
+          <g font-size="26" font-weight="700" fill="hsl(0 0% 92%)" text-anchor="middle" font-family="ui-monospace, SFMono-Regular, Menlo, monospace">
+            <text class="timer-t timer-1" x="440" y="90">0:15</text>
+            <text class="timer-t timer-2" x="440" y="90">0:32</text>
+            <text class="timer-t timer-3" x="440" y="90">0:47</text>
+          </g>
+          <text x="440" y="108" text-anchor="middle" font-size="11" fill="hsl(240 5% 55%)" letter-spacing="1">HOLD</text>
+          <g class="pill-pop">
+            <rect x="386" y="122" width="108" height="26" rx="13" fill="hsl(160 70% 45% / 0.15)"/>
+            <text x="440" y="139" text-anchor="middle" font-size="13" font-weight="600" fill="hsl(160 70% 55%)">Hips level ✓</text>
+          </g>
+        </svg>
+      </div>
+      <!-- Scene 2: Bowl — ball hooks down the lane, trace draws -->
+      <div class="scene scene-bowl">
+        <span class="caption">Bowl · ball tracking</span>
+        <svg viewBox="0 0 560 190" aria-hidden="true">
+          <path d="M 240 28 L 320 28 L 400 168 L 160 168 Z" fill="hsl(240 4% 14%)" stroke="hsl(240 4% 22%)"/>
+          <g fill="hsl(0 0% 85%)">
+            <circle cx="262" cy="24" r="5"/><circle cx="280" cy="20" r="5"/><circle cx="298" cy="24" r="5"/>
+            <circle cx="271" cy="30" r="5"/><circle cx="289" cy="30" r="5"/>
+          </g>
+          <path class="trace" d="M 285 158 C 320 120 322 70 284 32" fill="none"
+                stroke="hsl(220 90% 56%)" stroke-width="2.5" stroke-dasharray="4 5" stroke-linecap="round"/>
+          <circle r="9" fill="hsl(220 90% 56%)">
+            <animateMotion dur="12s" repeatCount="indefinite" calcMode="linear"
+              keyPoints="0;0;1;1" keyTimes="0;0.38;0.56;1"
+              path="M 285 158 C 320 120 322 70 284 32"/>
+          </circle>
+          <g class="pill-bowl">
+            <rect x="398" y="70" width="128" height="26" rx="13" fill="hsl(220 90% 56% / 0.15)"/>
+            <text x="462" y="87" text-anchor="middle" font-size="13" font-weight="600" fill="hsl(220 90% 66%)">Board 17 · Pocket ✓</text>
+          </g>
+        </svg>
+      </div>
+      <!-- Scene 3: Golf — scan line reads the scorecard, handicap pops -->
+      <div class="scene scene-golf">
+        <span class="caption">Golf · scorecard → handicap</span>
+        <svg viewBox="0 0 560 190" aria-hidden="true">
+          <g stroke="hsl(240 4% 24%)" fill="none">
+            <rect x="90" y="60" width="380" height="70" rx="6"/>
+            <line x1="90" y1="95" x2="470" y2="95"/>
+            <line x1="132" y1="60" x2="132" y2="130"/><line x1="174" y1="60" x2="174" y2="130"/>
+            <line x1="216" y1="60" x2="216" y2="130"/><line x1="258" y1="60" x2="258" y2="130"/>
+            <line x1="300" y1="60" x2="300" y2="130"/><line x1="342" y1="60" x2="342" y2="130"/>
+            <line x1="384" y1="60" x2="384" y2="130"/><line x1="426" y1="60" x2="426" y2="130"/>
+          </g>
+          <g font-size="12" fill="hsl(240 5% 55%)" text-anchor="middle">
+            <text x="111" y="82">1</text><text x="153" y="82">2</text><text x="195" y="82">3</text>
+            <text x="237" y="82">4</text><text x="279" y="82">5</text><text x="321" y="82">6</text>
+            <text x="363" y="82">7</text><text x="405" y="82">8</text><text x="448" y="82">9</text>
+          </g>
+          <g font-size="13" font-weight="600" fill="hsl(0 0% 88%)" text-anchor="middle">
+            <text x="111" y="118">5</text><text x="153" y="118">4</text><text x="195" y="118">4</text>
+            <text x="237" y="118">6</text><text x="279" y="118">3</text><text x="321" y="118">5</text>
+            <text x="363" y="118">4</text><text x="405" y="118">5</text><text x="448" y="118">4</text>
+          </g>
+          <line class="scanline" x1="90" y1="52" x2="90" y2="138" stroke="hsl(220 90% 56%)" stroke-width="2"/>
+          <g class="pill-golf">
+            <rect x="238" y="146" width="90" height="28" rx="14" fill="hsl(160 70% 45% / 0.15)"/>
+            <text x="283" y="165" text-anchor="middle" font-size="14" font-weight="700" fill="hsl(160 70% 55%)">HCP 21.0</text>
+          </g>
+        </svg>
+      </div>
+    </div>
+    <div class="demo-dots" aria-hidden="true"><span></span><span></span><span></span></div>
+  </section>
+
+  <!-- 2. Icon tiles -->
+  <section class="tiles">
+    <a class="tile" href="#lift-upload">
+      <span class="icon">
+        <!-- lucide: dumbbell -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>
+      </span>
+      <h2>Lift</h2>
+      <p>Per-rep grades on squat, bench, deadlift &amp; curls.</p>
+    </a>
+    <a class="tile" href="#bowl-upload">
+      <span class="icon">
+        <!-- lucide: target -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+      </span>
+      <h2>Bowl</h2>
+      <p>Ball trajectory, entry board &amp; pocket impact.</p>
+    </a>
+    <a class="tile" href="#golf-snap">
+      <span class="icon">
+        <!-- lucide: flag -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" x2="4" y1="22" y2="15"/></svg>
+      </span>
+      <h2>Golf</h2>
+      <p>Snap a scorecard, get your handicap.</p>
+    </a>
+  </section>
+
+  <!-- 3. Open challenges strip -->
+  <section class="challenges">
+    <div class="label">Open challenges</div>
+
+    <a class="challenge-row" href="#challenge-plank">
+      <span class="c-icon">
+        <!-- lucide: timer -->
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="10" x2="14" y1="2" y2="2"/><line x1="12" x2="15" y1="14" y2="11"/><circle cx="12" cy="14" r="8"/></svg>
+      </span>
+      <span class="c-name">Summer Plank Challenge</span>
+      <span class="pill">Plank</span>
+      <span class="go">Open <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="challenge-row" href="#challenge-squat">
+      <span class="c-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14.4 14.4 9.6 9.6"/><path d="M18.657 21.485a2 2 0 1 1-2.829-2.828l-1.767 1.768a2 2 0 1 1-2.829-2.829l6.364-6.364a2 2 0 1 1 2.829 2.829l-1.768 1.767a2 2 0 1 1 2.828 2.829z"/><path d="m21.5 21.5-1.4-1.4"/><path d="M3.9 3.9 2.5 2.5"/><path d="M6.404 12.768a2 2 0 1 1-2.829-2.829l1.768-1.767a2 2 0 1 1-2.828-2.829l2.828-2.828a2 2 0 1 1 2.829 2.828l1.767-1.768a2 2 0 1 1 2.829 2.829z"/></svg>
+      </span>
+      <span class="c-name">August Squat-Off</span>
+      <span class="pill">Squat</span>
+      <span class="go">Open <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+    </a>
+
+    <a class="all-link" href="#all-challenges">All challenges →</a>
+  </section>
+
+  <!-- 4. Footer -->
+  <footer class="footer">
+    <a href="#feedback">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 2 1.88 1.88"/><path d="M14.12 3.88 16 2"/><path d="M9 7.13v-1a3.003 3.003 0 1 1 6 0v1"/><path d="M12 20c-3.3 0-6-2.7-6-6v-3a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v3c0 3.3-2.7 6-6 6"/><path d="M12 20v-9"/><path d="M6.53 9C4.6 8.8 3 7.1 3 5"/><path d="M6 13H2"/><path d="M3 21c0-2.1 1.7-3.9 3.8-4"/><path d="M20.97 5c0 2.1-1.6 3.8-3.5 4"/><path d="M22 13h-4"/><path d="M17.2 17c2.1.1 3.8 1.9 3.8 4"/></svg>
+      Report a bug
+    </a>
+    <span aria-hidden="true">·</span>
+    <a href="#feedback">Request a feature</a>
+    <span aria-hidden="true">·</span>
+    <a href="#terms">Terms</a>
+    <span aria-hidden="true">·</span>
+    <a href="#privacy">Privacy</a>
+  </footer>
+</main>
