@@ -1,6 +1,6 @@
 # Plank Stats v1 Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Render the plank report's dormant `per_second` data as a scrubbable steadiness timeline + score + personality on the VideoPlayer page — per spec `docs/superpowers/specs/2026-07-06-plank-stats-v1-design.md`.
 
@@ -33,11 +33,11 @@
   - `milestones(ps: PlankPerSecond[]): { label: string; t: number | null; reached: boolean }[]`
   - `personality(ps: PlankPerSecond[], stdevDeg?: number | null): { key: string; emoji: string; name: string; blurb: string } | null`
 
-- [ ] **Step 1: Write the failing tests** (fixtures: flat statue curve, linear melter, dip-recover phoenix, alternating jelly, decay window, multi-run holds, milestone crossing at cumulative time, empty, NaN seconds skipped)
-- [ ] **Step 2: Run to verify fail** — `npx jest src/lib/__tests__/plankStats.test.ts` → module not found
-- [ ] **Step 3: Implement helpers exactly to spec thresholds**
-- [ ] **Step 4: Run to verify pass**
-- [ ] **Step 5: Commit** — `feat(lift): plank steadiness stat helpers`
+- [x] **Step 1: Write the failing tests** (fixtures: flat statue curve, linear melter, dip-recover phoenix, alternating jelly, decay window, multi-run holds, milestone crossing at cumulative time, empty, NaN seconds skipped)
+- [x] **Step 2: Run to verify fail** — `npx jest src/lib/__tests__/plankStats.test.ts` → module not found
+- [x] **Step 3: Implement helpers exactly to spec thresholds**
+- [x] **Step 4: Run to verify pass**
+- [x] **Step 5: Commit** — `feat(lift): plank steadiness stat helpers`
 
 ---
 
@@ -51,11 +51,11 @@
 - Consumes: all Task 1 helpers; `LiftingReport` type.
 - Produces: `<PlankSteadiness report onSeek currentTime />` — props `{ report: LiftingReport; onSeek: (t: number) => void; currentTime?: number }`.
 
-- [ ] **Step 1: Failing test** — fixture report renders score pill ("Steady"/number), personality name, hold-segments strip, milestone ticks; chart click fires `onSeek` with 0 ≤ t ≤ duration; empty per_second renders null.
-- [ ] **Step 2: Verify fail**
-- [ ] **Step 3: Invoke the dataviz skill, then implement** — hero row (score pill tiered colors + personality badge), SVG timeline (state bands, form area+line, wobble markers, milestone ticks, decay annotation, playhead at currentTime, pointer → onSeek), hold segments strip.
-- [ ] **Step 4: Verify pass + `npx vite build`**
-- [ ] **Step 5: Commit** — `feat(lift): plank steadiness timeline component`
+- [x] **Step 1: Failing test** — fixture report renders score pill ("Steady"/number), personality name, hold-segments strip, milestone ticks; chart click fires `onSeek` with 0 ≤ t ≤ duration; empty per_second renders null.
+- [x] **Step 2: Verify fail**
+- [x] **Step 3: Invoke the dataviz skill, then implement** — hero row (score pill tiered colors + personality badge), SVG timeline (state bands, form area+line, wobble markers, milestone ticks, decay annotation, playhead at currentTime, pointer → onSeek), hold segments strip.
+- [x] **Step 4: Verify pass + `npx vite build`**
+- [x] **Step 5: Commit** — `feat(lift): plank steadiness timeline component`
 
 ---
 
@@ -65,7 +65,7 @@
 - Modify: `frontend/src/pages/VideoPlayer.tsx` (plank results branch + video ref/timeupdate)
 - Modify: `CLAUDE.md`
 
-- [ ] **Step 1: Wire in** — locate the plank stats block; render `PlankSteadiness` above it; `onSeek` sets `video.currentTime`; track `currentTime` from the existing video element's `timeupdate`.
-- [ ] **Step 2: Full gate** — `npx jest && npx vite build && npx tsc --noEmit` all green.
-- [ ] **Step 3: Deploy + prod verify** — `python3 deploy.py --frontend-only --skip-iam`; open the 244s plank attempt result (`/video/226e7383-be5f-4dd7-8eb3-5041c2de015d` route per app) and confirm chart renders with real data (Playwright screenshot).
-- [ ] **Step 4: Docs + merge** — CLAUDE.md section, mark plan checkboxes, merge branch to main, push.
+- [x] **Step 1: Wire in** — locate the plank stats block; render `PlankSteadiness` above it; `onSeek` sets `video.currentTime`; track `currentTime` from the existing video element's `timeupdate`.
+- [x] **Step 2: Full gate** — `npx jest && npx vite build && npx tsc --noEmit` all green.
+- [x] **Step 3: Deploy + prod verify** — `python3 deploy.py --frontend-only --skip-iam`; open the 244s plank attempt result (`/video/226e7383-be5f-4dd7-8eb3-5041c2de015d` route per app) and confirm chart renders with real data (Playwright screenshot).
+- [x] **Step 4: Docs + merge** — CLAUDE.md section, mark plan checkboxes, merge branch to main, push.

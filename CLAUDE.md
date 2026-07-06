@@ -125,6 +125,16 @@ Minimal, centered home page + app-wide visual language. Spec: `docs/superpowers/
 - **Page passes**: `HubPage` centered w/ RowCard secondary links (descriptions no longer rendered on hubs); `UploadChooser` = same IconTiles as home (golf → `/golf/snap`); `Challenges` centered header + "Open now" RowCard strip + pill filters; `Leaderboard` pill filters. Golf `fw-*` internals untouched.
 - **Tests**: `Index`, `IconTile`, `RowCard`, `AmbientBackground`, `DemoLoop`, `LayoutFooter` suites (page tests mock `../../config` + stub Navbar/Layout). Suite at ship: 46 suites / 282 tests.
 
+## Plank Stats v1 (shipped 2026-07-06)
+
+Steadiness pack + personality on the plank VideoPlayer result. Spec: `docs/superpowers/specs/2026-07-06-plank-stats-v1-design.md`; plan: `docs/superpowers/plans/2026-07-06-plank-stats-v1.md`. **Frontend-only** — renders the plank report's `per_second[]` (`{t, state, body_line_deg, elbow_deg, form_score}`), which the engine has emitted since day one but the UI never used (verified present on prod reports; stale reports refresh via the existing re-analyze endpoint).
+
+- **`lib/plankStats.ts`** — pure fixture-tested helpers: `holdRuns`, `steadinessScore` (clamp(100−stdev×10); ≥85 Rock Solid / 70 Steady / 50 Wobbly / else Jelly Mode), `wobbleEvents` (Δ>2.5° between consecutive in_plank seconds, 2s merge keeping larger delta), `decayPoint` (first ≥5s window of form<0.7), `milestones` (30/60/120/180s cumulative hold → video-time of crossing), `personality` (priority: Jelly 🪼 ≥4 wobbles or stdev>4 → Phoenix 🔥 dip≥0.15-below-rolling-avg then recovery → Slow Melter 🫠 OLS slope<−0.002/s → Statue 🗿 stdev≤1.5 & ≤1 wobble → Steady Eddie 💪; null under 10 hold seconds).
+- **`components/lifting/PlankSteadiness.tsx`** — score pill + personality badge, custom-SVG timeline (state bands with labeled key, form area+line, wobble diamonds, milestone ticks, decay annotation, hover crosshair + readout, playhead), hold-segments strip. **Pointer on chart → `onSeek(t)`** (seek only, never autoplay). Renders null without per_second.
+- **VideoPlayer wiring** — both video elements (annotated + original) share `videoRef` and report `timeupdate` → playhead; the steadiness card sits above the existing plank stat list, which remains the no-per_second fallback.
+- Tests: `lib/__tests__/plankStats.test.ts` (18 threshold-pinned cases), `PlankSteadiness.test.tsx` (jsdom note: dispatch `MouseEvent("pointerdown")` — jsdom lacks PointerEvent so `fireEvent.pointerDown` drops clientX). Suite at ship: 48 suites / 304 tests.
+- v2 candidates (not built): PB tracking vs past attempts, challenge percentile, elbow-angle viz.
+
 ## Golf Feature
 
 > **Phase B schema migration landed 2026-04-18** (branch `golf/fairway-phase-b`, migration `008_fairway_schema.sql`). The flat `GolfRound` / `GolfHoleScore` / `GolfHandicap` tables were dropped and replaced with the normalized `Course` / `Tee` / `Round` / `HoleScore` / `HandicapSnapshot` model below. PRs or docs written before that date refer to the old shape — see the Field Rename Map at the end of this section.
