@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Plus } from "lucide-react";
+import { Plus, Timer } from "lucide-react";
 import Layout from "../components/Layout";
+import RowCard from "../components/RowCard";
 import ChallengeCard from "../components/ChallengeCard";
 import CreateChallenge from "../components/CreateChallenge";
 import { Challenge } from "../lib/types";
@@ -120,29 +121,45 @@ const Challenges = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="mb-8"
+        className="mb-8 text-center"
       >
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h1 className="text-3xl font-semibold mb-2">Challenges</h1>
-            <p className="text-muted-foreground">
-              Browse all available lifting challenges and find the perfect one for you.
-            </p>
-          </div>
-
-          <button
-            onClick={() => setIsCreateModalOpen(true)}
-            className="flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
-          >
-            <Plus size={20} />
-            <span>Create Challenge</span>
-          </button>
-        </div>
+        <h1 className="text-3xl font-semibold mb-2">Challenges</h1>
+        <p className="text-muted-foreground mb-4">
+          Browse all available lifting challenges and find the perfect one for you.
+        </p>
+        <button
+          onClick={() => setIsCreateModalOpen(true)}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-md hover:bg-accent/90 transition-colors"
+        >
+          <Plus size={20} />
+          <span>Create Challenge</span>
+        </button>
       </motion.div>
 
       {error && (
         <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 rounded-md text-red-500">
           {error}
+        </div>
+      )}
+
+      {challenges.some((c) => c.status === "ongoing") && (
+        <div className="max-w-2xl mx-auto mb-10 flex flex-col gap-2.5">
+          <div className="flex items-center gap-3.5 text-xs uppercase tracking-widest text-muted-foreground mb-1">
+            <span className="flex-1 h-px bg-border" aria-hidden="true" />
+            Open now
+            <span className="flex-1 h-px bg-border" aria-hidden="true" />
+          </div>
+          {challenges
+            .filter((c) => c.status === "ongoing")
+            .map((c) => (
+              <RowCard
+                key={c.id}
+                to={`/challenges/${c.id}`}
+                icon={<Timer className="w-[18px] h-[18px]" />}
+                title={c.title}
+                pill={c.categories?.[0]}
+              />
+            ))}
         </div>
       )}
 
@@ -157,8 +174,8 @@ const Challenges = () => {
                 onClick={() => setActiveFilter(filter)}
                 className={`px-3 py-1 text-sm rounded-full transition-all ${
                   activeFilter === filter
-                    ? "bg-accent text-white shadow-sm"
-                    : "bg-secondary hover:bg-secondary/70 text-foreground"
+                    ? "bg-accent/15 text-accent border border-accent/30"
+                    : "bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent"
                 }`}
               >
                 {filter === "all" ? "All" : filter.charAt(0).toUpperCase() + filter.slice(1)}
