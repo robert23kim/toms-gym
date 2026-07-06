@@ -1,6 +1,6 @@
 # Lift History Implementation Plan
 
-> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
+> **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [x]`) syntax for tracking.
 
 **Goal:** Paginated, grade-annotated lift history on the profile Lift tab — per spec `docs/superpowers/specs/2026-07-06-lift-history-design.md`.
 
@@ -29,9 +29,9 @@
 **Interfaces:**
 - Produces: `shape_lift_row(row: Mapping) -> dict` and route `GET /users/<user_id>/lifts` returning `{lifts: [{attempt_id, competition_id, competition_name, lift_type, weight, created_at, status, analysis_status, grade, total_reps, hold_s}], total, limit, offset}`.
 
-- [ ] Failing tests for `shape_lift_row` (rep-lift row, plank row, no-analysis nulls, string numeric casts, missing keys) → red → implement → green → register in `run_ci_tests.sh` → run suite.
-- [ ] Add the endpoint per spec SQL (query + COUNT), clamp limit/offset, rows through `shape_lift_row`.
-- [ ] Commit — `feat(profile): paginated lift history endpoint with analysis payoffs`
+- [x] Failing tests for `shape_lift_row` (rep-lift row, plank row, no-analysis nulls, string numeric casts, missing keys) → red → implement → green → register in `run_ci_tests.sh` → run suite.
+- [x] Add the endpoint per spec SQL (query + COUNT), clamp limit/offset, rows through `shape_lift_row`.
+- [x] Commit — `feat(profile): paginated lift history endpoint with analysis payoffs`
 
 ---
 
@@ -44,8 +44,8 @@
 **Interfaces:**
 - Consumes: Task 1 endpoint; Produces `<LiftHistoryList userId />`.
 
-- [ ] Failing tests (grade pill, plank `m:ss` hold, VideoPlayer hrefs, Load-more offset fetch + append, null on error/empty) → red → implement per spec row layout → green + `vite build`.
-- [ ] Commit — `feat(profile): lift history list with grades and hold times`
+- [x] Failing tests (grade pill, plank `m:ss` hold, VideoPlayer hrefs, Load-more offset fetch + append, null on error/empty) → red → implement per spec row layout → green + `vite build`.
+- [x] Commit — `feat(profile): lift history list with grades and hold times`
 
 ---
 
@@ -55,6 +55,6 @@
 - Modify: `frontend/src/pages/Profile.tsx` (Lift tab, above gallery)
 - Modify: `CLAUDE.md`
 
-- [ ] Wire component into the Lift tab card stack; full gate (`jest`, `vite build`, `tsc --noEmit`, backend CI script).
-- [ ] Deploy `python3 deploy.py --skip-iam`; curl the endpoint for a real user; screenshot the profile Lift tab.
-- [ ] CLAUDE.md section (including the API table row), mark checkboxes, merge to main, push.
+- [x] Wire component into the Lift tab card stack; full gate (`jest`, `vite build`, `tsc --noEmit`, backend CI script).
+- [x] Deploy `python3 deploy.py --skip-iam`; curl the endpoint for a real user; screenshot the profile Lift tab.
+- [x] CLAUDE.md section (including the API table row), mark checkboxes, merge to main, push.
