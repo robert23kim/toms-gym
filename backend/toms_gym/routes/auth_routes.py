@@ -17,6 +17,7 @@ from toms_gym.security import (
     SecurityAudit,
     FailedLoginTracker
 )
+from toms_gym.services import magic_link
 from toms_gym.utils.password import (
     hash_password,
     verify_password,
@@ -510,4 +511,236 @@ def login():
             
     except Exception as e:
         logger.error(f"Error during login: {str(e)}")
-        return jsonify({"error": "Internal server error"}), 500 
+        return jsonify({"error": "Internal server error"}), 500
+
+
+# --------------------------------------------------------------------------- #
+# Passwordless magic-link sign-in (T15)
+#
+# POST /auth/magic-link  {email}         -> always 200 (no enumeration); if the
+#                                           email maps to a real, deliverable
+#                                           account and isn't rate-limited, a
+#                                           one-time link is emailed.
+# GET  /auth/magic/<token>               -> validate + consume (single-use),
+#                                           return {user_id, name, email,
+#                                           access_token?}.
+#
+# Token approach: TABLE (MagicLinkToken, migration 014) — see
+# services/magic_link.py for why (single-use needs a server-side ledger).
+# Only the SHA-256 hash is stored; single-use is enforced by an atomic UPDATE.
+# --------------------------------------------------------------------------- #
+
+def _magic_frontend_base():
+    """Frontend base URL for building the emailed link (reuses email config)."""
+    from toms_gym.integrations.email_upload import _get_frontend_base
+    return _get_frontend_base()
+
+
+def _is_undeliverable_email(email: str) -> bool:
+    """Skip synthetic bot/e2e and non-routable addresses (reuses T9's logic)."""
+    from toms_gym.integrations.analysis_notify import _is_bot_or_undeliverable
+    return _is_bot_or_undeliverable(email)
+
+
+def _find_user_for_magic_link(session, email):
+    """Return {id, name, email, auth_method, is_test} for an email, or None."""
+    row = session.execute(
+        text('SELECT id, name, email, auth_method, COALESCE(is_test, false) AS is_test '
+             'FROM "User" WHERE lower(email) = :email'),
+        {"email": email},
+    ).fetchone()
+    if not row:
+        return None
+    return {
+        "id": str(row[0]),
+        "name": row[1],
+        "email": row[2],
+        "auth_method": row[3],
+        "is_test": bool(row[4]),
+    }
+
+
+def _recent_magic_token_count(session, email, since):
+    """How many links this email was issued since `since` (rate-limit input)."""
+    row = session.execute(
+        text('SELECT COUNT(*) FROM "MagicLinkToken" '
+             'WHERE email = :email AND created_at >= :since'),
+        {"email": email, "since": since},
+    ).fetchone()
+    return int(row[0]) if row else 0
+
+
+def _insert_magic_token(session, user_id, email, token_hash, expires_at):
+    session.execute(
+        text('INSERT INTO "MagicLinkToken" (token_hash, user_id, email, expires_at) '
+             'VALUES (:token_hash, :user_id, :email, :expires_at)'),
+        {"token_hash": token_hash, "user_id": user_id,
+         "email": email, "expires_at": expires_at},
+    )
+    session.commit()
+
+
+def _consume_magic_token(session, token_hash):
+    """Atomically claim a valid, unused, unexpired token. Returns user_id or None.
+
+    Single-use + expiry are enforced in one statement: only a row that is still
+    unused and not expired gets stamped, and only then is a user_id returned. A
+    replay (or expired link) matches nothing and yields None — the link is dead
+    after the first successful use.
+    """
+    row = session.execute(
+        text('UPDATE "MagicLinkToken" '
+             'SET used_at = now() '
+             'WHERE token_hash = :token_hash '
+             '  AND used_at IS NULL '
+             '  AND expires_at > now() '
+             'RETURNING user_id'),
+        {"token_hash": token_hash},
+    ).fetchone()
+    session.commit()
+    return str(row[0]) if row else None
+
+
+def _get_user_identity(session, user_id):
+    row = session.execute(
+        text('SELECT id, name, email, auth_method FROM "User" WHERE id = :user_id'),
+        {"user_id": user_id},
+    ).fetchone()
+    if not row:
+        return None
+    return {"id": str(row[0]), "name": row[1], "email": row[2], "auth_method": row[3]}
+
+
+def _send_magic_link_email(to_email, link):
+    """Send the sign-in email. Raises on SMTP failure (caller isolates)."""
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    import smtplib
+    from toms_gym.integrations.email_upload import (
+        EMAIL_SMTP_SERVER, EMAIL_SMTP_PORT, EMAIL_USERNAME, EMAIL_PASSWORD,
+    )
+
+    if not EMAIL_USERNAME or not EMAIL_PASSWORD:
+        logger.warning("Cannot send magic-link email: SMTP credentials not configured")
+        return
+
+    msg = MIMEMultipart()
+    msg['From'] = EMAIL_USERNAME
+    msg['To'] = to_email
+    msg['Subject'] = "Your Tom's Gym sign-in link"
+    msg['X-Toms-Gym-Email'] = 'magic-link'
+    msg['Auto-Submitted'] = 'auto-generated'
+
+    body = f"""Here's your one-time sign-in link for Tom's Gym:
+
+{link}
+
+This link works once and expires in {magic_link.MAGIC_LINK_TTL_MINUTES} minutes.
+If you didn't request it, you can ignore this email.
+
+— Tom's Gym
+"""
+    msg.attach(MIMEText(body, 'plain'))
+
+    with smtplib.SMTP(EMAIL_SMTP_SERVER, EMAIL_SMTP_PORT) as server:
+        server.starttls()
+        server.login(EMAIL_USERNAME, EMAIL_PASSWORD)
+        server.send_message(msg)
+
+    logger.info(f"Magic-link email sent to {to_email}")
+
+
+def _dispatch_magic_link(email):
+    """Best-effort: mint + email a one-time link for `email`.
+
+    Guards (never surfaced to the caller — the route always returns the same
+    generic 200 so account existence can't be probed):
+      * skip synthetic/undeliverable addresses,
+      * skip when the email has no matching account,
+      * skip test/bot accounts,
+      * skip when the per-email rate limit is hit.
+    """
+    if _is_undeliverable_email(email):
+        return
+
+    session = get_db_connection()
+    try:
+        user = _find_user_for_magic_link(session, email)
+        if not user or user["is_test"]:
+            return
+
+        now = magic_link.now_utc()
+        recent = _recent_magic_token_count(session, email, magic_link.rate_window_start(now))
+        if magic_link.is_rate_limited(recent):
+            logger.info("Magic-link rate limit hit for an email; skipping send")
+            return
+
+        raw = magic_link.generate_raw_token()
+        token_hash = magic_link.hash_token(raw)
+        expires_at = magic_link.compute_expiry(now)
+        _insert_magic_token(session, user["id"], email, token_hash, expires_at)
+
+        link = f"{_magic_frontend_base()}/auth/magic/{raw}"
+        _send_magic_link_email(email, link)
+    finally:
+        session.close()
+
+
+@auth_bp.route('/magic-link', methods=['POST'])
+@rate_limit('20/hour')
+def request_magic_link():
+    """Request a one-time sign-in link. Always 200 — never reveals existence."""
+    data = request.get_json(silent=True) or {}
+    email = (data.get('email') or '').strip().lower()
+    if not email or '@' not in email:
+        return jsonify({"error": "A valid email is required"}), 400
+
+    try:
+        _dispatch_magic_link(email)
+    except Exception as e:
+        # Never let a DB/SMTP failure change the response — that would leak
+        # timing/existence signal and break the passwordless UX.
+        logger.warning(f"Magic-link dispatch failed: {e}")
+
+    return jsonify({"message": magic_link.GENERIC_MAGIC_LINK_MESSAGE}), 200
+
+
+@auth_bp.route('/magic/<token>', methods=['GET'])
+@rate_limit('60/hour')
+def consume_magic_link(token):
+    """Validate + consume a one-time link; restore identity (+ JWT if auth'd)."""
+    token_hash = magic_link.hash_token(token or "")
+    session = get_db_connection()
+    try:
+        user_id = _consume_magic_token(session, token_hash)
+        if not user_id:
+            return jsonify({"error": "This sign-in link is invalid or has expired."}), 400
+
+        user = _get_user_identity(session, user_id)
+        if not user:
+            return jsonify({"error": "This sign-in link is invalid or has expired."}), 400
+
+        # Issue a JWT only for accounts that actually have auth (password /
+        # google). Pure passwordless accounts just get their userId back.
+        access_token = None
+        if user.get("auth_method") in ('password', 'google'):
+            access_token = create_access_token(user["id"])
+
+        SecurityAudit.log_auth_event(
+            'magic_link_login',
+            user_id=user["id"],
+            success=True,
+            details={'auth_method': user.get("auth_method")},
+        )
+
+        return jsonify({
+            "user_id": user["id"],
+            "name": user.get("name"),
+            "email": user.get("email"),
+            "access_token": access_token,
+        }), 200
+    except Exception as e:
+        logger.error(f"Error consuming magic link: {e}")
+        return jsonify({"error": "Internal server error"}), 500
+    finally:
+        session.close() 

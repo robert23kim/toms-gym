@@ -19,6 +19,9 @@ const Profile = lazy(() => import("../pages/Profile"));
 const WeeklyLifts = lazy(() => import("../pages/WeeklyLifts"));
 const AuthCallback = lazy(() => import("../pages/AuthCallback"));
 const AuthError = lazy(() => import("../pages/AuthError"));
+// T15 passwordless magic-link sign-in
+const SignIn = lazy(() => import("../pages/SignIn"));
+const MagicLink = lazy(() => import("../pages/MagicLink"));
 const BowlingUpload = lazy(() => import("../pages/BowlingUpload"));
 const BowlingResult = lazy(() => import("../pages/BowlingResult"));
 const BowlingChallenge = lazy(() => import("../pages/BowlingChallenge"));
@@ -70,6 +73,9 @@ export const routes: RouteObject[] = [
   { path: "/profile/:id/weekly-lifts", element: <WeeklyLifts /> },
   { path: "/auth/callback", element: <AuthCallback /> },
   { path: "/auth/error", element: <AuthError /> },
+  // T15 passwordless magic-link sign-in — request a link, then consume it.
+  { path: "/signin", element: <SignIn /> },
+  { path: "/auth/magic/:token", element: <MagicLink /> },
   { path: "/bowling/upload", element: <BowlingUpload /> },
   { path: "/bowling/upload/:competitionId", element: <BowlingUpload /> },
   { path: "/bowling/result/:attemptId", element: <BowlingResult /> },
