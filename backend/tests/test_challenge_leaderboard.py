@@ -194,7 +194,10 @@ def test_weight_single_lift_reduces_to_best_single():
     assert rows[1]["score"] == 160.0
 
 
-def test_weight_pending_and_failed_excluded():
+def test_weight_pending_counts_failed_excluded():
+    """A pending (uploaded but not-yet-analyzed) lift still scores by its
+    declared weight — analysis grades form, not the load, so the podium must
+    not wait on it. Only 'failed' attempts are dropped."""
     participants = [
         _participant("u1", "alice", [
             _lift("a1", "Squat", 200.0, "2026-07-01", status="pending"),
@@ -203,8 +206,25 @@ def test_weight_pending_and_failed_excluded():
         ]),
     ]
     rows = rank_challenge(participants, metric="weight")
-    assert rows[0]["score"] == 90.0
-    assert rows[0]["attempt_count"] == 1
+    # Best of the two non-failed squats (pending 200 vs completed 90) = 200.
+    assert rows[0]["score"] == 200.0
+    assert rows[0]["attempt_count"] == 2
+
+
+def test_weight_all_pending_still_forms_podium():
+    """Regression (T2): a challenge whose entrants have only uploaded — nothing
+    analyzed yet — still produces scored rows so the podium renders instead of
+    'No entries yet'."""
+    participants = [
+        _participant("u1", "alice", [_lift("a1", "Deadlift", 140.0, "2026-07-01", status="pending")]),
+        _participant("u2", "bob", [_lift("b1", "Deadlift", 160.0, "2026-07-01", status="pending")]),
+        _participant("u3", "carol", [_lift("c1", "Deadlift", 120.0, "2026-07-01", status="pending")]),
+    ]
+    rows = rank_challenge(participants, metric="weight")
+    assert [r["name"] for r in rows] == ["bob", "alice", "carol"]
+    assert [r["score"] for r in rows] == [160.0, 140.0, 120.0]
+    # The frontend podium keeps rows with score > 0; all three qualify.
+    assert all(r["score"] > 0 for r in rows)
 
 
 def test_weight_tiebreak_by_created_at():

@@ -169,6 +169,36 @@ def test_leaderboard_lifting_challenge_metric_weight(test_client):
     assert data["rows"][0]["form_score"] is None
 
 
+def test_leaderboard_weight_pending_uploads_form_podium(test_client):
+    """Regression (T2): entrants who uploaded but whose analysis hasn't run yet
+    (status='pending', no LiftingResult) must still surface as scored rows so
+    the podium renders instead of "No entries yet". The score is the declared
+    weight, which is independent of analysis."""
+    description = 'Gym - {"lifttypes": ["Deadlift"], "weightclasses": [], "gender": "M"}'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Deadlift",
+              weight_kg=140.0, status="pending", created_at="2026-07-01",
+              video_url="v1", annotated_video_url=None),
+        _prow(user_id="u2", name="bob", attempt_id="b1", lift_type="Deadlift",
+              weight_kg=160.0, status="pending", created_at="2026-07-01",
+              video_url="v2", annotated_video_url=None),
+    ]
+    session = _make_session(description, rows, uploaded_today=2)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "weight"
+    # Both pending uploads produce positive scores (the frontend podium keeps
+    # rows with score > 0).
+    scored = [r for r in data["rows"] if r["score"] > 0]
+    assert [r["name"] for r in scored] == ["bob", "alice"]
+    assert scored[0]["score"] == 160.0
+    # Clip falls back to the raw upload when there's no annotated video yet.
+    assert scored[0]["clip_url"] == "v2"
+
+
 def test_leaderboard_404_unknown_competition(test_client):
     session = _make_session(None, [], missing=True)
     with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
