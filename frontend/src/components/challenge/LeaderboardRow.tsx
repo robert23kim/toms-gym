@@ -4,6 +4,8 @@ import { Play } from "lucide-react";
 import type { ChallengeLeaderboardRow, ChallengeMetric } from "../../lib/types";
 import { getGolfAvatar } from "../../lib/api";
 import { formatScoreValue, scoreUnit } from "./metric";
+import { athleteNickname } from "../../lib/plankStats";
+import NicknameBadge from "./NicknameBadge";
 
 interface LeaderboardRowProps {
   row: ChallengeLeaderboardRow;
@@ -41,6 +43,14 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
 }) => {
   const dimmed = row.score <= 0;
   const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
+  const nickname =
+    metric === "time"
+      ? athleteNickname({
+          stdevDeg: row.steadiness,
+          attemptCount: row.attempt_count,
+          uploadDates: row.history.map((h) => h.date),
+        })
+      : null;
 
   const thumb = (
     <div className="relative h-11 w-11 flex-none overflow-hidden rounded-lg bg-gradient-to-br from-[#2a3340] to-[#171b22] lg:h-[30px] lg:w-[30px]">
@@ -92,8 +102,11 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
           className="hidden h-[30px] w-[30px] flex-none rounded-full bg-[#2a2f3a] object-cover lg:block"
         />
         <div className="min-w-0">
-          <div className={`truncate text-sm font-semibold lg:text-[14.5px] ${dimmed ? "text-white/50" : ""}`}>
-            {row.name || "Athlete"}
+          <div className="flex items-center gap-1.5">
+            <span className={`truncate text-sm font-semibold lg:text-[14.5px] ${dimmed ? "text-white/50" : ""}`}>
+              {row.name || "Athlete"}
+            </span>
+            {nickname && <NicknameBadge nickname={nickname} className="shrink-0" />}
           </div>
           <div className="text-[11px] text-white/40 lg:hidden">
             {dimmed ? "No entry yet" : formatDate(row.date)}

@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import { Play } from "lucide-react";
 import type { ChallengeLeaderboardRow, ChallengeMetric } from "../../lib/types";
 import { formatScoreValue, scoreUnit } from "./metric";
+import { athleteNickname } from "../../lib/plankStats";
+import NicknameBadge from "./NicknameBadge";
 
 // Highlighted "You" row. When the viewer has an entry it sits inline at their
 // actual rank showing rank + score; when they don't, it's an upload prompt.
@@ -71,6 +73,14 @@ const YouRow: React.FC<YouRowProps> = (props) => {
 
   const { row, metric, clipHref, subtitle, attemptCount, expanded, onToggleAttempts } = props;
   const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
+  const nickname =
+    metric === "time"
+      ? athleteNickname({
+          stdevDeg: row.steadiness,
+          attemptCount: row.attempt_count,
+          uploadDates: row.history.map((h) => h.date),
+        })
+      : null;
 
   const thumb = (
     <div className="relative h-11 w-11 flex-none overflow-hidden rounded-lg bg-gradient-to-br from-[#2a3340] to-[#171b22] lg:h-[30px] lg:w-[30px]">
@@ -118,8 +128,11 @@ const YouRow: React.FC<YouRowProps> = (props) => {
       <div className="min-w-0 flex-1 lg:col-start-2 lg:row-start-1 lg:flex lg:items-center lg:gap-2.5">
         <YouAvatar className="hidden lg:flex" />
         <div className="min-w-0">
-          <div className="truncate text-sm font-semibold text-[#7fb0ff] lg:text-[14.5px]">
-            {row.name || "You"} <span className="text-white/40">· You</span>
+          <div className="flex items-center gap-1.5">
+            <span className="truncate text-sm font-semibold text-[#7fb0ff] lg:text-[14.5px]">
+              {row.name || "You"} <span className="text-white/40">· You</span>
+            </span>
+            {nickname && <NicknameBadge nickname={nickname} className="shrink-0" />}
           </div>
           {subtitle && (
             <div data-testid="you-row-subtitle" className="truncate text-[11px] text-[#7fb0ff]/70">

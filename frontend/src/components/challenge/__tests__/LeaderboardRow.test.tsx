@@ -20,6 +20,7 @@ const makeRow = (overrides: Partial<ChallengeLeaderboardRow> = {}): ChallengeLea
   score: 43.1,
   best_by_lift: { Plank: 43.1 },
   form_score: null,
+  steadiness: null,
   attempt_id: "a4",
   clip_url: "https://cdn/clip.mp4",
   thumbnail_url: null,
@@ -88,6 +89,25 @@ describe("LeaderboardRow", () => {
     const links = screen.getAllByRole("link");
     expect(links).toHaveLength(1); // never two clip elements across breakpoints
     expect(links[0].className).toContain("lg:col-start-4");
+  });
+});
+
+describe("LeaderboardRow steadiness nickname", () => {
+  it("shows an athlete nickname on a time-metric plank row", () => {
+    renderRow(
+      makeRow({ steadiness: 1, attempt_count: 1, history: [{ score: 60, date: "2026-07-02" }] })
+    );
+    expect(screen.getByText(/One-Shot Statue/)).toBeInTheDocument();
+  });
+
+  it("shows no nickname on a weight-metric row", () => {
+    renderRow(makeRow({ steadiness: null }), "weight");
+    expect(screen.queryByText(/Statue|Wobbler|Jellyfish|Steady Eddie/)).toBeNull();
+  });
+
+  it("shows no nickname when steadiness is absent", () => {
+    renderRow(makeRow({ steadiness: null }));
+    expect(screen.queryByText(/Statue|Wobbler|Jellyfish|Steady Eddie/)).toBeNull();
   });
 });
 

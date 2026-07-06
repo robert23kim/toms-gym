@@ -12,6 +12,7 @@ const makeRow = (overrides: Partial<ChallengeLeaderboardRow> = {}): ChallengeLea
   score: 18.6,
   best_by_lift: { Plank: 18.6 },
   form_score: 0.8,
+  steadiness: null,
   attempt_id: "a1",
   clip_url: "https://cdn/clip.mp4",
   thumbnail_url: null,
