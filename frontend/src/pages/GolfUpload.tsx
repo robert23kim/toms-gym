@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
@@ -9,10 +9,17 @@ import FairwayScope from "../components/FairwayScope";
 import StagedParseProgress from "../components/golf/StagedParseProgress";
 import { useMediaUpload } from "../hooks/useMediaUpload";
 
-const GolfUpload: React.FC = () => {
+const GolfUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) => {
   const navigate = useNavigate();
   const [email, setEmail] = useState<string>("");
   const [isUploading, setIsUploading] = useState(false);
+  const cameraInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // /golf/snap fast path: try to open the camera immediately. Browsers that
+    // require a user gesture ignore this; the "Capture photo" button remains.
+    if (autoCamera) cameraInputRef.current?.click();
+  }, [autoCamera]);
   const {
     file: selectedFile,
     previewUrl,
@@ -135,6 +142,15 @@ const GolfUpload: React.FC = () => {
                       className="hidden"
                       id="golf-scorecard-upload"
                     />
+                    <input
+                      type="file"
+                      accept="image/*"
+                      capture="environment"
+                      onChange={handleFileSelect}
+                      className="hidden"
+                      id="golf-scorecard-camera"
+                      ref={cameraInputRef}
+                    />
 
                     {previewUrl ? (
                       <img
@@ -158,7 +174,7 @@ const GolfUpload: React.FC = () => {
                       </button>
                       <button
                         type="button"
-                        onClick={() => document.getElementById("golf-scorecard-upload")?.click()}
+                        onClick={() => cameraInputRef.current?.click()}
                         className="inline-flex items-center gap-2 h-9 px-4 rounded-md bg-[var(--fw-info)] text-white text-sm hover:opacity-90"
                       >
                         Capture photo
