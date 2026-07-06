@@ -7,6 +7,7 @@ import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
 import VideoGallery from '../components/VideoGallery';
+import LiftHistoryList from '../components/profile/LiftHistoryList';
 import GhibliAvatar from '../components/GhibliAvatar';
 import { fetchRounds, fetchBowlingResultsByUser } from "../lib/api";
 import { GolfRoundListItem, BowlingResult } from "../lib/types";
@@ -351,6 +352,10 @@ const Profile = () => {
                 <ArrowLeft size={20} className="rotate-180 text-muted-foreground" />
               </Link>
             </div>
+
+            {/* Lift history — full paginated list with grades/hold times.
+                Renders nothing for users with no lifts. */}
+            {userId && <LiftHistoryList userId={userId} />}
 
             {/* Uploaded Videos */}
             <div className="bg-card rounded-xl p-6 shadow-sm mb-6">
