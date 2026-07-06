@@ -9,6 +9,7 @@ import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult } from '../lib/types';
 import { getMetricCoaching, getOverallSummary } from '../lib/liftCoaching';
+import { createAndCopyShareLink } from '../lib/share';
 
 interface VideoData {
   id: number;
@@ -63,11 +64,19 @@ const VideoPlayer: React.FC = () => {
     if (isCreatingShortLink) return;
     setIsCreatingShortLink(true);
     try {
-      const res = await axios.post(`${API_URL}/short-link`, {
-        target_url: window.location.href,
+      // OG card fields (T13): grade is the punch stat; reps/weight the blurb.
+      const report = liftingResult?.report;
+      const name = videoData?.participant_name || "Lifter";
+      const lift = videoData?.lift_type || "lift";
+      const bits: string[] = [];
+      if (report?.total_reps != null) bits.push(`${report.total_reps} rep${report.total_reps !== 1 ? "s" : ""}`);
+      if (videoData?.weight && lift.toLowerCase() !== "plank") bits.push(`${videoData.weight} lbs`);
+      const shortUrl = await createAndCopyShareLink({
+        targetUrl: window.location.href,
+        ogTitle: `${name}'s ${lift}`,
+        ogDescription: bits.join(" · ") || "Graded on Tom's Gym",
+        ogStat: report?.overall_grade || undefined,
       });
-      const shortUrl = `${window.location.origin}/s/${res.data.short_code}`;
-      await navigator.clipboard.writeText(shortUrl);
       toast({ title: "Short link copied!", description: shortUrl });
     } catch (err) {
       toast({

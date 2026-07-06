@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, Calendar, MapPin, TrendingDown, Pencil } from "lucide-react";
+import { ArrowLeft, Calendar, MapPin, TrendingDown, Pencil, Share2 } from "lucide-react";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import HighlightsGrid from "../components/golf/HighlightsGrid";
 import HoleBarChart from "../components/golf/HoleBarChart";
+import { useToast } from "../components/ui/use-toast";
+import { createAndCopyShareLink } from "../lib/share";
 import { fetchRound } from "../lib/api";
 import { GolfRoundDetail, GolfHole } from "../lib/types";
 
@@ -16,6 +18,37 @@ const GolfRound: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageExpanded, setImageExpanded] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const { toast } = useToast();
+
+  // Share (T13) — copies a backend short link that unfurls with an OG card.
+  const handleShare = async () => {
+    if (sharing || !round) return;
+    setSharing(true);
+    try {
+      const total = round.total_score ??
+        (round.hole_scores || []).reduce((a, h) => a + (h.strokes || 0), 0);
+      const course = round.course?.name ?? "Golf round";
+      const bits: string[] = [];
+      if (round.played_on) bits.push(round.played_on);
+      if (round.score_differential != null) bits.push(`${round.score_differential.toFixed(1)} diff`);
+      const shortUrl = await createAndCopyShareLink({
+        targetUrl: window.location.href,
+        ogTitle: course,
+        ogDescription: bits.join(" · ") || "Scored on Tom's Gym",
+        ogStat: total ? String(total) : undefined,
+      });
+      toast({ title: "Short link copied!", description: shortUrl });
+    } catch (err) {
+      toast({
+        title: "Could not create short link",
+        description: err instanceof Error ? err.message : "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setSharing(false);
+    }
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -136,16 +169,28 @@ const GolfRound: React.FC = () => {
                 <ArrowLeft className="mr-2" size={16} />
                 Back
               </button>
-              {round && round.user_id === (localStorage.getItem("userId") || "") && (
-                <Link
-                  to={`/golf/review/${roundId}`}
-                  data-testid="edit-round-link"
-                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border-[0.5px] border-[var(--fw-border-secondary)] text-sm hover:border-[var(--fw-border-info)] hover:text-[var(--fw-text-info)]"
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handleShare}
+                  disabled={sharing}
+                  data-testid="share-round-button"
+                  className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border-[0.5px] border-[var(--fw-border-secondary)] text-sm hover:border-[var(--fw-border-info)] hover:text-[var(--fw-text-info)] disabled:opacity-50"
+                  title="Copy short link to share"
                 >
-                  <Pencil className="w-3.5 h-3.5" />
-                  Edit scores
-                </Link>
-              )}
+                  <Share2 className="w-3.5 h-3.5" />
+                  {sharing ? "Creating..." : "Share"}
+                </button>
+                {round && round.user_id === (localStorage.getItem("userId") || "") && (
+                  <Link
+                    to={`/golf/review/${roundId}`}
+                    data-testid="edit-round-link"
+                    className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border-[0.5px] border-[var(--fw-border-secondary)] text-sm hover:border-[var(--fw-border-info)] hover:text-[var(--fw-text-info)]"
+                  >
+                    <Pencil className="w-3.5 h-3.5" />
+                    Edit scores
+                  </Link>
+                )}
+              </div>
             </div>
 
             <div className="fw-surface p-6 sm:p-8 space-y-6">
