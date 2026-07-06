@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
+import AmbientBackground from "./AmbientBackground";
 import { motion } from "framer-motion";
 import { APP_VERSION } from "../config";
 
@@ -11,6 +12,7 @@ interface LayoutProps {
 const Layout: React.FC<LayoutProps> = ({ children }) => {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <AmbientBackground />
       <Navbar />
       <motion.main 
         className="flex-1 px-4 py-6 md:px-6 lg:px-8 max-w-7xl mx-auto w-full"
