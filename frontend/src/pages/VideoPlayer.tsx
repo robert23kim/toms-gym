@@ -10,6 +10,7 @@ import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult } from '../lib/types';
 import { getMetricCoaching, getOverallSummary } from '../lib/liftCoaching';
 import { createAndCopyShareLink } from '../lib/share';
+import PlankSteadiness from '../components/lifting/PlankSteadiness';
 
 interface VideoData {
   id: number;
@@ -50,6 +51,8 @@ const VideoPlayer: React.FC = () => {
   const [finalVideoUrl, setFinalVideoUrl] = useState<string | null>(null);
   const [isVideoLoaded, setIsVideoLoaded] = useState(false);
   const [videoLoadError, setVideoLoadError] = useState<string | null>(null);
+  // Playhead time for the plank steadiness chart (updates at timeupdate's ~4Hz).
+  const [videoTime, setVideoTime] = useState(0);
   const videoRef = useRef<HTMLVideoElement>(null);
   const [liftingResult, setLiftingResult] = useState<LiftingResult | null>(null);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -418,12 +421,14 @@ const VideoPlayer: React.FC = () => {
 
                     {activeTab === 'annotated' && hasAnnotatedVideo ? (
                       <video
+                        ref={videoRef}
                         controls
                         autoPlay
                         muted
                         playsInline
                         className="max-h-[70vh] w-full object-contain rounded-lg bg-black"
                         src={liftingResult!.annotated_video_url}
+                        onTimeUpdate={(e) => setVideoTime(e.currentTarget.currentTime)}
                       />
                     ) : (finalVideoUrl || videoData?.video_url) ? (
                       <>
@@ -437,6 +442,7 @@ const VideoPlayer: React.FC = () => {
                           playsInline
                           onError={handleVideoError}
                           onLoadedData={handleVideoLoad}
+                          onTimeUpdate={(e) => setVideoTime(e.currentTarget.currentTime)}
                           onLoadedMetadata={() => console.log("Video metadata loaded successfully")}
                           onCanPlay={() => console.log("Video can play now")}
                         >
@@ -548,6 +554,20 @@ const VideoPlayer: React.FC = () => {
                         {/* Analysis complete — Plank result card */}
                         {hasAnalysis && report && report.lift_type === 'plank' && (
                           <>
+                            {/* Steadiness pack: per_second timeline + score + personality.
+                                Skipped entirely for reports without per_second data. */}
+                            {(report.per_second?.length ?? 0) > 0 && (
+                              <div className="bg-card rounded-lg shadow-lg p-6">
+                                <PlankSteadiness
+                                  report={report}
+                                  currentTime={videoTime}
+                                  onSeek={(t) => {
+                                    const v = videoRef.current;
+                                    if (v) v.currentTime = t; // seek only — never autoplay
+                                  }}
+                                />
+                              </div>
+                            )}
                             <div className="bg-card rounded-lg shadow-lg p-6">
                               <div className="flex items-center gap-4 mb-4">
                                 <div className="w-14 h-14 rounded-xl flex items-center justify-center bg-blue-500/15">
