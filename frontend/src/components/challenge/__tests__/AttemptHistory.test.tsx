@@ -15,7 +15,7 @@ jest.mock("axios", () => {
   return { ...mocked, default: mocked };
 });
 
-const plankAttempt = (id: string, iso: string, hold: number) => ({
+const plankAttempt = (id: string, iso: string, hold: number, steadiness: number | null = null) => ({
   attempt_id: id,
   competition_id: "comp1",
   competition_name: "Plank Challenge",
@@ -27,6 +27,7 @@ const plankAttempt = (id: string, iso: string, hold: number) => ({
   grade: null,
   total_reps: null,
   hold_s: hold,
+  steadiness,
 });
 
 const weightAttempt = (id: string, iso: string, weight: number, grade: string | null) => ({
@@ -94,6 +95,23 @@ describe("AttemptHistory", () => {
       "href",
       "/challenges/comp2/participants/u1/video/b2"
     );
+  });
+
+  it("shows a steadiness nickname on a plank attempt", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { lifts: [plankAttempt("a1", "2026-07-06T09:00:00+00:00", 40, 1)], total: 1 },
+    });
+    renderPanel("time", "comp1");
+    await waitFor(() => expect(screen.getByText(/Statue/)).toBeInTheDocument());
+  });
+
+  it("shows no nickname when steadiness is absent", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { lifts: [plankAttempt("a1", "2026-07-06T09:00:00+00:00", 40, null)], total: 1 },
+    });
+    renderPanel("time", "comp1");
+    await waitFor(() => expect(screen.getByText("0:40")).toBeInTheDocument());
+    expect(screen.queryByText(/Statue|Wobbler|Jellyfish|Steady Eddie/)).toBeNull();
   });
 
   it("shows the error copy on fetch failure", async () => {

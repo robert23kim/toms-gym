@@ -4,6 +4,8 @@ import { Play } from "lucide-react";
 import axios from "axios";
 import { API_URL } from "../../config";
 import type { ChallengeMetric } from "../../lib/types";
+import { steadinessNickname } from "../../lib/plankStats";
+import NicknameBadge from "./NicknameBadge";
 
 interface AttemptRow {
   attempt_id: string;
@@ -13,6 +15,7 @@ interface AttemptRow {
   analysis_status: string | null;
   grade: string | null;
   hold_s: number | null;
+  steadiness: number | null;
 }
 
 interface Props {
@@ -99,8 +102,11 @@ const AttemptHistory: React.FC<Props> = ({ userId, competitionId, metric }) => {
             </span>
             <span className="flex-1 min-w-0 flex items-center gap-2">
               {metric === "time" ? (
-                <span className="font-medium tabular-nums">
-                  {row.hold_s != null ? fmtHold(row.hold_s) : analyzing ? "analyzing…" : "—"}
+                <span className="flex items-center gap-2">
+                  <span className="font-medium tabular-nums">
+                    {row.hold_s != null ? fmtHold(row.hold_s) : analyzing ? "analyzing…" : "—"}
+                  </span>
+                  <NicknameBadge nickname={steadinessNickname(row.steadiness)} />
                 </span>
               ) : (
                 <>

@@ -412,6 +412,8 @@ export interface ChallengeLeaderboardRow {
   best_by_lift: Record<string, number>;
   /** time only; null otherwise. */
   form_score: number | null;
+  /** time only; best attempt's body_line_stdev_deg. null otherwise. */
+  steadiness: number | null;
   /** id of the score-setting attempt; null when the athlete has no qualifying attempt. */
   attempt_id: string | null;
   clip_url: string | null;
