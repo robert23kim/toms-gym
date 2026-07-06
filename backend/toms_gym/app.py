@@ -170,6 +170,36 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"Ticket migration note: {e}")
 
+        # Add is_test flag to User + backfill bot/e2e accounts (migration 013)
+        # Excludes flagged users from public leaderboards / Top Lifts. Golf guest
+        # users (*@guest.tomsgym.local) are real people and are never flagged.
+        try:
+            session.execute(sqlalchemy.text("""
+                ALTER TABLE "User"
+                    ADD COLUMN IF NOT EXISTS is_test BOOLEAN NOT NULL DEFAULT false
+            """))
+            session.execute(sqlalchemy.text("""
+                UPDATE "User"
+                SET is_test = true
+                WHERE is_test = false
+                  AND email NOT LIKE '%@guest.tomsgym.local'
+                  AND (
+                        name LIKE 'e2e-lift-%'
+                     OR name = 'T30G Upload Bot'
+                     OR email LIKE 'e2e-lift-%'
+                     OR email LIKE '%@e2e.tomsgym.local'
+                  )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_user_is_test
+                    ON "User"(is_test) WHERE is_test = true
+            """))
+            session.commit()
+            logging.info("User is_test migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"User is_test migration note: {e}")
+
         session.close()
     except Exception as e:
         logging.warning(f"Startup migration skipped: {e}")

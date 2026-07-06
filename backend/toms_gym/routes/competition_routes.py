@@ -312,6 +312,7 @@ def get_competition_participants(competition_id):
                 JOIN "User" u ON uc.user_id = u.id
                 LEFT JOIN "Attempt" a ON uc.id = a.user_competition_id
                 WHERE uc.competition_id = :competition_id
+                  AND COALESCE(u.is_test, false) = false
                 GROUP BY u.id, u.name, uc.weight_class
             """),
             {"competition_id": competition_id}
@@ -412,6 +413,7 @@ def get_competition_leaderboard(competition_id):
                        ON a.user_competition_id = uc.id AND a.status = 'completed'
                 LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
                 WHERE uc.competition_id = :id
+                  AND COALESCE(u.is_test, false) = false
                 ORDER BY u.id, a.created_at
             """),
             {"id": competition_id}
@@ -519,7 +521,9 @@ def get_competition_lifts(competition_id):
                        a.video_url, a.created_at
                 FROM "Attempt" a
                 JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                JOIN "User" u ON uc.user_id = u.id
                 WHERE uc.competition_id = :competition_id
+                  AND COALESCE(u.is_test, false) = false
             """),
             {"competition_id": competition_id}
         )
