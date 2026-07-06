@@ -115,7 +115,7 @@ const WeeklyLifts: React.FC = () => {
         <div className="flex flex-col justify-center items-center h-[60vh]">
           <p className="text-muted-foreground mb-4">No user profile found</p>
           <button
-            onClick={() => navigate('/upload')}
+            onClick={() => navigate('/lift/upload')}
             className="px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90"
           >
             Upload a Video to Create Profile
