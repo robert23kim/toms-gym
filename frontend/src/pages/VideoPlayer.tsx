@@ -467,7 +467,16 @@ const VideoPlayer: React.FC = () => {
                     {/* Title + metadata */}
                     <div className="bg-card rounded-lg shadow-lg p-6">
                       <div className="flex items-start justify-between gap-3">
-                        <h1 className="text-2xl font-bold mb-2">{videoData.participant_name}'s {videoData.lift_type}</h1>
+                        <h1 className="text-2xl font-bold mb-2">
+                          <Link
+                            to={`/profile/${participantId}`}
+                            className="hover:underline"
+                            title={`View ${videoData.participant_name}'s profile`}
+                          >
+                            {videoData.participant_name}
+                          </Link>
+                          's {videoData.lift_type}
+                        </h1>
                         <button
                           onClick={handleShare}
                           disabled={isCreatingShortLink}
