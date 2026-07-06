@@ -127,3 +127,64 @@
 @media (prefers-reduced-motion: reduce) {
   .ambient-glow-1, .ambient-glow-2, .ambient-glow-3 { animation: none; }
 }
+
+/* Quiet-gym demo loop (DemoLoop.tsx) — 12s cycle: plank 0-4s, bowl 4-8s, golf 8-12s */
+.demo-scene { opacity: 0; animation: demo-scene-cycle 12s infinite; }
+.demo-scene-bowl { animation-delay: 4s; }
+.demo-scene-golf { animation-delay: 8s; }
+@keyframes demo-scene-cycle {
+  0% { opacity: 0; } 4% { opacity: 1; } 32% { opacity: 1; } 36% { opacity: 0; } 100% { opacity: 0; }
+}
+.demo-plank-bob { animation: demo-plank-bob 3s ease-in-out infinite; }
+@keyframes demo-plank-bob {
+  0%, 100% { transform: translateY(0); } 50% { transform: translateY(2px); }
+}
+.demo-timer { opacity: 0; animation: 12s infinite; }
+.demo-timer-1 { animation-name: demo-timer-1; }
+.demo-timer-2 { animation-name: demo-timer-2; }
+.demo-timer-3 { animation-name: demo-timer-3; }
+@keyframes demo-timer-1 { 0% { opacity: 1; } 11% { opacity: 1; } 12%, 100% { opacity: 0; } }
+@keyframes demo-timer-2 { 0%, 11% { opacity: 0; } 12%, 22% { opacity: 1; } 23%, 100% { opacity: 0; } }
+@keyframes demo-timer-3 { 0%, 22% { opacity: 0; } 23%, 32% { opacity: 1; } 36%, 100% { opacity: 0; } }
+.demo-pill-plank { opacity: 0; animation: demo-pill-plank 12s infinite; }
+@keyframes demo-pill-plank {
+  0%, 14% { opacity: 0; transform: translateY(4px); }
+  17%, 32% { opacity: 1; transform: translateY(0); }
+  36%, 100% { opacity: 0; }
+}
+.demo-trace { stroke-dasharray: 150; stroke-dashoffset: 150; animation: demo-trace 12s infinite; }
+@keyframes demo-trace {
+  0%, 38% { stroke-dashoffset: 150; }
+  56% { stroke-dashoffset: 0; }
+  66%, 100% { stroke-dashoffset: 0; }
+}
+.demo-pill-bowl { opacity: 0; animation: demo-pill-bowl 12s infinite; }
+@keyframes demo-pill-bowl {
+  0%, 57% { opacity: 0; transform: translateY(4px); }
+  60%, 65% { opacity: 1; transform: translateY(0); }
+  69%, 100% { opacity: 0; }
+}
+.demo-scanline { animation: demo-scan 12s infinite; }
+@keyframes demo-scan {
+  0%, 69% { transform: translateX(0); }
+  86%, 100% { transform: translateX(380px); }
+}
+.demo-pill-golf { opacity: 0; animation: demo-pill-golf 12s infinite; }
+@keyframes demo-pill-golf {
+  0%, 87% { opacity: 0; transform: translateY(4px); }
+  90%, 98% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; }
+}
+.demo-dot { animation: demo-dot-cycle 12s infinite; }
+.demo-dot:nth-child(2) { animation-delay: 4s; }
+.demo-dot:nth-child(3) { animation-delay: 8s; }
+@keyframes demo-dot-cycle {
+  0%, 4% { background: hsl(var(--accent)); } 32% { background: hsl(var(--accent)); }
+  36%, 100% { background: hsl(var(--secondary)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .demo-scene, .demo-plank-bob, .demo-timer, .demo-pill-plank, .demo-trace,
+  .demo-pill-bowl, .demo-scanline, .demo-pill-golf, .demo-dot { animation: none; }
+  .demo-scene-plank { opacity: 1; }
+  .demo-pill-plank, .demo-timer-3 { opacity: 1; }
+}
