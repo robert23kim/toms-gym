@@ -7,7 +7,8 @@ from toms_gym.services.challenge_leaderboard import rank_challenge
 
 
 def _plank(attempt_id, held_s, created_at, *, status="completed",
-           form_score=None, video_url=None, annotated_video_url=None):
+           form_score=None, video_url=None, annotated_video_url=None,
+           steadiness=None):
     return {
         "attempt_id": attempt_id,
         "lift_type": "Plank",
@@ -18,6 +19,7 @@ def _plank(attempt_id, held_s, created_at, *, status="completed",
         "annotated_video_url": annotated_video_url,
         "held_s": held_s,
         "form_score": form_score,
+        "steadiness": steadiness,
     }
 
 
@@ -274,3 +276,25 @@ def test_unknown_metric_raises():
     import pytest
     with pytest.raises(ValueError):
         rank_challenge([], metric="bogus")
+
+
+def test_time_row_carries_best_attempt_steadiness():
+    participants = [{
+        "user_id": "u1", "name": "Ann", "weight_class": None, "gender": None,
+        "attempts": [
+            _plank("a1", 30.0, "2026-07-01", form_score=0.9, steadiness=1.5),
+            _plank("a2", 60.0, "2026-07-02", form_score=0.8, steadiness=3.2),
+        ],
+    }]
+    rows = rank_challenge(participants, metric="time")
+    # best attempt is a2 (longer hold) -> its steadiness carries through
+    assert rows[0]["steadiness"] == 3.2
+
+
+def test_time_zero_score_row_has_null_steadiness():
+    participants = [{
+        "user_id": "u1", "name": "Ann", "weight_class": None, "gender": None,
+        "attempts": [],
+    }]
+    rows = rank_challenge(participants, metric="time")
+    assert rows[0]["steadiness"] is None

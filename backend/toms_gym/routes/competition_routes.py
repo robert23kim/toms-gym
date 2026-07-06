@@ -413,7 +413,8 @@ def get_competition_leaderboard(competition_id):
                        a.created_at, a.video_url,
                        lr.annotated_video_url,
                        lr.report->>'total_in_plank_s'  AS held_s,
-                       lr.report->>'overall_form_score' AS form_score
+                       lr.report->>'overall_form_score' AS form_score,
+                       lr.report->>'body_line_stdev_deg' AS steadiness
                 FROM "UserCompetition" uc
                 JOIN "User" u ON uc.user_id = u.id
                 LEFT JOIN "Attempt" a
@@ -462,6 +463,7 @@ def get_competition_leaderboard(competition_id):
                     "annotated_video_url": row['annotated_video_url'],
                     "held_s": _to_float(row['held_s']),
                     "form_score": _to_float(row['form_score']),
+                    "steadiness": _to_float(row['steadiness']),
                 })
 
         # Metric selection: declared plank-only -> time; other declared -> weight;
