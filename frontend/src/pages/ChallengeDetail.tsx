@@ -17,6 +17,7 @@ import StatusPill from "../components/challenge/StatusPill";
 import Podium from "../components/challenge/Podium";
 import LeaderboardRow from "../components/challenge/LeaderboardRow";
 import YouRow from "../components/challenge/YouRow";
+import AttemptHistory from "../components/challenge/AttemptHistory";
 import MomentumLine from "../components/challenge/MomentumLine";
 import { viewerProcessingAttempts } from "../components/challenge/processing";
 import StandingCard from "../components/challenge/StandingCard";
@@ -75,6 +76,8 @@ const ChallengeDetail: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboard | null>(null);
   const [leaderboardError, setLeaderboardError] = useState<string | null>(null);
   const viewerId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  // Which leaderboard row's attempt history is open (single-open accordion).
+  const [expandedAttemptsUserId, setExpandedAttemptsUserId] = useState<string | null>(null);
 
   // Upload form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -769,25 +772,45 @@ const ChallengeDetail: React.FC = () => {
                         <div>{scoreColumnLabel(metric)}</div>
                         <div className="text-right">Clip</div>
                       </div>
-                      {tableRows.map((row) =>
-                        viewerEntered && String(row.user_id) === String(viewerId) ? (
-                          <YouRow
-                            key={row.user_id}
-                            entered
-                            row={row}
-                            metric={metric}
-                            clipHref={resolveClipHref(row)}
-                            subtitle={standing?.goalSubtitle}
-                          />
-                        ) : (
-                          <LeaderboardRow
-                            key={row.user_id}
-                            row={row}
-                            metric={metric}
-                            clipHref={resolveClipHref(row)}
-                          />
-                        )
-                      )}
+                      {tableRows.map((row) => {
+                        // Single-open accordion: rows with >1 attempt expand
+                        // into that athlete's attempt history (lazy fetch).
+                        const expanded = expandedAttemptsUserId === String(row.user_id);
+                        const toggle = () =>
+                          setExpandedAttemptsUserId(expanded ? null : String(row.user_id));
+                        return (
+                          <React.Fragment key={row.user_id}>
+                            {viewerEntered && String(row.user_id) === String(viewerId) ? (
+                              <YouRow
+                                entered
+                                row={row}
+                                metric={metric}
+                                clipHref={resolveClipHref(row)}
+                                subtitle={standing?.goalSubtitle}
+                                attemptCount={row.attempt_count}
+                                expanded={expanded}
+                                onToggleAttempts={toggle}
+                              />
+                            ) : (
+                              <LeaderboardRow
+                                row={row}
+                                metric={metric}
+                                clipHref={resolveClipHref(row)}
+                                attemptCount={row.attempt_count}
+                                expanded={expanded}
+                                onToggleAttempts={toggle}
+                              />
+                            )}
+                            {expanded && (
+                              <AttemptHistory
+                                userId={String(row.user_id)}
+                                competitionId={id!}
+                                metric={metric}
+                              />
+                            )}
+                          </React.Fragment>
+                        );
+                      })}
                       {!viewerEntered && <YouRow entered={false} onUpload={openUpload} />}
                     </div>
                   </div>

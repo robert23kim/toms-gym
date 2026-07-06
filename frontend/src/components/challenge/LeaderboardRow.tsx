@@ -10,6 +10,10 @@ interface LeaderboardRowProps {
   metric: ChallengeMetric;
   /** Clip route for this entrant's best attempt, or null if not resolvable. */
   clipHref: string | null;
+  /** Attempt-history accordion (optional): chip shows at attemptCount > 1. */
+  attemptCount?: number;
+  expanded?: boolean;
+  onToggleAttempts?: () => void;
 }
 
 function formatDate(date: string | null): string {
@@ -27,8 +31,16 @@ function formatDate(date: string | null): string {
  * (#1b). One clip element is grid-placed into the CLIP column on desktop so we
  * never render two clip links.
  */
-const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ row, metric, clipHref }) => {
+const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
+  row,
+  metric,
+  clipHref,
+  attemptCount,
+  expanded = false,
+  onToggleAttempts,
+}) => {
   const dimmed = row.score <= 0;
+  const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
 
   const thumb = (
     <div className="relative h-11 w-11 flex-none overflow-hidden rounded-lg bg-gradient-to-br from-[#2a3340] to-[#171b22] lg:h-[30px] lg:w-[30px]">
@@ -87,6 +99,20 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({ row, metric, clipHref }
             {dimmed ? "No entry yet" : formatDate(row.date)}
           </div>
         </div>
+        {showAttemptsChip && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleAttempts!();
+            }}
+            aria-expanded={expanded}
+            className="ml-2 shrink-0 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            {attemptCount} attempts {expanded ? "▴" : "▾"}
+          </button>
+        )}
       </div>
       <span className="font-bold tracking-tight tabular-nums text-base lg:col-start-3 lg:row-start-1 lg:text-[17px]">
         {dimmed ? (

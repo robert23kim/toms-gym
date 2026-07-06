@@ -17,6 +17,10 @@ type YouRowProps =
       clipHref: string | null;
       /** Live goal subtitle, e.g. "3.9s to reach #6" (motivation layer). */
       subtitle?: string | null;
+      /** Attempt-history accordion (optional): chip shows at attemptCount > 1. */
+      attemptCount?: number;
+      expanded?: boolean;
+      onToggleAttempts?: () => void;
     };
 
 const HIGHLIGHT =
@@ -65,7 +69,8 @@ const YouRow: React.FC<YouRowProps> = (props) => {
     );
   }
 
-  const { row, metric, clipHref, subtitle } = props;
+  const { row, metric, clipHref, subtitle, attemptCount, expanded, onToggleAttempts } = props;
+  const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
 
   const thumb = (
     <div className="relative h-11 w-11 flex-none overflow-hidden rounded-lg bg-gradient-to-br from-[#2a3340] to-[#171b22] lg:h-[30px] lg:w-[30px]">
@@ -122,6 +127,20 @@ const YouRow: React.FC<YouRowProps> = (props) => {
             </div>
           )}
         </div>
+        {showAttemptsChip && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onToggleAttempts!();
+            }}
+            aria-expanded={expanded}
+            className="ml-2 shrink-0 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+          >
+            {attemptCount} attempts {expanded ? "▴" : "▾"}
+          </button>
+        )}
       </div>
       <span className="font-bold tracking-tight tabular-nums text-base lg:col-start-3 lg:row-start-1 lg:text-[17px]">
         {formatScoreValue(row.score, metric)}

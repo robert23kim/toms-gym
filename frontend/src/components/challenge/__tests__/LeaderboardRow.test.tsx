@@ -90,3 +90,47 @@ describe("LeaderboardRow", () => {
     expect(links[0].className).toContain("lg:col-start-4");
   });
 });
+
+describe("LeaderboardRow attempts chip", () => {
+  const { fireEvent } = require("@testing-library/react");
+
+  it("renders the chip when attemptCount > 1 and a handler is provided", () => {
+    const onToggle = jest.fn();
+    render(
+      <MemoryRouter>
+        <LeaderboardRow
+          row={makeRow({ attempt_count: 3 })}
+          metric="time"
+          clipHref={null}
+          attemptCount={3}
+          expanded={false}
+          onToggleAttempts={onToggle}
+        />
+      </MemoryRouter>,
+    );
+    const chip = screen.getByRole("button", { name: /3 attempts/i });
+    fireEvent.click(chip);
+    expect(onToggle).toHaveBeenCalledTimes(1);
+  });
+
+  it("renders no chip at a single attempt or without a handler", () => {
+    render(
+      <MemoryRouter>
+        <LeaderboardRow
+          row={makeRow({ attempt_count: 1 })}
+          metric="time"
+          clipHref={null}
+          attemptCount={1}
+          onToggleAttempts={() => {}}
+        />
+      </MemoryRouter>,
+    );
+    expect(screen.queryByRole("button", { name: /attempt/i })).toBeNull();
+    render(
+      <MemoryRouter>
+        <LeaderboardRow row={makeRow({ attempt_count: 3 })} metric="time" clipHref={null} />
+      </MemoryRouter>,
+    );
+    expect(screen.queryByRole("button", { name: /attempt/i })).toBeNull();
+  });
+});
