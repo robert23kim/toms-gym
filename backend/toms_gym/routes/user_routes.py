@@ -109,11 +109,18 @@ def get_user_lifts(user_id):
     except ValueError:
         return jsonify({"error": "limit/offset must be integers"}), 400
 
+    # Optional challenge scoping (expandable leaderboard attempt history).
+    competition_id = request.args.get('competition_id') or None
+    comp_clause = "AND uc.competition_id = :competition_id" if competition_id else ""
+    params = {"user_id": user_id}
+    if competition_id:
+        params["competition_id"] = competition_id
+
     session = None
     try:
         session = get_db_connection()
         rows = session.execute(
-            sqlalchemy.text("""
+            sqlalchemy.text(f"""
                 SELECT a.id AS attempt_id, a.lift_type, a.weight_kg AS weight,
                        a.video_url, a.created_at, a.status,
                        uc.competition_id, c.name AS competition_name,
@@ -127,20 +134,22 @@ def get_user_lifts(user_id):
                 JOIN "Competition" c ON uc.competition_id = c.id
                 LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
                 WHERE uc.user_id = :user_id AND a.video_url IS NOT NULL
+                {comp_clause}
                 ORDER BY a.created_at DESC
                 LIMIT :limit OFFSET :offset
             """),
-            {"user_id": user_id, "limit": limit, "offset": offset}
+            {**params, "limit": limit, "offset": offset}
         ).fetchall()
 
         total = session.execute(
-            sqlalchemy.text("""
+            sqlalchemy.text(f"""
                 SELECT COUNT(*)
                 FROM "Attempt" a
                 JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
                 WHERE uc.user_id = :user_id AND a.video_url IS NOT NULL
+                {comp_clause}
             """),
-            {"user_id": user_id}
+            params
         ).scalar() or 0
 
         lifts = [shape_lift_row(row._mapping) for row in rows]
