@@ -37,6 +37,11 @@ export interface Personality {
   blurb: string;
 }
 
+export interface Nickname {
+  name: string;
+  emoji: string;
+}
+
 const WOBBLE_DELTA_DEG = 2.5;
 const WOBBLE_MERGE_GAP_S = 2;
 const DECAY_FORM_THRESHOLD = 0.7;
@@ -90,6 +95,64 @@ export function steadinessScore(
   const label =
     score >= 85 ? "Rock Solid" : score >= 70 ? "Steady" : score >= 50 ? "Wobbly" : "Jelly Mode";
   return { score, label };
+}
+
+const STEADINESS_NICKNAMES: Record<string, Nickname> = {
+  "Rock Solid": { name: "Statue", emoji: "🗿" },
+  Steady: { name: "Steady Eddie", emoji: "💪" },
+  Wobbly: { name: "The Wobbler", emoji: "🌊" },
+  "Jelly Mode": { name: "Human Jellyfish", emoji: "🪼" },
+};
+
+/** Funny nickname from a single steadiness stdev; null when no steadiness. */
+export function steadinessNickname(stdevDeg?: number | null): Nickname | null {
+  const score = steadinessScore(stdevDeg);
+  return score ? STEADINESS_NICKNAMES[score.label] : null;
+}
+
+/** Consecutive-day gaps (days) from ISO dates; nulls dropped, sorted internally. */
+function uploadGaps(uploadDates: (string | null)[]): number[] {
+  const days = uploadDates
+    .filter((d): d is string => !!d)
+    .map((d) => Date.parse(`${d}T00:00:00`))
+    .filter((ms) => !Number.isNaN(ms))
+    .sort((a, b) => a - b)
+    .map((ms) => ms / 86_400_000);
+  const gaps: number[] = [];
+  for (let i = 1; i < days.length; i++) gaps.push(days[i] - days[i - 1]);
+  return gaps;
+}
+
+function median(xs: number[]): number {
+  const s = [...xs].sort((a, b) => a - b);
+  const mid = Math.floor(s.length / 2);
+  return s.length % 2 ? s[mid] : (s[mid - 1] + s[mid]) / 2;
+}
+
+/**
+ * Athlete-level nickname: steadiness base + a volume/cadence modifier.
+ * One-Shot (1 attempt) > Relentless (≥4 attempts, median gap ≤1d) >
+ * The Elusive (≥2 attempts, a ≥14d gap) > no modifier. Null when no steadiness.
+ */
+export function athleteNickname(input: {
+  stdevDeg?: number | null;
+  attemptCount: number;
+  uploadDates: (string | null)[];
+}): Nickname | null {
+  const base = steadinessNickname(input.stdevDeg);
+  if (!base) return null;
+
+  const gaps = uploadGaps(input.uploadDates);
+  let modifier: string | null = null;
+  if (input.attemptCount === 1) {
+    modifier = "One-Shot";
+  } else if (input.attemptCount >= 4 && gaps.length > 0 && median(gaps) <= 1) {
+    modifier = "Relentless";
+  } else if (input.attemptCount >= 2 && gaps.length > 0 && Math.max(...gaps) >= 14) {
+    modifier = "The Elusive";
+  }
+
+  return modifier ? { name: `${modifier} ${base.name}`, emoji: base.emoji } : base;
 }
 
 /**

@@ -5,6 +5,8 @@ import {
   decayPoint,
   milestones,
   personality,
+  steadinessNickname,
+  athleteNickname,
 } from "../plankStats";
 import { PlankPerSecond } from "../types";
 
@@ -182,5 +184,95 @@ describe("personality", () => {
     // mild stdev (no statue), no wobbles, flat form (no melter/phoenix)
     const p = personality(flat(60), 2.5);
     expect(p?.key).toBe("eddie");
+  });
+});
+
+describe("steadinessNickname", () => {
+  // steadinessScore = clamp(100 - stdev*10). stdev 1 -> 90 (Statue),
+  // 2.5 -> 75 (Steady Eddie), 4.5 -> 55 (Wobbler), 6 -> 40 (Jelly).
+  it("returns Statue for rock-solid steadiness (score >= 85)", () => {
+    expect(steadinessNickname(1)).toEqual({ name: "Statue", emoji: "🗿" });
+  });
+  it("returns Steady Eddie for steady (score >= 70)", () => {
+    expect(steadinessNickname(2.5)).toEqual({ name: "Steady Eddie", emoji: "💪" });
+  });
+  it("returns The Wobbler for wobbly (score >= 50)", () => {
+    expect(steadinessNickname(4.5)).toEqual({ name: "The Wobbler", emoji: "🌊" });
+  });
+  it("returns Human Jellyfish for jelly (score < 50)", () => {
+    expect(steadinessNickname(6)).toEqual({ name: "Human Jellyfish", emoji: "🪼" });
+  });
+  it("pins band boundaries at scores 85, 70 and 50", () => {
+    expect(steadinessNickname(1.5)).toEqual({ name: "Statue", emoji: "🗿" }); // 85
+    expect(steadinessNickname(3)).toEqual({ name: "Steady Eddie", emoji: "💪" }); // 70
+    expect(steadinessNickname(5)).toEqual({ name: "The Wobbler", emoji: "🌊" }); // 50
+  });
+  it("returns null for missing/NaN stdev", () => {
+    expect(steadinessNickname(null)).toBeNull();
+    expect(steadinessNickname(undefined)).toBeNull();
+    expect(steadinessNickname(NaN)).toBeNull();
+  });
+});
+
+describe("athleteNickname", () => {
+  const solid = 1; // -> Statue base
+  const jelly = 6; // -> Human Jellyfish base
+
+  it("returns null when there is no steadiness base", () => {
+    expect(
+      athleteNickname({ stdevDeg: null, attemptCount: 3, uploadDates: [] })
+    ).toBeNull();
+  });
+
+  it("no modifier for normal cadence", () => {
+    expect(
+      athleteNickname({
+        stdevDeg: solid,
+        attemptCount: 3,
+        uploadDates: ["2026-07-01", "2026-07-04", "2026-07-08"],
+      })
+    ).toEqual({ name: "Statue", emoji: "🗿" });
+  });
+
+  it("One-Shot for a single attempt", () => {
+    expect(
+      athleteNickname({ stdevDeg: solid, attemptCount: 1, uploadDates: ["2026-07-01"] })
+    ).toEqual({ name: "One-Shot Statue", emoji: "🗿" });
+  });
+
+  it("Relentless for >=4 attempts with median gap <= 1 day", () => {
+    expect(
+      athleteNickname({
+        stdevDeg: jelly,
+        attemptCount: 4,
+        uploadDates: ["2026-07-01", "2026-07-01", "2026-07-02", "2026-07-02"],
+      })
+    ).toEqual({ name: "Relentless Human Jellyfish", emoji: "🪼" });
+  });
+
+  it("The Elusive for >=2 attempts with a >=14 day gap", () => {
+    expect(
+      athleteNickname({
+        stdevDeg: solid,
+        attemptCount: 2,
+        uploadDates: ["2026-06-01", "2026-07-01"],
+      })
+    ).toEqual({ name: "The Elusive Statue", emoji: "🗿" });
+  });
+
+  it("One-Shot wins over other rules for a single attempt", () => {
+    expect(
+      athleteNickname({ stdevDeg: jelly, attemptCount: 1, uploadDates: ["2026-07-01"] })
+    ).toEqual({ name: "One-Shot Human Jellyfish", emoji: "🪼" });
+  });
+
+  it("ignores null dates and unordered input; <2 valid dates -> no gap rules", () => {
+    expect(
+      athleteNickname({
+        stdevDeg: solid,
+        attemptCount: 5,
+        uploadDates: [null, "2026-07-01", null],
+      })
+    ).toEqual({ name: "Statue", emoji: "🗿" });
   });
 });
