@@ -200,6 +200,35 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"User is_test migration note: {e}")
 
+        # Create MagicLinkToken table (migration 014) — one-time passwordless
+        # sign-in links. Only the token hash is stored; single-use is enforced
+        # by an atomic UPDATE in the consume route.
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "MagicLinkToken" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    token_hash TEXT NOT NULL UNIQUE,
+                    user_id UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+                    email TEXT NOT NULL,
+                    expires_at TIMESTAMPTZ NOT NULL,
+                    used_at TIMESTAMPTZ,
+                    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_magic_link_token_hash
+                    ON "MagicLinkToken" (token_hash)
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_magic_link_email_created
+                    ON "MagicLinkToken" (email, created_at DESC)
+            """))
+            session.commit()
+            logging.info("MagicLinkToken table migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"MagicLinkToken migration note: {e}")
+
         session.close()
     except Exception as e:
         logging.warning(f"Startup migration skipped: {e}")

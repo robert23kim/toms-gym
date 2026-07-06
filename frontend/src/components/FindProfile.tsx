@@ -139,6 +139,21 @@ const FindProfile: React.FC<FindProfileProps> = ({ onClose }) => {
             )}
           </button>
         </form>
+
+        {/* T15 — recover on a fresh device via an emailed one-time link */}
+        <p className="text-center text-sm text-muted-foreground mt-4">
+          On a new device?{' '}
+          <button
+            type="button"
+            onClick={() => {
+              onClose();
+              navigate('/signin');
+            }}
+            className="text-primary hover:underline font-medium"
+          >
+            Email me a sign-in link
+          </button>
+        </p>
       </motion.div>
     </motion.div>
   );
