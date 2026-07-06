@@ -152,6 +152,16 @@ Expandable per-athlete attempt history on challenge leaderboards. Spec: `docs/su
 - **Chips:** `LeaderboardRow` + `YouRow` (entered) accept optional `{attemptCount, expanded, onToggleAttempts}` and render an `N attempts ▾` chip at count > 1. **Podium members** (top 3 — usually the multi-attempt users) get a chips strip *below* the podium instead (podium cards stay pure visuals). `ChallengeDetail` holds a single-open accordion (`expandedAttemptsUserId`).
 - Suite at ship: 50 suites / 312 frontend tests; backend gate 138.
 
+## Plank Steadiness Nicknames (shipped 2026-07-06)
+
+Funny steadiness-based nicknames on the plank challenge. Spec: `docs/superpowers/specs/2026-07-06-plank-steadiness-nicknames-design.md`; plan: `docs/superpowers/plans/2026-07-06-plank-steadiness-nicknames.md`. Derived from the plank report's `body_line_stdev_deg` (one number — NOT `per_second`, which never ships on list rows); the video-page `personality()` archetypes are untouched.
+
+- **`lib/plankStats.ts`** — two pure fixture-tested helpers. `steadinessNickname(stdev)` → per-attempt base name via the existing `steadinessScore` bands: ≥85 🗿 Statue / ≥70 💪 Steady Eddie / ≥50 🌊 The Wobbler / else 🪼 Human Jellyfish (null stdev → null → no badge). `athleteNickname({stdevDeg, attemptCount, uploadDates})` → base + volume/cadence modifier, first match wins: **One-Shot** (1 attempt) > **Relentless** (≥4 attempts, median upload gap ≤1d) > **The Elusive** (≥2 attempts, a ≥14d gap) > none. Cadence gaps computed from `uploadDates` (nulls dropped, sorted internally).
+- **Backend:** one new surfaced field, `body_line_stdev_deg AS steadiness`, added to the leaderboard query (`competition_routes.py` → `_rank_time` carries the **best attempt's** value onto the row) and the lift-history query (`user_routes.py` + `shape_lift_row`). Weight boards ignore it. `attempt_count` + `history[].date` (cadence inputs) were already on the leaderboard row.
+- **`components/challenge/NicknameBadge.tsx`** — muted pill; renders nothing when nickname is null. Placements (time/plank challenges only): per-attempt in `AttemptHistory` (`steadinessNickname`), athlete-level on `LeaderboardRow`/`YouRow` and podium chips in `ChallengeDetail` (`athleteNickname`). Podium chips strip now shows for any top-3 with a nickname OR >1 attempt.
+- **Gotcha fixed in prod:** `ChallengeDetail`'s `rowNickname` first read `metric`, which is block-scoped (destructured from `leaderboard` inside the render IIFE) → runtime `metric is not defined`; tsc did NOT catch it. Reads component-scoped `leaderboard?.metric` instead. This class of scope bug is only caught by rendering the page — verify challenge-page changes in a browser, not just tsc.
+- Suite at ship: 51 suites / 332 frontend tests; backend gate 142.
+
 ## Golf Feature
 
 > **Phase B schema migration landed 2026-04-18** (branch `golf/fairway-phase-b`, migration `008_fairway_schema.sql`). The flat `GolfRound` / `GolfHoleScore` / `GolfHandicap` tables were dropped and replaced with the normalized `Course` / `Tee` / `Round` / `HoleScore` / `HandicapSnapshot` model below. PRs or docs written before that date refer to the old shape — see the Field Rename Map at the end of this section.
