@@ -38,11 +38,12 @@ const About = () => {
                 1
               </div>
               <div>
-                <h3 className="text-xl font-medium mb-2">Registration</h3>
+                <h3 className="text-xl font-medium mb-2">No signup — just your email</h3>
                 <p className="text-muted-foreground">
-                  Browse through our available competitions and register for those that match your
-                  lifting style, weight class, and schedule. Each competition has specific rules and
-                  requirements, so make sure to read them carefully.
+                  There's no account or password to create. Browse our available competitions, pick
+                  the ones that match your lifting style, weight class, and schedule, and enter your
+                  email to take part. Each competition has specific rules and requirements, so make
+                  sure to read them carefully.
                 </p>
               </div>
             </div>
@@ -66,11 +67,11 @@ const About = () => {
                 3
               </div>
               <div>
-                <h3 className="text-xl font-medium mb-2">Judging and Results</h3>
+                <h3 className="text-xl font-medium mb-2">Analysis and Results</h3>
                 <p className="text-muted-foreground">
-                  Our certified judges review all submitted lifts to ensure they meet competition
-                  standards. Results are updated in real-time, allowing you to track your standing
-                  against other competitors throughout the event.
+                  Every submitted lift is run through our automated form analysis, which produces an
+                  annotated video and per-rep breakdown. Results and leaderboards update as
+                  submissions come in, so you can track your standing throughout the event.
                 </p>
               </div>
             </div>
