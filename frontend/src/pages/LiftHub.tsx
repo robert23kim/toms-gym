@@ -11,7 +11,7 @@ const LiftHub: React.FC = () => {
       subtitle="Upload a lifting video and get AI-graded, annotated feedback on every rep."
       icon={<Dumbbell className="w-8 h-8" />}
       primary={{
-        to: "/upload",
+        to: "/lift/upload",
         label: "Upload a lift",
         description: "Squat, bench, deadlift, curl — get per-rep grades in minutes.",
         icon: <Upload className="w-7 h-7" />,

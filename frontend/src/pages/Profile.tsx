@@ -303,7 +303,7 @@ const Profile = () => {
                 </span>
               )}
             </div>
-            <Link to="/upload" className="text-accent hover:underline text-sm">
+            <Link to="/lift/upload" className="text-accent hover:underline text-sm">
               Upload new video →
             </Link>
           </div>
@@ -323,7 +323,7 @@ const Profile = () => {
             <div className="text-center py-8">
               <p className="text-muted-foreground mb-4">No videos uploaded yet</p>
               <Link
-                to="/upload"
+                to="/lift/upload"
                 className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
               >
                 <Play size={18} />

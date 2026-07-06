@@ -10,6 +10,8 @@ const ChallengeDetail = lazy(() => import("../pages/ChallengeDetail"));
 const ChallengeVideos = lazy(() => import("../pages/ChallengeVideos"));
 const VideoPlayer = lazy(() => import("../pages/VideoPlayer"));
 const UploadVideo = lazy(() => import("../pages/UploadVideo"));
+// T7 unified upload chooser — /upload now asks "what are you analyzing?"
+const UploadChooser = lazy(() => import("../pages/UploadChooser"));
 const NotFound = lazy(() => import("../pages/NotFound"));
 const Leaderboard = lazy(() => import("../pages/Leaderboard"));
 const Store = lazy(() => import("../pages/Store"));
@@ -47,7 +49,11 @@ export const routes: RouteObject[] = [
   { path: "/challenges/:id", element: <ChallengeDetail /> },
   { path: "/challenges/:id/videos", element: <ChallengeVideos /> },
   { path: "/challenges/:id/upload", element: <UploadVideo /> },
-  { path: "/upload", element: <UploadVideo /> },
+  // T7 unified upload chooser: /upload is the sport chooser; lifting upload
+  // moved to /lift/upload. /upload/lift kept as a redirect for old deep links.
+  { path: "/upload", element: <UploadChooser /> },
+  { path: "/lift/upload", element: <UploadVideo /> },
+  { path: "/upload/lift", element: <Navigate to="/lift/upload" replace /> },
   {
     path: "/challenges/:id/participants/:participantId/video/:videoId",
     element: <VideoPlayer />,
