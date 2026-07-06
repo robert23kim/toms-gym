@@ -559,7 +559,7 @@ const ChallengeDetail: React.FC = () => {
 
   // Steadiness nickname for a podium athlete (time/plank challenges only).
   const rowNickname = (r: ChallengeLeaderboardRow) =>
-    metric === "time"
+    leaderboard?.metric === "time"
       ? athleteNickname({
           stdevDeg: r.steadiness,
           attemptCount: r.attempt_count,
