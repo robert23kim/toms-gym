@@ -17,6 +17,7 @@ import Podium from "../components/challenge/Podium";
 import LeaderboardRow from "../components/challenge/LeaderboardRow";
 import YouRow from "../components/challenge/YouRow";
 import MomentumLine from "../components/challenge/MomentumLine";
+import { viewerProcessingAttempts } from "../components/challenge/processing";
 import StandingCard from "../components/challenge/StandingCard";
 import { scoreColumnLabel } from "../components/challenge/metric";
 import { deriveStanding, ctaLabelFor } from "../lib/standing";
@@ -243,14 +244,16 @@ const ChallengeDetail: React.FC = () => {
     }
   };
 
-  // Fetch lifting analysis results for all videos
+  // Fetch lifting analysis results for all videos. Every status is kept —
+  // in-flight (queued/processing) results drive the "still processing" banner
+  // so a fresh upload doesn't look like it vanished from the leaderboard.
   const fetchLiftingResults = async (videos: VideoData[]) => {
     const results: Record<string, LiftingResult> = {};
     await Promise.all(
       videos.map(async (v) => {
         try {
           const result = await getLiftingResult(v.attempt_id);
-          if (result && result.processing_status === 'completed') {
+          if (result) {
             results[v.attempt_id] = result;
           }
         } catch { /* no result yet */ }
@@ -668,6 +671,21 @@ const ChallengeDetail: React.FC = () => {
               <MomentumLine rows={leaderboard.rows} momentum={leaderboard.momentum} />
             )}
           </div>
+
+          {/* A fresh upload has no leaderboard row until analysis completes —
+              without this banner it looks like the upload vanished. */}
+          {viewerProcessingAttempts(videoData, liftingResults, viewerId).length > 0 && (
+            <div
+              data-testid="processing-banner"
+              className="flex items-center gap-3 rounded-xl border border-[#2f7bf6]/30 bg-[#2f7bf6]/10 p-4 text-sm text-white/85"
+            >
+              <div className="h-4 w-4 shrink-0 animate-spin rounded-full border-b-2 border-[#2f7bf6]" />
+              <p>
+                Your lift is uploaded and being analyzed — it&apos;ll appear on the
+                board when analysis finishes (usually a few minutes).
+              </p>
+            </div>
+          )}
 
           {/* Leaderboard */}
           {(() => {
