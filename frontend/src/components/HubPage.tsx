@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Layout from "./Layout";
+import RowCard from "./RowCard";
 
 export interface HubLink {
   to: string;
@@ -31,18 +32,20 @@ const HubPage: React.FC<HubPageProps> = ({ title, subtitle, icon, primary, secon
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="max-w-2xl mx-auto"
+        className="max-w-2xl mx-auto text-center py-6"
       >
-        <div className="flex items-center gap-3 mb-2">
-          <span className="text-accent">{icon}</span>
+        <div className="flex flex-col items-center gap-2 mb-2">
+          <span className="w-14 h-14 rounded-2xl bg-accent/10 text-accent grid place-items-center">
+            {icon}
+          </span>
           <h1 className="text-3xl font-semibold">{title}</h1>
         </div>
-        <p className="text-muted-foreground mb-8">{subtitle}</p>
+        <p className="text-muted-foreground mb-8 max-w-md mx-auto">{subtitle}</p>
 
         {/* Primary CTA — Upload */}
         <Link
           to={primary.to}
-          className="group flex items-center justify-between w-full p-6 mb-8 rounded-2xl bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 transition-colors"
+          className="group flex items-center justify-between w-full p-6 mb-8 rounded-2xl bg-accent text-accent-foreground shadow-sm hover:bg-accent/90 transition-colors text-left"
         >
           <div className="flex items-center gap-4">
             <span>{primary.icon}</span>
@@ -56,22 +59,15 @@ const HubPage: React.FC<HubPageProps> = ({ title, subtitle, icon, primary, secon
           <ArrowRight className="w-6 h-6 transition-transform group-hover:translate-x-1" />
         </Link>
 
-        {/* Secondary surfaces */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Secondary surfaces — quiet-gym rows */}
+        <div className="flex flex-col gap-2.5">
           {secondary.map((item) => (
-            <Link
+            <RowCard
               key={item.to + item.label}
               to={item.to}
-              className="glass p-5 rounded-xl hover:bg-secondary/40 transition-colors"
-            >
-              <div className="flex items-center gap-3 mb-1">
-                {item.icon && <span className="text-accent">{item.icon}</span>}
-                <p className="font-medium">{item.label}</p>
-              </div>
-              {item.description && (
-                <p className="text-sm text-muted-foreground">{item.description}</p>
-              )}
-            </Link>
+              icon={item.icon}
+              title={item.label}
+            />
           ))}
         </div>
       </motion.div>
