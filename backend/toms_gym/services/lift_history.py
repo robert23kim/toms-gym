@@ -40,4 +40,5 @@ def shape_lift_row(row: Mapping) -> dict:
         "grade": get("grade"),
         "total_reps": _to_int(get("total_reps")),
         "hold_s": _to_float(get("hold_s")),
+        "steadiness": _to_float(get("steadiness")),
     }

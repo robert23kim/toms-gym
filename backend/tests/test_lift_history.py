@@ -67,3 +67,13 @@ def test_bad_numeric_strings_become_none():
     out = shape_lift_row(_base_row(total_reps="garbage", hold_s="nan-ish"))
     assert out["total_reps"] is None
     assert out["hold_s"] is None
+
+
+def test_shape_lift_row_includes_steadiness():
+    out = shape_lift_row(_base_row(report_lift_type="plank", hold_s="42.0", steadiness="1.8"))
+    assert out["steadiness"] == 1.8
+
+
+def test_shape_lift_row_steadiness_null_safe():
+    out = shape_lift_row(_base_row(steadiness=None))
+    assert out["steadiness"] is None

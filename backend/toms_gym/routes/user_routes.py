@@ -128,7 +128,8 @@ def get_user_lifts(user_id):
                        lr.report->>'overall_grade'    AS grade,
                        lr.report->>'lift_type'        AS report_lift_type,
                        lr.report->>'total_reps'       AS total_reps,
-                       lr.report->>'total_in_plank_s' AS hold_s
+                       lr.report->>'total_in_plank_s' AS hold_s,
+                       lr.report->>'body_line_stdev_deg' AS steadiness
                 FROM "Attempt" a
                 JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
                 JOIN "Competition" c ON uc.competition_id = c.id
