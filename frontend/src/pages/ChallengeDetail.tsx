@@ -751,6 +751,47 @@ const ChallengeDetail: React.FC = () => {
 
                 <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
 
+                {/* Podium members' attempt history — the podium cards stay pure
+                    visuals, so multi-attempt athletes get chips below instead. */}
+                {podiumRows.some((r) => r.attempt_count > 1) && (
+                  <div className="mb-6 -mt-2 space-y-2">
+                    <div className="flex flex-wrap justify-center gap-2">
+                      {podiumRows
+                        .filter((r) => r.attempt_count > 1)
+                        .map((r) => {
+                          const expanded = expandedAttemptsUserId === String(r.user_id);
+                          return (
+                            <button
+                              key={r.user_id}
+                              type="button"
+                              aria-expanded={expanded}
+                              onClick={() =>
+                                setExpandedAttemptsUserId(expanded ? null : String(r.user_id))
+                              }
+                              className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
+                            >
+                              {r.name || "Athlete"} · {r.attempt_count} attempts {expanded ? "▴" : "▾"}
+                            </button>
+                          );
+                        })}
+                    </div>
+                    {podiumRows.map((r) =>
+                      expandedAttemptsUserId === String(r.user_id) ? (
+                        <div
+                          key={r.user_id}
+                          className="overflow-hidden rounded-xl border border-white/5"
+                        >
+                          <AttemptHistory
+                            userId={String(r.user_id)}
+                            competitionId={id!}
+                            metric={metric}
+                          />
+                        </div>
+                      ) : null
+                    )}
+                  </div>
+                )}
+
                 {showTable && (
                   <div>
                     <div className="mb-2 flex items-center justify-between px-1 lg:mb-3">
