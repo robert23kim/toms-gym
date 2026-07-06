@@ -2,13 +2,11 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Menu, X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy, CircleDot, Flag } from "lucide-react";
-import FindProfile from "./FindProfile";
 import { useAuth } from "../auth/AuthContext";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isFindProfileOpen, setIsFindProfileOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -98,16 +96,16 @@ const Navbar: React.FC = () => {
       );
     }
 
-    // Not logged in
+    // Not logged in — full-page recovery route (T14)
     return (
       <div className="flex items-center gap-4">
-        <button
-          onClick={() => setIsFindProfileOpen(true)}
+        <Link
+          to="/find-profile"
           className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
         >
           <Search size={18} />
           <span>Find Profile</span>
-        </button>
+        </Link>
       </div>
     );
   };
@@ -227,23 +225,16 @@ const Navbar: React.FC = () => {
                 </button>
               </>
             ) : (
-              <button
-                onClick={() => setIsFindProfileOpen(true)}
+              <Link
+                to="/find-profile"
                 className="w-full flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
               >
                 <Search size={18} />
                 <span>Find Profile</span>
-              </button>
+              </Link>
             )}
           </div>
         </motion.div>
-      )}
-
-      {/* Find Profile Modal */}
-      {isFindProfileOpen && (
-        <FindProfile
-          onClose={() => setIsFindProfileOpen(false)}
-        />
       )}
     </>
   );

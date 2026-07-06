@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, Upload, ChevronDown, ChevronUp, Calendar, MapPin, X, ZoomIn } from "lucide-react";
+import { ArrowLeft, Upload, ChevronDown, ChevronUp, Calendar, MapPin, X, ZoomIn, User } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
@@ -133,13 +133,25 @@ const GolfProfile: React.FC = () => {
           className="min-h-screen bg-background py-12 px-4 sm:px-6 lg:px-8"
         >
           <div className="max-w-3xl mx-auto">
-            <Link
-              to="/golf/leaderboard"
-              className="inline-flex items-center text-muted-foreground hover:text-foreground mb-8"
-            >
-              <ArrowLeft className="mr-2" size={16} />
-              Back to Leaderboard
-            </Link>
+            <div className="flex items-center justify-between mb-8">
+              <Link
+                to="/golf/leaderboard"
+                className="inline-flex items-center text-muted-foreground hover:text-foreground"
+              >
+                <ArrowLeft className="mr-2" size={16} />
+                Back to Leaderboard
+              </Link>
+              {/* T14 cross-link: jump to this golfer's full (lift/bowl/golf) profile */}
+              {userId && (
+                <Link
+                  to={`/profile/${userId}`}
+                  className="inline-flex items-center gap-1 text-sm text-[var(--fw-info)] hover:underline"
+                >
+                  <User size={14} />
+                  Full profile
+                </Link>
+              )}
+            </div>
 
             {/* Profile Header */}
             <div className="flex items-center gap-4 mb-6">

@@ -15,6 +15,7 @@ import {
   GolfRoundListResponse,
   GolfScoresUpdateRequest,
   GolfScoresUpdateResponse,
+  BowlingResult,
 } from './types';
 
 // Collection of default challenge images for variety
@@ -395,6 +396,16 @@ export async function fetchRounds(
   if (options.offset !== undefined) params.set("offset", String(options.offset));
   const response = await axios.get(`${API_URL}/golf/rounds?${params.toString()}`);
   return response.data;
+}
+
+// T14 profile hub — a user's bowling attempts (GET /bowling/results?user_id=)
+export async function fetchBowlingResultsByUser(
+  userId: string,
+): Promise<BowlingResult[]> {
+  const response = await axios.get(
+    `${API_URL}/bowling/results?user_id=${encodeURIComponent(userId)}`,
+  );
+  return Array.isArray(response.data) ? response.data : [];
 }
 
 export async function updateRoundScores(

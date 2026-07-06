@@ -104,6 +104,8 @@ export interface BowlingResult {
   error_message?: string;
   user_name?: string;
   user_email?: string;
+  competition_id?: string | null;
+  competition_name?: string | null;
   created_at?: string;
   lane_edges_auto?: LaneEdges;
   lane_edges_manual?: LaneEdges;
