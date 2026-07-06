@@ -8,6 +8,7 @@ import { API_URL, PROD_API_URL } from "../config";
 import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult } from '../lib/types';
+import { getMetricCoaching, getOverallSummary } from '../lib/liftCoaching';
 
 interface VideoData {
   id: number;
@@ -577,6 +578,9 @@ const VideoPlayer: React.FC = () => {
                                   </div>
                                 </div>
                               </div>
+                              <p className="text-sm text-muted-foreground mt-1">
+                                {getOverallSummary(report.lift_type, report.overall_grade)}
+                              </p>
                             </div>
 
                             {/* Per-rep breakdown with progress bars */}
@@ -611,6 +615,7 @@ const VideoPlayer: React.FC = () => {
                                           const hasClips = m.clip_url != null || (m.best_time_s != null && m.worst_time_s != null);
                                           const isExpanded = expandedMetric === `${rm.rep_number}-${m.key}`;
                                           const metricId = `${rm.rep_number}-${m.key}`;
+                                          const coaching = getMetricCoaching(report.lift_type, m.key, m.status, m.value);
                                           return (
                                             <div key={m.key} className="text-xs">
                                               <div
@@ -632,6 +637,12 @@ const VideoPlayer: React.FC = () => {
                                                   <span className="text-muted-foreground/60 w-16 text-right">{m.target}</span>
                                                 </div>
                                               </div>
+                                              {coaching && (
+                                                <div className="flex items-start gap-1 text-[11px] text-red-400/90 mb-1">
+                                                  <span className="mt-px shrink-0">&#9656;</span>
+                                                  <span>{coaching}</span>
+                                                </div>
+                                              )}
                                               {showHelp === m.key && m.description && (
                                                 <div className="text-[10px] text-muted-foreground/80 bg-muted/40 rounded px-2 py-1 mb-1">
                                                   {m.description}
