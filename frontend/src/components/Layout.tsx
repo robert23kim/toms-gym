@@ -26,12 +26,12 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             © {new Date().getFullYear()} Tom's Gym. All rights reserved.
           </p>
           <div className="flex items-center space-x-4 mt-4 md:mt-0">
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            <Link to="/terms" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Terms
-            </a>
-            <a href="#" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+            </Link>
+            <Link to="/privacy" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Privacy
-            </a>
+            </Link>
             <Link to="/feedback" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
               Feedback
             </Link>
