@@ -1,9 +1,27 @@
-import React from "react";
-import { Dumbbell, Upload, Trophy, Flame } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { Dumbbell, Upload, Trophy, Flame, Timer } from "lucide-react";
 import HubPage from "../components/HubPage";
+import { getCompetitions } from "../lib/api";
 
 const LiftHub: React.FC = () => {
   const localUserId = localStorage.getItem("userId");
+  const [plank, setPlank] = useState<{ id: string; title: string } | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+    getCompetitions()
+      .then((comps) => {
+        if (cancelled) return;
+        const p = comps.find(
+          (c) => c.status === "ongoing" && (c.categories || []).includes("Plank")
+        );
+        setPlank(p ? { id: p.id, title: p.title } : null);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   return (
     <HubPage
@@ -17,6 +35,16 @@ const LiftHub: React.FC = () => {
         icon: <Upload className="w-7 h-7" />,
       }}
       secondary={[
+        ...(plank
+          ? [
+              {
+                to: `/challenges/${plank.id}`,
+                label: "Plank challenge",
+                description: "Record your plank — straight to the board.",
+                icon: <Timer className="w-5 h-5" />,
+              },
+            ]
+          : []),
         {
           to: "/leaderboard",
           label: "Leaderboard",
