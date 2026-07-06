@@ -1,5 +1,7 @@
 # UX Assessment & Roadmap — 2026-07-06
 
+> **Status (2026-07-06): SHIPPED.** All 16 product tasks (T1–T16, Phases 1–4) were implemented, validated, integrated on branch `ux-roadmap`, and deployed to production. T17 (reliability track) is deferred — see `PLANS.md`. Implementation notes live in the "UX Roadmap (shipped 2026-07-06)" section of `CLAUDE.md`. Two flagged follow-ups: (1) T9's emailed short-links use the frontend origin so they don't unfurl — repoint at the backend `/s/<code>`; (2) `frontend/src/components/FindProfile.tsx` dialog is now dead code (recovery moved to `/find-profile`).
+
 Based on the full production walk (`docs/site-map/README.md`, 23 screenshots incl. mobile) plus the 2026-07 strategic review. This is the user-experience companion to the infrastructure priorities already tracked there.
 
 ## The high-level diagnosis
