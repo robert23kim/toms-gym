@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
-import { ArrowLeft, ChevronDown, ChevronRight, PencilRuler } from "lucide-react";
+import { ArrowLeft, ChevronDown, ChevronRight, PencilRuler, Share2 } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import LaneEdgeEditor from "../components/LaneEdgeEditor";
 import BowlingStatCard from "../components/BowlingStatCard";
+import { useToast } from "../components/ui/use-toast";
+import { createAndCopyShareLink } from "../lib/share";
 import { API_URL } from "../config";
 import { BowlingResult as BowlingResultType, LaneEdges, Annotation } from "../lib/types";
 import {
@@ -32,6 +34,8 @@ const BowlingResult: React.FC = () => {
   const [polling, setPolling] = useState(false);
   const [annotation, setAnnotation] = useState<Annotation | null>(null);
   const [showAdvanced, setShowAdvanced] = useState(false);
+  const [sharing, setSharing] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     const fetchResult = async () => {
@@ -110,6 +114,35 @@ const BowlingResult: React.FC = () => {
     }
   };
 
+  // --- Share (T13) — distinct region; independent of the T12 low-confidence block.
+  const handleShare = async () => {
+    if (sharing || !result) return;
+    setSharing(true);
+    try {
+      const board = deriveEntryBoard(result);
+      const pk = derivePocket(board);
+      const spd = deriveSpeedMph(annotation);
+      const bits: string[] = [];
+      if (board != null) bits.push(`Entry board ${Math.round(board)}`);
+      if (spd != null) bits.push(`${spd.toFixed(1)} mph`);
+      const shortUrl = await createAndCopyShareLink({
+        targetUrl: window.location.href,
+        ogTitle: "Bowling — Your Throw",
+        ogDescription: bits.join(" · ") || "Tracked on Tom's Gym",
+        ogStat: pk ? pk.label : board != null ? String(Math.round(board)) : undefined,
+      });
+      toast({ title: "Short link copied!", description: shortUrl });
+    } catch (err) {
+      toast({
+        title: "Could not create short link",
+        description: err instanceof Error ? err.message : "Please try again",
+        variant: "destructive",
+      });
+    } finally {
+      setSharing(false);
+    }
+  };
+
   if (loading) {
     return (
       <Layout>
@@ -179,7 +212,21 @@ const BowlingResult: React.FC = () => {
 
           <div className="bg-card rounded-lg shadow-lg overflow-hidden">
             <div className="p-6 sm:p-8 space-y-6">
-              <h1 className="text-2xl font-bold">Your Throw</h1>
+              {/* Share region (T13) */}
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="text-2xl font-bold">Your Throw</h1>
+                {result.processing_status === "completed" && (
+                  <button
+                    onClick={handleShare}
+                    disabled={sharing}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-muted text-muted-foreground hover:bg-muted/80 disabled:opacity-50 text-sm font-medium shrink-0"
+                    title="Copy short link to share"
+                  >
+                    <Share2 className="h-4 w-4" />
+                    {sharing ? "Creating..." : "Share"}
+                  </button>
+                )}
+              </div>
 
               {result.processing_status === "queued" || result.processing_status === "processing" ? (
                 <div className="text-center py-8">
