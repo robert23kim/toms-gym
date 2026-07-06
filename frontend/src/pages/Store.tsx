@@ -44,16 +44,19 @@ const Store = () => {
   return (
     <Layout>
       <div className="mb-8">
-        <motion.h1
-          className="text-3xl font-bold mb-2"
+        <motion.div
+          className="flex flex-wrap items-center gap-3 mb-2"
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          Store
-        </motion.h1>
+          <h1 className="text-3xl font-bold">Store</h1>
+          <span className="px-3 py-1 rounded-full text-xs font-semibold bg-accent/10 text-accent border border-accent/30">
+            Coming soon
+          </span>
+        </motion.div>
         <p className="text-muted-foreground">
-          Spend your LiftingDollars on premium gear and accessories
+          A preview of the gear we're planning. Checkout isn't live yet — nothing here can be purchased.
         </p>
       </div>
 
@@ -181,9 +184,10 @@ const Store = () => {
                     <span className="font-semibold">{totalCost} LD</span>
                   </div>
                   <button
-                    className="w-full px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90 transition-colors"
+                    disabled
+                    className="w-full px-4 py-2 bg-secondary/50 text-muted-foreground rounded-lg cursor-not-allowed"
                   >
-                    Checkout
+                    Checkout coming soon
                   </button>
                 </div>
               </div>

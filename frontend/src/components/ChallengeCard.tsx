@@ -1,7 +1,7 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import { Calendar, MapPin, Users, Trophy } from "lucide-react";
+import { Calendar, MapPin, Users } from "lucide-react";
 import { Challenge } from "../lib/types";
 
 interface ChallengeCardProps {
@@ -58,10 +58,6 @@ const ChallengeCard: React.FC<ChallengeCardProps> = ({ challenge, index }) => {
             <div className="flex items-center gap-2">
               <Users size={16} />
               <span>{challenge.participants} participants</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Trophy size={16} />
-              <span>${challenge.prizePool.total.toLocaleString()} prize pool</span>
             </div>
           </div>
           <div className="mt-4 flex flex-wrap gap-2">

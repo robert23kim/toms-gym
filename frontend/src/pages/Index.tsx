@@ -26,9 +26,9 @@ const heroSlides = [
     image: "https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=1470&auto=format&fit=crop"
   },
   {
-    heading: "Win Prizes & Recognition",
-    subheading: "Compete for cash prizes, exclusive merchandise, and bragging rights in our monthly challenges.",
-    cta: "See Prize Pools",
+    heading: "Climb the Leaderboard",
+    subheading: "Earn recognition and bragging rights by topping the leaderboard in our monthly challenges.",
+    cta: "View Leaderboards",
     ctaLink: "/challenges",
     image: "https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=1374&auto=format&fit=crop"
   },
@@ -41,7 +41,7 @@ const heroSlides = [
   },
   {
     heading: "Record. Submit. Compete.",
-    subheading: "Film your lifts from home or your local gym. Our judges review every submission.",
+    subheading: "Film your lifts from home or your local gym. Get automated form analysis on every submission.",
     cta: "How It Works",
     ctaLink: "#how-it-works",
     image: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=1470&auto=format&fit=crop"
@@ -258,9 +258,9 @@ const Index = () => {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
                 {
-                  title: "Register",
-                  description: "Choose a challenge that matches your preferences and complete the registration process.",
-                  icon: "📝",
+                  title: "No signup — just your email",
+                  description: "No account or password needed. Pick a challenge and enter your email to get started.",
+                  icon: "📧",
                 },
                 {
                   title: "Record",
@@ -269,7 +269,7 @@ const Index = () => {
                 },
                 {
                   title: "Compete",
-                  description: "Get your lifts judged, see the leaderboard, and potentially win prizes and recognition.",
+                  description: "Get automated form analysis on every lift, climb the leaderboard, and earn recognition.",
                   icon: "🏆",
                 },
               ].map((step, index) => (
@@ -299,7 +299,7 @@ const Index = () => {
             >
               <h2 className="text-3xl font-semibold mb-4">Ready to Show Your Strength?</h2>
               <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-                Join our upcoming challenges and compete for prizes while pushing your limits.
+                Join our upcoming challenges and push your limits alongside the community.
               </p>
             </motion.div>
             
@@ -324,11 +324,11 @@ const Index = () => {
                       <div className="text-left">
                         <h3 className="text-xl font-semibold">{challenge.title}</h3>
                         <p className="text-muted-foreground">
-                          {new Date(challenge.date).toLocaleDateString('en-US', { 
-                            month: 'long', 
-                            day: 'numeric', 
-                            year: 'numeric' 
-                          })} • Prize Pool: ${challenge.prizePool.total.toLocaleString()}
+                          {new Date(challenge.date).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric'
+                          })}
                         </p>
                       </div>
                     </div>
