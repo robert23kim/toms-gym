@@ -67,9 +67,12 @@ def _compare_time_attempts(a, b) -> int:
 def _rank_time(participants) -> List[dict]:
     rows = []
     for p in participants:
-        completed = [a for a in p.get("attempts", []) if a.get("status") == "completed"]
+        # A hold time only exists once analysis has produced it, so the metric's
+        # ``held_s is not None`` check already gates on completion. We accept any
+        # non-failed attempt here so the ranking mirrors the weight board.
+        submitted = [a for a in p.get("attempts", []) if a.get("status") != "failed"]
         qualifying = [
-            a for a in completed
+            a for a in submitted
             if a.get("lift_type") == "Plank" and a.get("held_s") is not None
         ]
 
@@ -131,10 +134,14 @@ def _rank_time(participants) -> List[dict]:
 def _rank_weight(participants) -> List[dict]:
     rows = []
     for p in participants:
-        completed = [a for a in p.get("attempts", []) if a.get("status") == "completed"]
+        # The declared weight is known at upload time and never depends on
+        # analysis (analysis grades form, not the load). Count any submitted
+        # attempt that hasn't failed so a joined lifter shows on the podium
+        # immediately — not only after the (often slow) analysis completes.
+        submitted = [a for a in p.get("attempts", []) if a.get("status") != "failed"]
         # Planks carry a weight_kg but never belong on a weight board.
         qualifying = [
-            a for a in completed
+            a for a in submitted
             if a.get("weight_kg") is not None and a.get("lift_type") != "Plank"
         ]
 

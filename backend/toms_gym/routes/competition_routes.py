@@ -395,9 +395,16 @@ def get_competition_leaderboard(competition_id):
 
         declared = _parse_lifttypes(comp._mapping.get('description'))
 
-        # Participants + their completed attempts. LEFT JOIN keeps entrants with
-        # no completed attempt (the "who joined" signal); LiftingResult supplies
-        # plank hold time / form score / annotated clip.
+        # Participants + their submitted attempts. LEFT JOIN keeps entrants with
+        # no attempt (the "who joined" signal); LiftingResult supplies plank hold
+        # time / form score / annotated clip.
+        #
+        # We join any non-failed attempt, NOT just status='completed'. An
+        # Attempt only reaches 'completed' after lifting analysis succeeds, but
+        # a weight board's score is the self-reported load — known at upload and
+        # independent of analysis. Requiring 'completed' left every unanalyzed
+        # (pending) upload off the board, so a challenge with real submissions
+        # rendered an empty podium ("No entries yet") while analysis lagged.
         rows = session.execute(
             sqlalchemy.text("""
                 SELECT u.id AS user_id, u.name, uc.weight_class, uc.gender,
@@ -409,7 +416,9 @@ def get_competition_leaderboard(competition_id):
                 FROM "UserCompetition" uc
                 JOIN "User" u ON uc.user_id = u.id
                 LEFT JOIN "Attempt" a
-                       ON a.user_competition_id = uc.id AND a.status = 'completed'
+                       ON a.user_competition_id = uc.id
+                      AND a.status <> 'failed'
+                      AND a.video_url IS NOT NULL
                 LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
                 WHERE uc.competition_id = :id
                 ORDER BY u.id, a.created_at
