@@ -21,6 +21,7 @@ exec "$PYTHON" -m pytest \
   tests/test_competition_routes.py \
   tests/test_analysis_notify.py \
   tests/test_lift_history.py \
+  tests/test_achievements.py \
   tests/test_magic_link.py \
   tests/test_og_card.py \
   --noconftest -q \
