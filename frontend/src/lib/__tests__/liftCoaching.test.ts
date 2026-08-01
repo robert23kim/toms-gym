@@ -4,6 +4,8 @@ import {
   getMetricCoaching,
   getMetricCoachingFor,
   getOverallSummary,
+  getMetricLabel,
+  getMetricDescription,
   normalizeCoachingLiftType,
   type CoachingLiftType,
 } from "../liftCoaching";
@@ -118,5 +120,42 @@ describe("liftCoaching copy map", () => {
     it("treats an unknown grade as a failing summary", () => {
       expect(getOverallSummary("squat", "?")).toMatch(/broke down/i);
     });
+  });
+});
+
+describe("pushup copy never uses barbell/weight language", () => {
+  // A pushup has no weight to lighten and nothing to lower to a chest. This
+  // guards the whole pushup copy surface against curl/barbell wording leaking
+  // back in via the bicep_curl fallback.
+  const BANNED = /\b(weight|barbell|bar|lighter|curl|bench)\b/i;
+
+  it.each(["A", "B", "C", "D", "F"])("overall summary for grade %s is clean", (g) => {
+    const copy = getOverallSummary("pushup", g);
+    expect(copy).not.toMatch(BANNED);
+    expect(copy.length).toBeGreaterThan(0);
+  });
+
+  it.each(LIFT_METRIC_KEYS.pushup)("fail coaching for %s is clean", (key) => {
+    const copy = getMetricCoaching("pushup", key, "fail", 0);
+    expect(copy).toBeTruthy();
+    expect(copy).not.toMatch(BANNED);
+  });
+
+  it("overrides metric labels away from curl wording", () => {
+    expect(getMetricLabel("pushup", "rom", "Range of Motion")).toBe("Depth");
+    expect(getMetricLabel("pushup", "shoulder_swing", "Shoulder Swing")).toBe("Body Line");
+    expect(getMetricLabel("pushup", "elbow_stability", "Elbow Stability")).toBe("Elbow Flare");
+  });
+
+  it("overrides the curl-flavored description the engine bakes in", () => {
+    const engine = "How much of the full curl range you used.";
+    const shown = getMetricDescription("pushup", "rom", engine);
+    expect(shown).not.toMatch(BANNED);
+    expect(shown).not.toBe(engine);
+  });
+
+  it("leaves other lifts' labels and descriptions untouched", () => {
+    expect(getMetricLabel("bicep_curl", "rom", "Range of Motion")).toBe("Range of Motion");
+    expect(getMetricDescription("squat", "rom", "engine text")).toBe("engine text");
   });
 });

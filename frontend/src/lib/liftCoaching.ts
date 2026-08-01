@@ -159,7 +159,24 @@ const LIFT_DISPLAY_NAME: Record<CoachingLiftType, string> = {
   squat: "squat",
   bench_press: "bench press",
   deadlift: "deadlift",
-  pushup: "pushup set",
+  pushup: "pushup",
+};
+
+/**
+ * Per-grade overall copy for lifts where the generic wording doesn't fit.
+ * The generic F line says "start lighter", which is meaningless for a
+ * bodyweight movement — there is no weight to drop.
+ */
+const OVERALL_SUMMARY_OVERRIDES: Partial<
+  Record<CoachingLiftType, Record<string, string>>
+> = {
+  pushup: {
+    A: "Excellent form — your whole set stayed clean and controlled.",
+    B: "Solid set with just a little room to tighten up.",
+    C: "Decent set — clean up the flagged metrics to get more out of each rep.",
+    D: "Your form slipped over the set — focus on the failed metrics below.",
+    F: "Your form broke down — drop to your knees or a raised surface and rebuild the movement.",
+  },
 };
 
 /**
@@ -284,8 +301,12 @@ export function getOverallSummary(
   liftType: string | undefined | null,
   grade: string
 ): string {
-  const name = LIFT_DISPLAY_NAME[normalizeCoachingLiftType(liftType)];
-  switch ((grade || "").toUpperCase()) {
+  const lift = normalizeCoachingLiftType(liftType);
+  const name = LIFT_DISPLAY_NAME[lift];
+  const key = (grade || "").toUpperCase();
+  const override = OVERALL_SUMMARY_OVERRIDES[lift];
+  if (override) return override[key] ?? override.F;
+  switch (key) {
     case "A":
       return `Excellent form — your ${name} reps were clean and well controlled.`;
     case "B":
