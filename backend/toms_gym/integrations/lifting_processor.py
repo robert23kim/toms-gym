@@ -149,6 +149,7 @@ def _normalize_lift_type(db_lift_type):
         'Squat': 'squat',
         'Bench Press': 'bench_press',
         'Plank': 'plank',
+        'Pushup': 'pushup',
     }
     return mapping.get(db_lift_type, 'bicep_curl')
 

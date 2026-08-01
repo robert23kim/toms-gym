@@ -69,6 +69,15 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"Plank enum migration note: {e}")
 
+        # Add 'Pushup' to lift_type enum if not exists (migration 016)
+        try:
+            session.execute(sqlalchemy.text("ALTER TYPE lift_type ADD VALUE IF NOT EXISTS 'Pushup'"))
+            session.commit()
+            logging.info("Added 'Pushup' to lift_type enum")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Pushup enum migration note: {e}")
+
         # Create BowlingResult table if not exists
         try:
             session.execute(sqlalchemy.text("""
