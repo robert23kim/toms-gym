@@ -26,13 +26,15 @@ export type CoachingLiftType =
   | "bicep_curl"
   | "squat"
   | "bench_press"
-  | "deadlift";
+  | "deadlift"
+  | "pushup";
 
 export const SUPPORTED_LIFT_TYPES: CoachingLiftType[] = [
   "bicep_curl",
   "squat",
   "bench_press",
   "deadlift",
+  "pushup",
 ];
 
 /**
@@ -45,6 +47,7 @@ export const LIFT_METRIC_KEYS: Record<CoachingLiftType, string[]> = {
   squat: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
   bench_press: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
   deadlift: ["rom", "lockout", "back_position", "control", "tempo"],
+  pushup: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
 };
 
 interface MetricCoaching {
@@ -129,6 +132,25 @@ const COACHING: LiftCoachingMap = {
     },
     tempo: TEMPO_COACHING,
   },
+  // Pushups reuse the engine's bicep_curl metric set (same elbow-angle signal),
+  // but every piece of copy is rewritten for a bodyweight press — the metric
+  // KEYS are shared, the meaning is not. "elbow_stability" is elbow flare,
+  // "shoulder_swing" is hip sag/pike.
+  pushup: {
+    rom: {
+      fail: "You're cutting the range short — lower until your chest is near the floor and press all the way to straight arms.",
+    },
+    control: {
+      fail: "You're dropping into the bottom — lower yourself under control instead of collapsing to the floor.",
+    },
+    elbow_stability: {
+      fail: "Your elbows are flaring wide — keep them tracking back at roughly 45° from your body.",
+    },
+    shoulder_swing: {
+      fail: "Your hips are sagging or piking — squeeze your glutes and core to hold one straight line from head to heels.",
+    },
+    tempo: TEMPO_COACHING,
+  },
 };
 
 /** Human-friendly lift name used in overall-summary copy. */
@@ -137,7 +159,68 @@ const LIFT_DISPLAY_NAME: Record<CoachingLiftType, string> = {
   squat: "squat",
   bench_press: "bench press",
   deadlift: "deadlift",
+  pushup: "pushup set",
 };
+
+/**
+ * Per-lift overrides for the metric label and help text.
+ *
+ * The engine bakes `label`/`description` into each report from its
+ * bicep_curl METRIC_TARGETS block, so a pushup report literally reads "how
+ * much of the full curl range you used". Overriding here (rather than in the
+ * engine) fixes reports that were ALREADY analyzed — no re-analysis needed —
+ * and keeps the fix in one place. Falls back to whatever the engine sent.
+ */
+const METRIC_COPY_OVERRIDES: Partial<
+  Record<CoachingLiftType, Record<string, { label?: string; description?: string }>>
+> = {
+  pushup: {
+    rom: {
+      label: "Depth",
+      description:
+        "How deep each pushup went. Measures your elbow angle from locked-out arms at the top to the bottom of the rep — deeper is better, to about 90°.",
+    },
+    control: {
+      label: "Control",
+      description:
+        "How smoothly you lowered yourself. Measures how much you decelerate near the bottom instead of dropping to the floor.",
+    },
+    elbow_stability: {
+      label: "Elbow Flare",
+      description:
+        "How much your elbows flared out to the sides. Elbows tracking back at roughly 45° are stronger and easier on the shoulders than elbows flared to 90°.",
+    },
+    shoulder_swing: {
+      label: "Body Line",
+      description:
+        "Whether your hips stayed in line with your shoulders and heels. Higher numbers mean your hips sagged or piked instead of holding a straight plank line.",
+    },
+    tempo: {
+      description:
+        "Ratio of lowering time to pressing time. Around 2:1 — lowering twice as slowly as you press — builds the most strength.",
+    },
+  },
+};
+
+/** Metric label for display, preferring a lift-specific override. */
+export function getMetricLabel(
+  liftType: string | undefined | null,
+  metricKey: string,
+  engineLabel: string
+): string {
+  const lift = normalizeCoachingLiftType(liftType);
+  return METRIC_COPY_OVERRIDES[lift]?.[metricKey]?.label ?? engineLabel;
+}
+
+/** Metric help text for display, preferring a lift-specific override. */
+export function getMetricDescription(
+  liftType: string | undefined | null,
+  metricKey: string,
+  engineDescription: string | undefined
+): string | undefined {
+  const lift = normalizeCoachingLiftType(liftType);
+  return METRIC_COPY_OVERRIDES[lift]?.[metricKey]?.description ?? engineDescription;
+}
 
 /**
  * Normalize an arbitrary report lift_type string onto a supported coaching

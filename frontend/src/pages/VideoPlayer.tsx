@@ -8,9 +8,22 @@ import { API_URL, PROD_API_URL } from "../config";
 import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult } from '../lib/types';
-import { getMetricCoaching, getOverallSummary } from '../lib/liftCoaching';
+import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription } from '../lib/liftCoaching';
+import { summarizeSet } from '../lib/setSummary';
 import { createAndCopyShareLink } from '../lib/share';
 import PlankSteadiness from '../components/lifting/PlankSteadiness';
+
+// Lifts scored by the body, not the bar — no weight is shown for these.
+// Module-level so it can never be shadowed inside the render tree.
+function isBodyweightLift(liftType: string | undefined | null): boolean {
+  const key = (liftType || '').trim().toLowerCase();
+  return key === 'plank' || key === 'pushup';
+}
+
+/** Pushups are judged as a set, not rep by rep. */
+function usesSetSummary(liftType: string | undefined | null): boolean {
+  return (liftType || '').trim().toLowerCase() === 'pushup';
+}
 
 interface VideoData {
   id: number;
@@ -73,7 +86,7 @@ const VideoPlayer: React.FC = () => {
       const lift = videoData?.lift_type || "lift";
       const bits: string[] = [];
       if (report?.total_reps != null) bits.push(`${report.total_reps} rep${report.total_reps !== 1 ? "s" : ""}`);
-      if (videoData?.weight && lift.toLowerCase() !== "plank") bits.push(`${videoData.weight} lbs`);
+      if (videoData?.weight && !isBodyweightLift(lift)) bits.push(`${videoData.weight} lbs`);
       const shortUrl = await createAndCopyShareLink({
         targetUrl: window.location.href,
         ogTitle: `${name}'s ${lift}`,
@@ -488,7 +501,7 @@ const VideoPlayer: React.FC = () => {
                         </button>
                       </div>
                       <div className="flex items-center gap-3 text-muted-foreground">
-                        {videoData.lift_type?.toLowerCase() !== 'plank' && videoData.weight ? (
+                        {!isBodyweightLift(videoData.lift_type) && videoData.weight ? (
                           <span className="font-medium text-foreground">{videoData.weight} lbs</span>
                         ) : null}
                         <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>
@@ -661,14 +674,32 @@ const VideoPlayer: React.FC = () => {
                               </p>
                             </div>
 
-                            {/* Per-rep breakdown with progress bars */}
-                            {report.rep_metrics.length > 0 && (
+                            {/* Form breakdown. Pushups collapse to ONE card for the
+                                whole set; other lifts keep the per-rep cards. */}
+                            {report.rep_metrics.length > 0 && (() => {
+                              const isSet = usesSetSummary(report.lift_type);
+                              const cards = isSet
+                                ? [{
+                                    rep_number: 0,
+                                    form_grade: report.overall_grade,
+                                    form_score: report.overall_score,
+                                    metrics: summarizeSet(report.rep_metrics),
+                                  }]
+                                : report.rep_metrics;
+                              const repTotal = report.rep_metrics.length;
+                              return (
                               <div className="bg-card rounded-lg shadow-lg p-6 space-y-3">
-                                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">Rep Breakdown</h3>
-                                {report.rep_metrics.map((rm) => (
+                                <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide">
+                                  {isSet ? 'Set Breakdown' : 'Rep Breakdown'}
+                                </h3>
+                                {cards.map((rm) => (
                                   <div key={rm.rep_number} className="border border-border rounded-lg p-3">
                                     <div className="flex items-center justify-between mb-3">
-                                      <span className="font-medium text-sm">Rep {rm.rep_number}</span>
+                                      <span className="font-medium text-sm">
+                                        {isSet
+                                          ? `Whole set · ${repTotal} rep${repTotal !== 1 ? 's' : ''}`
+                                          : `Rep ${rm.rep_number}`}
+                                      </span>
                                       <span className={`text-sm font-bold ${gradeColor(rm.form_grade)}`}>
                                         {rm.form_grade} ({rm.form_score.toFixed(0)}%)
                                       </span>
@@ -702,7 +733,7 @@ const VideoPlayer: React.FC = () => {
                                               >
                                                 <span className="text-muted-foreground flex items-center gap-1">
                                                   {hasClips && <span className="text-[10px]">{isExpanded ? '▼' : '▶'}</span>}
-                                                  {m.label}
+                                                  {getMetricLabel(report.lift_type, m.key, m.label)}
                                                   <span
                                                     className="inline-flex items-center justify-center w-3.5 h-3.5 rounded-full bg-muted text-[9px] text-muted-foreground/70 cursor-pointer shrink-0 hover:bg-muted/80"
                                                     onClick={(e) => { e.stopPropagation(); setShowHelp(showHelp === m.key ? null : m.key); }}
@@ -721,9 +752,9 @@ const VideoPlayer: React.FC = () => {
                                                   <span>{coaching}</span>
                                                 </div>
                                               )}
-                                              {showHelp === m.key && m.description && (
+                                              {showHelp === m.key && getMetricDescription(report.lift_type, m.key, m.description) && (
                                                 <div className="text-[10px] text-muted-foreground/80 bg-muted/40 rounded px-2 py-1 mb-1">
-                                                  {m.description}
+                                                  {getMetricDescription(report.lift_type, m.key, m.description)}
                                                 </div>
                                               )}
                                               {showBar && (
@@ -769,7 +800,8 @@ const VideoPlayer: React.FC = () => {
                                   </div>
                                 ))}
                               </div>
-                            )}
+                              );
+                            })()}
 
                             {/* Tips */}
                             {report.insights.length > 0 && (
@@ -799,8 +831,9 @@ const VideoPlayer: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Rep Details table — below the two columns */}
-                {hasAnalysis && report && report.rep_metrics && report.rep_metrics.length > 0 && (
+                {/* Rep Details table — below the two columns. Hidden for lifts
+                    judged as a set (pushups): the set card is the whole story. */}
+                {hasAnalysis && report && report.rep_metrics && report.rep_metrics.length > 0 && !usesSetSummary(report.lift_type) && (
                   <div className="mt-6">
                     <button
                       onClick={() => setShowRepDetails(!showRepDetails)}
