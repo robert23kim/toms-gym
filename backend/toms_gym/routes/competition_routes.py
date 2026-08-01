@@ -411,7 +411,8 @@ def _leaderboard_payload(session, competition_id):
                    lr.annotated_video_url,
                    lr.report->>'total_in_plank_s'  AS held_s,
                    lr.report->>'overall_form_score' AS form_score,
-                   lr.report->>'body_line_stdev_deg' AS steadiness
+                   lr.report->>'body_line_stdev_deg' AS steadiness,
+                   lr.report->>'total_reps'        AS reps
             FROM "UserCompetition" uc
             JOIN "User" u ON uc.user_id = u.id
             LEFT JOIN "Attempt" a
@@ -431,6 +432,14 @@ def _leaderboard_payload(session, competition_id):
             return None
         try:
             return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    def _to_int(value):
+        if value is None:
+            return None
+        try:
+            return int(float(value))
         except (TypeError, ValueError):
             return None
 
@@ -461,17 +470,23 @@ def _leaderboard_payload(session, competition_id):
                 "held_s": _to_float(row['held_s']),
                 "form_score": _to_float(row['form_score']),
                 "steadiness": _to_float(row['steadiness']),
+                "reps": _to_int(row['reps']),
             })
 
-    # Metric selection: declared plank-only -> time; other declared -> weight;
-    # no metadata -> infer from completed attempts (all-Plank -> time).
+    # Metric selection: declared plank-only -> time; declared pushup-only ->
+    # reps; other declared -> weight; no metadata -> infer from completed
+    # attempts (all-Plank -> time, all-Pushup -> reps).
     declared_set = set(declared)
     if declared_set == {"Plank"}:
         metric = "time"
+    elif declared_set == {"Pushup"}:
+        metric = "reps"
     elif declared_set:
         metric = "weight"
     elif completed_lift_types and completed_lift_types == {"Plank"}:
         metric = "time"
+    elif completed_lift_types and completed_lift_types == {"Pushup"}:
+        metric = "reps"
     else:
         metric = "weight"
 

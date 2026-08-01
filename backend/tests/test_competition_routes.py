@@ -109,6 +109,7 @@ def _prow(**kw):
         "held_s": kw.get("held_s"),
         "form_score": kw.get("form_score"),
         "steadiness": kw.get("steadiness"),
+        "reps": kw.get("reps"),
     }
     return base
 
@@ -362,3 +363,69 @@ def test_test_user_still_visible_on_own_profile():
     assert user_lookup, "profile route did not query the User table"
     assert all("is_test" not in s for s in user_lookup), \
         "profile route must not filter test users out of their own profile"
+
+
+def test_leaderboard_pushup_challenge_metric_reps(test_client):
+    """Pushup-only declared challenge -> metric 'reps', ranked by best rep count."""
+    description = 'Gym - {"lifttypes": ["Pushup"], "weightclasses": [], "gender": "M"}'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Pushup",
+              status="completed", created_at="2026-08-01",
+              video_url="v1", annotated_video_url="ann1",
+              reps="18", form_score="0.80"),
+        _prow(user_id="u2", name="bob", attempt_id="b1", lift_type="Pushup",
+              status="completed", created_at="2026-08-01",
+              video_url="v2", annotated_video_url="ann2",
+              reps="31", form_score="0.91"),
+    ]
+    session = _make_session(description, rows, uploaded_today=2)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "reps"
+    assert data["lift_types"] == ["Pushup"]
+    assert [r["name"] for r in data["rows"]] == ["bob", "alice"]
+    top = data["rows"][0]
+    assert top["rank"] == 1
+    assert top["score"] == 31
+    assert top["best_by_lift"] == {"Pushup": 31}
+    assert top["clip_url"] == "ann2"
+
+
+def test_leaderboard_metric_inferred_pushup_only(test_client):
+    """No declared lifttypes but every attempt is a Pushup -> metric 'reps'."""
+    description = 'Gym'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Pushup",
+              status="completed", created_at="2026-08-01", video_url="v1",
+              reps="22"),
+    ]
+    session = _make_session(description, rows, uploaded_today=1)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "reps"
+    assert data["rows"][0]["score"] == 22
+
+
+def test_leaderboard_pushup_pending_analysis_scores_zero(test_client):
+    """A pushup upload with no analysis yet still joins the board at score 0."""
+    description = 'Gym - {"lifttypes": ["Pushup"], "weightclasses": [], "gender": "M"}'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Pushup",
+              status="pending", created_at="2026-08-01", video_url="v1",
+              reps=None),
+    ]
+    session = _make_session(description, rows, uploaded_today=1)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "reps"
+    assert data["rows"][0]["score"] == 0
+    assert data["rows"][0]["attempt_count"] == 0
