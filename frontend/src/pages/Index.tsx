@@ -6,6 +6,7 @@ import Layout from "../components/Layout";
 import IconTile from "../components/IconTile";
 import RowCard from "../components/RowCard";
 import DemoLoop from "../components/DemoLoop";
+import ChampionSpotlight from "../components/ChampionSpotlight";
 import { getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 
@@ -68,6 +69,11 @@ const Index = () => {
         {/* Animated demo of what the analysis produces */}
         <section aria-label="Analysis demo">
           <DemoLoop />
+        </section>
+
+        {/* Latest challenge champion — hidden when nothing has been won */}
+        <section aria-label="Latest champion">
+          <ChampionSpotlight />
         </section>
 
         {/* The three verticals */}
