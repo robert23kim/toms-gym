@@ -372,145 +372,210 @@ def _parse_lifttypes(description):
     return lifttypes if isinstance(lifttypes, list) else []
 
 
-@competition_bp.route('/competitions/<string:competition_id>/leaderboard')
-def get_competition_leaderboard(competition_id):
-    """Per-challenge leaderboard.
+def _leaderboard_payload(session, competition_id):
+    """Build the leaderboard response dict, or None when the competition is
+    missing.
 
     Ranks a single challenge by exactly one metric: plank-only challenges by
-    longest hold (`time`), everything else by best-lift total (`weight`). Mirrors
-    the `/golf/leaderboard` pattern: all ranking logic lives in the pure
-    `rank_challenge` helper; this route only loads data and shapes the response.
+    longest hold (`time`), everything else by best-lift total (`weight`).
+    Mirrors the `/golf/leaderboard` pattern: all ranking logic lives in the
+    pure `rank_challenge` helper. Shared by the leaderboard route and
+    `GET /champions`.
     """
     from toms_gym.services.challenge_leaderboard import rank_challenge
 
+    comp = session.execute(
+        sqlalchemy.text('SELECT id, description FROM "Competition" WHERE id = :id'),
+        {"id": competition_id}
+    ).fetchone()
+    if comp is None:
+        return None
+
+    declared = _parse_lifttypes(comp._mapping.get('description'))
+
+    # Participants + their submitted attempts. LEFT JOIN keeps entrants with
+    # no attempt (the "who joined" signal); LiftingResult supplies plank hold
+    # time / form score / annotated clip.
+    #
+    # We join any non-failed attempt, NOT just status='completed'. An
+    # Attempt only reaches 'completed' after lifting analysis succeeds, but
+    # a weight board's score is the self-reported load — known at upload and
+    # independent of analysis. Requiring 'completed' left every unanalyzed
+    # (pending) upload off the board, so a challenge with real submissions
+    # rendered an empty podium ("No entries yet") while analysis lagged.
+    rows = session.execute(
+        sqlalchemy.text("""
+            SELECT u.id AS user_id, u.name, uc.weight_class, uc.gender,
+                   a.id AS attempt_id, a.lift_type, a.weight_kg, a.status,
+                   a.created_at, a.video_url,
+                   lr.annotated_video_url,
+                   lr.report->>'total_in_plank_s'  AS held_s,
+                   lr.report->>'overall_form_score' AS form_score,
+                   lr.report->>'body_line_stdev_deg' AS steadiness
+            FROM "UserCompetition" uc
+            JOIN "User" u ON uc.user_id = u.id
+            LEFT JOIN "Attempt" a
+                   ON a.user_competition_id = uc.id
+                  AND a.status <> 'failed'
+                  AND a.video_url IS NOT NULL
+            LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
+            WHERE uc.competition_id = :id
+              AND COALESCE(u.is_test, false) = false
+            ORDER BY u.id, a.created_at
+        """),
+        {"id": competition_id}
+    ).mappings().fetchall()
+
+    def _to_float(value):
+        if value is None:
+            return None
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return None
+
+    participants = {}
+    order = []
+    completed_lift_types = set()
+    for row in rows:
+        uid = str(row['user_id'])
+        if uid not in participants:
+            participants[uid] = {
+                "user_id": uid,
+                "name": row['name'],
+                "weight_class": row['weight_class'],
+                "gender": row['gender'],
+                "attempts": [],
+            }
+            order.append(uid)
+        if row['attempt_id'] is not None:
+            completed_lift_types.add(row['lift_type'])
+            participants[uid]["attempts"].append({
+                "attempt_id": str(row['attempt_id']),
+                "lift_type": row['lift_type'],
+                "weight_kg": _to_float(row['weight_kg']),
+                "status": row['status'],
+                "created_at": row['created_at'],
+                "video_url": row['video_url'],
+                "annotated_video_url": row['annotated_video_url'],
+                "held_s": _to_float(row['held_s']),
+                "form_score": _to_float(row['form_score']),
+                "steadiness": _to_float(row['steadiness']),
+            })
+
+    # Metric selection: declared plank-only -> time; other declared -> weight;
+    # no metadata -> infer from completed attempts (all-Plank -> time).
+    declared_set = set(declared)
+    if declared_set == {"Plank"}:
+        metric = "time"
+    elif declared_set:
+        metric = "weight"
+    elif completed_lift_types and completed_lift_types == {"Plank"}:
+        metric = "time"
+    else:
+        metric = "weight"
+
+    lift_types = declared if declared else sorted(completed_lift_types)
+
+    ranked = rank_challenge(
+        [participants[uid] for uid in order], metric=metric
+    )
+
+    uploaded_today = session.execute(
+        sqlalchemy.text("""
+            SELECT COUNT(*) AS c
+            FROM "Attempt" a
+            JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+            WHERE uc.competition_id = :id
+              AND a.created_at::date = CURRENT_DATE
+        """),
+        {"id": competition_id}
+    ).scalar()
+
+    return {
+        "competition_id": competition_id,
+        "metric": metric,
+        "lift_types": lift_types,
+        "momentum": {
+            "joined": len(order),
+            "uploaded_today": int(uploaded_today or 0),
+        },
+        "rows": ranked,
+    }
+
+
+@competition_bp.route('/competitions/<string:competition_id>/leaderboard')
+def get_competition_leaderboard(competition_id):
+    """Per-challenge leaderboard (see _leaderboard_payload)."""
     session = None
     try:
         session = get_db_connection()
-
-        comp = session.execute(
-            sqlalchemy.text('SELECT id, description FROM "Competition" WHERE id = :id'),
-            {"id": competition_id}
-        ).fetchone()
-        if comp is None:
+        payload = _leaderboard_payload(session, competition_id)
+        if payload is None:
             return {"error": "Competition not found"}, 404
-
-        declared = _parse_lifttypes(comp._mapping.get('description'))
-
-        # Participants + their submitted attempts. LEFT JOIN keeps entrants with
-        # no attempt (the "who joined" signal); LiftingResult supplies plank hold
-        # time / form score / annotated clip.
-        #
-        # We join any non-failed attempt, NOT just status='completed'. An
-        # Attempt only reaches 'completed' after lifting analysis succeeds, but
-        # a weight board's score is the self-reported load — known at upload and
-        # independent of analysis. Requiring 'completed' left every unanalyzed
-        # (pending) upload off the board, so a challenge with real submissions
-        # rendered an empty podium ("No entries yet") while analysis lagged.
-        rows = session.execute(
-            sqlalchemy.text("""
-                SELECT u.id AS user_id, u.name, uc.weight_class, uc.gender,
-                       a.id AS attempt_id, a.lift_type, a.weight_kg, a.status,
-                       a.created_at, a.video_url,
-                       lr.annotated_video_url,
-                       lr.report->>'total_in_plank_s'  AS held_s,
-                       lr.report->>'overall_form_score' AS form_score,
-                       lr.report->>'body_line_stdev_deg' AS steadiness
-                FROM "UserCompetition" uc
-                JOIN "User" u ON uc.user_id = u.id
-                LEFT JOIN "Attempt" a
-                       ON a.user_competition_id = uc.id
-                      AND a.status <> 'failed'
-                      AND a.video_url IS NOT NULL
-                LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
-                WHERE uc.competition_id = :id
-                  AND COALESCE(u.is_test, false) = false
-                ORDER BY u.id, a.created_at
-            """),
-            {"id": competition_id}
-        ).mappings().fetchall()
-
-        def _to_float(value):
-            if value is None:
-                return None
-            try:
-                return float(value)
-            except (TypeError, ValueError):
-                return None
-
-        participants = {}
-        order = []
-        completed_lift_types = set()
-        for row in rows:
-            uid = str(row['user_id'])
-            if uid not in participants:
-                participants[uid] = {
-                    "user_id": uid,
-                    "name": row['name'],
-                    "weight_class": row['weight_class'],
-                    "gender": row['gender'],
-                    "attempts": [],
-                }
-                order.append(uid)
-            if row['attempt_id'] is not None:
-                completed_lift_types.add(row['lift_type'])
-                participants[uid]["attempts"].append({
-                    "attempt_id": str(row['attempt_id']),
-                    "lift_type": row['lift_type'],
-                    "weight_kg": _to_float(row['weight_kg']),
-                    "status": row['status'],
-                    "created_at": row['created_at'],
-                    "video_url": row['video_url'],
-                    "annotated_video_url": row['annotated_video_url'],
-                    "held_s": _to_float(row['held_s']),
-                    "form_score": _to_float(row['form_score']),
-                    "steadiness": _to_float(row['steadiness']),
-                })
-
-        # Metric selection: declared plank-only -> time; other declared -> weight;
-        # no metadata -> infer from completed attempts (all-Plank -> time).
-        declared_set = set(declared)
-        if declared_set == {"Plank"}:
-            metric = "time"
-        elif declared_set:
-            metric = "weight"
-        elif completed_lift_types and completed_lift_types == {"Plank"}:
-            metric = "time"
-        else:
-            metric = "weight"
-
-        lift_types = declared if declared else sorted(completed_lift_types)
-
-        ranked = rank_challenge(
-            [participants[uid] for uid in order], metric=metric
-        )
-
-        uploaded_today = session.execute(
-            sqlalchemy.text("""
-                SELECT COUNT(*) AS c
-                FROM "Attempt" a
-                JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
-                WHERE uc.competition_id = :id
-                  AND a.created_at::date = CURRENT_DATE
-            """),
-            {"id": competition_id}
-        ).scalar()
-
-        return {
-            "competition_id": competition_id,
-            "metric": metric,
-            "lift_types": lift_types,
-            "momentum": {
-                "joined": len(order),
-                "uploaded_today": int(uploaded_today or 0),
-            },
-            "rows": ranked,
-        }
+        return payload
     except Exception as e:
         logger.error(f"Error fetching competition leaderboard: {str(e)}")
         logger.error(traceback.format_exc())
         if session:
             session.rollback()
         return {"error": f"Server error: {type(e).__name__} - {str(e)}"}, 500
+    finally:
+        if session:
+            session.close()
+
+
+# Champions are computed on read (rank 1 of each ended challenge) and cached
+# in-process; staleness up to the TTL is accepted, and late re-analyses
+# self-correct on the next recompute. No Champion table.
+_champions_cache = {"at": 0.0, "data": None}
+_CHAMPIONS_TTL_S = 600
+
+
+@competition_bp.route('/champions')
+def get_champions():
+    """Champions of ended challenges, newest first. ?user_id= filters."""
+    import time as _time
+    from toms_gym.services.champions import shape_champions
+
+    session = None
+    try:
+        now = _time.monotonic()
+        data = _champions_cache["data"]
+        if data is None or now - _champions_cache["at"] > _CHAMPIONS_TTL_S:
+            session = get_db_connection()
+            comps = session.execute(
+                sqlalchemy.text("""
+                    SELECT id, name, end_date FROM "Competition"
+                    WHERE end_date < NOW()
+                    ORDER BY end_date DESC
+                """)
+            ).mappings().fetchall()
+            ended = []
+            for c in comps:
+                lb = _leaderboard_payload(session, str(c["id"]))
+                end_date = c["end_date"]
+                ended.append({
+                    "competition": {
+                        "id": str(c["id"]),
+                        "name": c["name"],
+                        "end_date": end_date.date().isoformat()
+                        if hasattr(end_date, "date") else str(end_date),
+                    },
+                    "leaderboard": lb,
+                })
+            data = shape_champions(ended)
+            _champions_cache.update(at=now, data=data)
+        user_id = request.args.get("user_id")
+        if user_id:
+            data = [c for c in data if c["user_id"] == user_id]
+        return {"champions": data}
+    except Exception as e:
+        logger.error(f"Error fetching champions: {str(e)}")
+        logger.error(traceback.format_exc())
+        if session:
+            session.rollback()
+        return {"error": f"Server error: {type(e).__name__}"}, 500
     finally:
         if session:
             session.close()
