@@ -394,7 +394,7 @@ export interface GolfCreateCourseRequest {
  * `backend/toms_gym/routes/competition_routes.py` +
  * `backend/toms_gym/services/challenge_leaderboard.py`.
  */
-export type ChallengeMetric = "time" | "weight";
+export type ChallengeMetric = "time" | "weight" | "reps";
 
 export interface ChallengeLeaderboardHistoryPoint {
   /** held seconds (time) or weight_kg (weight). */

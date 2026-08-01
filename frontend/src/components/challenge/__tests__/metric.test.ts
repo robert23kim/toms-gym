@@ -26,3 +26,22 @@ describe("challenge metric helpers", () => {
     expect(uploadCtaLabel("weight")).toBe("Upload your lift");
   });
 });
+
+describe("reps metric (pushup challenges)", () => {
+  test("labels the score column REPS", () => {
+    expect(scoreColumnLabel("reps")).toBe("REPS");
+  });
+
+  test("uses a reps unit", () => {
+    expect(scoreUnit("reps")).toBe("reps");
+  });
+
+  test("formats rep scores as whole numbers", () => {
+    expect(formatScoreValue(30, "reps")).toBe("30");
+    expect(formatScoreValue(30.4, "reps")).toBe("30");
+  });
+
+  test("uses a pushup CTA", () => {
+    expect(uploadCtaLabel("reps")).toBe("Upload your pushups");
+  });
+});
