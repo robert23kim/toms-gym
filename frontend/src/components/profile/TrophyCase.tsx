@@ -2,9 +2,13 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Champion, formatChampionScore } from "../../lib/api";
 
+// Treat the ISO date as local midnight so the day doesn't shift under offset
+// (bare "2026-07-31" parses as UTC and renders as Jul 30 west of Greenwich).
+const localDate = (iso: string): Date => new Date(`${iso}T00:00:00`);
+
 /** "👑 Summer plank challenge Champion 2026" — profile flair line. */
 export const championTitle = (c: Champion): string =>
-  `👑 ${c.competition_name} Champion ${new Date(c.ended_on).getFullYear()}`;
+  `👑 ${c.competition_name} Champion ${localDate(c.ended_on).getFullYear()}`;
 
 interface TrophyCaseProps {
   champions: Champion[];
@@ -35,7 +39,7 @@ const TrophyCase: React.FC<TrophyCaseProps> = ({ champions }) => {
               <div className="font-medium truncate">{c.competition_name}</div>
               <div className="text-sm text-muted-foreground">
                 {formatChampionScore(c.metric, c.score)} · won{" "}
-                {new Date(c.ended_on).toLocaleDateString(undefined, {
+                {localDate(c.ended_on).toLocaleDateString(undefined, {
                   year: "numeric",
                   month: "long",
                   day: "numeric",

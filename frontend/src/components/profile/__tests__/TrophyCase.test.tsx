@@ -41,6 +41,16 @@ describe("TrophyCase", () => {
     expect(screen.getAllByText(/🏆/)).toHaveLength(2);
   });
 
+  it("renders the win date without a timezone day-shift", () => {
+    render(
+      <MemoryRouter>
+        <TrophyCase champions={[plankWin]} />
+      </MemoryRouter>,
+    );
+    // ended_on 2026-07-31 must render as the 31st, not the 30th (UTC parse)
+    expect(screen.getByText(/July 31, 2026/)).toBeInTheDocument();
+  });
+
   it("renders nothing when there are no championships", () => {
     const { container } = render(
       <MemoryRouter>
