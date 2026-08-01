@@ -502,3 +502,63 @@ export async function updateTicketStatus(
   const response = await axios.put(`${API_URL}/tickets/${id}/status`, { status });
   return response.data;
 }
+
+// ---------------------------------------------------------------------------
+// Champions & achievements — challenge winners + avatar unlocks.
+// Mirrors backend GET /champions and routes/achievement_routes.py.
+// ---------------------------------------------------------------------------
+
+export interface Champion {
+  user_id: string;
+  name: string;
+  competition_id: string;
+  competition_name: string;
+  metric: "time" | "weight";
+  score: number;
+  ended_on: string;
+  attempt_id: string | null;
+}
+
+export async function fetchChampions(userId?: string): Promise<Champion[]> {
+  const response = await axios.get(
+    `${API_URL}/champions${userId ? `?user_id=${userId}` : ""}`,
+  );
+  return response.data.champions || [];
+}
+
+export interface AchievementsResponse {
+  ladder: { key: string; tier: number; title: string; emoji: string }[];
+  earned: string[];
+  avatar_keys: string[];
+  avatar: string | null;
+  next: { key: string; title: string; emoji: string; tier: number } | null;
+}
+
+export async function fetchAchievements(
+  userId: string,
+): Promise<AchievementsResponse> {
+  const response = await axios.get(`${API_URL}/users/${userId}/achievements`);
+  return response.data;
+}
+
+export async function setAvatar(
+  userId: string,
+  key: string,
+): Promise<{ avatar: string; avatar_url: string }> {
+  const response = await axios.put(`${API_URL}/users/${userId}/avatar`, { key });
+  return response.data;
+}
+
+/** "4:35" for time boards (floored seconds), "120 kg" for weight boards. */
+export const formatChampionScore = (
+  metric: "time" | "weight",
+  score: number,
+): string => {
+  if (metric === "time") {
+    const total = Math.floor(score);
+    const m = Math.floor(total / 60);
+    const s = total % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  }
+  return `${score} kg`;
+};
