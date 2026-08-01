@@ -9,7 +9,8 @@ import { API_URL } from "../config";
 import VideoGallery from '../components/VideoGallery';
 import LiftHistoryList from '../components/profile/LiftHistoryList';
 import GhibliAvatar from '../components/GhibliAvatar';
-import { fetchRounds, fetchBowlingResultsByUser } from "../lib/api";
+import { fetchRounds, fetchBowlingResultsByUser, fetchChampions, Champion } from "../lib/api";
+import TrophyCase, { championTitle } from "../components/profile/TrophyCase";
 import { GolfRoundListItem, BowlingResult } from "../lib/types";
 
 // Interfaces for API response data
@@ -85,6 +86,9 @@ const Profile = () => {
   const [golfHandicap, setGolfHandicap] = useState<number | null>(null);
   const [bowlingResults, setBowlingResults] = useState<BowlingResult[]>([]);
 
+  // Challenge championships (trophy case + title flair); non-fatal fetch.
+  const [champions, setChampions] = useState<Champion[]>([]);
+
   const resolvedUserId = id || localStorage.getItem('userId') || null;
 
   const fetchProfileData = useCallback(async () => {
@@ -102,10 +106,11 @@ const Profile = () => {
 
       // User profile (lifting + competitions). Golf/bowling are fetched in
       // parallel and are non-fatal — a user may have activity in only one sport.
-      const [profileRes, golfRes, bowlRes] = await Promise.all([
+      const [profileRes, golfRes, bowlRes, champRes] = await Promise.all([
         axios.get(`${API_URL}/users/${userId}/profile`),
         fetchRounds(userId).catch(() => null),
         fetchBowlingResultsByUser(userId).catch(() => []),
+        fetchChampions(userId).catch(() => []),
       ]);
 
       setProfileData(profileRes.data);
@@ -114,6 +119,7 @@ const Profile = () => {
         setGolfHandicap(golfRes.handicap_index ?? null);
       }
       setBowlingResults(bowlRes || []);
+      setChampions(champRes || []);
     } catch (err: any) {
       console.error('Error fetching profile data:', err);
       const errorMessage = err.response?.data?.error || 'Failed to load profile data';
@@ -248,6 +254,11 @@ const Profile = () => {
             />
             <div>
               <h1 className="text-3xl font-bold mb-2">{profileData.user.name}</h1>
+              {champions.length > 0 && (
+                <p className="inline-block text-sm font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 border border-amber-500/30 rounded-full px-3 py-1 mb-2">
+                  {championTitle(champions[0])}
+                </p>
+              )}
               <p className="text-muted-foreground">{profileData.user.email}</p>
             </div>
           </div>
@@ -264,6 +275,8 @@ const Profile = () => {
             )}
           </div>
         </div>
+
+        <TrophyCase champions={champions} />
 
         {/* Sport tabs — one unified identity across Lift / Bowl / Golf */}
         <div className="flex gap-2 mb-6 border-b border-border">
