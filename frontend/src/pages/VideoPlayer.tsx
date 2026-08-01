@@ -9,7 +9,7 @@ import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult } from '../lib/types';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription } from '../lib/liftCoaching';
-import { summarizeSet } from '../lib/setSummary';
+import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { createAndCopyShareLink } from '../lib/share';
 import PlankSteadiness from '../components/lifting/PlankSteadiness';
 
@@ -810,7 +810,11 @@ const VideoPlayer: React.FC = () => {
                                 {report.insights.map((insight, i) => (
                                   <div key={i} className="flex items-start gap-2 text-sm">
                                     <span className="text-blue-400 mt-0.5 shrink-0">&#9656;</span>
-                                    <span className="text-muted-foreground">{insight}</span>
+                                    <span className="text-muted-foreground">
+                                      {usesSetSummary(report.lift_type)
+                                        ? collapseSetInsight(insight, report.rep_metrics.length)
+                                        : insight}
+                                    </span>
                                   </div>
                                 ))}
                               </div>

@@ -1,4 +1,4 @@
-import { summarizeSet, aggregateStatus } from "../setSummary";
+import { summarizeSet, aggregateStatus, collapseSetInsight } from "../setSummary";
 
 const metric = (
   key: string,
@@ -100,5 +100,30 @@ describe("summarizeSet", () => {
     const rom = out.find((m) => m.key === "rom")!;
     expect(rom.repCount).toBe(2);
     expect(rom.status).toBe("warn"); // 1 of 2 passed
+  });
+});
+
+describe("collapseSetInsight", () => {
+  it("collapses an all-reps enumeration to a set-level sentence", () => {
+    expect(
+      collapseSetInsight("Focus on form for reps 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11", 11)
+    ).toBe("Focus on form across the whole set.");
+  });
+
+  it("reports a count when only some reps are flagged", () => {
+    expect(collapseSetInsight("Focus on form for reps 2, 5, 9", 11)).toBe(
+      "Focus on form — 3 of 11 reps were flagged."
+    );
+  });
+
+  it("handles the singular 'rep' wording", () => {
+    expect(collapseSetInsight("Focus on form for rep 4", 10)).toBe(
+      "Focus on form — 1 of 10 reps were flagged."
+    );
+  });
+
+  it("leaves unrelated insights untouched", () => {
+    const other = "Elbow drift increasing — possible fatigue";
+    expect(collapseSetInsight(other, 11)).toBe(other);
   });
 });

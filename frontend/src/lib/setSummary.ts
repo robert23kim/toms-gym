@@ -11,6 +11,27 @@
 
 export type MetricStatus = "pass" | "warn" | "fail";
 
+/**
+ * The engine emits a per-rep insight like "Focus on form for reps 1, 2, 3, 4,
+ * 5, 6, 7, 8, 9, 10, 11". On a set-scored lift that enumeration is exactly the
+ * rep-by-rep framing the set view exists to remove, and it degrades as the set
+ * gets longer. Collapse it to a set-level sentence; leave every other insight
+ * untouched.
+ */
+export function collapseSetInsight(insight: string, totalReps: number): string {
+  const m = /^Focus on form for reps? ([\d,\s]+)$/i.exec(insight.trim());
+  if (!m) return insight;
+  const flagged = m[1]
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean).length;
+  if (flagged === 0) return insight;
+  if (totalReps > 0 && flagged >= totalReps) {
+    return "Focus on form across the whole set.";
+  }
+  return `Focus on form — ${flagged} of ${totalReps} reps were flagged.`;
+}
+
 export interface SetMetricInput {
   key: string;
   label: string;
