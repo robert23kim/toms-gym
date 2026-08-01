@@ -52,6 +52,21 @@ describe("LeaderboardRow", () => {
     expect(row).toHaveTextContent("43.1s");
   });
 
+  test("champion rows get a crown; ordinary rows do not", () => {
+    render(
+      <MemoryRouter>
+        <LeaderboardRow row={makeRow()} metric="time" clipHref={null} isChampion />
+      </MemoryRouter>,
+    );
+    expect(screen.getByLabelText("Challenge champion")).toBeInTheDocument();
+    expect(screen.getByTestId("leaderboard-row")).toHaveTextContent("👑");
+  });
+
+  test("no crown without the champion flag", () => {
+    renderRow(makeRow());
+    expect(screen.queryByLabelText("Challenge champion")).not.toBeInTheDocument();
+  });
+
   test("weight metric switches the score unit to lbs", () => {
     renderRow(makeRow({ score: 300.6, best_by_lift: { Squat: 300.6 } }), "weight");
     expect(screen.getByTestId("leaderboard-row")).toHaveTextContent("301lbs");

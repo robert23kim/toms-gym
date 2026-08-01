@@ -7,7 +7,7 @@ import axios from "axios";
 import { Challenge, ChallengeLeaderboard, ChallengeLeaderboardRow, LiftingResult } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
-import { getChallengeLeaderboard, getLiftingResult, triggerLiftingAnalysis } from "../lib/api";
+import { getChallengeLeaderboard, getLiftingResult, triggerLiftingAnalysis, fetchChampions } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
@@ -80,6 +80,8 @@ const ChallengeDetail: React.FC = () => {
   const viewerId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
   // Which leaderboard row's attempt history is open (single-open accordion).
   const [expandedAttemptsUserId, setExpandedAttemptsUserId] = useState<string | null>(null);
+  // Winner of this challenge once it has ended (crown flair); non-fatal fetch.
+  const [championUserId, setChampionUserId] = useState<string | null>(null);
 
   // Upload form state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -312,6 +314,22 @@ const ChallengeDetail: React.FC = () => {
       );
     }
   };
+
+  // /champions only ever returns ended challenges, so matching on the id is
+  // enough — no status check needed. Non-fatal: no crown on failure.
+  useEffect(() => {
+    let cancelled = false;
+    fetchChampions()
+      .then((champs) => {
+        if (cancelled) return;
+        const mine = champs.find((c) => c.competition_id === id);
+        setChampionUserId(mine ? String(mine.user_id) : null);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -767,17 +785,32 @@ const ChallengeDetail: React.FC = () => {
                     podium cards stay pure visuals, so athletes get chips below:
                     a nickname badge (plank/time) and, for multi-attempt lifters,
                     an expandable attempts toggle. */}
-                {podiumRows.some((r) => r.attempt_count > 1 || rowNickname(r)) && (
+                {podiumRows.some(
+                  (r) =>
+                    r.attempt_count > 1 ||
+                    rowNickname(r) ||
+                    championUserId === String(r.user_id),
+                ) && (
                   <div className="mb-6 -mt-2 space-y-2">
                     <div className="flex flex-wrap justify-center gap-2">
                       {podiumRows
-                        .filter((r) => r.attempt_count > 1 || rowNickname(r))
+                        .filter(
+                          (r) =>
+                            r.attempt_count > 1 ||
+                            rowNickname(r) ||
+                            championUserId === String(r.user_id),
+                        )
                         .map((r) => {
                           const expanded = expandedAttemptsUserId === String(r.user_id);
                           const nickname = rowNickname(r);
                           const multi = r.attempt_count > 1;
                           const inner = (
                             <>
+                              {championUserId === String(r.user_id) && (
+                                <span role="img" aria-label="Challenge champion">
+                                  👑
+                                </span>
+                              )}
                               <span className="text-white/70">{r.name || "Athlete"}</span>
                               {nickname && <NicknameBadge nickname={nickname} />}
                               {multi && (
@@ -874,6 +907,7 @@ const ChallengeDetail: React.FC = () => {
                                 attemptCount={row.attempt_count}
                                 expanded={expanded}
                                 onToggleAttempts={toggle}
+                                isChampion={championUserId === String(row.user_id)}
                               />
                             )}
                             {expanded && (

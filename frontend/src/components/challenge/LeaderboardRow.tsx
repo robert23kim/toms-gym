@@ -16,6 +16,8 @@ interface LeaderboardRowProps {
   attemptCount?: number;
   expanded?: boolean;
   onToggleAttempts?: () => void;
+  /** Won this challenge (ended challenges only) — renders a crown. */
+  isChampion?: boolean;
 }
 
 function formatDate(date: string | null): string {
@@ -40,6 +42,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
   attemptCount,
   expanded = false,
   onToggleAttempts,
+  isChampion = false,
 }) => {
   const dimmed = row.score <= 0;
   const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
@@ -103,6 +106,11 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
         />
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
+            {isChampion && (
+              <span className="shrink-0" role="img" aria-label="Challenge champion">
+                👑
+              </span>
+            )}
             <span className={`truncate text-sm font-semibold lg:text-[14.5px] ${dimmed ? "text-white/50" : ""}`}>
               {row.name || "Athlete"}
             </span>
