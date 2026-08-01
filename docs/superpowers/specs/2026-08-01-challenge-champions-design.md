@@ -101,3 +101,27 @@ endpoints (smears logic across three routes) and frontend-only computation
 - Hall of Fame page / past-champions strip.
 - Persisted Champion table (revisit if perks need frozen results).
 - Ties, podium (2nd/3rd) swag, per-category champions.
+
+## As-built deltas (shipped 2026-08-01)
+
+This spec is the pre-implementation record; three details changed during the
+build. `CLAUDE.md` → "Challenge Champions" is the living description.
+
+- **Champion pack style.** Written as "6 gold-themed DiceBear avatars"; shipped
+  on the `big-smile` style (seeds `goldie`, `laurel`, `victor`, `trophy`,
+  `glory`, `champ`) — DiceBear has no gold-themed style, so the seeds carry the
+  motif.
+- **Where the championship count enters.** The spec had it "passed into
+  `evaluate`/`unlocked_avatar_keys`". Shipped: `evaluate()` is untouched and
+  never emits `champion`; `achievement_routes.py` appends the `champion` pack
+  key when the user holds ≥1 championship. This keeps `badge_total()` at 6 and
+  the ladder semantics unchanged.
+- **Achievements response shape.** Rather than shipping the catalog to the
+  client, the route returns `avatars: [{key, url}]` (resolved server-side) plus
+  `locked_packs: [{key, title, emoji, hint}]`, backed by new pure helpers
+  `pack_hint` / `locked_packs` / `unlocked_avatars`.
+
+The merge of `achievements/milestone-avatar-unlocks` called for in
+"Architecture" is done. Note that branch's own plan is only partly realized —
+see the as-built banner on
+`docs/superpowers/specs/2026-07-06-achievement-avatar-unlocks-design.md`.

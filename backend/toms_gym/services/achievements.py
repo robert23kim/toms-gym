@@ -39,7 +39,8 @@ PACKS = []
 for _ladder_key, _style, _seeds in _STYLES:
     _keys = []
     for _i, _seed in enumerate(_seeds, start=1):
-        # legendary pack shares the avataaars style; namespace its keys
+        # Keys are namespaced by STYLE, not pack — first_steps and plank_royalty
+        # both use avataaars, so a seed repeated across them would collide.
         _key = f"{_style}-{_seed}"
         AVATAR_CATALOG[_key] = f"{_DICEBEAR}/{_style}/svg?seed={_seed}"
         _keys.append(_key)

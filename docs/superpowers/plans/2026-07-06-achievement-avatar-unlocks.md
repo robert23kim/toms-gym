@@ -1,5 +1,16 @@
 # Achievement Milestone Path + Avatar Unlocks Implementation Plan
 
+> **⚠️ Partly executed (2026-08-01).** Tasks 1, 3, 5 and the AvatarPicker half of
+> Task 7 shipped (as a dependency of Challenge Champions), with the migration
+> landing as `avatar TEXT` instead of the planned `VARCHAR(64)` and the
+> achievements response using `avatars` / `locked_packs` instead of
+> `locked_by_tier` / `current_avatar`. **Tasks 4, 6, 8 were never done** —
+> `BadgeStrip`, `MilestonePath`, and avatar propagation into the leaderboard /
+> podium / challenge components do not exist. The code blocks below are the
+> original plan, not a description of the tree. See the as-built banner on
+> `docs/superpowers/specs/2026-07-06-achievement-avatar-unlocks-design.md` and
+> `CLAUDE.md` → "Challenge Champions".
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** A plank-first milestone ladder that awards badges (retroactively too), unlocks tiered DiceBear avatar packs, shows a badge strip on Index and the full path + avatar picker on Profile, and renders chosen avatars across challenge surfaces.

@@ -2,6 +2,12 @@
 
 Captured 2026-07-06 against production (`https://my-frontend-quyiiugyoq-ue.a.run.app`, frontend build `v2026-07-06 16:14 UTC`) — **after the UX roadmap shipped** (T1–T16, see `docs/plans/2026-07-06-ux-roadmap.md` and the "UX Roadmap (shipped 2026-07-06)" section of `CLAUDE.md`). Screenshots live in [`screenshots/`](screenshots/); each section links the pages it covers. Earlier revisions of this doc describe the pre-roadmap site — the observations at the bottom that drove the roadmap are now resolved.
 
+> **Post-capture note (2026-08-01):** Challenge Champions shipped after these
+> screenshots were taken. It added **no new routes** — so the route table below
+> is still accurate — but `/` now carries a champion spotlight card, `/profile/:id`
+> a trophy case + champion flair + avatar picker, and `/challenges/:id` a 👑 on the
+> winner's podium chip. See `CLAUDE.md` → "Challenge Champions".
+
 ## Global Navigation
 
 Every page shares the same navbar and footer:

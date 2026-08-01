@@ -1,7 +1,29 @@
 # Achievement Milestone Path + Avatar Unlocks — Design
 
+> **⚠️ Partly built (2026-08-01).** The pure service and the avatar half of this
+> design shipped as a dependency of Challenge Champions; the milestone-path UI
+> never did. Read `CLAUDE.md` → "Challenge Champions" for what actually exists.
+> Specifics where this document no longer matches the code:
+>
+> - **Shipped:** `services/achievements.py` (ladder, catalog, `evaluate`,
+>   `next_milestone`), `GET /users/<id>/achievements`, `PUT /users/<id>/avatar`,
+>   `User.avatar`, and `components/profile/AvatarPicker.tsx`.
+> - **Not built:** `BadgeStrip`, `MilestonePath`, and the whole
+>   `frontend/src/components/achievements/` directory. `ladder` and `next` are
+>   served but nothing renders them.
+> - **Not built:** avatar propagation into `Podium` / `LeaderboardRow` /
+>   `MomentumLine`, the golf pages (`GolfProfile`, `GolfLeaderboard`), or
+>   `ChampionSpotlight`. The chosen avatar appears only on the profile header;
+>   everywhere else still uses deterministic `getGolfAvatar`.
+> - **Column type:** shipped as `avatar TEXT`, not `VARCHAR(64)`.
+> - **Response shape:** shipped as flat `avatars: [{key, url}]` +
+>   `locked_packs: [...]` + `avatar`, not
+>   `{avatars: {unlocked, locked_by_tier}, current_avatar}`.
+> - **Packs:** 7 now, not 6 — Challenge Champions added a `champion` pack that
+>   unlocks on winning a challenge rather than by a ladder tier.
+
 **Date:** 2026-07-06
-**Status:** Approved
+**Status:** Approved (superseded in part — see banner)
 **Scope:** Backend (migration 015, achievements service + routes, award hooks, avatar on existing serializers) + frontend (BadgeStrip, MilestonePath, AvatarPicker, avatar preference in challenge components).
 
 ## Problem

@@ -10,6 +10,10 @@ Three independent analysis pipelines share the app shell:
 - **Bowling** — upload bowling videos; ball trajectory, lane edges, and entry/pin-impact boards are detected. Manual annotation UI at `frontend/src/pages/AnnotationWorkspace.tsx`. See `backend/toms_gym/routes/bowling_routes.py`, `docs/plans/2026-03-04-bowling-pages-implementation.md`.
 - **Golf** — upload a scorecard photo; OCR parses hole-by-hole scores for every handwritten player on the card; user confirms to compute a USGA WHS handicap. See `backend/toms_gym/routes/golf_routes.py`, `docs/golf-feature.md`.
 
+Wrapped around them:
+
+- **Challenges & champions** — time-based (plank) and weight-based boards with podiums, attempt history, and per-athlete flair. When a challenge ends, its rank-1 finisher is crowned: trophy case, title, exclusive avatar pack, and a spotlight card on the home page. Champions are computed on read from the leaderboard (`GET /champions`) rather than stored — see `backend/toms_gym/services/champions.py` and the "Challenge Champions" section of `CLAUDE.md`.
+
 Authentication is optional: uploads accept either a `user_id` or an email, auto-creating a passwordless profile on first submission. Users can set a password later via `/auth/register`.
 
 ## Project Structure

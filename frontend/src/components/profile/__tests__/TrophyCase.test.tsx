@@ -41,6 +41,9 @@ describe("TrophyCase", () => {
     expect(screen.getAllByText(/🏆/)).toHaveLength(2);
   });
 
+  // Only meaningful west of Greenwich: `new Date("2026-07-31")` parses as UTC
+  // midnight, which is still the 31st in UTC/eastern zones. jest.config.js pins
+  // TZ so this actually guards the regression in CI.
   it("renders the win date without a timezone day-shift", () => {
     render(
       <MemoryRouter>

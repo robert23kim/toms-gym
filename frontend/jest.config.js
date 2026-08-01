@@ -1,3 +1,9 @@
+// Pin the timezone so date-formatting assertions are deterministic. A western
+// zone is deliberate: bare ISO dates ("2026-07-31") parse as UTC midnight and
+// render a day early only west of Greenwich, so a UTC runner would pass that
+// bug (see TrophyCase.test.tsx).
+process.env.TZ = 'America/Los_Angeles';
+
 module.exports = {
   preset: 'ts-jest',
   testEnvironment: 'jsdom',
