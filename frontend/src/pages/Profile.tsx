@@ -11,6 +11,7 @@ import LiftHistoryList from '../components/profile/LiftHistoryList';
 import GhibliAvatar from '../components/GhibliAvatar';
 import { fetchRounds, fetchBowlingResultsByUser, fetchChampions, Champion } from "../lib/api";
 import TrophyCase, { championTitle } from "../components/profile/TrophyCase";
+import ChampionConfetti from "../components/profile/ChampionConfetti";
 import { GolfRoundListItem, BowlingResult } from "../lib/types";
 
 // Interfaces for API response data
@@ -275,6 +276,13 @@ const Profile = () => {
             )}
           </div>
         </div>
+
+        {champions.length > 0 && (
+          <ChampionConfetti
+            competitionId={champions[0].competition_id}
+            userId={champions[0].user_id}
+          />
+        )}
 
         <TrophyCase champions={champions} />
 

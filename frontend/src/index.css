@@ -128,6 +128,12 @@
   .ambient-glow-1, .ambient-glow-2, .ambient-glow-3 { animation: none; }
 }
 
+/* Champion celebration (ChampionConfetti.tsx) — one-time burst on a win */
+@keyframes confetti-fall {
+  from { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+  to { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+}
+
 /* Quiet-gym demo loop (DemoLoop.tsx) — 12s cycle: plank 0-4s, bowl 4-8s, golf 8-12s */
 .demo-scene { opacity: 0; animation: demo-scene-cycle 12s infinite; }
 .demo-scene-bowl { animation-delay: 4s; }
