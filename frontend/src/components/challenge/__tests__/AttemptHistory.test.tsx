@@ -44,7 +44,21 @@ const weightAttempt = (id: string, iso: string, weight: number, grade: string | 
   hold_s: null,
 });
 
-const renderPanel = (metric: "time" | "weight", competitionId: string) =>
+const pushupAttempt = (id: string, iso: string, reps: number | null, grade: string | null) => ({
+  attempt_id: id,
+  competition_id: "comp3",
+  competition_name: "Pushup Challenge",
+  lift_type: "pushup",
+  weight: null,
+  created_at: iso,
+  status: "completed",
+  analysis_status: reps === null ? "processing" : "completed",
+  grade,
+  total_reps: reps,
+  hold_s: null,
+});
+
+const renderPanel = (metric: "time" | "weight" | "reps", competitionId: string) =>
   render(
     <MemoryRouter>
       <AttemptHistory userId="u1" competitionId={competitionId} metric={metric} />
@@ -120,5 +134,33 @@ describe("AttemptHistory", () => {
     await waitFor(() =>
       expect(screen.getByText(/couldn't load attempts/i)).toBeInTheDocument()
     );
+  });
+
+  it("reps metric: renders rep counts + grade pill and crowns the best", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: {
+        lifts: [
+          pushupAttempt("p1", "2026-08-02T09:00:00+00:00", 30, "A"),
+          pushupAttempt("p2", "2026-08-01T09:00:00+00:00", 12, "C"),
+        ],
+        total: 2,
+      },
+    });
+    renderPanel("reps", "comp3");
+    await waitFor(() => expect(screen.getByText("30 reps")).toBeInTheDocument());
+    expect(screen.getByText("12 reps")).toBeInTheDocument();
+    expect(screen.getByText("A")).toBeInTheDocument();
+    expect(screen.getByText("🏆").closest("a")).toHaveAttribute(
+      "href",
+      "/challenges/comp3/participants/u1/video/p1"
+    );
+  });
+
+  it("reps metric: shows analyzing… while a pushup attempt has no rep count yet", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { lifts: [pushupAttempt("p9", "2026-08-03T09:00:00+00:00", null, null)], total: 1 },
+    });
+    renderPanel("reps", "comp3");
+    await waitFor(() => expect(screen.getByText("analyzing…")).toBeInTheDocument());
   });
 });

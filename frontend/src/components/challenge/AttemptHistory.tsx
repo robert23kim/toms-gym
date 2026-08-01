@@ -15,6 +15,7 @@ interface AttemptRow {
   analysis_status: string | null;
   grade: string | null;
   hold_s: number | null;
+  total_reps: number | null;
   steadiness: number | null;
 }
 
@@ -41,7 +42,7 @@ const fmtDate = (iso: string | null) =>
 
 /** The attempt's value under this challenge's metric, for 🏆 ranking. */
 const metricValue = (row: AttemptRow, metric: ChallengeMetric): number | null =>
-  metric === "time" ? row.hold_s : row.weight;
+  metric === "time" ? row.hold_s : metric === "reps" ? row.total_reps : row.weight;
 
 /**
  * Lazy attempt history for one athlete in one challenge — rendered under an
@@ -101,7 +102,22 @@ const AttemptHistory: React.FC<Props> = ({ userId, competitionId, metric }) => {
               {fmtDate(row.created_at)}
             </span>
             <span className="flex-1 min-w-0 flex items-center gap-2">
-              {metric === "time" ? (
+              {metric === "reps" ? (
+                <>
+                  <span className="font-medium tabular-nums">
+                    {row.total_reps != null
+                      ? `${row.total_reps} reps`
+                      : analyzing
+                        ? "analyzing…"
+                        : "—"}
+                  </span>
+                  {row.grade && (
+                    <span className={`inline-flex items-center justify-center w-5 h-5 rounded text-[11px] font-bold ${GRADE_CLASS[row.grade] ?? "bg-secondary"}`}>
+                      {row.grade}
+                    </span>
+                  )}
+                </>
+              ) : metric === "time" ? (
                 <span className="flex items-center gap-2">
                   <span className="font-medium tabular-nums">
                     {row.hold_s != null ? fmtHold(row.hold_s) : analyzing ? "analyzing…" : "—"}

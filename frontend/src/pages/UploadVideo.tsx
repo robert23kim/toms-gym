@@ -20,6 +20,12 @@ interface UserProfile {
   }[];
 }
 
+// Pushups are scored by rep count, so no weight is collected. Module-level so
+// it can never be shadowed by a block-scoped binding inside the render tree.
+function isBodyweightLift(liftType: string): boolean {
+  return liftType === 'Pushup';
+}
+
 const UploadVideo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
@@ -101,7 +107,7 @@ const UploadVideo: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!selectedFile || !weight || !liftType) {
+    if (!selectedFile || !liftType || (!weight && !isBodyweightLift(liftType))) {
       setError("Please fill in all fields");
       return;
     }
@@ -111,10 +117,12 @@ const UploadVideo: React.FC = () => {
     setError(null);
 
     try {
-      // Ensure weight is a valid number and convert to string
-      const weightValue = parseFloat(weight);
+      // Ensure weight is a valid number and convert to string. Bodyweight
+      // lifts (pushups) collect no weight, so they post 0.
+      const weightValue = isBodyweightLift(liftType) ? 0 : parseFloat(weight);
       if (isNaN(weightValue)) {
         setError("Please enter a valid weight");
+        setIsUploading(false);
         return;
       }
 
@@ -285,19 +293,22 @@ const UploadVideo: React.FC = () => {
                     <option value="Squat">Squat</option>
                     <option value="Bench">Bench Press</option>
                     <option value="Deadlift">Deadlift</option>
+                    <option value="Pushup">Pushup</option>
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium mb-2">Weight (kg)</label>
-                  <input
-                    type="number"
-                    value={weight}
-                    onChange={(e) => setWeight(e.target.value)}
-                    placeholder="Enter weight in kg"
-                    className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                  />
-                </div>
+                {!isBodyweightLift(liftType) && (
+                  <div>
+                    <label className="block text-sm font-medium mb-2">Weight (kg)</label>
+                    <input
+                      type="number"
+                      value={weight}
+                      onChange={(e) => setWeight(e.target.value)}
+                      placeholder="Enter weight in kg"
+                      className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
+                    />
+                  </div>
+                )}
 
                 <div>
                   <label className="block text-sm font-medium mb-2">Video</label>

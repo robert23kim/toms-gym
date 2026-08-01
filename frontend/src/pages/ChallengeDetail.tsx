@@ -58,6 +58,13 @@ function genderToCategories(gender: string | null | undefined): string[] {
   return ['Men', 'Women'];
 }
 
+// Lifts scored by the body, not the bar — the upload form hides the weight
+// field for these. Module-level so it can never be shadowed by a block-scoped
+// binding inside the render tree.
+function isBodyweightLift(liftType: string): boolean {
+  return liftType === 'Plank' || liftType === 'Pushup';
+}
+
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
@@ -470,6 +477,7 @@ const ChallengeDetail: React.FC = () => {
         'Deadlift': 'Deadlift',
         'Bicep Curl': 'BicepCurl',
         'Plank': 'Plank',
+        'Pushup': 'Pushup',
       };
       const allowedFormIds = allowedDbValues.map(d => dbToFormId[d]).filter(Boolean);
       if (allowedFormIds.length > 0 && !allowedFormIds.includes(liftType)) {
@@ -958,6 +966,7 @@ const ChallengeDetail: React.FC = () => {
                     { id: 'Deadlift', label: 'Deadlift', dbValue: 'Deadlift' },
                     { id: 'BicepCurl', label: 'Bicep Curl', dbValue: 'Bicep Curl' },
                     { id: 'Plank', label: 'Plank', dbValue: 'Plank' },
+                    { id: 'Pushup', label: 'Pushup', dbValue: 'Pushup' },
                   ];
                   const challengeLiftDbValues = (challenge?.categories || []).filter(
                     c => !c.includes('kg') && c !== 'Men' && c !== 'Women'
@@ -967,7 +976,7 @@ const ChallengeDetail: React.FC = () => {
                     : ALL_LIFT_OPTIONS;
                   const onlyOne = liftOptions.length === 1;
                   return (
-                    <div className={liftType === 'Plank' ? '' : 'grid grid-cols-1 sm:grid-cols-2 gap-4'}>
+                    <div className={isBodyweightLift(liftType) ? '' : 'grid grid-cols-1 sm:grid-cols-2 gap-4'}>
                       <div>
                         <label className="block text-sm font-medium mb-1">Lift Type</label>
                         {onlyOne ? (
@@ -987,7 +996,7 @@ const ChallengeDetail: React.FC = () => {
                         )}
                       </div>
 
-                      {liftType !== 'Plank' && (
+                      {!isBodyweightLift(liftType) && (
                         <div>
                           <label className="block text-sm font-medium mb-1">Weight (lbs)</label>
                           <input
