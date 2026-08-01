@@ -69,7 +69,8 @@ def get_achievements(user_id):
             "ladder": achievements.LADDER,
             "earned": earned,
             "next": achievements.next_milestone(stats, earned),
-            "avatar_keys": achievements.unlocked_avatar_keys(earned),
+            "avatars": achievements.unlocked_avatars(earned),
+            "locked_packs": achievements.locked_packs(earned),
             "avatar": current,
         }
     except Exception as e:

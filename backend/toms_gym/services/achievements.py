@@ -47,9 +47,50 @@ for _ladder_key, _style, _seeds in _STYLES:
 
 CHAMPION_PACK_KEYS = dict(PACKS)["champion"]
 
+# The champion pack is unlocked by winning a challenge, not by a ladder tier.
+CHAMPION_PACK = {"key": "champion", "title": "Champion", "emoji": "👑",
+                 "hint": "Win a challenge"}
+
 
 def badge_total():
     return len(LADDER)
+
+
+def pack_hint(pack_key):
+    """One line telling the user how to unlock a pack (None if unknown)."""
+    if pack_key == CHAMPION_PACK["key"]:
+        return CHAMPION_PACK["hint"]
+    tier = next((t for t in LADDER if t["key"] == pack_key), None)
+    if tier is None:
+        return None
+    if tier["kind"] == "upload":
+        return "Upload your first video"
+    if tier["kind"] == "hold":
+        return f"Hold a plank for {tier['threshold']}s"
+    return "5 plank attempts with a 120s hold"
+
+
+def locked_packs(earned_keys):
+    """Packs the user has NOT unlocked, each with its milestone hint."""
+    earned = set(earned_keys)
+    titles = {t["key"]: t for t in LADDER}
+    locked = []
+    for pack_key, _keys in PACKS:
+        if pack_key in earned:
+            continue
+        if pack_key == CHAMPION_PACK["key"]:
+            locked.append(dict(CHAMPION_PACK))
+            continue
+        tier = titles[pack_key]
+        locked.append({"key": pack_key, "title": tier["title"],
+                       "emoji": tier["emoji"], "hint": pack_hint(pack_key)})
+    return locked
+
+
+def unlocked_avatars(earned_keys):
+    """Unlocked avatars as [{key, url}] — the frontend never needs the catalog."""
+    return [{"key": k, "url": AVATAR_CATALOG[k]}
+            for k in unlocked_avatar_keys(earned_keys)]
 
 
 def evaluate(stats):

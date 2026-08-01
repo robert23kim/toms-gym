@@ -526,10 +526,24 @@ export async function fetchChampions(userId?: string): Promise<Champion[]> {
   return response.data.champions || [];
 }
 
+export interface UnlockedAvatar {
+  key: string;
+  url: string;
+}
+
+export interface LockedPack {
+  key: string;
+  title: string;
+  emoji: string;
+  hint: string;
+}
+
 export interface AchievementsResponse {
   ladder: { key: string; tier: number; title: string; emoji: string }[];
   earned: string[];
-  avatar_keys: string[];
+  /** Catalog keys resolved to URLs server-side. */
+  avatars: UnlockedAvatar[];
+  locked_packs: LockedPack[];
   avatar: string | null;
   next: { key: string; title: string; emoji: string; tier: number } | null;
 }

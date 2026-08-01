@@ -80,6 +80,35 @@ def test_champion_pack_unlocked_only_via_champion_key():
     assert set(CHAMPION_PACK_KEYS) <= set(unlocked_avatar_keys(["champion"]))
 
 
+def test_pack_hint_explains_how_to_unlock_each_pack():
+    from toms_gym.services.achievements import pack_hint
+    assert pack_hint("first_steps") == "Upload your first video"
+    assert pack_hint("half_minute") == "Hold a plank for 30s"
+    assert pack_hint("statue_tier") == "Hold a plank for 180s"
+    assert pack_hint("plank_royalty") == "5 plank attempts with a 120s hold"
+    assert pack_hint("champion") == "Win a challenge"
+    assert pack_hint("nope") is None
+
+
+def test_locked_packs_lists_every_unearned_pack():
+    from toms_gym.services.achievements import locked_packs
+    locked = locked_packs(["first_steps"])
+    keys = [p["key"] for p in locked]
+    assert "first_steps" not in keys
+    assert "champion" in keys and "half_minute" in keys
+    champ = next(p for p in locked if p["key"] == "champion")
+    assert champ == {"key": "champion", "title": "Champion", "emoji": "👑",
+                     "hint": "Win a challenge"}
+
+
+def test_unlocked_avatars_resolve_to_urls():
+    from toms_gym.services.achievements import unlocked_avatars
+    avatars = unlocked_avatars(["first_steps"])
+    assert len(avatars) == 6
+    assert all(a["url"].startswith("https://api.dicebear.com/7.x/") for a in avatars)
+    assert all(a["key"] in AVATAR_CATALOG for a in avatars)
+
+
 def test_champion_is_not_a_ladder_tier():
     # champion is a pack unlock, not a milestone: evaluate() never emits it
     assert "champion" not in evaluate(_stats(True, 400.0, 20))

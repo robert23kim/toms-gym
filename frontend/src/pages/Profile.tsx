@@ -12,6 +12,7 @@ import GhibliAvatar from '../components/GhibliAvatar';
 import { fetchRounds, fetchBowlingResultsByUser, fetchChampions, Champion } from "../lib/api";
 import TrophyCase, { championTitle } from "../components/profile/TrophyCase";
 import ChampionConfetti from "../components/profile/ChampionConfetti";
+import AvatarPicker from "../components/profile/AvatarPicker";
 import { GolfRoundListItem, BowlingResult } from "../lib/types";
 
 // Interfaces for API response data
@@ -89,6 +90,9 @@ const Profile = () => {
 
   // Challenge championships (trophy case + title flair); non-fatal fetch.
   const [champions, setChampions] = useState<Champion[]>([]);
+  // Chosen avatar (migration 015); overrides the deterministic GhibliAvatar.
+  const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
+  const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
   const resolvedUserId = id || localStorage.getItem('userId') || null;
 
@@ -121,6 +125,7 @@ const Profile = () => {
       }
       setBowlingResults(bowlRes || []);
       setChampions(champRes || []);
+      setAvatarUrl(profileRes.data?.user?.avatar_url ?? null);
     } catch (err: any) {
       console.error('Error fetching profile data:', err);
       const errorMessage = err.response?.data?.error || 'Failed to load profile data';
@@ -248,11 +253,19 @@ const Profile = () => {
         {/* Profile Header */}
         <div className="bg-card rounded-xl p-6 mb-6 shadow-sm">
           <div className="flex items-center gap-6">
-            <GhibliAvatar
-              id={profileData.user.id}
-              name={profileData.user.name}
-              size="xl"
-            />
+            {avatarUrl ? (
+              <img
+                src={avatarUrl}
+                alt=""
+                className="h-24 w-24 rounded-full object-cover bg-secondary"
+              />
+            ) : (
+              <GhibliAvatar
+                id={profileData.user.id}
+                name={profileData.user.name}
+                size="xl"
+              />
+            )}
             <div>
               <h1 className="text-3xl font-bold mb-2">{profileData.user.name}</h1>
               {champions.length > 0 && (
@@ -261,6 +274,15 @@ const Profile = () => {
                 </p>
               )}
               <p className="text-muted-foreground">{profileData.user.email}</p>
+              {resolvedUserId === localStorage.getItem("userId") && (
+                <button
+                  type="button"
+                  onClick={() => setShowAvatarPicker((v) => !v)}
+                  className="mt-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {showAvatarPicker ? "Hide avatars" : "Change avatar"}
+                </button>
+              )}
             </div>
           </div>
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -282,6 +304,10 @@ const Profile = () => {
             competitionId={champions[0].competition_id}
             userId={champions[0].user_id}
           />
+        )}
+
+        {showAvatarPicker && resolvedUserId && (
+          <AvatarPicker userId={resolvedUserId} onSelected={setAvatarUrl} />
         )}
 
         <TrophyCase champions={champions} />
