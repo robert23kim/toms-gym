@@ -30,6 +30,7 @@ from toms_gym.routes.golf_routes import golf_bp
 from toms_gym.routes.short_link_routes import short_link_bp
 from toms_gym.routes.jobs_routes import jobs_bp
 from toms_gym.routes.ticket_routes import ticket_bp
+from toms_gym.routes.achievement_routes import achievement_bp
 
 load_dotenv()
 
@@ -200,6 +201,18 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"User is_test migration note: {e}")
 
+        # Chosen avatar catalog key on User (migration 015) — challenge
+        # champions feature; resolved to a URL via services/achievements.py.
+        try:
+            session.execute(sqlalchemy.text(
+                'ALTER TABLE "User" ADD COLUMN IF NOT EXISTS avatar TEXT'
+            ))
+            session.commit()
+            logging.info("User avatar migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"User avatar migration note: {e}")
+
         # Create MagicLinkToken table (migration 014) — one-time passwordless
         # sign-in links. Only the token hash is stored; single-use is enforced
         # by an atomic UPDATE in the consume route.
@@ -288,6 +301,7 @@ app.register_blueprint(telemetry_bp)
 app.register_blueprint(short_link_bp)
 app.register_blueprint(jobs_bp)
 app.register_blueprint(ticket_bp)
+app.register_blueprint(achievement_bp)
 
 # Start email processor if enabled
 start_background_processor()

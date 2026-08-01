@@ -49,9 +49,9 @@ def test_unlocked_avatars_accumulate_by_tier():
     assert set(t1) <= set(t2)
 
 
-def test_catalog_has_36_resolvable_avatars():
-    assert len(AVATAR_CATALOG) == 36
-    assert sum(len(keys) for _, keys in PACKS) == 36
+def test_catalog_has_42_resolvable_avatars():
+    assert len(AVATAR_CATALOG) == 42
+    assert sum(len(keys) for _, keys in PACKS) == 42
     for key, url in AVATAR_CATALOG.items():
         assert resolve_avatar_url(key) == url
         assert url.startswith("https://api.dicebear.com/7.x/")
@@ -65,3 +65,22 @@ def test_next_milestone_progress():
     assert nxt["progress"]["needed_s"] == 120
     # all earned -> None
     assert next_milestone(_stats(True, 300.0, 9), [t["key"] for t in LADDER]) is None
+
+
+def test_champion_pack_exists_and_resolves():
+    from toms_gym.services.achievements import CHAMPION_PACK_KEYS
+    assert len(CHAMPION_PACK_KEYS) == 6
+    for key in CHAMPION_PACK_KEYS:
+        assert key in AVATAR_CATALOG
+
+
+def test_champion_pack_unlocked_only_via_champion_key():
+    from toms_gym.services.achievements import CHAMPION_PACK_KEYS
+    assert not set(CHAMPION_PACK_KEYS) & set(unlocked_avatar_keys(["first_steps"]))
+    assert set(CHAMPION_PACK_KEYS) <= set(unlocked_avatar_keys(["champion"]))
+
+
+def test_champion_is_not_a_ladder_tier():
+    # champion is a pack unlock, not a milestone: evaluate() never emits it
+    assert "champion" not in evaluate(_stats(True, 400.0, 20))
+    assert badge_total() == 6

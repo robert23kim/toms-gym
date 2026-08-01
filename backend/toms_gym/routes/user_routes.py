@@ -371,6 +371,17 @@ def get_user_profile(user_id):
         except Exception as e:
             logger.error(f"Error fetching videos: {str(e)}")
             
+        # Resolve the stored avatar catalog key (migration 015) to a URL; the
+        # frontend never needs the catalog for display.
+        try:
+            from toms_gym.services.achievements import resolve_avatar_url
+            user_data["avatar_url"] = (
+                resolve_avatar_url(user_data.get("avatar"))
+                if user_data.get("avatar") else None
+            )
+        except Exception:
+            user_data["avatar_url"] = None
+
         return jsonify({
             "user": user_data,
             "competitions": competitions_list,

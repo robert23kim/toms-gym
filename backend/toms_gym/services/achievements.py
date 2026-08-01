@@ -29,6 +29,9 @@ _STYLES = [
     ("two_minute_club", "lorelei", ["aria", "iris", "luna", "nova", "sage", "wren"]),
     ("statue_tier", "fun-emoji", ["beam", "grin", "jolt", "smirk", "wink", "zen"]),
     ("plank_royalty", "avataaars", ["monarch", "sovereign", "regal", "crown", "dynasty", "empire"]),
+    # champion is a pack key, NOT a LADDER tier: it unlocks when the route
+    # appends "champion" to earned keys (holder of >=1 challenge championship)
+    ("champion", "big-smile", ["goldie", "laurel", "victor", "trophy", "glory", "champ"]),
 ]
 
 AVATAR_CATALOG = {}
@@ -41,6 +44,8 @@ for _ladder_key, _style, _seeds in _STYLES:
         AVATAR_CATALOG[_key] = f"{_DICEBEAR}/{_style}/svg?seed={_seed}"
         _keys.append(_key)
     PACKS.append((_ladder_key, _keys))
+
+CHAMPION_PACK_KEYS = dict(PACKS)["champion"]
 
 
 def badge_total():
