@@ -298,3 +298,88 @@ def test_time_zero_score_row_has_null_steadiness():
     }]
     rows = rank_challenge(participants, metric="time")
     assert rows[0]["steadiness"] is None
+
+
+# --- reps metric (pushup challenges) ----------------------------------------
+
+def _pushup(attempt_id, reps, created_at, *, status="completed", form_score=None,
+            video_url=None, annotated_video_url=None, lift_type="Pushup"):
+    return {
+        "attempt_id": attempt_id,
+        "lift_type": lift_type,
+        "weight_kg": None,
+        "status": status,
+        "created_at": created_at,
+        "video_url": video_url,
+        "annotated_video_url": annotated_video_url,
+        "held_s": None,
+        "form_score": form_score,
+        "steadiness": None,
+        "reps": reps,
+    }
+
+
+def test_reps_board_ranks_by_best_single_attempt():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 12, "2026-08-01T10:00:00"),
+            _pushup("a2", 30, "2026-08-02T10:00:00"),
+        ]),
+        _participant("u2", "Bo", [_pushup("b1", 25, "2026-08-01T10:00:00")]),
+    ], metric="reps")
+
+    assert [r["user_id"] for r in rows] == ["u1", "u2"]
+    assert rows[0]["score"] == 30
+    assert rows[0]["rank"] == 1
+    assert rows[0]["best_by_lift"] == {"Pushup": 30}
+    assert rows[0]["attempt_count"] == 2
+    assert [h["score"] for h in rows[0]["history"]] == [12, 30]
+
+
+def test_reps_board_tiebreak_form_then_earliest():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 20, "2026-08-02T10:00:00", form_score=80.0)]),
+        _participant("u2", "Bo", [
+            _pushup("b1", 20, "2026-08-03T10:00:00", form_score=90.0)]),
+    ], metric="reps")
+
+    assert [r["user_id"] for r in rows] == ["u2", "u1"]
+
+
+def test_reps_board_excludes_failed_pending_and_other_lifts():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 15, "2026-08-01T10:00:00", status="failed"),
+            _pushup("a2", None, "2026-08-02T10:00:00"),
+            _pushup("a3", 10, "2026-08-03T10:00:00", lift_type="Squat"),
+        ]),
+    ], metric="reps")
+
+    assert rows[0]["score"] == 0
+    assert rows[0]["attempt_count"] == 0
+    assert rows[0]["clip_url"] is None
+    assert rows[0]["rank"] == 1
+
+
+def test_reps_board_zero_rep_athletes_rank_last():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [_pushup("a1", 0, "2026-08-01T10:00:00")]),
+        _participant("u2", "Bo", [_pushup("b1", 5, "2026-08-02T10:00:00")]),
+    ], metric="reps")
+
+    assert [r["user_id"] for r in rows] == ["u2", "u1"]
+
+
+def test_reps_board_clip_and_date_from_best_attempt():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 12, "2026-08-01T10:00:00", video_url="raw1.mp4"),
+            _pushup("a2", 30, "2026-08-02T10:00:00", video_url="raw2.mp4",
+                    annotated_video_url="ann2.mp4"),
+        ]),
+    ], metric="reps")
+
+    assert rows[0]["attempt_id"] == "a2"
+    assert rows[0]["clip_url"] == "ann2.mp4"
+    assert rows[0]["date"] == "2026-08-02"

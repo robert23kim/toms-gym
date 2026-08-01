@@ -9,6 +9,8 @@ A challenge is ranked by exactly one metric:
 
 * ``"time"`` (plank challenges) — rank by the athlete's longest hold
   (``held_s``) across their completed plank attempts, descending.
+* ``"reps"`` (pushup challenges) — rank by the athlete's best single-attempt
+  rep count (``reps``) across their pushup attempts, descending.
 * ``"weight"`` (lifting challenges) — rank by best-lift total: per athlete, the
   max ``weight_kg`` per lift type among completed attempts, summed. Planks are
   excluded from a weight board (you can't add seconds to kilograms).
@@ -54,6 +56,22 @@ def _compare_time_attempts(a, b) -> int:
     ah, bh = a["held_s"], b["held_s"]
     if ah != bh:
         return -1 if ah > bh else 1
+    af = a["form_score"] if a["form_score"] is not None else float("-inf")
+    bf = b["form_score"] if b["form_score"] is not None else float("-inf")
+    if af != bf:
+        return -1 if af > bf else 1
+    ak, bk = _created_key(a["created_at"]), _created_key(b["created_at"])
+    if ak != bk:
+        return -1 if ak < bk else 1
+    return 0
+
+
+def _compare_reps_attempts(a, b) -> int:
+    """Best-first ordering for pushup attempts: most reps, then higher form
+    score, then earliest created_at."""
+    ar, br = a["reps"], b["reps"]
+    if ar != br:
+        return -1 if ar > br else 1
     af = a["form_score"] if a["form_score"] is not None else float("-inf")
     bf = b["form_score"] if b["form_score"] is not None else float("-inf")
     if af != bf:
@@ -126,6 +144,74 @@ def _rank_time(participants) -> List[dict]:
         return (
             0 if r["score"] > 0 else 1,   # zero-score rows last
             -r["score"],                  # longest hold first
+            -form,                        # higher form score first
+            r["_best_created"],           # earliest created_at first
+        )
+
+    return _finalize(rows, sort_key)
+
+
+def _rank_reps(participants) -> List[dict]:
+    rows = []
+    for p in participants:
+        # A rep count only exists once analysis has produced it, so the
+        # ``reps is not None`` check gates on completion (mirrors _rank_time).
+        submitted = [a for a in p.get("attempts", []) if a.get("status") != "failed"]
+        qualifying = [
+            a for a in submitted
+            if a.get("lift_type") == "Pushup" and a.get("reps") is not None
+        ]
+
+        chrono = sorted(qualifying, key=lambda a: _created_key(a["created_at"]))
+        history = [
+            {"score": a["reps"], "date": _iso_date(a["created_at"])}
+            for a in chrono
+        ]
+
+        if qualifying:
+            best = sorted(qualifying, key=cmp_to_key(_compare_reps_attempts))[0]
+            score = best["reps"]
+            row = {
+                "score": score,
+                "best_by_lift": {"Pushup": score},
+                "form_score": best["form_score"],
+                "steadiness": None,
+                "attempt_id": best.get("attempt_id"),
+                "clip_url": _clip_url(best),
+                "thumbnail_url": None,
+                "date": _iso_date(best["created_at"]),
+                "_best_created": _created_key(best["created_at"]),
+                "_best_form": best["form_score"],
+            }
+        else:
+            row = {
+                "score": 0,
+                "best_by_lift": {},
+                "form_score": None,
+                "steadiness": None,
+                "attempt_id": None,
+                "clip_url": None,
+                "thumbnail_url": None,
+                "date": None,
+                "_best_created": _created_key(None),
+                "_best_form": None,
+            }
+
+        row.update({
+            "user_id": p.get("user_id"),
+            "name": p.get("name"),
+            "weight_class": p.get("weight_class"),
+            "gender": p.get("gender"),
+            "attempt_count": len(qualifying),
+            "history": history,
+        })
+        rows.append(row)
+
+    def sort_key(r):
+        form = r["_best_form"] if r["_best_form"] is not None else float("-inf")
+        return (
+            0 if r["score"] > 0 else 1,   # zero-score rows last
+            -r["score"],                  # most reps first
             -form,                        # higher form score first
             r["_best_created"],           # earliest created_at first
         )
@@ -220,11 +306,14 @@ def _finalize(rows, sort_key) -> List[dict]:
 def rank_challenge(participants, *, metric) -> List[dict]:
     """Rank challenge participants best-first for the given metric.
 
-    ``metric`` is ``"time"`` (plank: best hold) or ``"weight"`` (best-lift total).
+    ``metric`` is ``"time"`` (plank: best hold), ``"reps"`` (pushup: best rep
+    count) or ``"weight"`` (best-lift total).
     See the module docstring for the participant shape and scoring rules.
     """
     if metric == "time":
         return _rank_time(participants)
+    if metric == "reps":
+        return _rank_reps(participants)
     if metric == "weight":
         return _rank_weight(participants)
     raise ValueError(f"unknown metric: {metric!r}")
