@@ -27,6 +27,7 @@ const MagicLink = lazy(() => import("../pages/MagicLink"));
 const BowlingUpload = lazy(() => import("../pages/BowlingUpload"));
 const BowlingSheetUpload = lazy(() => import("../pages/BowlingSheetUpload"));
 const BowlingSheetReview = lazy(() => import("../pages/BowlingSheetReview"));
+const BowlingInsights = lazy(() => import("../pages/BowlingInsights"));
 const BowlingResult = lazy(() => import("../pages/BowlingResult"));
 const BowlingChallenge = lazy(() => import("../pages/BowlingChallenge"));
 const AnnotationWorkspace = lazy(() => import("../pages/AnnotationWorkspace"));
@@ -88,6 +89,7 @@ export const routes: RouteObject[] = [
   { path: "/bowling/scoresheet/upload", element: <BowlingSheetUpload /> },
   { path: "/bowling/snap", element: <BowlingSheetUpload autoCamera /> },
   { path: "/bowling/scoresheet/:id", element: <BowlingSheetReview /> },
+  { path: "/bowling/insights/:userId", element: <BowlingInsights /> },
   { path: "/bowling/upload/:competitionId", element: <BowlingUpload /> },
   { path: "/bowling/result/:attemptId", element: <BowlingResult /> },
   // T8 — post-upload analysis status pages (poll existing per-attempt result

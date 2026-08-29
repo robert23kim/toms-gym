@@ -2,14 +2,14 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
-import { Calendar, Trophy, Award, ArrowLeft, User, Dumbbell, Play, TrendingUp, CircleDot, Flag, Upload } from "lucide-react";
+import { Calendar, Trophy, Award, ArrowLeft, User, Dumbbell, Play, TrendingUp, CircleDot, Flag, Upload, Camera } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import axios from "axios";
 import { API_URL } from "../config";
 import VideoGallery from '../components/VideoGallery';
 import LiftHistoryList from '../components/profile/LiftHistoryList';
 import GhibliAvatar from '../components/GhibliAvatar';
-import { fetchRounds, fetchBowlingResultsByUser, fetchChampions, Champion } from "../lib/api";
+import { fetchRounds, fetchBowlingResultsByUser, fetchBowlingGames, fetchChampions, Champion, BowlingGameRow } from "../lib/api";
 import TrophyCase, { championTitle } from "../components/profile/TrophyCase";
 import ChampionConfetti from "../components/profile/ChampionConfetti";
 import AvatarPicker from "../components/profile/AvatarPicker";
@@ -87,6 +87,7 @@ const Profile = () => {
   const [golfRounds, setGolfRounds] = useState<GolfRoundListItem[]>([]);
   const [golfHandicap, setGolfHandicap] = useState<number | null>(null);
   const [bowlingResults, setBowlingResults] = useState<BowlingResult[]>([]);
+  const [sheetGames, setSheetGames] = useState<BowlingGameRow[]>([]);
 
   // Challenge championships (trophy case + title flair); non-fatal fetch.
   const [champions, setChampions] = useState<Champion[]>([]);
@@ -111,10 +112,11 @@ const Profile = () => {
 
       // User profile (lifting + competitions). Golf/bowling are fetched in
       // parallel and are non-fatal — a user may have activity in only one sport.
-      const [profileRes, golfRes, bowlRes, champRes] = await Promise.all([
+      const [profileRes, golfRes, bowlRes, sheetRes, champRes] = await Promise.all([
         axios.get(`${API_URL}/users/${userId}/profile`),
         fetchRounds(userId).catch(() => null),
         fetchBowlingResultsByUser(userId).catch(() => []),
+        fetchBowlingGames(userId, 5).catch(() => null),
         fetchChampions(userId).catch(() => []),
       ]);
 
@@ -124,6 +126,7 @@ const Profile = () => {
         setGolfHandicap(golfRes.handicap_index ?? null);
       }
       setBowlingResults(bowlRes || []);
+      setSheetGames(sheetRes?.games || []);
       setChampions(champRes || []);
       setAvatarUrl(profileRes.data?.user?.avatar_url ?? null);
     } catch (err: any) {
@@ -533,6 +536,57 @@ const Profile = () => {
 
         {/* ---- BOWL ---- */}
         {activeTab === "bowl" && (
+          <div className="space-y-6">
+          <div className="bg-card rounded-xl p-6 shadow-sm">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <Camera className="text-accent" size={24} />
+                <h2 className="text-xl font-semibold">Score sheets</h2>
+              </div>
+              {resolvedUserId && sheetGames.length > 0 && (
+                <Link
+                  to={`/bowling/insights/${resolvedUserId}`}
+                  className="text-accent hover:underline text-sm"
+                >
+                  Insights →
+                </Link>
+              )}
+            </div>
+
+            {sheetGames.length > 0 ? (
+              <div className="space-y-2">
+                {sheetGames.map((game) => (
+                  <Link
+                    key={game.id}
+                    to={`/bowling/scoresheet/${game.sheet_id}`}
+                    className="flex items-center gap-3 p-3 bg-background rounded-lg hover:bg-secondary/50 transition-colors"
+                  >
+                    <span className="text-sm text-muted-foreground w-24 shrink-0">
+                      {game.played_on}
+                    </span>
+                    <span className="flex-1 text-sm text-muted-foreground">
+                      Game {game.game_number}
+                    </span>
+                    <span className="text-lg font-semibold tabular-nums">
+                      {game.total_score ?? "—"}
+                    </span>
+                  </Link>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <p className="text-muted-foreground mb-4">No games banked yet</p>
+                <Link
+                  to="/bowling/snap"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-accent text-white rounded-lg hover:bg-accent/90"
+                >
+                  <Camera size={18} />
+                  Snap a sheet
+                </Link>
+              </div>
+            )}
+          </div>
+
           <div className="bg-card rounded-xl p-6 shadow-sm">
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-3">
@@ -591,6 +645,7 @@ const Profile = () => {
                 </Link>
               </div>
             )}
+          </div>
           </div>
         )}
 
