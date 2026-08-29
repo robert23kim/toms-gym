@@ -19,28 +19,48 @@ and a Team table. One is upside-down; one has glare over a cell. Rows obey two
 checksums: `sum(games) == scratch` and `scratch + hdcp == total` — these drive
 validation exactly like the golf OUT/IN/TOT checksums.
 
-No per-game (frame) photo exists yet. That path is built to the same contract but its
-parser can only be validated on synthetic renders until a real one arrives.
+One real per-game screen (`game_01.jpg` + `_truth.json`, four bowlers, 10 frames each
+with roll glyphs over a running score) covers the frame-level path; its truth is
+verified against the ten-pin scoring rules.
 
 ## Approach
 
-**Parse with Gemini on Vertex AI (structured JSON output), validate with a pure scoring
-engine, correct on a review page.**
+**Same path as golf: Google Vision OCR → deterministic, DB-free parser → checksum
+validation → review page.** Accuracy is measured, not assumed: every real photo in
+`backend/tests/fixtures/bowling/` gets a cached `_ocr.json` (Vision symbol dump) and a
+hand-checked `_truth.json`; the parser must reproduce the truth offline in CI, and
+`tools/bowling_sheet_debug.py` prints a per-photo hit-rate report + overlay like
+`tools/grid_debug.py` does for golf.
 
-Why not a Vision-OCR grid parser like golf: lane-monitor layouts differ per vendor and
-per screen; the golf parser took a fixture corpus to tune and we have four photos of one
-vendor. A multimodal model with a strict response schema is layout-agnostic and handles
-rotation/glare. Vertex uses the existing service account via ADC — no new secret; the
-API was enabled 2026-08-28 and the SA needs `roles/aiplatform.user`. Vision OCR stays
-untouched (golf).
+Why this over a multimodal LLM (Gemini on Vertex was probed 2026-08-28 and works, but is
+deferred): lane screens are *printed* digital text — Vision reads them cleanly, the
+parser is deterministic and unit-testable without network, and no new IAM/secret is
+needed. An LLM fallback can be added later behind a flag if a vendor layout defeats
+the parser.
 
-Trust boundary: the model's output is never accepted blind. The engine recomputes every
-total from the parts; a mismatch flags the row (`flagged`) and the review page makes the
-user look at it before confirming — the same "never silently accept" rule as golf.
+Parser design (`services/bowling_sheet_parser.py`, pure; input = Vision word+symbol
+list with centroids and page size, same shape as `golf_routes._extract_symbols`):
 
-Model: `gemini-2.5-flash` (cheap, fast, strong on screen text). Configurable via
-`BOWLING_SHEET_MODEL`. Temperature 0. Image sent inline (bytes), not via GCS URI, so the
-call works identically in dev and prod.
+- **Rotation.** Try 0°, then 90/180/270 (re-OCR) and keep the pass with the most
+  checksum-valid player rows — the golf route already does this for player count.
+- **Night sheet.** Find header words (`Game 1..3`, `Scratch`, `Hdcp`, `Total`) → column
+  x-centres; the first header band is the Player block, the second (below `Team`) is the
+  Team block. Name = leftmost alphabetic word left of the Game 1 column. Numbers are
+  assigned to the nearest name row by y (they sit ~⅓ row lower than the names on
+  QubicaAMF) and to the nearest header column by x. Validate `sum(games)==scratch` and
+  `scratch+hdcp==total`; one missing cell (glare) is inferred from the other two and
+  marked `inferred`; any other mismatch flags the row.
+- **Game screen.** Header `1..10`,`Total` gives frame column x-centres. Each player band
+  (between consecutive name rows) splits into an upper roll line and a lower cumulative
+  line. Roll glyphs (`X / - F 0-9`) are taken at **symbol** level (Vision merges `9/`
+  into one word) and binned into frame columns by cell boundaries; cumulative numbers
+  by nearest column. Then `bowling_score.score_frames` recomputes the running score;
+  a frame whose recomputed cumulative disagrees with the printed one is repaired if a
+  single hidden roll explains the printed number (e.g. the 10th-frame ball hidden under
+  a split-circle graphic), else flagged.
+
+Trust boundary: the parser never silently accepts — a mismatch flags the row and the
+review page makes the user look at it before confirming, exactly like golf.
 
 ## Data model — migration `017_bowling_scoresheets.sql`
 
@@ -51,8 +71,8 @@ CREATE TABLE IF NOT EXISTS "BowlingScoreSheet" (
   sheet_type TEXT NOT NULL CHECK (sheet_type IN ('night','game')),
   played_on DATE NOT NULL,
   image_url TEXT NOT NULL,
-  parser TEXT,                       -- 'gemini' | 'manual'
-  raw_parse JSONB,                   -- model output verbatim (debug/re-parse)
+  parser TEXT,                       -- 'vision' | 'manual'
+  raw_parse JSONB,                   -- parser output + OCR word dump (debug/re-parse)
   processing_status TEXT NOT NULL DEFAULT 'parsed',  -- parsed | failed | confirmed
   error_message TEXT,
   team_name TEXT,
@@ -98,9 +118,11 @@ golf, we don't want random league-mates on a leaderboard; nothing here is ranked
 - `validate_night_row(games, scratch, hdcp, total) -> (ok, reason)`; `validate_game_row(frames, printed_total)`.
 
 `services/bowling_sheet_parser.py`
-- `SHEET_SCHEMA` (JSON schema for Gemini response) — `{sheet_type, team_name?, players:[{name, games:[int], scratch?, hdcp?, total?}], frame_games:[{name, game_number?, frames:[[str]], printed_cumulative:[int], total?}]}`.
-- `parse_sheet_image(image_bytes, mime, sheet_type_hint) -> dict` — builds prompt, calls Vertex, returns validated dict. Raises `SheetParseError`.
-- `shape_games(parsed, played_on) -> list[game_row]` — pure; applies engine validation, sets `flagged`/`flag_reason`/`computed_total`. **This is what the tests hit**, with the model output replayed from `tests/fixtures/bowling/night_0N_parsed.json`.
+- `parse_night_sheet(words, page_w, page_h) -> {team_name, players:[{name, games:[int|None], scratch, hdcp, total, inferred:[str], flagged, flag_reason}]}`.
+- `parse_game_sheet(words, symbols, page_w, page_h) -> {team_name, players:[{name, frames:[[str]], printed_cumulative:[int], total, flagged, flag_reason}]}`.
+- `parse_sheet(sheet_type, words, symbols, page_w, page_h)` dispatches; raises `SheetParseError` when no player row is found (route then retries rotations, then stores `failed`).
+- `shape_games(parsed, sheet_type, played_on) -> list[game_row]` — pure; one row per (player, game) with engine validation applied (`computed_total`, `flagged`, `flag_reason`, `confidence`).
+- Input shape: `words = [{text, x, y, w, h, conf}]`, `symbols = [{text, x, y, conf}]` from `golf_routes._extract_symbols`-style walkers (a new shared `services/vision_ocr.py` exposes `extract_words_and_symbols(full_text_annotation)`). **Tests replay `tests/fixtures/bowling/<stem>_ocr.json` and must match `<stem>_truth.json` exactly.**
 
 `services/bowling_insights.py` — `compute_insights(games: list[dict]) -> dict`, pure.
 - Always (totals only): games, average, high/low, last-5 avg vs prior avg (trend), stdev ("consistency"), game-slot averages (G1/G2/G3 → warm-up or fatigue pattern), % of games ≥ avg+20, pins-over-200 count, handicap trend when `hdcp` present, sessions (nights) count and avg series.
@@ -132,13 +154,13 @@ services are in the CI gate (`run_ci_tests.sh`).
 
 ## Error handling
 
-- Vertex unavailable / 403 / schema-invalid → sheet saved as `failed`, user lands on manual review; the error is logged with the sheet id. Never lose the photo.
+- Vision error / `SheetParseError` after all rotations → sheet saved as `failed`, user lands on manual review; the error is logged with the sheet id. Never lose the photo.
 - Engine invalid frames → row flagged, not rejected.
 - Unknown `sheet_type` → 400. Missing user/email → 400. Image > 20 MB → 413.
 
 ## Testing
 
-- Backend: `test_bowling_score.py` (rules incl. 300, 0, 10th-frame variants, foul, invalid combos), `test_bowling_sheet_parser.py` (`shape_games` over replayed parses for all 4 fixtures must reproduce `_truth.json` exactly with 0 flags; a corrupted parse must flag), `test_bowling_insights.py` (fixtures for totals-only and frame-level). All DB-free, registered in `run_ci_tests.sh`. A `tools/bowling_sheet_probe.py` runs the live model over the fixture photos and reports hit-rate — run manually, not in CI.
+- Backend: `test_bowling_score.py` (rules incl. 300, 0, 10th-frame variants, foul, invalid combos), `test_bowling_sheet_parser.py` (parse of every cached `_ocr.json` must reproduce its `_truth.json` exactly — 4 night sheets: all 16 player rows × 6 cells, team block; 1 game screen: 4 bowlers × 10 frames + cumulative; a glare-damaged row must be `inferred`, a corrupted OCR must flag, never silently accept), `test_bowling_insights.py` (fixtures for totals-only and frame-level). All DB-free, registered in `run_ci_tests.sh`. `tools/bowling_sheet_debug.py` (needs `GOOGLE_APPLICATION_CREDENTIALS=backend/credentials.json`) OCRs each fixture photo, writes/refreshes `<stem>_ocr.json`, and prints a per-photo cell hit-rate against truth — run manually, not in CI.
 - Frontend: jest for `lib/bowlingScore.ts`, `BowlingSheetUpload`, `BowlingSheetReview`, `BowlingInsights`, updated `BowlHub`.
 - Prod verification: deploy, upload `night_01.jpg` via the real UI in a browser, confirm Tom's row, check insights render.
 
