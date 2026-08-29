@@ -58,8 +58,8 @@ const ResultLadder: React.FC<Props> = ({
 
   return (
     <section aria-label={eyebrow} className={`bg-card rounded-lg shadow-lg p-6 ${className}`}>
-      <div className="mb-3 flex items-start justify-between gap-3">
-        <p className="text-xs uppercase tracking-widest text-muted-foreground">{eyebrow}</p>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
+        <p className="whitespace-nowrap text-xs uppercase tracking-widest text-muted-foreground">{eyebrow}</p>
         {personalBest.isPersonalBest && personalBest.previousBest != null ? (
           <span className="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
             ▲ New best · up from {formatWithUnit(personalBest.previousBest, metric)}
