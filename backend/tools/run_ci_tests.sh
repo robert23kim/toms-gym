@@ -22,6 +22,8 @@ exec "$PYTHON" -m pytest \
   tests/test_analysis_notify.py \
   tests/test_lift_history.py \
   tests/test_lifting_processor_mapping.py \
+    tests/test_analysis_timing.py \
+    tests/test_upload_composite.py \
   tests/test_achievements.py \
   tests/test_champions.py \
   tests/test_magic_link.py \
