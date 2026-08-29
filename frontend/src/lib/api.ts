@@ -605,3 +605,160 @@ export const formatChampionScore = (
   }
   return `${score} kg`;
 };
+
+// ---------------------------------------------------------------------------
+// Bowling score sheets — photograph a night-results or single-game screen,
+// review the parse, then track insights. Mirrors backend
+// routes/bowling_sheet_routes.py.
+// ---------------------------------------------------------------------------
+
+export type BowlingSheetType = "night" | "game";
+export type BowlingSheetStatus = "parsed" | "failed" | "confirmed";
+
+export interface BowlingSheetGame {
+  id?: string;
+  game_number: number;
+  total_score: number | null;
+  hdcp: number | null;
+  frames: string[][] | null;
+  computed_total: number | null;
+  flagged: boolean;
+  flag_reason: string | null;
+  confidence: number | null;
+}
+
+export interface BowlingSheetPlayer {
+  name: string;
+  games: BowlingSheetGame[];
+}
+
+export interface BowlingSheet {
+  sheet_id: string;
+  sheet_type: BowlingSheetType;
+  played_on: string;
+  image_url: string | null;
+  team_name: string | null;
+  processing_status: BowlingSheetStatus;
+  players: BowlingSheetPlayer[];
+  flagged_count: number;
+  error_message?: string | null;
+}
+
+export interface BowlingGameRow {
+  id: string;
+  sheet_id: string;
+  played_on: string;
+  game_number: number;
+  total_score: number | null;
+  hdcp: number | null;
+  has_frames: boolean;
+  flagged: boolean;
+}
+
+export interface BowlingGamesResponse {
+  games: BowlingGameRow[];
+  total: number;
+  limit: number;
+  offset: number;
+}
+
+export interface BowlingFrameStats {
+  strike_pct: number;
+  spare_pct: number;
+  open_pct: number;
+  first_ball_avg: number;
+  single_pin_conversion: number;
+  tenth_frame_avg: number;
+  strike_by_frame: number[];
+  clean_games: number;
+  pins_left: number;
+  frames_analyzed: number;
+}
+
+export interface BowlingTip {
+  key: string;
+  title: string;
+  body: string;
+  stat: string | null;
+}
+
+export interface BowlingSessionPoint {
+  played_on: string;
+  average: number;
+  games: number;
+}
+
+export interface BowlingInsights {
+  games: number;
+  average: number;
+  high: number;
+  low: number;
+  stdev: number;
+  trend: { last5: number | null; prior: number | null; delta: number | null };
+  slot_averages: Record<"1" | "2" | "3", number | null>;
+  sessions: number;
+  session_series: BowlingSessionPoint[];
+  over_200: number;
+  hdcp_latest: number | null;
+  frame_stats: BowlingFrameStats | null;
+  tips: BowlingTip[];
+}
+
+export interface BowlingSheetConfirmGame {
+  game_number: number;
+  total_score: number | null;
+  hdcp?: number | null;
+  frames?: string[][] | null;
+}
+
+export interface BowlingSheetConfirmRequest {
+  claim_player: string | null;
+  players: { name: string; games: BowlingSheetConfirmGame[] }[];
+}
+
+export async function uploadBowlingSheet(form: FormData): Promise<BowlingSheet> {
+  const response = await axios.post(`${API_URL}/bowling/scoresheet/upload`, form, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return response.data;
+}
+
+export async function fetchBowlingSheet(id: string): Promise<BowlingSheet> {
+  const response = await axios.get(`${API_URL}/bowling/scoresheet/${id}`);
+  return response.data;
+}
+
+export async function confirmBowlingSheet(
+  id: string,
+  body: BowlingSheetConfirmRequest,
+): Promise<BowlingSheet> {
+  const response = await axios.put(`${API_URL}/bowling/scoresheet/${id}/confirm`, body);
+  return response.data;
+}
+
+export async function deleteBowlingSheet(id: string): Promise<void> {
+  await axios.delete(`${API_URL}/bowling/scoresheet/${id}`);
+}
+
+export async function fetchBowlingGames(
+  userId: string,
+  limit = 20,
+  offset = 0,
+): Promise<BowlingGamesResponse> {
+  const params = new URLSearchParams({
+    user_id: userId,
+    limit: String(limit),
+    offset: String(offset),
+  });
+  const response = await axios.get(`${API_URL}/bowling/games?${params.toString()}`);
+  return response.data;
+}
+
+export async function fetchBowlingInsights(
+  userId: string,
+): Promise<BowlingInsights & { recent: BowlingGameRow[] }> {
+  const response = await axios.get(
+    `${API_URL}/bowling/insights/${encodeURIComponent(userId)}`,
+  );
+  return response.data;
+}
