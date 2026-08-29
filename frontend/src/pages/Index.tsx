@@ -32,8 +32,17 @@ const VERTICALS = [
   },
 ];
 
+const readUserId = (): string | null => {
+  try {
+    return localStorage.getItem("userId");
+  } catch {
+    return null;
+  }
+};
+
 const Index = () => {
   const [open, setOpen] = useState<Competition[]>([]);
+  const returning = Boolean(readUserId());
 
   useEffect(() => {
     let cancelled = false;
@@ -48,48 +57,22 @@ const Index = () => {
     };
   }, []);
 
-  return (
-    <Layout>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className="max-w-2xl mx-auto text-center flex flex-col gap-14 py-10"
-      >
-        {/* Hero */}
-        <section>
-          <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-3 text-balance">
-            AI analysis of your lift, bowl, or round — in minutes.
-          </h1>
-          <p className="text-muted-foreground max-w-md mx-auto">
-            Upload a video or snap a photo and get annotated feedback. No signup — just your email.
-          </p>
-        </section>
+  const spotlight = (
+    <section aria-label="Latest champion">
+      <ChampionSpotlight />
+    </section>
+  );
 
-        {/* Weekly streak — hidden for anonymous visitors */}
-        <section aria-label="Your streak">
-          <StreakCard />
-        </section>
+  const verticals = (
+    <section aria-label="Verticals" className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+      {VERTICALS.map((v) => (
+        <IconTile key={v.to} {...v} />
+      ))}
+    </section>
+  );
 
-        {/* Animated demo of what the analysis produces */}
-        <section aria-label="Analysis demo">
-          <DemoLoop />
-        </section>
-
-        {/* Latest challenge champion — hidden when nothing has been won */}
-        <section aria-label="Latest champion">
-          <ChampionSpotlight />
-        </section>
-
-        {/* The three verticals */}
-        <section className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          {VERTICALS.map((v) => (
-            <IconTile key={v.to} {...v} />
-          ))}
-        </section>
-
-        {/* Open challenges — hidden entirely when nothing is ongoing */}
-        <section className="flex flex-col gap-2.5">
+  const challenges = (
+    <section aria-label="Open challenges" className="flex flex-col gap-2.5">
           {open.length > 0 && (
             <>
               <div className="flex items-center gap-3.5 text-xs uppercase tracking-widest text-muted-foreground mb-1">
@@ -115,6 +98,41 @@ const Index = () => {
             All challenges →
           </Link>
         </section>
+  );
+
+  return (
+    <Layout>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+        className="max-w-2xl mx-auto text-center flex flex-col gap-14 py-10"
+      >
+        {!returning && (
+          <section aria-label="Pitch">
+            <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-3 text-balance">
+              AI analysis of your lift, bowl, or round — in minutes.
+            </h1>
+            <p className="text-muted-foreground max-w-md mx-auto">
+              Upload a video or snap a photo and get annotated feedback. No signup — just your email.
+            </p>
+          </section>
+        )}
+
+        <section aria-label="Your streak">
+          <StreakCard />
+        </section>
+
+        {!returning && (
+          <section aria-label="Analysis demo">
+            <DemoLoop />
+          </section>
+        )}
+
+        {!returning && spotlight}
+        {returning && challenges}
+        {verticals}
+        {returning ? spotlight : challenges}
       </motion.div>
     </Layout>
   );

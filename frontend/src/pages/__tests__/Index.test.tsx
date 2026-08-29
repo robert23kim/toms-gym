@@ -15,6 +15,11 @@ jest.mock("../../components/Layout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+jest.mock("../../components/StreakCard", () => ({
+  __esModule: true,
+  default: () => <div>streak-card</div>,
+}));
+
 jest.mock("../../lib/api", () => ({
   ...jest.requireActual("../../lib/api"),
   getCompetitions: jest.fn(),
@@ -67,5 +72,31 @@ describe("Index (quiet-gym home)", () => {
     renderHome();
     expect(screen.getByText(/plank · hold \+ form/i)).toBeInTheDocument();
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
+  });
+
+  it("anonymous visitors get the pitch, the demo, then the verticals", async () => {
+    (api.getCompetitions as jest.Mock).mockResolvedValue([ongoing]);
+    const { container } = renderHome();
+    await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
+    expect(screen.getByText(/AI analysis of your lift/i)).toBeInTheDocument();
+    const labels = [...container.querySelectorAll("section[aria-label]")].map((s) => s.getAttribute("aria-label"));
+    expect(labels).toEqual(["Pitch", "Your streak", "Analysis demo", "Latest champion", "Verticals", "Open challenges"]);
+  });
+
+  describe("for a returning user", () => {
+    beforeEach(() => (localStorage.getItem as jest.Mock).mockReturnValue("u1"));
+    afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
+
+    it("skips the pitch and demo and leads with streak then open challenges", async () => {
+      (api.getCompetitions as jest.Mock).mockResolvedValue([ongoing]);
+      const { container } = renderHome();
+      await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
+      expect(screen.queryByText(/AI analysis of your lift/i)).toBeNull();
+      expect(screen.queryByText(/plank · hold \+ form/i)).toBeNull();
+      expect(screen.getByText("streak-card")).toBeInTheDocument();
+      const labels = [...container.querySelectorAll("section[aria-label]")].map((s) => s.getAttribute("aria-label"));
+      expect(labels).toEqual(["Your streak", "Open challenges", "Verticals", "Latest champion"]);
+      expect(screen.getByRole("link", { name: /lift/i })).toHaveAttribute("href", "/lift");
+    });
   });
 });
