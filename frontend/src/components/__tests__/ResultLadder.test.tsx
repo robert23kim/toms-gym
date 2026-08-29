@@ -122,4 +122,10 @@ describe("ResultLadder", () => {
     expect(screen.getByText("First on the board")).toBeInTheDocument();
     expect(screen.queryByText("You")).toBeNull();
   });
+
+  it("can carry a second recognition pill", () => {
+    renderLadder({ extraPill: "Steadiest plank yet" });
+    expect(screen.getByText(/Steadiest plank yet/)).toBeInTheDocument();
+    expect(screen.getByText(/New best · up from 28 reps/)).toBeInTheDocument();
+  });
 });

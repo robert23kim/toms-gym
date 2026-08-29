@@ -11,6 +11,7 @@ interface Props {
   isOwner: boolean;
   challengeId: string;
   challengeOpen: boolean;
+  extraPill?: string | null;
   className?: string;
 }
 
@@ -42,6 +43,7 @@ const ResultLadder: React.FC<Props> = ({
   isOwner,
   challengeId,
   challengeOpen,
+  extraPill = null,
   className = "",
 }) => {
   const you = isOwner ? "You" : first(athleteName);
@@ -69,6 +71,11 @@ const ResultLadder: React.FC<Props> = ({
             Best: {formatWithUnit(standing.best, metric)}
           </span>
         ) : null}
+        {extraPill && (
+          <span className="shrink-0 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-xs font-medium text-amber-600 dark:text-amber-400">
+            ▲ {extraPill}
+          </span>
+        )}
       </div>
 
       <div className="mb-1 flex items-baseline gap-2">
