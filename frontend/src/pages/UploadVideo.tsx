@@ -179,7 +179,7 @@ const UploadVideo: React.FC = () => {
             duration: 5000,
           });
 
-          navigate(`/lift/status/${data.attempt_id}`);
+          navigate(id ? `/lift/status/${data.attempt_id}?challenge=${id}` : `/lift/status/${data.attempt_id}`);
         } else {
           console.warn("No attempt_id received in the response");
           toast({

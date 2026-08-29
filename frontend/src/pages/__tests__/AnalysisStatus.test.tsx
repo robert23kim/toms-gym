@@ -22,9 +22,24 @@ jest.mock("axios", () => {
   return { ...mocked, default: mocked };
 });
 
-const renderAt = (kind: "lifting" | "bowling", id: string) =>
+const mkRow = (rank: number, user_id: string, name: string, score: number, history: number[]) => ({
+  rank, user_id, name, score, best_by_lift: { Pushup: score }, form_score: null, steadiness: null,
+  attempt_id: `${user_id}-best`, clip_url: null, thumbnail_url: null, date: "2026-08-28",
+  weight_class: null, gender: null, attempt_count: history.length,
+  history: history.map((s, i) => ({ score: s, date: `2026-08-0${i + 1}` })),
+});
+const board = {
+  competition_id: "c1", metric: "reps", lift_types: ["Pushup"], momentum: { joined: 3, uploaded_today: 1 },
+  rows: [mkRow(1, "rob", "rob", 39, [39]), mkRow(2, "toka", "Toka", 35, [28, 35]), mkRow(3, "caleb", "caleb", 20, [20])],
+};
+const routeGet = (result: object) =>
+  (axios.get as jest.Mock).mockImplementation((url: string) =>
+    url.includes("/leaderboard") ? Promise.resolve({ data: board }) : Promise.resolve({ data: result }),
+  );
+
+const renderAt = (kind: "lifting" | "bowling", id: string, search = "") =>
   render(
-    <MemoryRouter initialEntries={[`/status/${id}`]}>
+    <MemoryRouter initialEntries={[`/status/${id}${search}`]}>
       <Routes>
         <Route path="/status/:attemptId" element={<AnalysisStatus kind={kind} />} />
       </Routes>
@@ -110,5 +125,41 @@ describe("AnalysisStatus", () => {
     const link = await screen.findByRole("link", { name: /View Your Profile/i });
     expect(link).toHaveAttribute("href", "/profile/u1");
     (localStorage.getItem as jest.Mock).mockReset();
+  });
+
+  it("names the leader as a target while a challenge upload is analyzing", async () => {
+    routeGet({ processing_status: "processing" });
+    renderAt("lifting", "a5", "?challenge=c1");
+
+    expect(await screen.findByText("rob")).toBeInTheDocument();
+    expect(screen.getByText("39 reps")).toBeInTheDocument();
+    expect(screen.getByText(/3 on the board/)).toBeInTheDocument();
+  });
+
+  it("reveals the number, the grade and the ladder when a lift completes", async () => {
+    routeGet({
+      processing_status: "completed",
+      user_id: "toka",
+      competition_id: "c1",
+      report: { total_reps: 35, overall_grade: "C", lift_type: "pushup" },
+    });
+    renderAt("lifting", "a6");
+
+    expect(await screen.findByRole("heading", { name: "35 reps" })).toBeInTheDocument();
+    expect(screen.getByText("C")).toBeInTheDocument();
+    expect(await screen.findByText("#2")).toBeInTheDocument();
+    expect(screen.getByText("4 reps to pass rob")).toBeInTheDocument();
+    expect(screen.getByText(/New best · up from 28 reps/)).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /See your result/i })).toHaveAttribute(
+      "href",
+      "/challenges/c1/participants/toka/video/a6",
+    );
+    expect(screen.queryByText(/Analysis complete!/)).toBeNull();
+  });
+
+  it("keeps the plain completion card for bowling", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({ data: { processing_status: "completed" } });
+    renderAt("bowling", "b7");
+    expect(await screen.findByText(/Analysis complete!/)).toBeInTheDocument();
   });
 });
