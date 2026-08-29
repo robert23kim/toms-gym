@@ -105,12 +105,6 @@ const FileTicket: React.FC = () => {
                     >
                       File another
                     </button>
-                    <Link
-                      to="/feedback/list"
-                      className="w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90 text-center"
-                    >
-                      View all tickets
-                    </Link>
                   </div>
                 </div>
               ) : (

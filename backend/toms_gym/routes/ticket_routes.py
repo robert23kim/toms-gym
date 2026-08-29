@@ -1,10 +1,13 @@
 """Ticket service: file bug reports / feature requests and triage them.
 
-Powers the /feedback page. Public endpoints — no auth (matches the app's
-optional-auth model; admin auth is a known gap from the 2026-07 review).
+Powers the /feedback page. Creating a ticket is public (optional-auth model);
+listing, reading and triaging tickets require the ADMIN_TOKEN shared secret
+via the X-Admin-Token header (fails closed when the secret is unset).
 """
 
+import hmac
 import logging
+import os
 import uuid
 
 import sqlalchemy
@@ -38,6 +41,17 @@ def _serialize_ticket(row) -> dict:
         "created_at": row.created_at.isoformat() if row.created_at else None,
         "updated_at": row.updated_at.isoformat() if row.updated_at else None,
     }
+
+
+def _require_admin():
+    """Return an error response if the request lacks a valid admin token."""
+    expected = os.environ.get('ADMIN_TOKEN', '')
+    if not expected:
+        return jsonify({"error": "Admin access is not configured"}), 503
+    supplied = request.headers.get('X-Admin-Token', '')
+    if not hmac.compare_digest(supplied, expected):
+        return jsonify({"error": "Admin token required"}), 401
+    return None
 
 
 def _valid_uuid(value):
@@ -127,6 +141,10 @@ def create_ticket():
 @ticket_bp.route('/tickets', methods=['GET'])
 def list_tickets():
     """List tickets, newest first. Optional ?status=, ?type=, ?limit= filters."""
+    denied = _require_admin()
+    if denied:
+        return denied
+
     status = request.args.get('status')
     if status is not None and status not in _VALID_STATUSES:
         return jsonify({"error": "status must be one of: open, in_progress, closed"}), 400
@@ -175,6 +193,10 @@ def list_tickets():
 @ticket_bp.route('/tickets/<string:ticket_id>', methods=['GET'])
 def get_ticket(ticket_id):
     """Fetch a single ticket. 404 if missing or the id is not a valid UUID."""
+    denied = _require_admin()
+    if denied:
+        return denied
+
     normalized = _valid_uuid(ticket_id)
     if not normalized:
         return jsonify({"error": "Ticket not found"}), 404
@@ -199,6 +221,10 @@ def get_ticket(ticket_id):
 @ticket_bp.route('/tickets/<string:ticket_id>/status', methods=['PUT'])
 def update_ticket_status(ticket_id):
     """Update a ticket's status. Body: {"status": ...}. 404 if missing."""
+    denied = _require_admin()
+    if denied:
+        return denied
+
     normalized = _valid_uuid(ticket_id)
     if not normalized:
         return jsonify({"error": "Ticket not found"}), 404

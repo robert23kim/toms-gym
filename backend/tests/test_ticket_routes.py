@@ -2,7 +2,15 @@ import uuid
 from datetime import datetime
 
 import bcrypt
+import pytest
 from sqlalchemy import text
+
+ADMIN = {"X-Admin-Token": "test-admin-token"}
+
+
+@pytest.fixture(autouse=True)
+def _admin_token(monkeypatch):
+    monkeypatch.setenv("ADMIN_TOKEN", "test-admin-token")
 
 
 def _make_user(db_session):
@@ -43,7 +51,7 @@ def test_create_bug_happy_path(client):
     uuid.UUID(data["ticket_id"])
 
     # And it's retrievable.
-    fetched = client.get(f'/tickets/{data["ticket_id"]}')
+    fetched = client.get(f'/tickets/{data["ticket_id"]}', headers=ADMIN)
     assert fetched.status_code == 200
     body = fetched.get_json()
     assert body["type"] == "bug"
@@ -63,7 +71,7 @@ def test_create_feature_with_email_no_user(client):
     assert response.status_code == 201
     ticket_id = response.get_json()["ticket_id"]
 
-    fetched = client.get(f'/tickets/{ticket_id}').get_json()
+    fetched = client.get(f'/tickets/{ticket_id}', headers=ADMIN).get_json()
     assert fetched["type"] == "feature"
     assert fetched["contact_email"] == "requester@example.com"
     assert fetched["user_id"] is None
@@ -80,7 +88,7 @@ def test_create_with_valid_user(client, db_session):
     })
     assert response.status_code == 201
     ticket_id = response.get_json()["ticket_id"]
-    fetched = client.get(f'/tickets/{ticket_id}').get_json()
+    fetched = client.get(f'/tickets/{ticket_id}', headers=ADMIN).get_json()
     assert fetched["user_id"] == user_id
 
 
@@ -94,7 +102,7 @@ def test_create_with_garbage_user_id_is_ignored(client):
     })
     assert response.status_code == 201
     ticket_id = response.get_json()["ticket_id"]
-    fetched = client.get(f'/tickets/{ticket_id}').get_json()
+    fetched = client.get(f'/tickets/{ticket_id}', headers=ADMIN).get_json()
     assert fetched["user_id"] is None
 
 
@@ -108,7 +116,7 @@ def test_create_with_nonexistent_user_id_falls_back(client):
     })
     assert response.status_code == 201
     ticket_id = response.get_json()["ticket_id"]
-    fetched = client.get(f'/tickets/{ticket_id}').get_json()
+    fetched = client.get(f'/tickets/{ticket_id}', headers=ADMIN).get_json()
     assert fetched["user_id"] is None
 
 
@@ -153,15 +161,15 @@ def test_list_and_status_filter(client):
         "type": "feature", "title": f"{marker}-progress", "description": "working on it",
     })
     id2 = r2.get_json()["ticket_id"]
-    client.put(f'/tickets/{id2}/status', json={"status": "in_progress"})
+    client.put(f'/tickets/{id2}/status', json={"status": "in_progress"}, headers=ADMIN)
 
     # Unfiltered list includes both.
-    all_titles = [t["title"] for t in client.get('/tickets?limit=100').get_json()["tickets"]]
+    all_titles = [t["title"] for t in client.get('/tickets?limit=100', headers=ADMIN).get_json()["tickets"]]
     assert f"{marker}-open" in all_titles
     assert f"{marker}-progress" in all_titles
 
     # status=in_progress excludes the open one.
-    in_progress = client.get('/tickets?status=in_progress&limit=100').get_json()["tickets"]
+    in_progress = client.get('/tickets?status=in_progress&limit=100', headers=ADMIN).get_json()["tickets"]
     titles = [t["title"] for t in in_progress]
     assert f"{marker}-progress" in titles
     assert f"{marker}-open" not in titles
@@ -188,23 +196,23 @@ def test_list_type_filter(client):
         "type": "feature", "title": f"{marker}-feature", "description": "an idea",
     })
 
-    bugs = client.get('/tickets?type=bug&limit=100').get_json()["tickets"]
+    bugs = client.get('/tickets?type=bug&limit=100', headers=ADMIN).get_json()["tickets"]
     titles = [t["title"] for t in bugs]
     assert f"{marker}-bug" in titles
     assert f"{marker}-feature" not in titles
     assert all(t["type"] == "bug" for t in bugs)
 
-    bad = client.get('/tickets?type=bogus')
+    bad = client.get('/tickets?type=bogus', headers=ADMIN)
     assert bad.status_code == 400
 
 
 def test_list_limit_validation(client):
     """Non-integer and non-positive limits are rejected; large limits are capped."""
-    assert client.get('/tickets?limit=abc').status_code == 400
-    assert client.get('/tickets?limit=0').status_code == 400
-    assert client.get('/tickets?limit=-5').status_code == 400
+    assert client.get('/tickets?limit=abc', headers=ADMIN).status_code == 400
+    assert client.get('/tickets?limit=0', headers=ADMIN).status_code == 400
+    assert client.get('/tickets?limit=-5', headers=ADMIN).status_code == 400
     # Over-cap limit is clamped, not rejected.
-    capped = client.get('/tickets?limit=5000')
+    capped = client.get('/tickets?limit=5000', headers=ADMIN)
     assert capped.status_code == 200
     assert len(capped.get_json()["tickets"]) <= 100
 
@@ -214,9 +222,9 @@ def test_status_update_bumps_updated_at(client):
         "type": "bug", "title": "Bump me", "description": "check updated_at",
     })
     ticket_id = created.get_json()["ticket_id"]
-    before = client.get(f'/tickets/{ticket_id}').get_json()
+    before = client.get(f'/tickets/{ticket_id}', headers=ADMIN).get_json()
 
-    updated = client.put(f'/tickets/{ticket_id}/status', json={"status": "in_progress"})
+    updated = client.put(f'/tickets/{ticket_id}/status', json={"status": "in_progress"}, headers=ADMIN)
     assert updated.status_code == 200
     after = updated.get_json()
     assert after["updated_at"] > before["updated_at"]
@@ -224,19 +232,19 @@ def test_status_update_bumps_updated_at(client):
 
 
 def test_list_bad_status_filter(client):
-    response = client.get('/tickets?status=bogus')
+    response = client.get('/tickets?status=bogus', headers=ADMIN)
     assert response.status_code == 400
     assert "error" in response.get_json()
 
 
 def test_get_single_and_404(client):
     # Nonexistent but valid UUID -> 404.
-    missing = client.get(f'/tickets/{uuid.uuid4()}')
+    missing = client.get(f'/tickets/{uuid.uuid4()}', headers=ADMIN)
     assert missing.status_code == 404
     assert missing.get_json()["error"] == "Ticket not found"
 
     # Invalid UUID -> 404, not 500.
-    bad = client.get('/tickets/not-a-uuid')
+    bad = client.get('/tickets/not-a-uuid', headers=ADMIN)
     assert bad.status_code == 404
 
 
@@ -247,15 +255,35 @@ def test_status_update_and_invalid(client):
     ticket_id = created.get_json()["ticket_id"]
 
     # Valid transition.
-    updated = client.put(f'/tickets/{ticket_id}/status', json={"status": "closed"})
+    updated = client.put(f'/tickets/{ticket_id}/status', json={"status": "closed"}, headers=ADMIN)
     assert updated.status_code == 200
     assert updated.get_json()["status"] == "closed"
 
     # Invalid status -> 400.
-    bad = client.put(f'/tickets/{ticket_id}/status', json={"status": "nope"})
+    bad = client.put(f'/tickets/{ticket_id}/status', json={"status": "nope"}, headers=ADMIN)
     assert bad.status_code == 400
     assert "error" in bad.get_json()
 
     # Status update on missing ticket -> 404.
-    missing = client.put(f'/tickets/{uuid.uuid4()}/status', json={"status": "open"})
+    missing = client.put(f'/tickets/{uuid.uuid4()}/status', json={"status": "open"}, headers=ADMIN)
     assert missing.status_code == 404
+
+
+def test_read_and_triage_require_admin_token(client, monkeypatch):
+    created = client.post('/tickets', json={
+        "type": "bug", "title": "gated", "description": "should need a token",
+    }).get_json()
+    ticket_id = created["ticket_id"]
+
+    assert client.get('/tickets').status_code == 401
+    assert client.get(f'/tickets/{ticket_id}').status_code == 401
+    assert client.put(f'/tickets/{ticket_id}/status', json={"status": "closed"}).status_code == 401
+    assert client.get('/tickets', headers={"X-Admin-Token": "wrong"}).status_code == 401
+    assert client.get(f'/tickets/{ticket_id}', headers=ADMIN).status_code == 200
+    assert client.get(f'/tickets/{ticket_id}', headers=ADMIN).get_json()["status"] == "open"
+
+    monkeypatch.delenv("ADMIN_TOKEN")
+    assert client.get('/tickets', headers=ADMIN).status_code == 503
+    assert client.post('/tickets', json={
+        "type": "bug", "title": "still public", "description": "create needs no token",
+    }).status_code == 201

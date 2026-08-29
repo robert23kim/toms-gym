@@ -6,6 +6,8 @@ import Layout from "../components/Layout";
 import {
   fetchTickets,
   updateTicketStatus,
+  getAdminToken,
+  setAdminToken,
   Ticket,
   TicketStatus,
 } from "../lib/api";
@@ -41,8 +43,14 @@ const TicketList: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [adminToken, setAdminTokenState] = useState<string | null>(getAdminToken());
+  const [tokenInput, setTokenInput] = useState("");
 
   useEffect(() => {
+    if (!adminToken) {
+      setIsLoading(false);
+      return;
+    }
     let cancelled = false;
     setIsLoading(true);
     setError(null);
@@ -50,8 +58,15 @@ const TicketList: React.FC = () => {
       .then((data) => {
         if (!cancelled) setTickets(data);
       })
-      .catch(() => {
-        if (!cancelled) setError("Failed to load tickets. Please try again.");
+      .catch((err: { response?: { status?: number } }) => {
+        if (cancelled) return;
+        if (err?.response?.status === 401) {
+          setAdminToken(null);
+          setAdminTokenState(null);
+          setError("That admin token was rejected.");
+        } else {
+          setError("Failed to load tickets. Please try again.");
+        }
       })
       .finally(() => {
         if (!cancelled) setIsLoading(false);
@@ -59,7 +74,52 @@ const TicketList: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [filter]);
+  }, [filter, adminToken]);
+
+  const handleTokenSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const token = tokenInput.trim();
+    if (!token) return;
+    setAdminToken(token);
+    setAdminTokenState(token);
+    setTokenInput("");
+  };
+
+  if (!adminToken) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-background py-12 px-4">
+          <form
+            onSubmit={handleTokenSubmit}
+            className="max-w-sm mx-auto bg-card rounded-lg shadow-lg p-6 space-y-4"
+          >
+            <h1 className="text-xl font-bold">Ticket triage</h1>
+            <p className="text-sm text-muted-foreground">
+              This page is for Tom's Gym staff. Enter the admin token to continue.
+            </p>
+            {error && <p className="text-sm text-destructive">{error}</p>}
+            <input
+              type="password"
+              value={tokenInput}
+              onChange={(e) => setTokenInput(e.target.value)}
+              placeholder="Admin token"
+              aria-label="Admin token"
+              className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm"
+            />
+            <button
+              type="submit"
+              className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90"
+            >
+              Continue
+            </button>
+            <Link to="/feedback" className="block text-center text-sm text-muted-foreground hover:text-foreground">
+              Just want to report something? File a ticket
+            </Link>
+          </form>
+        </div>
+      </Layout>
+    );
+  }
 
   const toggleExpanded = (id: string) => {
     setExpanded((prev) => {
@@ -80,9 +140,16 @@ const TicketList: React.FC = () => {
     );
     try {
       await updateTicketStatus(id, status);
-    } catch {
+    } catch (err) {
       setTickets(previous);
-      setError("Failed to update ticket status.");
+      const code = (err as { response?: { status?: number } })?.response?.status;
+      if (code === 401) {
+        setAdminToken(null);
+        setAdminTokenState(null);
+        setError("That admin token was rejected.");
+      } else {
+        setError("Failed to update ticket status.");
+      }
     }
   };
 

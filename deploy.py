@@ -697,6 +697,7 @@ class DeploymentManager:
             "JWT_SECRET_KEY=jwt-secret:latest",
             "DB_PASS=db-password:latest",
             "EMAIL_PASSWORD=email-app-password:latest",
+            "ADMIN_TOKEN=admin-token:latest",
         ]
 
         # Deploy commands

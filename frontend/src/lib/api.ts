@@ -482,6 +482,30 @@ export async function createTicket(
   return response.data;
 }
 
+const ADMIN_TOKEN_KEY = "adminToken";
+
+export function getAdminToken(): string | null {
+  try {
+    return localStorage.getItem(ADMIN_TOKEN_KEY);
+  } catch {
+    return null;
+  }
+}
+
+export function setAdminToken(token: string | null): void {
+  try {
+    if (token) localStorage.setItem(ADMIN_TOKEN_KEY, token);
+    else localStorage.removeItem(ADMIN_TOKEN_KEY);
+  } catch {
+    // storage unavailable
+  }
+}
+
+const adminHeaders = () => {
+  const token = getAdminToken();
+  return token ? { headers: { "X-Admin-Token": token } } : {};
+};
+
 export async function fetchTickets(
   filters: { status?: TicketStatus; type?: TicketType } = {},
 ): Promise<Ticket[]> {
@@ -491,6 +515,7 @@ export async function fetchTickets(
   const query = params.toString();
   const response = await axios.get(
     `${API_URL}/tickets${query ? `?${query}` : ""}`,
+    adminHeaders(),
   );
   return response.data.tickets || [];
 }
@@ -499,7 +524,11 @@ export async function updateTicketStatus(
   id: string,
   status: TicketStatus,
 ): Promise<Ticket> {
-  const response = await axios.put(`${API_URL}/tickets/${id}/status`, { status });
+  const response = await axios.put(
+    `${API_URL}/tickets/${id}/status`,
+    { status },
+    adminHeaders(),
+  );
   return response.data;
 }
 
