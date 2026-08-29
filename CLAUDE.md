@@ -185,6 +185,10 @@ Crowns the winner of any ended challenge — trophy case, title flair, avatar pa
 - `formatChampionScore` now handles `reps`; `Champion.metric` is `ChampionMetric` (time|weight|reps).
 - Suite at ship: frontend 61 suites / 411 tests; backend gate 174.
 
+## Activity Streak (shipped 2026-08-28)
+
+Home-page "Your streak" card (Strava-style): flame with consecutive-week count + Mon–Sun strip of this week's active days. `GET /users/<id>/activity?days=` (`user_routes.py`) unions lift/bowl `Attempt.created_at` (video present; kind = bowl when a `BowlingResult` exists) with golf `Round.played_on` (noon-stamped). Streak math is client-side in `lib/streak.ts` (`computeStreak`, local time, Mon-start weeks; an empty current week does not break the streak, an empty previous week does). `components/StreakCard.tsx` reads localStorage `userId`, hides itself for anonymous visitors or on fetch failure; Share reuses `lib/share.ts` pointing at the profile. Gotcha: pg8000 binds ints as ints, so date arithmetic needs `make_interval(days => :days)`, not `CURRENT_DATE - :days`. Tests: `lib/__tests__/streak.test.ts`, `components/__tests__/StreakCard.test.tsx`.
+
 ## Pushup Challenge (shipped 2026-08-01)
 
 Third challenge metric — `reps` — alongside `time` (plank) and `weight` (lifting). Spec: `docs/superpowers/specs/2026-08-01-pushup-challenge-design.md`; plan: `docs/superpowers/plans/2026-08-01-pushup-challenge.md`. Live challenge: `4bd57523-1ecf-4e4e-92c9-06ac594e05ee`.
