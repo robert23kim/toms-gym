@@ -229,7 +229,13 @@ bug seen, fixed or not) + retro. Iteration 01 shipped the profile Lift-tab de-cl
 (6941→2012px), the "See your result" deep-link from `/lift/status` (backend `/lifting/result`
 now returns `user_id`/`competition_id`), the returning-user home (no pitch/demo when
 `localStorage.userId` exists) and the `/challenges` pill-wrap fix. Start the next tick from the
-previous doc's bug log. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
+previous doc's bug log. **Rule since iteration 02: each top-3 pick must create a moment
+(recognition / progress / surprise) at an emotional peak — friction fixes go to the bug log.**
+Iteration 02 shipped the result-page **ladder** (`lib/standing.ts` extended with `below`,
+`podiumGap`, `personalBest`, `attemptScore`, `metricForLift`; `components/challenge/ResultLadder.tsx`
+— rank, the athlete above/below with gaps, new-best pill, Beat-this for visitors), the waiting-screen
+target (`/lift/status/:id?challenge=<id>`), and the completion reveal (number → grade → ladder).
+`deriveStanding` also feeds the older challenge-page `StandingCard` — extend it, don't fork it. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
 jest results via `node node_modules/jest/bin/jest.js --json --outputFile=…` (the shell hook
 rewrites jest stdout); `jest.setup.js` stubs `localStorage` with `jest.fn()` — mock
 `getItem`'s return value, `setItem` is a no-op.
