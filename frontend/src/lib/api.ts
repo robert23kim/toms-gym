@@ -537,15 +537,32 @@ export async function updateTicketStatus(
 // Mirrors backend GET /champions and routes/achievement_routes.py.
 // ---------------------------------------------------------------------------
 
+export type ChampionMetric = "time" | "weight" | "reps";
+
+export interface ChampionRunnerUp {
+  name: string | null;
+  user_id: string;
+  score: number;
+}
+
 export interface Champion {
   user_id: string;
   name: string;
   competition_id: string;
   competition_name: string;
-  metric: "time" | "weight";
+  metric: ChampionMetric;
   score: number;
   ended_on: string;
   attempt_id: string | null;
+  /** Ranks 2–3 with a valued score (may be absent on older payloads). */
+  runners_up?: ChampionRunnerUp[];
+  /** Athletes with a valued score in the challenge. */
+  field_size?: number;
+  /** Winner minus runner-up, in metric units; null when unopposed. */
+  margin?: number | null;
+  winner_attempts?: number;
+  /** ISO date of the winning attempt. */
+  won_on?: string | null;
 }
 
 export async function fetchChampions(userId?: string): Promise<Champion[]> {
@@ -594,7 +611,7 @@ export async function setAvatar(
 
 /** "4:35" for time boards (floored seconds), "120 kg" for weight boards. */
 export const formatChampionScore = (
-  metric: "time" | "weight",
+  metric: ChampionMetric,
   score: number,
 ): string => {
   if (metric === "time") {
@@ -603,6 +620,7 @@ export const formatChampionScore = (
     const s = total % 60;
     return `${m}:${String(s).padStart(2, "0")}`;
   }
+  if (metric === "reps") return `${Math.round(score)} reps`;
   return `${score} kg`;
 };
 
@@ -761,4 +779,9 @@ export async function fetchBowlingInsights(
     `${API_URL}/bowling/insights/${encodeURIComponent(userId)}`,
   );
   return response.data;
+}
+
+export async function fetchUserActivity(userId: string): Promise<import("./streak").ActivityEntry[]> {
+  const response = await axios.get(`${API_URL}/users/${userId}/activity`);
+  return response.data.activity || [];
 }

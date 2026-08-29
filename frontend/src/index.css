@@ -194,3 +194,30 @@
   .demo-scene-plank { opacity: 1; }
   .demo-pill-plank, .demo-timer-3 { opacity: 1; }
 }
+
+/* Hall of Champions (pages/HallOfChampions.tsx) */
+@keyframes laurel-spin { to { transform: rotate(360deg); } }
+@keyframes crown-float {
+  0%, 100% { transform: translateY(0) rotate(-8deg); }
+  50% { transform: translateY(-6px) rotate(-4deg); }
+}
+@keyframes hall-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.laurel-ring {
+  background: conic-gradient(from 0deg, #f59e0b, #fde68a, #f59e0b, #b45309, #fde68a, #f59e0b);
+  animation: laurel-spin 14s linear infinite;
+}
+.crown-float { animation: crown-float 3.2s ease-in-out infinite; }
+.hall-shimmer {
+  background: linear-gradient(110deg, #b45309 20%, #fde68a 45%, #f59e0b 55%, #b45309 80%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: hall-shimmer 6s linear infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .laurel-ring, .crown-float, .hall-shimmer { animation: none; }
+}

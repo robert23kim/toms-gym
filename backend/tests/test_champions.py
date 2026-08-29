@@ -55,3 +55,37 @@ def test_missing_leaderboard_is_skipped():
     out = shape_champions([{"competition": _comp("c1", "Broken", "2026-07-31"),
                             "leaderboard": None}])
     assert out == []
+
+
+def test_hall_of_fame_context_fields():
+    out = shape_champions([{
+        "competition": _comp("c1", "Summer plank challenge", "2026-07-31"),
+        "leaderboard": _lb("time", [
+            {**_row(1, "wonder725", "u1", 275.4), "attempt_count": 3, "date": "2026-07-20"},
+            _row(2, "victoria", "u2", 244.9),
+            _row(3, "sam", "u3", 200.0),
+            _row(4, "joiner", "u4", 0, attempt=None),
+        ]),
+    }])
+    c = out[0]
+    assert c["runners_up"] == [
+        {"name": "victoria", "user_id": "u2", "score": 244.9},
+        {"name": "sam", "user_id": "u3", "score": 200.0},
+    ]
+    assert c["field_size"] == 3
+    assert c["margin"] == 30.5
+    assert c["winner_attempts"] == 3
+    assert c["won_on"] == "2026-07-20"
+
+
+def test_solo_champion_has_no_margin():
+    out = shape_champions([{
+        "competition": _comp("c1", "Solo", "2026-07-31"),
+        "leaderboard": _lb("weight", [_row(1, "a", "u1", 100)]),
+    }])
+    c = out[0]
+    assert c["runners_up"] == []
+    assert c["field_size"] == 1
+    assert c["margin"] is None
+    assert c["winner_attempts"] == 1
+    assert c["won_on"] is None

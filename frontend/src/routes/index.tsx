@@ -13,7 +13,7 @@ const UploadVideo = lazy(() => import("../pages/UploadVideo"));
 // T7 unified upload chooser — /upload now asks "what are you analyzing?"
 const UploadChooser = lazy(() => import("../pages/UploadChooser"));
 const NotFound = lazy(() => import("../pages/NotFound"));
-const Leaderboard = lazy(() => import("../pages/Leaderboard"));
+const HallOfChampions = lazy(() => import("../pages/HallOfChampions"));
 const Store = lazy(() => import("../pages/Store"));
 const Profile = lazy(() => import("../pages/Profile"));
 // T14 — full-page "Who am I?" profile recovery (dialog logic, own route)
@@ -71,7 +71,8 @@ export const routes: RouteObject[] = [
   { path: "/video-player/:id/:participantId/:videoId", element: <VideoPlayerRedirect /> },
   { path: "/s/:code", element: <ShortLinkRedirect /> },
   { path: "/about", element: <About /> },
-  { path: "/leaderboard", element: <Leaderboard /> },
+  { path: "/champions", element: <HallOfChampions /> },
+  { path: "/leaderboard", element: <Navigate to="/champions" replace /> },
   { path: "/store", element: <Store /> },
   // T14 — unified profile hub (Lift / Bowl / Golf sections) + recovery route
   { path: "/profile", element: <Profile /> },

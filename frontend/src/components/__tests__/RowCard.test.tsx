@@ -20,7 +20,7 @@ describe("RowCard", () => {
   it("omits the pill when not given and honors custom trailing", () => {
     render(
       <MemoryRouter>
-        <RowCard to="/leaderboard" title="Leaderboard" trailing="View" />
+        <RowCard to="/champions" title="Champions" trailing="View" />
       </MemoryRouter>
     );
     expect(screen.getByText("View")).toBeInTheDocument();

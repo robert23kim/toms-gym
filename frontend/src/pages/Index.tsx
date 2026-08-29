@@ -7,6 +7,7 @@ import IconTile from "../components/IconTile";
 import RowCard from "../components/RowCard";
 import DemoLoop from "../components/DemoLoop";
 import ChampionSpotlight from "../components/ChampionSpotlight";
+import StreakCard from "../components/StreakCard";
 import { getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 
@@ -63,6 +64,11 @@ const Index = () => {
           <p className="text-muted-foreground max-w-md mx-auto">
             Upload a video or snap a photo and get annotated feedback. No signup — just your email.
           </p>
+        </section>
+
+        {/* Weekly streak — hidden for anonymous visitors */}
+        <section aria-label="Your streak">
+          <StreakCard />
         </section>
 
         {/* Animated demo of what the analysis produces */}
