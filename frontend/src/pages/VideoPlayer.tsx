@@ -9,6 +9,7 @@ import { triggerLiftingAnalysis, getLiftingResult, getChallengeLeaderboard, dete
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult, ChallengeLeaderboard } from '../lib/types';
 import { deriveStanding, personalBest, attemptScore, standingShareText } from '../lib/standing';
+import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
@@ -79,6 +80,7 @@ const VideoPlayer: React.FC = () => {
   const [board, setBoard] = useState<ChallengeLeaderboard | null>(null);
   const [challengeOpen, setChallengeOpen] = useState(false);
   const [challengeName, setChallengeName] = useState<string | null>(null);
+  const [steadiest, setSteadiest] = useState(false);
 
   const analysisDone = liftingResult?.processing_status === 'completed';
   useEffect(() => {
@@ -98,6 +100,16 @@ const VideoPlayer: React.FC = () => {
       .catch(() => {});
     return () => { cancelled = true; };
   }, [id, analysisDone]);
+  const plankStdev = liftingResult?.report?.body_line_stdev_deg;
+  useEffect(() => {
+    if (!analysisDone || !id || !participantId || !videoId || plankStdev == null) return;
+    let cancelled = false;
+    axios.get(`${API_URL}/users/${participantId}/lifts?competition_id=${id}&limit=50`)
+      .then((r) => { if (!cancelled) setSteadiest(steadiestYet(r.data?.lifts ?? [], videoId, plankStdev)); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [analysisDone, id, participantId, videoId, plankStdev]);
+
   const { toast } = useToast();
   const standing = board && participantId ? deriveStanding(board, participantId) : null;
   const isOwner = !!participantId && participantId === localStorage.getItem('userId');
@@ -380,11 +392,7 @@ const VideoPlayer: React.FC = () => {
   const liftReport = liftingResult?.report;
   const hasPassingGrade = liftReport && ['A', 'B', 'C', 'D'].includes(liftReport.overall_grade);
   const hasFailingGrade = liftReport && liftReport.overall_grade === 'F' && liftReport.total_reps > 0;
-  const badge = hasPassingGrade
-    ? { label: 'Approved', className: 'bg-green-500/10 text-green-500' }
-    : hasFailingGrade
-      ? { label: 'Failed', className: 'bg-red-500/10 text-red-500' }
-      : statusBadge(videoData.status);
+  const badge = hasPassingGrade || hasFailingGrade ? null : statusBadge(videoData.status);
   const dateStr = formatDate(videoData.timestamp);
 
   return (
@@ -536,9 +544,11 @@ const VideoPlayer: React.FC = () => {
                         {!isBodyweightLift(videoData.lift_type) && videoData.weight ? (
                           <span className="font-medium text-foreground">{videoData.weight} lbs</span>
                         ) : null}
-                        <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>
-                          {badge.label}
-                        </span>
+                        {badge && (
+                          <span className={`px-2 py-1 rounded-full text-sm ${badge.className}`}>
+                            {badge.label}
+                          </span>
+                        )}
                         {dateStr && <span>{dateStr}</span>}
                       </div>
                     </div>
@@ -552,6 +562,7 @@ const VideoPlayer: React.FC = () => {
                         isOwner={isOwner}
                         challengeId={id}
                         challengeOpen={challengeOpen}
+                        extraPill={steadiest ? "Steadiest plank yet" : null}
                       />
                     )}
 
@@ -849,11 +860,14 @@ const VideoPlayer: React.FC = () => {
                               );
                             })()}
 
-                            {/* Tips */}
-                            {report.insights.length > 0 && (
+                            {(() => {
+                              const insights = isBodyweightLift(report.lift_type)
+                                ? report.insights.filter((i) => !/\b(weight|load|lighter|heavier)\b/i.test(i))
+                                : report.insights;
+                              return insights.length > 0 && (
                               <div className="bg-blue-500/5 border border-blue-500/10 rounded-lg p-4 space-y-2">
                                 <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-wide">Tips</h3>
-                                {report.insights.map((insight, i) => (
+                                {insights.map((insight, i) => (
                                   <div key={i} className="flex items-start gap-2 text-sm">
                                     <span className="text-blue-400 mt-0.5 shrink-0">&#9656;</span>
                                     <span className="text-muted-foreground">
@@ -864,7 +878,8 @@ const VideoPlayer: React.FC = () => {
                                   </div>
                                 ))}
                               </div>
-                            )}
+                              );
+                            })()}
 
                             {/* Re-analyze button */}
                             {isOwner && (
