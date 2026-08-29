@@ -1,173 +1,146 @@
 # Tom's Gym — Site Walk & Workflow Map
 
-Captured 2026-07-06 against production (`https://my-frontend-quyiiugyoq-ue.a.run.app`, frontend build `v2026-07-06 16:14 UTC`) — **after the UX roadmap shipped** (T1–T16, see `docs/plans/2026-07-06-ux-roadmap.md` and the "UX Roadmap (shipped 2026-07-06)" section of `CLAUDE.md`). Screenshots live in [`screenshots/`](screenshots/); each section links the pages it covers. Earlier revisions of this doc describe the pre-roadmap site — the observations at the bottom that drove the roadmap are now resolved.
+Captured **2026-08-28** against production (`https://my-frontend-quyiiugyoq-ue.a.run.app`, frontend build `v2026-08-01 22:13 UTC`) with Playwright at 1280×900 (plus three 390×844 mobile shots). Screenshots live in [`screenshots/`](screenshots/); each section links the pages it covers. This supersedes the 2026-07-06 walk — everything shipped since (home redesign, plank stats, lift/attempt history, steadiness nicknames, Challenge Champions, Pushup challenge) is reflected below. Feature internals are in `CLAUDE.md`; this doc is the *what a user sees where* view.
 
-> **Post-capture note (2026-08-01):** Challenge Champions shipped after these
-> screenshots were taken. It added **no new routes** — so the route table below
-> is still accurate — but `/` now carries a champion spotlight card, `/profile/:id`
-> a trophy case + champion flair + avatar picker, and `/challenges/:id` a 👑 on the
-> winner's podium chip. See `CLAUDE.md` → "Challenge Champions".
+**Re-capturing:** the walk is a `browser_run_code_unsafe` script that `page.goto`s each route, dumps `h1`/buttons/internal links, and `page.screenshot({fullPage:true})`s into `screenshots/`. Dynamic ids (challenges, videos, profiles) are discovered from the links of the static pages, so the script needs no fixtures.
 
 ## Global Navigation
 
-Every page shares the same navbar and footer:
+Every page shares the same navbar and footer (`components/Layout.tsx`, `Navbar.tsx`):
 
-- **Navbar:** Home `/` · **Lift** `/lift` · **Bowl** `/bowl` · **Golf** `/golf` · Challenges `/challenges` · Feedback `/feedback` · Store `/store` · **Find Profile** (→ full-page `/find-profile`). The three analysis verticals are now top-level hubs; the old bare "Golf → leaderboard" and standalone "Leaderboard" items were folded into the hubs.
-- **Footer:** **Terms** (`/terms`) · **Privacy** (`/privacy`) · Feedback · frontend build stamp (`v2026-07-06 16:14 UTC`). Terms/Privacy are now real pages, not `#` stubs.
+- **Navbar:** Home `/` · Lift `/lift` · Bowl `/bowl` · Golf `/golf` · Challenges `/challenges` · Feedback `/feedback` · Store `/store` · 🔍 Find Profile `/find-profile`. Collapses to a hamburger on mobile ([22](screenshots/22-mobile-home.jpeg)).
+- **Footer:** 🐞 Report a bug · Request a feature (both → `/feedback`) · Terms `/terms` · Privacy `/privacy` · build stamp.
+- **Ambient background** (`AmbientBackground`) is mounted once in `Layout`, so every page shares the doodle wallpaper + drifting glows.
+- Pages that render *without* the Layout chrome: `/signin` (no nav/footer), the bowling annotation workspace (`/bowling/result/:id/annotate` — full-screen tool), and `/does-not-exist`-style 404s (bare "404" + Home link).
 
 ## Route Table (from `frontend/src/routes/index.tsx`)
 
-| Route | Component | Captured |
-|---|---|---|
-| `/` | Index (analysis-first landing) | [01](screenshots/01-home.jpeg) |
-| `/lift` · `/bowl` · `/golf` | LiftHub / BowlHub / GolfHub | [24](screenshots/24-lift-hub.jpeg) · [25](screenshots/25-bowl-hub.jpeg) · [26](screenshots/26-golf-hub.jpeg) |
-| `/upload` | UploadChooser ("What are you analyzing?") | [27](screenshots/27-upload-chooser.jpeg) |
-| `/lift/upload` (`/upload/lift` → redirect) | UploadVideo | [06](screenshots/06-upload-video.jpeg) |
-| `/lift/status/:attemptId` · `/bowling/status/:attemptId` | AnalysisStatus (poll + ETA) | — (live only during processing) |
-| `/challenges` | Challenges | [02](screenshots/02-challenges.jpeg) |
-| `/challenges/:id` | ChallengeDetail (podium fixed) | [03](screenshots/03-challenge-detail.jpeg) |
-| `/challenges/:id/videos` | ChallengeVideos | — |
-| `/challenges/:id/upload` | UploadVideo | [06](screenshots/06-upload-video.jpeg) |
-| `/challenges/:id/participants/:pid/video/:vid` | VideoPlayer (coaching copy + share) | [04](screenshots/04-video-player.jpeg) |
-| `/video-player/:id/:pid/:vid` | VideoPlayerRedirect | — (legacy redirect) |
-| `/s/:code` | ShortLinkRedirect (SPA) / backend OG-meta route | — |
-| `/about` | About | [18](screenshots/18-about.jpeg) |
-| `/leaderboard` | Leaderboard | [05](screenshots/05-leaderboard.jpeg) |
-| `/store` | Store ("coming soon") | [17](screenshots/17-store.jpeg) |
-| `/profile` · `/profile/:id` | Profile (unified Lift/Bowl/Golf hub) | [20](screenshots/20-user-profile.jpeg) |
-| `/find-profile` | FindProfilePage ("Who am I?") | [19](screenshots/19-find-profile-page.jpeg) |
-| `/signin` · `/auth/magic/:token` | SignIn / MagicLink (passwordless) | [28](screenshots/28-signin.jpeg) |
-| `/profile/:id/weekly-lifts` | WeeklyLifts | — |
-| `/auth/callback` · `/auth/error` | AuthCallback / AuthError | — |
-| `/bowling/upload[/:competitionId]` | BowlingUpload | [09](screenshots/09-bowling-upload.jpeg) |
-| `/bowling/result/:attemptId` | BowlingResult (consumer-first, debug behind Advanced) | [08](screenshots/08-bowling-result.jpeg) |
-| `/bowling/result/:attemptId/annotate` | AnnotationWorkspace | [10](screenshots/10-bowling-annotate.jpeg) |
-| `/bowling/challenge/:id` | BowlingChallenge | [07](screenshots/07-bowling-challenge.jpeg) |
-| `/golf/upload` | GolfUpload | [12](screenshots/12-golf-upload.jpeg) |
-| `/golf/review/:roundId` | GolfReview | — (only right after upload) |
-| `/golf/round/:roundId` | GolfRound (share button) | — |
-| `/golf/profile[/:userId]` | GolfProfile (links to unified hub) | [13](screenshots/13-golf-profile.jpeg), [14](screenshots/14-golf-profile-round-expanded.jpeg) |
-| `/golf/leaderboard` | GolfLeaderboard (monthly-delta pill) | [11](screenshots/11-golf-leaderboard.jpeg) |
-| `/feedback` | FileTicket | [15](screenshots/15-feedback-form.jpeg) |
-| `/feedback/list` | TicketList | [16](screenshots/16-feedback-list.jpeg) |
-| `/terms` · `/privacy` | Terms / Privacy | [29](screenshots/29-terms.jpeg) · [30](screenshots/30-privacy.jpeg) |
-| `*` | NotFound | — |
-
-`/athletes` was **removed** (it rendered mock data — deleted with the honest-copy pass).
+| Route | Component | What's there | Captured |
+|---|---|---|---|
+| `/` | Index | hero → DemoLoop → champion spotlight → 3 IconTiles → Open challenges strip | [01](screenshots/01-home.jpeg) · [22 mobile](screenshots/22-mobile-home.jpeg) |
+| `/lift` · `/bowl` · `/golf` | LiftHub / BowlHub / GolfHub | primary Upload CTA + RowCard secondary links | [24](screenshots/24-lift-hub.jpeg) · [25](screenshots/25-bowl-hub.jpeg) · [26](screenshots/26-golf-hub.jpeg) |
+| `/upload` | UploadChooser | "What are you analyzing?" — same 3 tiles as home | [27](screenshots/27-upload-chooser.jpeg) |
+| `/lift/upload` (`/upload/lift` redirects) | UploadVideo | email · lift type (Squat/Bench/Deadlift/Pushup) · weight · video | [06](screenshots/06-upload-video.jpeg) |
+| `/lift/status/:attemptId` · `/bowling/status/:attemptId` | AnalysisStatus | "Queued for analysis" poll page; unknown id = queued state | [44](screenshots/44-lift-status-404.jpeg) · [43](screenshots/43-bowling-status-404.jpeg) |
+| `/challenges` | Challenges | Create Challenge · "Open now" RowCard strip · All challenges + pill filters | [02](screenshots/02-challenges.jpeg) |
+| `/challenges/:id` | ChallengeDetail | podium · chips (👑, nickname, `N attempts ▾`) · "Everyone else" table · YOU row | pushup [03](screenshots/03-challenge-detail-pushup.jpeg) · plank [34](screenshots/34-challenge-detail-a0f2.jpeg) · weight w/ attempts expanded [32](screenshots/32-challenge-detail-plank.jpeg) · [33](screenshots/33-challenge-detail-857f.jpeg) · [47 mobile](screenshots/47-mobile-challenge-pushup.jpeg) |
+| `/challenges/:id/videos` | ChallengeVideos | flat grid of every attempt ("Plank - 60.00kg · date · completed") | [35](screenshots/35-challenge-videos.jpeg) |
+| `/challenges/:id/upload` | UploadVideo | same form, "Back to Challenge" | [36](screenshots/36-challenge-upload.jpeg) |
+| `/challenges/:id/participants/:pid/video/:vid` | VideoPlayer | Original/Annotated · grade · per-lift result body · Share · Re-analyze | plank [04](screenshots/04-video-player.jpeg) · pushup [48](screenshots/48-video-player-pushup.jpeg) · pending [37](screenshots/37-video-player-plank.jpeg) · [23 mobile](screenshots/23-mobile-video-player.jpeg) |
+| `/video-player/:id/:pid/:vid` | VideoPlayerRedirect | legacy → route above | — |
+| `/s/:code` | ShortLinkRedirect | share-link resolver (backend `/s/<code>` serves OG cards to crawlers) | — |
+| `/leaderboard` | Leaderboard | global lifting board, Total/Squat/Bench/Deadlift pills | [05](screenshots/05-leaderboard.jpeg) |
+| `/profile` · `/profile/:id` | Profile | header (avatar, 👑 title) · Trophy case · Lift/Bowl/Golf tabs | [20](screenshots/20-user-profile.jpeg) · [38](screenshots/38-user-profile-bowl-tab.jpeg) · [39](screenshots/39-user-profile-golf-tab.jpeg) · no-id [46](screenshots/46-profile-noid.jpeg) |
+| `/profile/:id/weekly-lifts` | WeeklyLifts | manual weekly-max tracker + chart (empty for most users) | [40](screenshots/40-weekly-lifts.jpeg) |
+| `/find-profile` | FindProfilePage | "Who am I?" email lookup, link to `/signin` | [19](screenshots/19-find-profile-page.jpeg) |
+| `/signin` · `/auth/magic/:token` | SignIn / MagicLink | request / consume magic link | [28](screenshots/28-signin.jpeg) |
+| `/auth/callback` · `/auth/error` | AuthCallback / AuthError | OAuth remnants | — |
+| `/bowling/upload` (`/:competitionId`) | BowlingUpload | email + video | [09](screenshots/09-bowling-upload.jpeg) |
+| `/bowling/challenge/:id` | BowlingChallenge | "All Submissions" cards (board, % detected) | [07](screenshots/07-bowling-challenge.jpeg) |
+| `/bowling/result/:attemptId` | BowlingResult | Entry Board / Pocket / Speed / Hook · Ball Path · Annotate CTA · Advanced | [08](screenshots/08-bowling-result.jpeg) |
+| `/bowling/result/:attemptId/annotate` | AnnotationWorkspace | frame-by-frame ball marking, keyboard-driven | [10](screenshots/10-bowling-annotate.jpeg) |
+| `/golf/upload` · `/golf/snap` | GolfUpload (`autoCamera` on snap) | email + scorecard photo ("Upload from library" / "Capture photo") | [12](screenshots/12-golf-upload.jpeg) · [45](screenshots/45-golf-snap.jpeg) |
+| `/golf/review/:roundId` | GolfReview | OCR review → confirm → HandicapResultCard | — (needs a fresh upload) |
+| `/golf/round/:roundId` | GolfRound | round detail + Share | — (no inbound link on the walked pages; rounds expand inline on the golf profile) |
+| `/golf/leaderboard` | GolfLeaderboard | handicap rows + monthly ▲/▼ pill | [11](screenshots/11-golf-leaderboard.jpeg) |
+| `/golf/profile/:userId` (`/golf/profile` no-id) | GolfProfile | handicap / best diff / last round · expandable round rows | [13](screenshots/13-golf-profile.jpeg) · [42](screenshots/42-golf-profile-noid.jpeg) |
+| `/feedback` · `/feedback/list` | FileTicket / TicketList | bug/feature form · public triage list | [15](screenshots/15-feedback-form.jpeg) · [16](screenshots/16-feedback-list.jpeg) |
+| `/store` · `/about` · `/terms` · `/privacy` | static | | [17](screenshots/17-store.jpeg) · [18](screenshots/18-about.jpeg) · [29](screenshots/29-terms.jpeg) · [30](screenshots/30-privacy.jpeg) |
+| `*` | NotFound | bare "404" | [31](screenshots/31-not-found.jpeg) |
 
 ## Workflows
 
-### 0. First run — pick a vertical, upload, get analysis
+### 0. Entry — home → vertical → upload → status → result
 
 ```mermaid
 flowchart LR
-    H["/ landing\n'Get AI analysis of your lift, bowl, or round'"] --> HUB["/lift · /bowl · /golf\nhub: Upload CTA + leaderboard/recent"]
-    H --> CH["/upload\n'What are you analyzing?'"]
-    HUB --> UP[vertical upload flow]
-    CH --> UP
-    UP -->|processing| ST["/lift/status/:id · /bowling/status/:id\nlive poll + honest ETA + 'we'll email you'"]
-    ST -->|complete| RES[result page]
-    ST -.->|email on complete| MAIL["'Your analysis is ready' + short link /s/:code"]
+    H["/ hero + DemoLoop\n(plank → bowl → scorecard loop)"] --> SP["Champion spotlight\n👑 wonder725 · View profile / Watch the win"]
+    H --> T["3 IconTiles: Lift · Bowl · Golf"]
+    H --> OC["OPEN CHALLENGES strip\n(RowCard per ongoing challenge)"]
+    T --> HUB["/lift · /bowl · /golf hubs"]
+    HUB --> UP["/lift/upload · /bowling/upload · /golf/snap"]
+    UP -->|video| ST["/lift/status/:id · /bowling/status/:id\n'Queued for analysis' · ETA · 'we'll email you'"]
+    ST --> RES[result page]
 ```
 
-- The landing page ([01](screenshots/01-home.jpeg)) now leads with the analysis value prop and three feature cards (Lift / Bowl / Golf) using real annotated-output imagery; challenges are demoted to a lower section.
-- Each hub ([24](screenshots/24-lift-hub.jpeg) · [25](screenshots/25-bowl-hub.jpeg) · [26](screenshots/26-golf-hub.jpeg)) leads with an Upload CTA and links the vertical's leaderboard / recent / challenges.
-- `/upload` ([27](screenshots/27-upload-chooser.jpeg)) is an IA chooser routing to the three (still separate) upload flows.
-- After an upload the user lands on a **status page** (AnalysisStatus) that polls the existing per-attempt result endpoint (404 = queued), shows an honest ETA ("usually ~2 min; long videos up to 10 min"), and survives reload. On completion the backend emails the uploader a short link (skips bot/test users; never blocks completion on SMTP failure).
+- Home ([01](screenshots/01-home.jpeg)) is the quiet-gym redesign: centered column, no photos. Order top→bottom: hero copy → 12s DemoLoop card with 3 dots → champion spotlight card (gold border) → three IconTiles → "OPEN CHALLENGES" strip → "All challenges →".
+- **As of this build the three home tiles link straight to the upload flows** (`/lift/upload`, `/bowling/upload`, `/golf/snap`), while the navbar's Lift/Bowl/Golf go to the hubs. Changed 2026-08-28 (uncommitted at capture time): tiles now go to `/lift` · `/bowl` · `/golf` so both paths land on the same hub. `/upload` ([27](screenshots/27-upload-chooser.jpeg)) still links straight to the upload pages.
+- Hubs ([24](screenshots/24-lift-hub.jpeg)–[26](screenshots/26-golf-hub.jpeg)): one primary CTA + RowCards — Lift: Upload a lift · Leaderboard (+ "Plank challenge" when one is ongoing; none was); Bowl: Upload only; Golf: Snap scorecard · Leaderboard · My golf profile.
+- Status page ([44](screenshots/44-lift-status-404.jpeg)) renders the queued state for any id, including unknown ones (404 from the result endpoint = "in line"), so a bad link never errors — it just polls forever.
 
-### 1. Lifting upload → analysis → video player
+### 1. Lifting: upload → video player
+
+- Upload ([06](screenshots/06-upload-video.jpeg)): email ("No account needed"), lift type select now includes **Pushup**; weight field hides for Plank/Pushup.
+- Player shows a different body per lift type:
+  - **Plank** ([04](screenshots/04-video-player.jpeg)): grade · steadiness score + personality badge (e.g. "Jelly — Chaos, but you held on.") · **Steadiness-over-time chart** (state bands Holding/Settling/Lost you, "tap to jump the video") · Holds strip ("3 runs, longest 273s") · stat tiles (total held, form %, longest unbroken, plank style, pose detection, body line).
+  - **Pushup** ([48](screenshots/48-video-player-pushup.jpeg)): grade + "39 reps detected" · one **SET BREAKDOWN** card (Depth / Control / Elbow Flare / Body Line / Tempo with avg vs target and ▸ coaching lines) · TIPS. No per-rep table.
+  - **Weight lifts** keep per-rep cards; a not-yet-analyzed attempt ([37](screenshots/37-video-player-plank.jpeg), "Toka's snatch · 240 lbs · Pending") shows only an **Analyze Form** CTA.
+- Every player: Original/Annotated toggle, Share (short link), Re-analyze, links back to the challenge and to the athlete's `/profile/:id`.
+
+### 2. Challenges
 
 ```mermaid
 flowchart LR
-    A["/lift/upload\nemail + lift type + weight + video"] -->|POST /upload| B[backend creates user by email\nif needed, stores video, triggers analysis]
-    B --> C[analysis dispatch\nCloud Run Jobs]
-    C --> D["/challenges/:id/participants/:pid/video/:vid\nOriginal / Annotated tabs"]
-    D --> E[Rep breakdown + plain-language coaching\nper failed metric + overall takeaway]
-    D --> F[Share button → short link /s/:code → OG card]
+    CL["/challenges\nOpen now strip + All challenges + pills"] --> CD["/challenges/:id"]
+    CD --> POD["podium (top 3)\n+ chips: 👑 · nickname · 'N attempts ▾'"]
+    CD --> TBL["Everyone else table\nRANK · ATHLETE · REPS|HOLD|TOTAL · CLIP"]
+    CD --> YOU["YOU row → Upload →"]
+    POD -->|chip click| AH["AttemptHistory accordion\ndate · payoff · 🏆 best"]
+    TBL --> VP[video player]
+    CD --> CU["/challenges/:id/upload"]
+    CL --> BC["/bowling/challenge/:id\n(bowling challenges route here)"]
 ```
 
-- Upload is **passwordless**: email only, no account. Lifting upload moved from `/upload` to `/lift/upload` (`/upload` is the chooser).
-- The player ([04](screenshots/04-video-player.jpeg)) shows the Original/Annotated toggle, overall grade, and a per-rep metric breakdown — now with a one-sentence coaching takeaway per failed metric (`lib/liftCoaching.ts`) and a Share button.
-- Very-low-confidence lifting results (plank `pose_detection_rate < 0.25`, or rep lifts with `total_reps === 0`) surface filming tips + an "Upload Again" CTA.
+- `/challenges` ([02](screenshots/02-challenges.jpeg)) at capture: "Open now" RowCard strip, then an "All Challenges" **image-card grid** (Unsplash placeholder photo per challenge). Changed 2026-08-28 (uncommitted): the grid is replaced by the same RowCard list as "Open now", with trailing Open / Preview / Results by status. Four lifting challenges + one bowling challenge (`/bowling/challenge/e93c…`) exist in prod.
+- Three metrics are live, each with its own column header and payoff format: **REPS** (Pushup challenge `4bd57523…`, ongoing, [03](screenshots/03-challenge-detail-pushup.jpeg)), **HOLD** (Summer plank `a0f27fa4…`, [34](screenshots/34-challenge-detail-a0f2.jpeg)) and **TOTAL** weight ([32](screenshots/32-challenge-detail-plank.jpeg), [33](screenshots/33-challenge-detail-857f.jpeg)).
+- Plank boards show **steadiness nicknames** next to names ("💪 The Elusive Steady Eddie", "🌊 One-Shot The Wobbler", "🪼 Human Jellyfish"); ended challenges show 👑 on the winner's podium chip.
+- [32](screenshots/32-challenge-detail-plank.jpeg) has the attempt accordion expanded: rows of date · weight · grade pill, 🏆 on the best, and "—" for an unanalyzed attempt.
+- `/challenges/:id/videos` ([35](screenshots/35-challenge-videos.jpeg)) is an unpolished legacy grid — every plank card reads "Plank - 60.00kg" (weight shown for a bodyweight lift) — reachable only by URL.
 
-### 2. Challenges (lifting competitions)
+### 3. Bowling
+
+- Bowling challenge ([07](screenshots/07-bowling-challenge.jpeg)) lists submissions with "Board: 28 · 48.7% detected" / "No trajectory" and an Upload Video CTA.
+- Result ([08](screenshots/08-bowling-result.jpeg)) leads with Entry Board / Pocket / Ball Speed / Hook tiles (many "—" on low-detection throws), Ball Path, a "Tracking look off?" card → **Annotate Frames**, and an **Advanced** toggle for debug data.
+- Annotation workspace ([10](screenshots/10-bowling-annotate.jpeg)) is a bare full-screen tool (no Layout): play/speed controls, frame markers G/B/P/O, keyboard cheat-sheet footer, Save Trajectory.
+
+### 4. Golf
 
 ```mermaid
 flowchart LR
-    H["/ or /lift hub\nOpen Challenges + Top Lifts This Month"] --> CL["/challenges\nfilter All/Upcoming/Ongoing/Completed"]
-    CL --> CD["/challenges/:id\nparticipants, podium"]
-    CD --> VP[video player]
-    CD -->|Upload Video| U["/challenges/:id/upload"]
+    GH["/golf hub"] --> GS["/golf/snap (auto-opens camera)\n/golf/upload (library)"]
+    GS -->|POST /golf/upload| GR["/golf/review/:roundId"] --> HC[HandicapResultCard]
+    GH --> GL["/golf/leaderboard\nindex + monthly ▲/▼ pill"] --> GP["/golf/profile/:userId\nstats + expandable rounds"]
+    GP <--> P["/profile/:id Golf tab"]
 ```
 
-- "Top Lifts This Month" and all leaderboards now **exclude bot/e2e test accounts** (`User.is_test` flag, migration 013).
-- The challenge **podium is fixed**: it now renders joined entries even before analysis completes (previously showed "No entries yet" because it required `status='completed'`). Verified on `/challenges/d130cc3c…` — the podium shows its real entrant.
-- "How It Works" copy is now honest and passwordless ("No signup — just your email"); fabricated prize pools removed.
+- Upload/snap ([12](screenshots/12-golf-upload.jpeg), [45](screenshots/45-golf-snap.jpeg)) is photo-only: email + "Upload from library" / "Capture photo" / "Analyse scorecard".
+- Leaderboard ([11](screenshots/11-golf-leaderboard.jpeg)) has three golfers; profile ([13](screenshots/13-golf-profile.jpeg)) shows Handicap / Best differential / Last round and round rows that expand inline (score, differential, birdie/bogey/double counts). "Full profile" ↔ `/profile/:id`.
+- `/golf/profile` without an id and no localStorage user shows "No user ID found. Please upload a round first." ([42](screenshots/42-golf-profile-noid.jpeg)).
 
-### 3. Bowling upload → ball-tracking result → annotation
+### 5. Identity & profile
 
-```mermaid
-flowchart LR
-    BC["/bowl hub / /bowling/challenge/:id"] -->|Upload Video| BU["/bowling/upload\nemail + video"]
-    BU -->|status poll| BS["/bowling/status/:attemptId"]
-    BS --> BR["/bowling/result/:attemptId\nconsumer stats + annotated video"]
-    BR -->|Advanced toggle| DBG[debug video, frame counts, px/frame, conf]
-    BR --> AW["/bowling/result/:attemptId/annotate"]
-```
+- `/find-profile` ([19](screenshots/19-find-profile-page.jpeg)) → email lookup → `/profile/:id`; links to `/signin` ([28](screenshots/28-signin.jpeg), magic link, renders without nav).
+- Unified profile ([20](screenshots/20-user-profile.jpeg)): avatar · name · "👑 Summer plank challenge Champion 2026" title · email · joined date · **TROPHY CASE** card ("4:35 · won July 31, 2026 · Open →") · Lift (count) / Bowl / Golf tabs. Lift tab = Competition Stats / Personal Bests / Achievements tiles · "Track Weekly Lifts" card (→ `/profile/:id/weekly-lifts`) · **My lifts** history rows (date · type · `m:ss` hold / grade) · Lift Videos gallery · Competition History; Bowl tab ([38](screenshots/38-user-profile-bowl-tab.jpeg)) = bowling results; Golf tab ([39](screenshots/39-user-profile-golf-tab.jpeg)) = handicap + rounds + "Full golf profile →". Avatar picker appears only for the owner (not captured — anonymous walk).
+- `/profile` with no localStorage user sticks on "Loading profile..." ([46](screenshots/46-profile-noid.jpeg)) — no redirect to find-profile.
+- `/profile/:id/weekly-lifts` ([40](screenshots/40-weekly-lifts.jpeg)) is a manual tracker with an "Add Week" form; empty for every user seen.
 
-- The result page ([08](screenshots/08-bowling-result.jpeg)) now leads with **consumer stats** a bowler cares about — entry board, est. speed, hook direction, pocket hit — plus the annotated video. All engineer internals (frame counts, px/frame, conf values) are behind an **"Advanced"** toggle. The Annotate link stays prominent. *(Screenshot [08] may still show the pre-roadmap debug-first layout — re-capture needs a live prod attempt id.)*
-- Low-detection attempts (`detection_rate < 0.25`) show filming tips + retry CTA.
+### 6. Feedback
 
-### 4. Golf: scorecard photo → OCR review → handicap
+- `/feedback` ([15](screenshots/15-feedback-form.jpeg)): Report a bug / Request a feature toggle + title/description/email. Footer's "Request a feature" link lands with **Report a bug** preselected — a user filed a ticket about exactly this (visible in [16](screenshots/16-feedback-list.jpeg)).
+- `/feedback/list` ([16](screenshots/16-feedback-list.jpeg)): public, unauthenticated triage with Open / In progress / Closed / All tabs; another filed ticket points out anyone can change statuses.
 
-```mermaid
-flowchart LR
-    GL["/golf hub → /golf/leaderboard\nhandicap index + monthly-delta pill"] -->|Log round| GU["/golf/upload\nemail + scorecard photo only"]
-    GU -->|POST /golf/upload\ngrid parser OCR| GR["/golf/review/:roundId\npick row, fix scores, course/tee/date"]
-    GR -->|PUT /golf/round/:id/scores| HS[WHS differential + HandicapSnapshot]
-    HS --> GL
-    GL --> GP["/golf/profile/:userId → links to unified /profile/:id"]
-```
+### 7. Static
 
-- The leaderboard ([11](screenshots/11-golf-leaderboard.jpeg)) now renders a signed ▲/▼ **monthly-delta pill** per row (lower-is-better: negative delta = green improvement; zero/no-data shows nothing).
-- Golf profile links to the unified profile hub and vice-versa.
+Store ([17](screenshots/17-store.jpeg), coming-soon cart), About ([18](screenshots/18-about.jpeg)), Terms ([29](screenshots/29-terms.jpeg)), Privacy ([30](screenshots/30-privacy.jpeg)), 404 ([31](screenshots/31-not-found.jpeg)).
 
-### 5. Identity: passwordless-first
+## Observations from this walk
 
-```mermaid
-flowchart LR
-    FP["/find-profile\n'Who am I?' email lookup"] -->|GET /users/by-email| P["/profile/:id\nLift / Bowl / Golf tabs"]
-    SI["/signin\nemail me a link"] -->|POST /auth/magic-link| MAIL[one-time link]
-    MAIL --> MG["/auth/magic/:token\nrestores localStorage userId (+ JWT)"] --> P
-    UP[any upload flow with email] -->|creates user| P
-```
-
-- **Find Profile** is now a full page ([19](screenshots/19-find-profile-page.jpeg)) reachable from the navbar, not a dialog.
-- **Magic-link sign-in** ([28](screenshots/28-signin.jpeg)): `/signin` requests an email link (`POST /auth/magic-link`, always 200 — no email enumeration); opening `/auth/magic/:token` restores the session on any device (single-use, 15-min expiry, rate-limited). Reachable from the find-profile page.
-- The unified profile ([20](screenshots/20-user-profile.jpeg)) now has **Lift / Bowl / Golf tabs** — one identity across all three sports, cross-linked with the golf profile.
-
-### 6. Feedback / tickets
-
-- `/feedback` ([15](screenshots/15-feedback-form.jpeg)): bug/feature form, auto-attaches localStorage `userId` + referrer, optional email.
-- `/feedback/list` ([16](screenshots/16-feedback-list.jpeg)): public triage list with status tabs + inline status select.
-
-### 7. Static / secondary pages
-
-- **Leaderboard** `/leaderboard` ([05](screenshots/05-leaderboard.jpeg)) — global lifting leaderboard (bot-filtered).
-- **Store** `/store` ([17](screenshots/17-store.jpeg)) — "coming soon", checkout disabled (no fake payment implied).
-- **About** `/about` ([18](screenshots/18-about.jpeg)) — mission + honest passwordless how-it-works.
-- **Terms / Privacy** ([29](screenshots/29-terms.jpeg) · [30](screenshots/30-privacy.jpeg)) — real short pages noting stored email, public visibility of uploads, and a deletion contact.
-
-## Roadmap observations — now resolved
-
-The 2026-07-06 UX roadmap closed the issues the original walk surfaced:
-
-1. ✅ **Analysis features hidden** → top-level Lift / Bowl / Golf hubs + `/upload` chooser; analysis-first landing.
-2. ✅ **Bot/e2e data in prod** → `is_test` flag excludes them from all public leaderboards.
-3. ✅ **Challenge podium mismatch** → podium renders joined entries without requiring completed analysis.
-4. ✅ **Dead-end wait after upload** → status pages with ETA + email-on-complete.
-5. ✅ **Engineer-speak results** → bowling consumer view (debug behind Advanced), lifting coaching copy, low-confidence filming tips.
-6. ✅ **Fragmented identity** → unified `/profile/:id` hub + full-page find-profile + magic-link sign-in.
-7. ✅ **Dishonest copy** → no fake prizes, passwordless messaging, real Terms/Privacy, `/athletes` mock page removed.
-
-Remaining follow-ups (tracked in the plan/CLAUDE.md): emailed short-links (T9) use the frontend origin so they don't unfurl yet — point them at the backend `/s/:code`; the old `FindProfile.tsx` dialog is now dead code. The reliability track (T17) is deferred.
+1. **Home tiles vs nav disagree on where "Lift/Bowl/Golf" goes** (tiles → upload, nav → hub). Fixed locally 2026-08-28, pending deploy.
+2. **`/challenges` "All Challenges" grid** uses stock photos and a heavy card, inconsistent with the RowCard strip above it. Replaced locally 2026-08-28, pending deploy.
+3. **Feedback link preselects the wrong type** from the footer's "Request a feature" (user-reported ticket).
+4. **`/feedback/list` is public and writable** — anyone can flip statuses (user-reported; known accepted risk in `CLAUDE.md`, but users notice).
+5. **Bad status links poll forever** (`/lift/status/<garbage>` shows "Queued") — no "we can't find this attempt" state.
+6. **`/profile` without a session hangs on "Loading profile..."** instead of sending users to `/find-profile`.
+7. **Video gallery cards say "Plank - 60.00kg"** (a bodyweight lift with the placeholder weight) on `/challenges/:id/videos`, the profile Lift Videos gallery, and Competition History — the list rows already hide it. `/challenges/:id/videos` also has no inbound link — candidate for deletion or a bodyweight-aware label.
+8. **Pending weight-lift attempts** render "Pending" with a manual **Analyze Form** button rather than the status page — the older lift flow never got the T8 treatment.
+9. Golf: no page links to `/golf/round/:id`; rounds only expand inline on the golf profile. Either wire it (share cards exist for it) or drop the route.
