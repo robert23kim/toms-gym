@@ -5,9 +5,11 @@ import { ArrowLeft, Share2, AlertTriangle } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL, PROD_API_URL } from "../config";
-import { triggerLiftingAnalysis, getLiftingResult } from '../lib/api';
+import { triggerLiftingAnalysis, getLiftingResult, getChallengeLeaderboard, determineStatus } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
-import type { LiftingResult } from '../lib/types';
+import type { LiftingResult, ChallengeLeaderboard } from '../lib/types';
+import { deriveStanding, personalBest, attemptScore } from '../lib/standing';
+import ResultLadder from '../components/challenge/ResultLadder';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { createAndCopyShareLink } from '../lib/share';
@@ -74,6 +76,26 @@ const VideoPlayer: React.FC = () => {
   const [expandedMetric, setExpandedMetric] = useState<string | null>(null);
   const [showHelp, setShowHelp] = useState<string | null>(null);
   const [isCreatingShortLink, setIsCreatingShortLink] = useState(false);
+  const [board, setBoard] = useState<ChallengeLeaderboard | null>(null);
+  const [challengeOpen, setChallengeOpen] = useState(false);
+
+  const analysisDone = liftingResult?.processing_status === 'completed';
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    getChallengeLeaderboard(id)
+      .then((b) => { if (!cancelled) setBoard(b); })
+      .catch(() => {});
+    axios.get(`${API_URL}/competitions/${id}`)
+      .then((r) => {
+        const c = r.data?.competition ?? r.data;
+        if (!cancelled && c?.start_date && c?.end_date) {
+          setChallengeOpen(determineStatus(c.start_date, c.end_date) === 'ongoing');
+        }
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [id, analysisDone]);
   const { toast } = useToast();
 
   const handleShare = async () => {
@@ -510,6 +532,23 @@ const VideoPlayer: React.FC = () => {
                         {dateStr && <span>{dateStr}</span>}
                       </div>
                     </div>
+
+                    {board && analysisDone && liftingResult?.report && participantId && id && (() => {
+                      const standing = deriveStanding(board, participantId);
+                      if (!standing) return null;
+                      const score = attemptScore(board.metric, liftingResult.report, videoData.weight);
+                      return (
+                        <ResultLadder
+                          standing={standing}
+                          personalBest={personalBest(standing, score)}
+                          metric={board.metric}
+                          athleteName={videoData.participant_name}
+                          isOwner={participantId === localStorage.getItem('userId')}
+                          challengeId={id}
+                          challengeOpen={challengeOpen}
+                        />
+                      );
+                    })()}
 
                     {/* Analysis section */}
                     {videoData.lift_type && videoData.lift_type !== 'Bowling' && (
