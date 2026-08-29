@@ -1,4 +1,4 @@
-import { deriveStanding, ctaLabelFor } from "../standing";
+import { deriveStanding, ctaLabelFor, attemptScore, metricForLift, personalBest, formatWithUnit } from "../standing";
 import type {
   ChallengeLeaderboard,
   ChallengeLeaderboardRow,
@@ -145,5 +145,58 @@ describe("ctaLabelFor", () => {
   test("falls back to the default upload label when not entered", () => {
     expect(ctaLabelFor(null, "time")).toBe("Upload your plank");
     expect(ctaLabelFor(null, "weight")).toBe("Upload your lift");
+  });
+});
+
+describe("result ladder additions", () => {
+  test("below is the entrant directly under the viewer with the margin they hold", () => {
+    const s = deriveStanding(midPack(), "me")!;
+    expect(s.below).toMatchObject({ name: "Kim", rank: 4, score: 12 });
+    expect(s.below!.gap).toBeCloseTo(6.6, 5);
+    expect(deriveStanding(midPack(), "u4")!.below).toBeNull();
+  });
+
+  test("below ignores entrants who have not scored yet", () => {
+    const b = board([
+      makeRow({ rank: 1, user_id: "me", score: 10 }),
+      makeRow({ rank: 2, user_id: "u2", score: 0, history: [] }),
+    ]);
+    expect(deriveStanding(b, "me")!.below).toBeNull();
+  });
+
+  test("podiumGap is the distance to #3 only when off the podium", () => {
+    expect(deriveStanding(midPack(), "u4")!.podiumGap).toBeCloseTo(6.6, 5);
+    expect(deriveStanding(midPack(), "me")!.podiumGap).toBeNull();
+  });
+
+  test("personalBest flags an attempt that beat every earlier score", () => {
+    const s = deriveStanding(midPack(), "me")!;
+    expect(personalBest(s, 18.6)).toEqual({ isPersonalBest: true, previousBest: 14.1, belowBest: false });
+  });
+
+  test("personalBest is false on a first attempt, a tie, or an older weaker attempt", () => {
+    const firstTry = deriveStanding(board([makeRow({ rank: 1, user_id: "me", score: 30, history: [{ score: 30, date: "d1" }] })]), "me")!;
+    expect(personalBest(firstTry, 30)).toEqual({ isPersonalBest: false, previousBest: null, belowBest: false });
+    const me = deriveStanding(midPack(), "me")!;
+    expect(personalBest(me, 9.2)).toEqual({ isPersonalBest: false, previousBest: 18.6, belowBest: true });
+    const tie = deriveStanding(board([makeRow({ rank: 1, user_id: "me", score: 20, history: [{ score: 20, date: "d1" }, { score: 20, date: "d2" }] })]), "me")!;
+    expect(personalBest(tie, 20).isPersonalBest).toBe(false);
+  });
+
+  test("attemptScore reads the metric's field; metricForLift maps lift types", () => {
+    expect(attemptScore("reps", { total_reps: 35 }, 60)).toBe(35);
+    expect(attemptScore("time", { total_in_plank_s: 201.3 }, 60)).toBe(201.3);
+    expect(attemptScore("weight", { total_reps: 5 }, 115)).toBe(115);
+    expect(attemptScore("reps", null, 60)).toBeNull();
+    expect(metricForLift("Plank")).toBe("time");
+    expect(metricForLift("pushup")).toBe("reps");
+    expect(metricForLift("Bench Press")).toBe("weight");
+  });
+
+  test("formatWithUnit follows the board's units and pluralises reps", () => {
+    expect(formatWithUnit(1, "reps")).toBe("1 rep");
+    expect(formatWithUnit(35, "reps")).toBe("35 reps");
+    expect(formatWithUnit(18.6, "time")).toBe("18.6s");
+    expect(formatWithUnit(115, "weight")).toBe("115lbs");
   });
 });

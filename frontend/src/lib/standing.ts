@@ -40,6 +40,23 @@ export interface Standing {
   ctaLabel: string;
   /** "You" row goal subtitle, e.g. "3.9s to reach #6"; null when leader. */
   goalSubtitle: string | null;
+  /** Entrant directly below with the margin they must close; null when last. */
+  below: Neighbour | null;
+  /** Distance to the #3 score when off the podium; null on it. */
+  podiumGap: number | null;
+}
+
+export interface Neighbour {
+  name: string | null;
+  rank: number;
+  score: number;
+  gap: number;
+}
+
+export interface PersonalBest {
+  isPersonalBest: boolean;
+  previousBest: number | null;
+  belowBest: boolean;
 }
 
 /**
@@ -86,6 +103,14 @@ export function deriveStanding(
 
   const ctaLabel = `Beat your best — ${formatScoreValue(row.score, metric)}${scoreUnit(metric)}`;
 
+  const under = rows[index + 1];
+  const below: Neighbour | null =
+    under && under.score > 0
+      ? { name: under.name, rank: under.rank, score: under.score, gap: row.score - under.score }
+      : null;
+  const third = rows[2];
+  const podiumGap = row.rank > 3 && third ? Math.max(0, third.score - row.score) : null;
+
   return {
     row,
     rank: row.rank,
@@ -101,7 +126,54 @@ export function deriveStanding(
     nextRank,
     ctaLabel,
     goalSubtitle,
+    below,
+    podiumGap,
   };
+}
+
+/** Score the athlete's *viewed* attempt contributes, in the board's metric. */
+export function attemptScore(
+  metric: ChallengeMetric,
+  report: { total_reps?: number | null; total_in_plank_s?: number | null } | null | undefined,
+  weight: number | null | undefined,
+): number | null {
+  if (metric === "reps") return report?.total_reps ?? null;
+  if (metric === "time") return report?.total_in_plank_s ?? null;
+  return weight ?? null;
+}
+
+export function metricForLift(liftType: string | null | undefined): ChallengeMetric {
+  const t = (liftType || "").toLowerCase();
+  if (t === "plank") return "time";
+  if (t === "pushup") return "reps";
+  return "weight";
+}
+
+/**
+ * Whether the viewed attempt beat everything the athlete had logged before it.
+ * One occurrence of the attempt's own score is removed from the history first,
+ * so a repeat of the best is not a new best; ties are not a best either.
+ */
+export function personalBest(standing: Standing, score: number | null): PersonalBest {
+  const others = standing.history.map((h) => h.score);
+  if (score != null) {
+    const i = others.indexOf(score);
+    if (i >= 0) others.splice(i, 1);
+  }
+  const previousBest = others.length ? Math.max(...others) : null;
+  return {
+    isPersonalBest: score != null && previousBest != null && score > previousBest,
+    previousBest,
+    belowBest: score != null && score < standing.best,
+  };
+}
+
+export function formatWithUnit(value: number, metric: ChallengeMetric): string {
+  if (metric === "reps") {
+    const n = Math.round(value);
+    return `${n} rep${n === 1 ? "" : "s"}`;
+  }
+  return `${formatScoreValue(value, metric)}${scoreUnit(metric)}`;
 }
 
 /** Sticky-CTA text: goal-reframed when the viewer is entered, else the default. */
