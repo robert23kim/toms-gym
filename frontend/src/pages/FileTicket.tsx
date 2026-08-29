@@ -1,12 +1,15 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Bug, Lightbulb, CheckCircle2 } from "lucide-react";
 import Layout from "../components/Layout";
 import { createTicket, TicketType } from "../lib/api";
 
 const FileTicket: React.FC = () => {
-  const [type, setType] = useState<TicketType>("bug");
+  const [searchParams] = useSearchParams();
+  const [type, setType] = useState<TicketType>(
+    searchParams.get("type") === "feature" ? "feature" : "bug",
+  );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
@@ -120,6 +123,7 @@ const FileTicket: React.FC = () => {
                         <button
                           key={opt.value}
                           type="button"
+                          aria-pressed={type === opt.value}
                           onClick={() => setType(opt.value)}
                           className={`flex flex-col items-start gap-1 p-4 rounded-lg border text-left transition-colors ${
                             type === opt.value

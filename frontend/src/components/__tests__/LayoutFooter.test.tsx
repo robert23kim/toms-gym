@@ -15,14 +15,14 @@ jest.mock("../Navbar", () => ({
 }));
 
 describe("Layout footer", () => {
-  it("links Report a bug and Request a feature to /feedback", () => {
+  it("links Report a bug to /feedback and Request a feature to /feedback?type=feature", () => {
     render(
       <MemoryRouter>
         <Layout>content</Layout>
       </MemoryRouter>
     );
     expect(screen.getByRole("link", { name: /report a bug/i })).toHaveAttribute("href", "/feedback");
-    expect(screen.getByRole("link", { name: /request a feature/i })).toHaveAttribute("href", "/feedback");
+    expect(screen.getByRole("link", { name: /request a feature/i })).toHaveAttribute("href", "/feedback?type=feature");
     expect(screen.getByRole("link", { name: /terms/i })).toHaveAttribute("href", "/terms");
     expect(screen.getByRole("link", { name: /privacy/i })).toHaveAttribute("href", "/privacy");
   });

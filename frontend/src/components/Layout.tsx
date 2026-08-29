@@ -30,7 +30,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
             Report a bug
           </Link>
           <span aria-hidden="true">·</span>
-          <Link to="/feedback" className="hover:text-foreground transition-colors">
+          <Link to="/feedback?type=feature" className="hover:text-foreground transition-colors">
             Request a feature
           </Link>
           <span aria-hidden="true">·</span>
