@@ -238,7 +238,12 @@ target (`/lift/status/:id?challenge=<id>`), and the completion reveal (number �
 `deriveStanding` also feeds the older challenge-page `StandingCard` — extend it, don't fork it.
 Iteration 03 shipped the welcome-back card on `/find-profile` (`lib/welcome.ts`), the Tonight card on
 `/bowling/insights/:id?sheet=<id>` (`lib/bowlingNight.ts`, `components/bowling/NightCard.tsx`),
-share-with-words (`lib/share.ts::shareResult` + `standingShareText`) and owner-only Re-analyze. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
+share-with-words (`lib/share.ts::shareResult` + `standingShareText`) and owner-only Re-analyze.
+Iteration 04: rank-shift banner on the challenge page (`lib/rankMemory.ts`, localStorage key
+`rank:<challenge>:<user>`), streak milestones (`lib/streak.ts::milestoneReached`, key
+`streak-milestone:<user>`), round-in-context pill on the golf handicap card (`lib/golfBest.ts`).
+Verification recipe for confirm screens: `page.route` with a *function* matcher (globs' `*` does not
+cross `/`), patch the GET to enable the button, fulfil the PUT — never let a verification write. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
 jest results via `node node_modules/jest/bin/jest.js --json --outputFile=…` (the shell hook
 rewrites jest stdout); `jest.setup.js` stubs `localStorage` with `jest.fn()` — mock
 `getItem`'s return value, `setItem` is a no-op.
