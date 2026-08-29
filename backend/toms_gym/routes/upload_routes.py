@@ -7,6 +7,8 @@ from toms_gym.storage import bucket, ALLOWED_EXTENSIONS
 from toms_gym.db import get_db_connection
 import sqlalchemy
 import uuid
+import threading
+from concurrent.futures import ThreadPoolExecutor
 import traceback
 import sys
 
@@ -121,6 +123,31 @@ def _create_attempt_record(session, user_id, competition_id, database_lift_type,
     return attempt_id, user_competition_id
 
 
+_signing_credentials = None
+_signing_lock = threading.Lock()
+
+
+def _get_signing_credentials():
+    """Runtime SA credentials, cached across requests and refreshed only when
+    within 5 minutes of expiry (google.auth.default + refresh cost ~2 network
+    round trips per call, which was paid once per composite part)."""
+    global _signing_credentials
+    import google.auth
+    from google.auth.transport.requests import Request as AuthRequest
+
+    with _signing_lock:
+        creds = _signing_credentials
+        if creds is None:
+            creds, _ = google.auth.default()
+        expiry = getattr(creds, 'expiry', None)
+        stale = (not creds.token or expiry is None
+                 or expiry - datetime.utcnow() < timedelta(minutes=5))
+        if stale:
+            creds.refresh(AuthRequest())
+        _signing_credentials = creds
+        return creds
+
+
 def _generate_signed_upload_url(object_name, content_type, expires_minutes=15):
     """Generate a V4 signed PUT URL for direct-to-GCS upload.
 
@@ -128,11 +155,7 @@ def _generate_signed_upload_url(object_name, content_type, expires_minutes=15):
     API using the runtime service account (which needs
     roles/iam.serviceAccountTokenCreator on itself). Returns (upload_url, public_url).
     """
-    import google.auth
-    from google.auth.transport.requests import Request as AuthRequest
-
-    credentials, _ = google.auth.default()
-    credentials.refresh(AuthRequest())
+    credentials = _get_signing_credentials()
 
     blob = bucket.blob(object_name)
     upload_url = blob.generate_signed_url(
@@ -571,6 +594,7 @@ def finalize_upload():
 # GCS compose allows at most 32 source objects per call. Larger part counts are
 # composed in batches into temporary intermediates, then those are composed
 # together (see /upload/composite/complete).
+_COMPOSITE_PART_EXPIRES_MIN = 60
 _GCS_COMPOSE_MAX_SOURCES = 32
 
 
@@ -604,15 +628,19 @@ def create_composite_upload_urls():
     final_object = f"videos/{timestamp}_{secure_filename(filename)}"
 
     try:
-        part_descriptors = []
-        for n in range(1, parts + 1):
+        # Parts are uploaded 4-wide by the browser, so a big file on a slow
+        # mobile link can take well over the 15-minute default before the last
+        # part starts; sign for an hour. signBlob is a network call per part,
+        # so fan the signing out too.
+        def sign(n):
             part_object = f"{final_object}.part{n:03d}"
-            upload_url, _ = _generate_signed_upload_url(part_object, content_type)
-            part_descriptors.append({
-                'part_number': n,
-                'object_name': part_object,
-                'upload_url': upload_url,
-            })
+            upload_url, _ = _generate_signed_upload_url(
+                part_object, content_type, expires_minutes=_COMPOSITE_PART_EXPIRES_MIN)
+            return {'part_number': n, 'object_name': part_object, 'upload_url': upload_url}
+
+        _get_signing_credentials()
+        with ThreadPoolExecutor(max_workers=min(8, parts)) as pool:
+            part_descriptors = list(pool.map(sign, range(1, parts + 1)))
     except Exception as e:
         error_details = traceback.format_exc()
         logger.error(f"Failed to generate composite upload URLs: {str(e)}")
@@ -627,6 +655,18 @@ def create_composite_upload_urls():
         'content_type': content_type,
         'parts': part_descriptors,
     }), 200
+
+
+def _delete_in_background(object_names):
+    """Parts/intermediates are dead weight once the final object exists; don't
+    make the browser wait on N serial deletes."""
+    def run():
+        for name in object_names:
+            try:
+                bucket.blob(name).delete()
+            except Exception as del_err:
+                logger.warning(f"Could not delete composite leftover {name}: {del_err}")
+    threading.Thread(target=run, daemon=True).start()
 
 
 @upload_bp.route('/upload/composite/complete', methods=['POST'])
@@ -655,13 +695,12 @@ def complete_composite_upload():
     try:
         # Verify every part landed in GCS before composing, so a missing/failed
         # part PUT can't produce a truncated final object.
-        part_blobs = []
+        present = {b.name for b in bucket.list_blobs(prefix=f"{final_object}.part")}
         for name in part_object_names:
-            blob = bucket.blob(name)
-            if not blob.exists():
+            if name not in present:
                 logger.error(f"Composite complete rejected: part {name} not found in GCS")
                 return jsonify({'error': f'Uploaded part not found in storage: {name}'}), 400
-            part_blobs.append(blob)
+        part_blobs = [bucket.blob(name) for name in part_object_names]
 
         final_blob = bucket.blob(final_object)
 
@@ -686,13 +725,7 @@ def complete_composite_upload():
         final_blob.content_type = content_type
         final_blob.patch()
 
-        # Clean up parts and temp intermediates; a failure here is non-fatal
-        # since the final object already exists.
-        for name in list(part_object_names) + temp_objects:
-            try:
-                bucket.blob(name).delete()
-            except Exception as del_err:
-                logger.warning(f"Could not delete composite leftover {name}: {del_err}")
+        _delete_in_background(list(part_object_names) + temp_objects)
 
         public_url = f"https://storage.googleapis.com/{bucket.name}/{final_object}"
         logger.info(f"Composite complete succeeded for {final_object}")
