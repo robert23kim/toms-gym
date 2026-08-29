@@ -221,7 +221,7 @@ const BowlingSheetReview: React.FC = () => {
       };
       await confirmBowlingSheet(id, body);
       const userId = localStorage.getItem("userId");
-      navigate(claim && userId ? `/bowling/insights/${userId}` : "/bowl");
+      navigate(claim && userId ? `/bowling/insights/${userId}?sheet=${id}` : "/bowl");
     } catch {
       setSaveError("Could not save these scores. Try again.");
     } finally {

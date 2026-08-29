@@ -194,7 +194,7 @@ describe("BowlingSheetReview — night sheet", () => {
       hdcp: 37,
       frames: null,
     });
-    expect(mockNavigate).toHaveBeenCalledWith("/bowling/insights/user-1");
+    expect(mockNavigate).toHaveBeenCalledWith("/bowling/insights/user-1?sheet=sheet-1");
   });
 
   it("returns to the hub when nothing is claimed", async () => {

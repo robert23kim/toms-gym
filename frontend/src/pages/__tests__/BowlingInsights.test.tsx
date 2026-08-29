@@ -5,6 +5,7 @@ import { MemoryRouter, Route, Routes } from "react-router-dom";
 import BowlingInsights from "../BowlingInsights";
 import {
   fetchBowlingInsights,
+  fetchBowlingGames,
   BowlingInsights as BowlingInsightsPayload,
   BowlingGameRow,
 } from "../../lib/api";
@@ -16,7 +17,7 @@ jest.mock("../../components/Layout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
-jest.mock("../../lib/api", () => ({ fetchBowlingInsights: jest.fn() }));
+jest.mock("../../lib/api", () => ({ fetchBowlingInsights: jest.fn(), fetchBowlingGames: jest.fn() }));
 
 const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
@@ -178,5 +179,30 @@ describe("BowlingInsights", () => {
     renderAt("me");
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/find-profile"));
     expect(mockedFetch).not.toHaveBeenCalled();
+  });
+
+  it("opens with a Tonight card for the sheet that was just confirmed", async () => {
+    mockedFetch.mockResolvedValue(payload);
+    (fetchBowlingGames as jest.Mock).mockResolvedValue({
+      games: [
+        { ...recent[0], id: "g1", sheet_id: "sheet-1", played_on: "2026-08-27", total_score: 205 },
+        { ...recent[0], id: "g2", sheet_id: "sheet-9", played_on: "2026-08-29", total_score: 202 },
+        { ...recent[0], id: "g3", sheet_id: "sheet-9", played_on: "2026-08-29", total_score: 157 },
+        { ...recent[0], id: "g4", sheet_id: "sheet-9", played_on: "2026-08-29", total_score: 148 },
+      ],
+      total: 4,
+    });
+    render(
+      <MemoryRouter initialEntries={["/bowling/insights/u1?sheet=sheet-9"]}>
+        <Routes>
+          <Route path="/bowling/insights/:userId" element={<BowlingInsights />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    expect(await screen.findByText("avg over 3 games")).toBeInTheDocument();
+    expect(screen.getByText("169")).toBeInTheDocument();
+    expect(screen.getByText(/-36 vs your average/)).toBeInTheDocument();
+    expect(screen.getByText("202 high — your best game since Aug 27")).toBeInTheDocument();
+    expect(fetchBowlingGames).toHaveBeenCalledWith("u1", 100);
   });
 });

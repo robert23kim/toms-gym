@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Camera } from "lucide-react";
 import Layout from "../components/Layout";
 import InsightTiles, { InsightTile } from "../components/bowling/InsightTiles";
+import NightCard from "../components/bowling/NightCard";
+import { Night, summarizeNight } from "../lib/bowlingNight";
 import {
   BowlingGameRow,
   BowlingInsights as BowlingInsightsPayload,
   fetchBowlingInsights,
+  fetchBowlingGames,
 } from "../lib/api";
 
 type Payload = BowlingInsightsPayload & { recent: BowlingGameRow[] };
@@ -57,6 +60,9 @@ const BowlingInsights: React.FC = () => {
   const navigate = useNavigate();
   const [data, setData] = useState<Payload | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [searchParams] = useSearchParams();
+  const sheetId = searchParams.get("sheet");
+  const [night, setNight] = useState<Night | null>(null);
 
   const resolvedUserId =
     userIdParam === "me" ? localStorage.getItem("userId") : userIdParam ?? null;
@@ -78,6 +84,15 @@ const BowlingInsights: React.FC = () => {
       cancelled = true;
     };
   }, [resolvedUserId, navigate]);
+
+  useEffect(() => {
+    if (!sheetId || !resolvedUserId) return;
+    let cancelled = false;
+    fetchBowlingGames(resolvedUserId, 100)
+      .then((r) => { if (!cancelled) setNight(summarizeNight(r.games, sheetId)); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [sheetId, resolvedUserId]);
 
   const slotMax = data
     ? Math.max(...SLOTS.map((slot) => data.slot_averages[slot] ?? 0), 1)
@@ -123,6 +138,7 @@ const BowlingInsights: React.FC = () => {
 
         {data && data.games > 0 && (
           <div className="space-y-8">
+            {night && <NightCard night={night} />}
             <InsightTiles tiles={headlineTiles(data)} />
 
             {data.tips.length > 0 && (
