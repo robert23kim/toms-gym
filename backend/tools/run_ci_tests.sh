@@ -28,8 +28,9 @@ exec "$PYTHON" -m pytest \
   tests/test_champions.py \
   tests/test_magic_link.py \
   tests/test_og_card.py \
-  tests/test_bowling_sheet_parser.py \
   tests/test_bowling_score.py \
+  tests/test_bowling_insights.py \
+  tests/test_bowling_sheet_parser.py \
   --noconftest -q \
   --deselect tests/test_golf_parser.py::test_rate_limit_bypass_is_wired \
   --deselect tests/test_golf_parser.py::test_upload_resolves_existing_course_by_name \
