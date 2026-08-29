@@ -245,7 +245,11 @@ Iteration 04: rank-shift banner on the challenge page (`lib/rankMemory.ts`, loca
 Verification recipe for confirm screens: `page.route` with a *function* matcher (globs' `*` does not
 cross `/`), patch the GET to enable the button, fulfil the PUT — never let a verification write. Iteration 05 (consolidation): status pill hidden
 once analysis exists, bodyweight tips filtered (B5), last-place share copy, "Steadiest plank yet"
-(`lib/steadiest.ts`, ladder `extraPill`). Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
+(`lib/steadiest.ts`, ladder `extraPill`). Iteration 06 (hygiene): `lib/dates.ts::formatDay` for list
+dates, empty stat tiles hidden, "N boards left/right of your last throw" on the throw result
+(`lib/throwCompare.ts`, owner-only via the viewer's own results list). Verification gotchas: call
+`page.unrouteAll` at the start of every Playwright MCP script (routes persist across runs), and wait
+~1s after the first navigation post-deploy (`staleChunk` self-reload kills a racing `evaluate`). Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
 jest results via `node node_modules/jest/bin/jest.js --json --outputFile=…` (the shell hook
 rewrites jest stdout); `jest.setup.js` stubs `localStorage` with `jest.fn()` — mock
 `getItem`'s return value, `setItem` is a no-op.
