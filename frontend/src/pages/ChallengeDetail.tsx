@@ -23,8 +23,10 @@ import AttemptHistory from "../components/challenge/AttemptHistory";
 import MomentumLine from "../components/challenge/MomentumLine";
 import { viewerProcessingAttempts } from "../components/challenge/processing";
 import StandingCard from "../components/challenge/StandingCard";
+import RankChangeBanner from "../components/challenge/RankChangeBanner";
 import { scoreColumnLabel } from "../components/challenge/metric";
 import { deriveStanding, ctaLabelFor } from "../lib/standing";
+import { rankChange, readRank, writeRank, RankShift } from "../lib/rankMemory";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -85,6 +87,16 @@ const ChallengeDetail: React.FC = () => {
   const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboard | null>(null);
   const [leaderboardError, setLeaderboardError] = useState<string | null>(null);
   const viewerId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const [rankShift, setRankShift] = useState<RankShift | null>(null);
+  const rankSeen = useRef(false);
+  useEffect(() => {
+    if (!leaderboard || !id || !viewerId || rankSeen.current) return;
+    const s = deriveStanding(leaderboard, viewerId);
+    if (!s) return;
+    rankSeen.current = true;
+    setRankShift(rankChange(readRank(localStorage, id, viewerId), s));
+    writeRank(localStorage, id, viewerId, { rank: s.rank, best: s.best, at: new Date().toISOString() });
+  }, [leaderboard, id, viewerId]);
   // Which leaderboard row's attempt history is open (single-open accordion).
   const [expandedAttemptsUserId, setExpandedAttemptsUserId] = useState<string | null>(null);
   // Winner of this challenge once it has ended (crown flair); non-fatal fetch.
@@ -785,6 +797,7 @@ const ChallengeDetail: React.FC = () => {
 
             return (
               <>
+                {standing && rankShift && <RankChangeBanner shift={rankShift} standing={standing} metric={metric} />}
                 {standing && <StandingCard standing={standing} metric={metric} />}
 
                 <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
