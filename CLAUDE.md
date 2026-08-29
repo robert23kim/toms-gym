@@ -235,7 +235,10 @@ Iteration 02 shipped the result-page **ladder** (`lib/standing.ts` extended with
 `podiumGap`, `personalBest`, `attemptScore`, `metricForLift`; `components/challenge/ResultLadder.tsx`
 — rank, the athlete above/below with gaps, new-best pill, Beat-this for visitors), the waiting-screen
 target (`/lift/status/:id?challenge=<id>`), and the completion reveal (number → grade → ladder).
-`deriveStanding` also feeds the older challenge-page `StandingCard` — extend it, don't fork it. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
+`deriveStanding` also feeds the older challenge-page `StandingCard` — extend it, don't fork it.
+Iteration 03 shipped the welcome-back card on `/find-profile` (`lib/welcome.ts`), the Tonight card on
+`/bowling/insights/:id?sheet=<id>` (`lib/bowlingNight.ts`, `components/bowling/NightCard.tsx`),
+share-with-words (`lib/share.ts::shareResult` + `standingShareText`) and owner-only Re-analyze. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
 jest results via `node node_modules/jest/bin/jest.js --json --outputFile=…` (the shell hook
 rewrites jest stdout); `jest.setup.js` stubs `localStorage` with `jest.fn()` — mock
 `getItem`'s return value, `setItem` is a no-op.
