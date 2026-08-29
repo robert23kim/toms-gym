@@ -8,6 +8,27 @@ const PART_SIZE = 16 * 1024 * 1024;
 
 /** Max parts uploaded to GCS in parallel. */
 const CONCURRENCY = 4;
+const PART_ATTEMPTS = 3;
+const RETRY_BASE_MS = 500;
+
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  attempts = PART_ATTEMPTS,
+  baseMs = RETRY_BASE_MS
+): Promise<T> {
+  let lastErr: unknown;
+  for (let attempt = 0; attempt < attempts; attempt++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (attempt < attempts - 1) {
+        await new Promise((r) => setTimeout(r, baseMs * 2 ** attempt));
+      }
+    }
+  }
+  throw lastErr;
+}
 
 /** Which stage a parallel-upload error came from, for telemetry. Mirrors the
  * UploadStage tagging in upload.ts. */
@@ -117,13 +138,18 @@ export async function uploadVideoParallel(
       const chunk = file.slice(start, end);
       // Content-Type MUST match what was signed, or GCS rejects the PUT with a
       // 403 SignatureDoesNotMatch.
-      await axios.put(part.upload_url, chunk, {
-        headers: { "Content-Type": contentType },
-        onUploadProgress: (e) => {
-          loadedPerPart[index] = e.loaded;
-          reportProgress();
-        },
-      });
+      // Parts are idempotent PUTs to distinct objects, so a transient failure
+      // retries just this part instead of throwing the whole file back to the
+      // serial resumable path.
+      await withRetry(() =>
+        axios.put(part.upload_url, chunk, {
+          headers: { "Content-Type": contentType },
+          onUploadProgress: (e) => {
+            loadedPerPart[index] = e.loaded;
+            reportProgress();
+          },
+        })
+      );
       // Make sure a completed part counts its full size even if the final
       // progress event under-reported.
       loadedPerPart[index] = end - start;
