@@ -139,7 +139,13 @@ const BowlingInsights: React.FC = () => {
         {data && data.games > 0 && (
           <div className="space-y-8">
             {night && <NightCard night={night} />}
-            <InsightTiles tiles={headlineTiles(data)} />
+            <InsightTiles
+              tiles={
+                night && night.priorAvg == null
+                  ? headlineTiles(data).filter((t) => t.key !== "average" && t.key !== "high")
+                  : headlineTiles(data)
+              }
+            />
 
             {data.tips.length > 0 && (
               <section className="space-y-2.5">
