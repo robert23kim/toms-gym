@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Flame, Share2 } from "lucide-react";
 import { fetchUserActivity } from "../lib/api";
-import { computeStreak, Streak } from "../lib/streak";
+import { computeStreak, milestoneCopy, milestoneReached, Streak } from "../lib/streak";
 import { createAndCopyShareLink } from "../lib/share";
 
 const StreakCard: React.FC = () => {
   const [streak, setStreak] = useState<Streak | null>(null);
   const [shareState, setShareState] = useState<"idle" | "copied" | "failed">("idle");
+  const [milestone, setMilestone] = useState<number | null>(null);
   const userId = typeof localStorage !== "undefined" ? localStorage.getItem("userId") : null;
 
   useEffect(() => {
@@ -14,7 +15,25 @@ const StreakCard: React.FC = () => {
     let cancelled = false;
     fetchUserActivity(userId)
       .then((activity) => {
-        if (!cancelled) setStreak(computeStreak(activity));
+        if (cancelled) return;
+        const s = computeStreak(activity);
+        setStreak(s);
+        const memoryKey = `streak-milestone:${userId}`;
+        let celebrated = 0;
+        try {
+          celebrated = Number(localStorage.getItem(memoryKey)) || 0;
+        } catch {
+          celebrated = 0;
+        }
+        const m = milestoneReached(s.weeks, celebrated);
+        if (m) {
+          setMilestone(m);
+          try {
+            localStorage.setItem(memoryKey, String(m));
+          } catch {
+            /* nothing to remember with */
+          }
+        }
       })
       .catch(() => {}); // non-fatal: card simply stays hidden
     return () => {
@@ -40,9 +59,14 @@ const StreakCard: React.FC = () => {
   };
 
   return (
-    <div className="rounded-2xl border border-border bg-card/60 px-5 py-4 text-left" data-testid="streak-card">
+    <div
+      className={`rounded-2xl border bg-card/60 px-5 py-4 text-left ${milestone ? "border-orange-500/50 ring-1 ring-orange-500/30" : "border-border"}`}
+      data-testid="streak-card"
+    >
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-base font-semibold">Your streak</h2>
+        <h2 className="text-base font-semibold">
+          {milestone ? `🔥 ${milestoneCopy(milestone)}` : "Your streak"}
+        </h2>
         <button
           type="button"
           onClick={onShare}

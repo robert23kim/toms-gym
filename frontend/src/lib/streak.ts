@@ -69,3 +69,23 @@ export function computeStreak(activity: ActivityEntry[], now: Date = new Date())
 
   return { weeks, week };
 }
+
+export const STREAK_MILESTONES = [2, 4, 8, 12, 26, 52];
+
+/** The largest milestone the streak has reached that has not been celebrated yet. */
+export function milestoneReached(weeks: number, celebratedUpTo: number): number | null {
+  const hit = STREAK_MILESTONES.filter((m) => m <= weeks && m > celebratedUpTo);
+  return hit.length ? hit[hit.length - 1] : null;
+}
+
+export function milestoneCopy(milestone: number): string {
+  switch (milestone) {
+    case 2: return "Two weeks straight — it's a habit now.";
+    case 4: return "Four weeks. A month of showing up.";
+    case 8: return "Eight weeks straight.";
+    case 12: return "Twelve weeks — a whole season.";
+    case 26: return "Half a year, every single week.";
+    case 52: return "A year of weeks.";
+    default: return `${milestone} weeks straight.`;
+  }
+}

@@ -30,7 +30,7 @@ describe("StreakCard", () => {
   });
 
   it("renders nothing when the fetch fails", async () => {
-    (localStorage.getItem as jest.Mock).mockReturnValue("u1");
+    (localStorage.getItem as jest.Mock).mockImplementation((k: string) => (k === "userId" ? "u1" : "99"));
     mockFetchUserActivity.mockRejectedValue(new Error("boom"));
     const { container } = render(<StreakCard />);
     await waitFor(() => expect(mockFetchUserActivity).toHaveBeenCalledWith("u1"));
@@ -38,7 +38,7 @@ describe("StreakCard", () => {
   });
 
   it("shows the week strip and streak count", async () => {
-    (localStorage.getItem as jest.Mock).mockReturnValue("u1");
+    (localStorage.getItem as jest.Mock).mockImplementation((k: string) => (k === "userId" ? "u1" : "99"));
     mockFetchUserActivity.mockResolvedValue([
       { at: daysAgo(0), kind: "lift" },
       { at: daysAgo(7), kind: "golf" },
@@ -49,5 +49,31 @@ describe("StreakCard", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(7);
     expect(screen.getAllByTestId("streak-day-active").length).toBeGreaterThanOrEqual(1);
     expect(screen.getByRole("button", { name: /share/i })).toBeInTheDocument();
+  });
+
+  it("names the milestone once and remembers it", async () => {
+    (localStorage.getItem as jest.Mock).mockImplementation((k: string) => (k === "userId" ? "u1" : null));
+    mockFetchUserActivity.mockResolvedValue([
+      { at: daysAgo(0), kind: "lift" },
+      { at: daysAgo(7), kind: "lift" },
+      { at: daysAgo(14), kind: "golf" },
+      { at: daysAgo(21), kind: "bowl" },
+    ]);
+    render(<StreakCard />);
+    expect(await screen.findByText(/Four weeks\. A month of showing up\./)).toBeInTheDocument();
+    expect(localStorage.setItem).toHaveBeenCalledWith("streak-milestone:u1", "4");
+  });
+
+  it("stays quiet once the milestone was celebrated", async () => {
+    (localStorage.getItem as jest.Mock).mockImplementation((k: string) => (k === "userId" ? "u1" : "4"));
+    mockFetchUserActivity.mockResolvedValue([
+      { at: daysAgo(0), kind: "lift" },
+      { at: daysAgo(7), kind: "lift" },
+      { at: daysAgo(14), kind: "golf" },
+      { at: daysAgo(21), kind: "bowl" },
+    ]);
+    render(<StreakCard />);
+    expect(await screen.findByText("Your streak")).toBeInTheDocument();
+    expect(screen.queryByText(/Four weeks/)).toBeNull();
   });
 });

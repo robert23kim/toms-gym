@@ -1,4 +1,4 @@
-import { computeStreak } from "../streak";
+import { computeStreak, milestoneCopy, milestoneReached } from "../streak";
 
 // Friday 2026-08-28 local time.
 const now = new Date(2026, 7, 28, 11, 0);
@@ -62,5 +62,23 @@ describe("computeStreak", () => {
   it("ignores unparseable timestamps", () => {
     const s = computeStreak([{ at: "nope", kind: "lift" }], now);
     expect(s.weeks).toBe(0);
+  });
+});
+
+describe("milestoneReached", () => {
+  it("returns the highest uncelebrated milestone at or below the streak", () => {
+    expect(milestoneReached(1, 0)).toBeNull();
+    expect(milestoneReached(2, 0)).toBe(2);
+    expect(milestoneReached(5, 0)).toBe(4);
+    expect(milestoneReached(5, 4)).toBeNull();
+    expect(milestoneReached(9, 4)).toBe(8);
+    expect(milestoneReached(52, 26)).toBe(52);
+  });
+
+  it("has a line for every milestone", () => {
+    expect(milestoneCopy(2)).toMatch(/Two weeks/);
+    expect(milestoneCopy(4)).toMatch(/Four weeks/);
+    expect(milestoneCopy(52)).toMatch(/year/);
+    expect(milestoneCopy(7)).toBe("7 weeks straight.");
   });
 });
