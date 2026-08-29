@@ -218,6 +218,22 @@ Photograph the lane monitor — the end-of-night **RESULTS** screen (Player · G
 - **Fixtures:** `backend/tests/fixtures/bowling/<stem>.jpg` + `<stem>_ocr.json` (cached Vision dump) + `<stem>_truth.json` (hand-checked, checksum-verified). `tests/test_bowling_sheet_parser.py` must match truth exactly (128/128 cells at ship: night_01, night_03, game_01; night_02/night_04 truth exists but photos were never saved to disk). Refresh/extend with `GOOGLE_APPLICATION_CREDENTIALS=credentials.json venv/bin/python tools/bowling_sheet_debug.py [--refresh] [--rotate 180] [stem]` — prints a per-photo cell hit-rate.
 - **Frontend:** `/bowling/snap` (camera-first, `BowlingSheetUpload autoCamera`) and `/bowling/scoresheet/upload`; `/bowling/scoresheet/:id` review (`BowlingSheetReview` — editable totals or a `FrameStrip` with live `lib/bowlingScore.ts` running score, flagged rows amber, "This is me" claim); `/bowling/insights/:userId` (`me` resolves from localStorage). BowlHub primary is now the snap flow; Profile Bowl tab shows recent sheet games + Insights link.
 
+## Delight Loop (started 2026-08-29)
+
+Recurring product-quality loop, one folder per tick under `docs/delight/<date>-iteration-NN/`:
+personas (P1 Priya first-timer · P2 Marcus bowler · P3 Dana golfer · P4 Tom regular · P5 Sam
+lost-session) → Playwright walk of production at 390×844 with per-route metrics (height, CTA
+count, horizontal overflow, console errors) → idea list → critical review with an explicit
+**clutter / duplicate-information** lens → top 3 shipped → verified in prod → bug log (every
+bug seen, fixed or not) + retro. Iteration 01 shipped the profile Lift-tab de-clutter
+(6941→2012px), the "See your result" deep-link from `/lift/status` (backend `/lifting/result`
+now returns `user_id`/`competition_id`), the returning-user home (no pitch/demo when
+`localStorage.userId` exists) and the `/challenges` pill-wrap fix. Start the next tick from the
+previous doc's bug log. Gotchas: `tools/run_ci_tests.sh` needs `PYTHON=venv/bin/python`; get
+jest results via `node node_modules/jest/bin/jest.js --json --outputFile=…` (the shell hook
+rewrites jest stdout); `jest.setup.js` stubs `localStorage` with `jest.fn()` — mock
+`getItem`'s return value, `setItem` is a no-op.
+
 ## Golf Feature
 
 > **Phase B schema migration landed 2026-04-18** (branch `golf/fairway-phase-b`, migration `008_fairway_schema.sql`). The flat `GolfRound` / `GolfHoleScore` / `GolfHandicap` tables were dropped and replaced with the normalized `Course` / `Tee` / `Round` / `HoleScore` / `HandicapSnapshot` model below. PRs or docs written before that date refer to the old shape — see the Field Rename Map at the end of this section.
