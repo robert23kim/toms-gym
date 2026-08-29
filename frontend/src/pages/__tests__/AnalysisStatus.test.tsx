@@ -70,7 +70,7 @@ describe("AnalysisStatus", () => {
     });
     renderAt("bowling", "b1");
 
-    const link = await screen.findByRole("link", { name: /View Full Result/i });
+    const link = await screen.findByRole("link", { name: /See your result/i });
     expect(link).toHaveAttribute("href", "/bowling/result/b1");
   });
 
@@ -87,5 +87,28 @@ describe("AnalysisStatus", () => {
     expect(
       screen.getByRole("link", { name: /Upload Again/i })
     ).toHaveAttribute("href", "/lift/upload");
+  });
+
+  it("deep-links a completed lift to its result page when the ids are known", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { processing_status: "completed", user_id: "u9", competition_id: "c3" },
+    });
+    renderAt("lifting", "a9");
+
+    const link = await screen.findByRole("link", { name: /See your result/i });
+    expect(link).toHaveAttribute("href", "/challenges/c3/participants/u9/video/a9");
+    expect(screen.queryByRole("link", { name: /View Your Profile/i })).toBeNull();
+  });
+
+  it("falls back to the profile for a completed lift without competition ids", async () => {
+    (localStorage.getItem as jest.Mock).mockReturnValue("u1");
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { processing_status: "completed" },
+    });
+    renderAt("lifting", "a8");
+
+    const link = await screen.findByRole("link", { name: /View Your Profile/i });
+    expect(link).toHaveAttribute("href", "/profile/u1");
+    (localStorage.getItem as jest.Mock).mockReset();
   });
 });

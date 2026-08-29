@@ -17,6 +17,8 @@ type ProcessingStatus = "queued" | "processing" | "completed" | "failed";
 interface StatusResult {
   processing_status: ProcessingStatus;
   error_message?: string | null;
+  user_id?: string | null;
+  competition_id?: string | null;
   // Lifting
   annotated_video_url?: string | null;
   // Bowling
@@ -27,7 +29,7 @@ interface StatusResult {
 interface KindConfig {
   label: string; // e.g. "your lift"
   resultEndpoint: (id: string) => string;
-  resultPath: (id: string) => string | null; // dedicated result page, if any
+  resultPath: (id: string, result: StatusResult | null) => string | null;
   uploadPath: string;
   backPath: string;
   backLabel: string;
@@ -37,7 +39,10 @@ const KIND_CONFIG: Record<AnalysisKind, KindConfig> = {
   lifting: {
     label: "your lift",
     resultEndpoint: (id) => `${API_URL}/lifting/result/${id}`,
-    resultPath: () => null, // no dedicated lifting result page; link to profile
+    resultPath: (id, result) =>
+      result?.competition_id && result?.user_id
+        ? `/challenges/${result.competition_id}/participants/${result.user_id}/video/${id}`
+        : null,
     uploadPath: "/lift/upload",
     backPath: "/lift",
     backLabel: "Back to Lift",
@@ -150,12 +155,12 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                     Your results are ready to view.
                   </p>
                   <div className="flex flex-col gap-3">
-                    {config.resultPath(attemptId ?? "") ? (
+                    {config.resultPath(attemptId ?? "", result) ? (
                       <Link
-                        to={config.resultPath(attemptId ?? "") as string}
+                        to={config.resultPath(attemptId ?? "", result) as string}
                         className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
                       >
-                        View Full Result
+                        See your result
                       </Link>
                     ) : (
                       <Link
