@@ -25,6 +25,7 @@ const AuthError = lazy(() => import("../pages/AuthError"));
 const SignIn = lazy(() => import("../pages/SignIn"));
 const MagicLink = lazy(() => import("../pages/MagicLink"));
 const BowlingUpload = lazy(() => import("../pages/BowlingUpload"));
+const BowlingSheetUpload = lazy(() => import("../pages/BowlingSheetUpload"));
 const BowlingResult = lazy(() => import("../pages/BowlingResult"));
 const BowlingChallenge = lazy(() => import("../pages/BowlingChallenge"));
 const AnnotationWorkspace = lazy(() => import("../pages/AnnotationWorkspace"));
@@ -81,6 +82,10 @@ export const routes: RouteObject[] = [
   { path: "/signin", element: <SignIn /> },
   { path: "/auth/magic/:token", element: <MagicLink /> },
   { path: "/bowling/upload", element: <BowlingUpload /> },
+  // Score sheets: photograph the results screen. /bowling/snap is the
+  // camera-first PWA shortcut target, mirroring /golf/snap.
+  { path: "/bowling/scoresheet/upload", element: <BowlingSheetUpload /> },
+  { path: "/bowling/snap", element: <BowlingSheetUpload autoCamera /> },
   { path: "/bowling/upload/:competitionId", element: <BowlingUpload /> },
   { path: "/bowling/result/:attemptId", element: <BowlingResult /> },
   // T8 — post-upload analysis status pages (poll existing per-attempt result
