@@ -623,3 +623,8 @@ export const formatChampionScore = (
   if (metric === "reps") return `${Math.round(score)} reps`;
   return `${score} kg`;
 };
+
+export async function fetchUserActivity(userId: string): Promise<import("./streak").ActivityEntry[]> {
+  const response = await axios.get(`${API_URL}/users/${userId}/activity`);
+  return response.data.activity || [];
+}

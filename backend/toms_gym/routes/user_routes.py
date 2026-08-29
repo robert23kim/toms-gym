@@ -163,6 +163,51 @@ def get_user_lifts(user_id):
         if session:
             session.close()
 
+@user_bp.route('/users/<string:user_id>/activity')
+def get_user_activity(user_id):
+    """Timestamps of every lifting/bowling upload and golf round for the
+    home-page streak card. Public read; streak math lives client-side so the
+    user's local timezone decides which day an upload belongs to."""
+    try:
+        days = min(max(int(request.args.get('days', 400)), 1), 2000)
+    except ValueError:
+        return jsonify({"error": "days must be an integer"}), 400
+
+    session = None
+    try:
+        session = get_db_connection()
+        rows = session.execute(
+            sqlalchemy.text("""
+                SELECT a.created_at AS at,
+                       CASE WHEN br.id IS NOT NULL THEN 'bowl' ELSE 'lift' END AS kind
+                FROM "Attempt" a
+                JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                LEFT JOIN "BowlingResult" br ON br.attempt_id = a.id
+                WHERE uc.user_id = :user_id AND a.video_url IS NOT NULL
+                  AND a.created_at >= NOW() - (:days || ' days')::interval
+                UNION ALL
+                SELECT (r.played_on::timestamp + interval '12 hours') AS at, 'golf' AS kind
+                FROM "Round" r
+                WHERE r.user_id = :user_id
+                  AND r.played_on >= CURRENT_DATE - :days
+                ORDER BY at DESC
+            """),
+            {"user_id": user_id, "days": days},
+        ).fetchall()
+        activity = [
+            {"at": row[0].isoformat() if row[0] is not None else None, "kind": row[1]}
+            for row in rows
+        ]
+        return jsonify({"activity": activity})
+    except Exception as e:
+        if session:
+            session.rollback()
+        return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()
+
+
 @user_bp.route('/users/<string:user_id>/profile')
 def get_user_profile(user_id):
     """
