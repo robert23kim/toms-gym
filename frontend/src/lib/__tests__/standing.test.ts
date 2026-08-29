@@ -1,4 +1,4 @@
-import { deriveStanding, ctaLabelFor, attemptScore, metricForLift, personalBest, formatWithUnit } from "../standing";
+import { deriveStanding, ctaLabelFor, attemptScore, metricForLift, personalBest, formatWithUnit, standingShareText } from "../standing";
 import type {
   ChallengeLeaderboard,
   ChallengeLeaderboardRow,
@@ -198,5 +198,22 @@ describe("result ladder additions", () => {
     expect(formatWithUnit(35, "reps")).toBe("35 reps");
     expect(formatWithUnit(18.6, "time")).toBe("18.6s");
     expect(formatWithUnit(115, "weight")).toBe("115lbs");
+  });
+});
+
+describe("standingShareText", () => {
+  test("owner copy dares the reader; the leader offers their spot", () => {
+    const me = deriveStanding(midPack(), "me")!;
+    expect(standingShareText({ standing: me, metric: "time", challengeName: "Summer plank challenge", athleteName: "Toka", isOwner: true }))
+      .toBe("I'm #3 of 4 in the Summer plank challenge — 18.6s. Beat me:");
+    const ana = deriveStanding(midPack(), "u1")!;
+    expect(standingShareText({ standing: ana, metric: "time", challengeName: null, athleteName: "Ana", isOwner: true }))
+      .toBe("I'm #1 of 4 in this challenge — 30.0s. Take my spot:");
+  });
+
+  test("visitor copy speaks about the athlete by first name", () => {
+    const me = deriveStanding(midPack(), "me")!;
+    expect(standingShareText({ standing: me, metric: "time", challengeName: "Summer plank challenge", athleteName: "Toka Oka", isOwner: false }))
+      .toBe("Toka is #3 of 4 in the Summer plank challenge — 18.6s. Can you beat it?");
   });
 });

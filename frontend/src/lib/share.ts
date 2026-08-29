@@ -40,3 +40,25 @@ export async function createAndCopyShareLink(meta: ShareMeta): Promise<string> {
   await navigator.clipboard.writeText(shortUrl);
   return shortUrl;
 }
+
+export type ShareMethod = "share" | "copy" | "cancelled";
+
+/**
+ * Share a result with words: the native share sheet where it exists (phones),
+ * otherwise text + link on the clipboard. Throws only on link creation or
+ * clipboard failure; a dismissed share sheet resolves as "cancelled".
+ */
+export async function shareResult(meta: ShareMeta, text: string): Promise<{ url: string; method: ShareMethod }> {
+  const url = await createShareLink(meta);
+  const nav = navigator as Navigator & { share?: (data: { title?: string; text?: string; url?: string }) => Promise<void> };
+  if (typeof nav.share === "function") {
+    try {
+      await nav.share({ title: meta.ogTitle, text, url });
+      return { url, method: "share" };
+    } catch (err) {
+      if (err instanceof Error && err.name === "AbortError") return { url, method: "cancelled" };
+    }
+  }
+  await navigator.clipboard.writeText(`${text} ${url}`);
+  return { url, method: "copy" };
+}

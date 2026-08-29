@@ -8,11 +8,11 @@ import { API_URL, PROD_API_URL } from "../config";
 import { triggerLiftingAnalysis, getLiftingResult, getChallengeLeaderboard, determineStatus } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult, ChallengeLeaderboard } from '../lib/types';
-import { deriveStanding, personalBest, attemptScore } from '../lib/standing';
+import { deriveStanding, personalBest, attemptScore, standingShareText } from '../lib/standing';
 import ResultLadder from '../components/challenge/ResultLadder';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
-import { createAndCopyShareLink } from '../lib/share';
+import { shareResult } from '../lib/share';
 import PlankSteadiness from '../components/lifting/PlankSteadiness';
 
 // Lifts scored by the body, not the bar — no weight is shown for these.
@@ -78,6 +78,7 @@ const VideoPlayer: React.FC = () => {
   const [isCreatingShortLink, setIsCreatingShortLink] = useState(false);
   const [board, setBoard] = useState<ChallengeLeaderboard | null>(null);
   const [challengeOpen, setChallengeOpen] = useState(false);
+  const [challengeName, setChallengeName] = useState<string | null>(null);
 
   const analysisDone = liftingResult?.processing_status === 'completed';
   useEffect(() => {
@@ -92,11 +93,14 @@ const VideoPlayer: React.FC = () => {
         if (!cancelled && c?.start_date && c?.end_date) {
           setChallengeOpen(determineStatus(c.start_date, c.end_date) === 'ongoing');
         }
+        if (!cancelled && c?.name) setChallengeName(c.name);
       })
       .catch(() => {});
     return () => { cancelled = true; };
   }, [id, analysisDone]);
   const { toast } = useToast();
+  const standing = board && participantId ? deriveStanding(board, participantId) : null;
+  const isOwner = !!participantId && participantId === localStorage.getItem('userId');
 
   const handleShare = async () => {
     if (isCreatingShortLink) return;
@@ -109,13 +113,19 @@ const VideoPlayer: React.FC = () => {
       const bits: string[] = [];
       if (report?.total_reps != null) bits.push(`${report.total_reps} rep${report.total_reps !== 1 ? "s" : ""}`);
       if (videoData?.weight && !isBodyweightLift(lift)) bits.push(`${videoData.weight} lbs`);
-      const shortUrl = await createAndCopyShareLink({
-        targetUrl: window.location.href,
-        ogTitle: `${name}'s ${lift}`,
-        ogDescription: bits.join(" · ") || "Graded on Tom's Gym",
-        ogStat: report?.overall_grade || undefined,
-      });
-      toast({ title: "Short link copied!", description: shortUrl });
+      const words = standing && board
+        ? standingShareText({ standing, metric: board.metric, challengeName, athleteName: name, isOwner })
+        : `${name}'s ${lift} on Tom's Gym`;
+      const { url, method } = await shareResult(
+        {
+          targetUrl: window.location.href,
+          ogTitle: `${name}'s ${lift}`,
+          ogDescription: bits.join(" · ") || "Graded on Tom's Gym",
+          ogStat: report?.overall_grade || undefined,
+        },
+        words,
+      );
+      if (method === "copy") toast({ title: "Copied — paste it in the chat", description: `${words} ${url}` });
     } catch (err) {
       toast({
         title: "Could not create short link",
@@ -533,22 +543,17 @@ const VideoPlayer: React.FC = () => {
                       </div>
                     </div>
 
-                    {board && analysisDone && liftingResult?.report && participantId && id && (() => {
-                      const standing = deriveStanding(board, participantId);
-                      if (!standing) return null;
-                      const score = attemptScore(board.metric, liftingResult.report, videoData.weight);
-                      return (
-                        <ResultLadder
-                          standing={standing}
-                          personalBest={personalBest(standing, score)}
-                          metric={board.metric}
-                          athleteName={videoData.participant_name}
-                          isOwner={participantId === localStorage.getItem('userId')}
-                          challengeId={id}
-                          challengeOpen={challengeOpen}
-                        />
-                      );
-                    })()}
+                    {board && standing && analysisDone && liftingResult?.report && id && (
+                      <ResultLadder
+                        standing={standing}
+                        personalBest={personalBest(standing, attemptScore(board.metric, liftingResult.report, videoData.weight))}
+                        metric={board.metric}
+                        athleteName={videoData.participant_name}
+                        isOwner={isOwner}
+                        challengeId={id}
+                        challengeOpen={challengeOpen}
+                      />
+                    )}
 
                     {/* Analysis section */}
                     {videoData.lift_type && videoData.lift_type !== 'Bowling' && (
@@ -674,13 +679,15 @@ const VideoPlayer: React.FC = () => {
                               </div>
                             </div>
 
-                            <button
-                              onClick={handleAnalyzeForm}
-                              disabled={isAnalyzing}
-                              className="w-full px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 text-sm"
-                            >
-                              {isAnalyzing ? 'Re-analyzing...' : 'Re-analyze'}
-                            </button>
+                            {isOwner && (
+                              <button
+                                onClick={handleAnalyzeForm}
+                                disabled={isAnalyzing}
+                                className="w-full px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 text-sm"
+                              >
+                                {isAnalyzing ? 'Re-analyzing...' : 'Re-analyze'}
+                              </button>
+                            )}
                           </>
                         )}
 
@@ -860,13 +867,15 @@ const VideoPlayer: React.FC = () => {
                             )}
 
                             {/* Re-analyze button */}
-                            <button
-                              onClick={handleAnalyzeForm}
-                              disabled={isAnalyzing}
-                              className="w-full px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 text-sm"
-                            >
-                              {isAnalyzing ? 'Re-analyzing...' : 'Re-analyze'}
-                            </button>
+                            {isOwner && (
+                              <button
+                                onClick={handleAnalyzeForm}
+                                disabled={isAnalyzing}
+                                className="w-full px-4 py-2 bg-muted text-muted-foreground rounded-lg hover:bg-muted/80 disabled:opacity-50 text-sm"
+                              >
+                                {isAnalyzing ? 'Re-analyzing...' : 'Re-analyze'}
+                              </button>
+                            )}
                           </>
                         )}
                       </>

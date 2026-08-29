@@ -183,3 +183,23 @@ export function ctaLabelFor(
 ): string {
   return standing ? standing.ctaLabel : uploadCtaLabel(metric);
 }
+
+/** Words to travel with a shared result link — written for a group chat. */
+export function standingShareText(args: {
+  standing: Standing;
+  metric: ChallengeMetric;
+  challengeName: string | null | undefined;
+  athleteName: string | null | undefined;
+  isOwner: boolean;
+}): string {
+  const { standing, metric, isOwner } = args;
+  const where = args.challengeName ? `in the ${args.challengeName}` : "in this challenge";
+  const score = formatWithUnit(standing.best, metric);
+  const place = `#${standing.rank} of ${standing.participantCount}`;
+  if (isOwner) {
+    const dare = standing.isLeader ? "Take my spot:" : "Beat me:";
+    return `I'm ${place} ${where} — ${score}. ${dare}`;
+  }
+  const name = (args.athleteName || "Someone").split(/\s+/)[0];
+  return `${name} is ${place} ${where} — ${score}. Can you beat it?`;
+}
