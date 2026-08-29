@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { fetchBowlingResultsByUser } from "../lib/api";
+import { ThrowComparison, compareThrow, throwComparisonCopy } from "../lib/throwCompare";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, ChevronDown, ChevronRight, PencilRuler, Share2, AlertTriangle } from "lucide-react";
@@ -28,6 +30,16 @@ const BowlingResult: React.FC = () => {
   const { attemptId } = useParams<{ attemptId: string }>();
   const navigate = useNavigate();
   const [result, setResult] = useState<BowlingResultType | null>(null);
+  const [comparison, setComparison] = useState<ThrowComparison | null>(null);
+  useEffect(() => {
+    const viewer = localStorage.getItem("userId");
+    if (!result || !attemptId || !viewer) return;
+    let cancelled = false;
+    fetchBowlingResultsByUser(viewer)
+      .then((rows) => { if (!cancelled) setComparison(compareThrow(rows, attemptId, deriveEntryBoard(result))); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [result, attemptId]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [editedEdges, setEditedEdges] = useState<LaneEdges | null>(null);
@@ -252,32 +264,28 @@ const BowlingResult: React.FC = () => {
 
                   {/* Headline stats a bowler cares about */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-                    <BowlingStatCard
-                      value={entryBoard != null ? Math.round(entryBoard) : "—"}
-                      label="Entry Board"
-                    />
-                    <BowlingStatCard
-                      value={pocket ? pocket.label : "—"}
-                      label="Pocket"
-                      tone={pocket ? (pocket.hit ? "good" : "warn") : "default"}
-                    />
-                    <BowlingStatCard
-                      value={speedMph != null ? speedMph.toFixed(1) : "—"}
-                      label="Ball Speed"
-                      sublabel={speedMph != null ? "est. · mph" : "mph"}
-                    />
-                    <BowlingStatCard
-                      value={
-                        hook
-                          ? hook.direction === "straight"
-                            ? "Straight"
-                            : `${HOOK_ARROW[hook.direction]} ${hook.boards}`
-                          : "—"
-                      }
-                      label="Hook"
-                      sublabel={hook && hook.direction !== "straight" ? "boards" : undefined}
-                    />
+                    {entryBoard != null && (
+                      <BowlingStatCard value={Math.round(entryBoard)} label="Entry Board" />
+                    )}
+                    {pocket && (
+                      <BowlingStatCard value={pocket.label} label="Pocket" tone={pocket.hit ? "good" : "warn"} />
+                    )}
+                    {speedMph != null && (
+                      <BowlingStatCard value={speedMph.toFixed(1)} label="Ball Speed" sublabel="est. · mph" />
+                    )}
+                    {hook && (
+                      <BowlingStatCard
+                        value={hook.direction === "straight" ? "Straight" : `${HOOK_ARROW[hook.direction]} ${hook.boards}`}
+                        label="Hook"
+                        sublabel={hook.direction !== "straight" ? "boards" : undefined}
+                      />
+                    )}
                   </div>
+                  {comparison && (
+                    <p className="text-sm text-muted-foreground mt-2" aria-label="Compared with your last throw">
+                      {throwComparisonCopy(comparison)}
+                    </p>
+                  )}
 
                   {/* T12: low-confidence filming tips + retry CTA. Gated on
                       isLowDetection() (detection_rate < LOW_DETECTION_THRESHOLD,
