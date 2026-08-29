@@ -110,8 +110,11 @@ def get_lifting_result(attempt_id):
                 SELECT lr.id, lr.attempt_id, lr.processing_status,
                        lr.annotated_video_url, lr.summary_url,
                        lr.report, lr.processing_time_s,
-                       lr.error_message, lr.created_at, lr.updated_at
+                       lr.error_message, lr.created_at, lr.updated_at,
+                       uc.user_id, uc.competition_id
                 FROM "LiftingResult" lr
+                LEFT JOIN "Attempt" a ON a.id = lr.attempt_id
+                LEFT JOIN "UserCompetition" uc ON uc.id = a.user_competition_id
                 WHERE lr.attempt_id = :attempt_id
             """),
             {"attempt_id": attempt_id}
@@ -131,6 +134,8 @@ def get_lifting_result(attempt_id):
             "error_message": row.error_message,
             "created_at": row.created_at.isoformat() if row.created_at else None,
             "updated_at": row.updated_at.isoformat() if row.updated_at else None,
+            "user_id": str(row.user_id) if row.user_id else None,
+            "competition_id": str(row.competition_id) if row.competition_id else None,
         })
 
     except Exception as e:
