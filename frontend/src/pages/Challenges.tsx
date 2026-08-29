@@ -159,10 +159,10 @@ const Challenges = () => {
       )}
 
       <div className="max-w-2xl mx-auto mb-6">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
           <h2 className="text-xs uppercase tracking-widest text-muted-foreground">All challenges</h2>
           
-          <div className="flex space-x-2">
+          <div className="flex flex-wrap gap-2">
             {(["all", "upcoming", "ongoing", "completed"] as const).map((filter) => (
               <button
                 key={filter}
