@@ -45,7 +45,8 @@ describe("FindProfilePage", () => {
     submit();
 
     expect(await screen.findByText("Welcome back, Sam")).toBeInTheDocument();
-    expect(screen.getByText(/Last lift · .* ago · Bench press · 80kg · D/)).toBeInTheDocument();
+    expect(screen.getByText(/Last lift · .* ago/)).toBeInTheDocument();
+    expect(screen.getByText(/Bench press · 80kg · D/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: /Open my profile/i })).toHaveAttribute("href", "/profile/u1");
     expect(screen.getByRole("link", { name: /Upload a new lift/i })).toHaveAttribute("href", "/lift/upload");
     expect(localStorage.setItem).toHaveBeenCalledWith("userId", "u1");

@@ -80,13 +80,15 @@ const FindProfilePage: React.FC = () => {
                 <h1 className="text-2xl font-semibold">
                   Welcome back{found.name ? `, ${found.name.split(/\s+/)[0]}` : ""}
                 </h1>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {found.lastLift
-                    ? ["Last lift", sinceCopy(found.lastLift.created_at), lastLiftCopy(found.lastLift)]
-                        .filter(Boolean)
-                        .join(" · ")
-                    : "Your profile is ready."}
-                </p>
+                {found.lastLift ? (
+                  <p className="text-sm text-muted-foreground mt-1">
+                    {["Last lift", sinceCopy(found.lastLift.created_at)].filter(Boolean).join(" · ")}
+                    <br />
+                    {lastLiftCopy(found.lastLift)}
+                  </p>
+                ) : (
+                  <p className="text-sm text-muted-foreground mt-1">Your profile is ready.</p>
+                )}
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-2">

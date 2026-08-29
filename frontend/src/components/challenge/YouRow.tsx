@@ -64,9 +64,6 @@ const YouRow: React.FC<YouRowProps> = (props) => {
         <div className="hidden text-[13px] font-medium text-white/50 lg:col-start-3 lg:row-start-1 lg:block">
           —
         </div>
-        <span className="text-[11.5px] font-semibold text-[#7fb0ff] lg:col-start-4 lg:row-start-1 lg:justify-self-end">
-          Upload →
-        </span>
       </button>
     );
   }

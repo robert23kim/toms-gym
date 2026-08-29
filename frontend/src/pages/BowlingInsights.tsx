@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom"
 import { motion } from "framer-motion";
 import { ArrowLeft, Camera } from "lucide-react";
 import Layout from "../components/Layout";
+import { formatDay } from "../lib/dates";
 import InsightTiles, { InsightTile } from "../components/bowling/InsightTiles";
 import NightCard from "../components/bowling/NightCard";
 import { Night, summarizeNight } from "../lib/bowlingNight";
@@ -23,18 +24,21 @@ const SLOTS: ("1" | "2" | "3")[] = ["1", "2", "3"];
 
 const headlineTiles = (data: Payload): InsightTile[] => {
   const delta = data.trend.delta;
-  return [
+  const tiles: InsightTile[] = [
     { key: "average", label: "Average", value: oneDp(data.average) },
     { key: "high", label: "High game", value: String(data.high) },
     { key: "games", label: "Games", value: String(data.games) },
-    {
+  ];
+  if (delta !== null) {
+    tiles.push({
       key: "trend",
       label: "Last 5 vs before",
       // Bowling is higher-is-better, so a positive delta is the green one.
-      value: delta === null ? "—" : `${delta >= 0 ? "▲" : "▼"} ${oneDp(Math.abs(delta))}`,
-      tone: delta === null || delta === 0 ? "neutral" : delta > 0 ? "up" : "down",
-    },
-  ];
+      value: `${delta >= 0 ? "▲" : "▼"} ${oneDp(Math.abs(delta))}`,
+      tone: delta === 0 ? "neutral" : delta > 0 ? "up" : "down",
+    });
+  }
+  return tiles;
 };
 
 const frameTiles = (data: Payload): InsightTile[] => {
@@ -236,7 +240,7 @@ const BowlingInsights: React.FC = () => {
                       className="group flex items-center gap-3 glass rounded-xl px-4 py-3 hover:bg-secondary/40 transition-colors"
                     >
                       <span className="text-sm text-muted-foreground w-24 shrink-0">
-                        {row.played_on}
+                        {formatDay(row.played_on)}
                       </span>
                       <span className="flex-1 text-sm text-muted-foreground">
                         Game {row.game_number}

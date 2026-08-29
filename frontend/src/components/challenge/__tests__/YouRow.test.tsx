@@ -25,7 +25,7 @@ const makeRow = (overrides: Partial<ChallengeLeaderboardRow> = {}): ChallengeLea
 });
 
 describe("YouRow", () => {
-  test("not-entered variant prompts an upload and fires onUpload", () => {
+  test("not-entered variant orients the viewer and fires onUpload without its own Upload label", () => {
     const onUpload = jest.fn();
     render(
       <MemoryRouter>
@@ -35,7 +35,7 @@ describe("YouRow", () => {
     const row = screen.getByTestId("you-row");
     expect(row).toHaveAttribute("data-entered", "false");
     expect(row).toHaveTextContent("Not logged yet");
-    expect(row).toHaveTextContent("Upload");
+    expect(row).not.toHaveTextContent("Upload");
     fireEvent.click(row);
     expect(onUpload).toHaveBeenCalledTimes(1);
   });

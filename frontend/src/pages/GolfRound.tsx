@@ -3,6 +3,7 @@ import { useParams, Link, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Calendar, MapPin, TrendingDown, Pencil, Share2 } from "lucide-react";
 import Layout from "../components/Layout";
+import { formatDay } from "../lib/dates";
 import FairwayScope from "../components/FairwayScope";
 import HighlightsGrid from "../components/golf/HighlightsGrid";
 import HoleBarChart from "../components/golf/HoleBarChart";
@@ -30,7 +31,7 @@ const GolfRound: React.FC = () => {
         (round.hole_scores || []).reduce((a, h) => a + (h.strokes || 0), 0);
       const course = round.course?.name ?? "Golf round";
       const bits: string[] = [];
-      if (round.played_on) bits.push(round.played_on);
+      if (round.played_on) bits.push(formatDay(round.played_on));
       if (round.score_differential != null) bits.push(`${round.score_differential.toFixed(1)} diff`);
       const shortUrl = await createAndCopyShareLink({
         targetUrl: window.location.href,
@@ -204,7 +205,7 @@ const GolfRound: React.FC = () => {
                   <div className="flex items-center gap-4 mt-2 text-sm fw-text-secondary">
                     <span className="inline-flex items-center gap-1">
                       <Calendar className="w-3.5 h-3.5" />
-                      {round.played_on}
+                      {formatDay(round.played_on)}
                     </span>
                     {round.tee.slope_18 !== null && <span>Slope {round.tee.slope_18}</span>}
                     {round.tee.rating_18 !== null && <span>Rating {round.tee.rating_18}</span>}

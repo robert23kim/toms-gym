@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft, Upload, ChevronDown, ChevronUp, Calendar, MapPin, X, ZoomIn, User } from "lucide-react";
 import axios from "axios";
 import Layout from "../components/Layout";
+import { formatDay } from "../lib/dates";
 import FairwayScope from "../components/FairwayScope";
 import { API_URL } from "../config";
 import { getGolfAvatar, fetchRounds } from "../lib/api";
@@ -196,7 +197,7 @@ const GolfProfile: React.FC = () => {
                 </div>
                 {rounds[0] && (
                   <div className="text-xs fw-text-secondary mt-1 truncate">
-                    {rounds[0].course?.name ?? "Unknown course"} · {rounds[0].played_on}
+                    {rounds[0].course?.name ?? "Unknown course"} · {formatDay(rounds[0].played_on)}
                   </div>
                 )}
               </div>
@@ -247,7 +248,7 @@ const GolfProfile: React.FC = () => {
                           </div>
                           <div className="flex items-center gap-2 mt-1 text-sm fw-text-secondary">
                             <Calendar className="w-3 h-3" />
-                            <span>{round.played_on}</span>
+                            <span>{formatDay(round.played_on)}</span>
                           </div>
                         </div>
                         <div className="flex items-center gap-3 flex-shrink-0">
