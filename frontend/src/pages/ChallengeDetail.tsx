@@ -797,7 +797,7 @@ const ChallengeDetail: React.FC = () => {
 
             return (
               <>
-                {standing && rankShift && <RankChangeBanner shift={rankShift} standing={standing} metric={metric} />}
+                {standing && rankShift && <RankChangeBanner shift={rankShift} />}
                 {standing && <StandingCard standing={standing} metric={metric} />}
 
                 <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
