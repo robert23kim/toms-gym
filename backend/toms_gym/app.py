@@ -31,6 +31,7 @@ from toms_gym.routes.short_link_routes import short_link_bp
 from toms_gym.routes.jobs_routes import jobs_bp
 from toms_gym.routes.ticket_routes import ticket_bp
 from toms_gym.routes.achievement_routes import achievement_bp
+from toms_gym.routes.bowling_sheet_routes import bowling_sheet_bp
 
 load_dotenv()
 
@@ -222,6 +223,60 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"User avatar migration note: {e}")
 
+        # Create BowlingScoreSheet / BowlingGame tables (migration 017) —
+        # photographed score sheets. Games stay unclaimed (user_id NULL) until
+        # the uploader picks their row on the review page.
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "BowlingScoreSheet" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    user_id UUID REFERENCES "User"(id) ON DELETE CASCADE,
+                    sheet_type TEXT NOT NULL CHECK (sheet_type IN ('night', 'game')),
+                    played_on DATE NOT NULL,
+                    image_url TEXT NOT NULL,
+                    parser TEXT,
+                    raw_parse JSONB,
+                    processing_status TEXT NOT NULL DEFAULT 'parsed'
+                        CHECK (processing_status IN ('parsed', 'failed', 'confirmed')),
+                    error_message TEXT,
+                    team_name TEXT,
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    updated_at TIMESTAMPTZ DEFAULT now()
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "BowlingGame" (
+                    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+                    sheet_id UUID NOT NULL REFERENCES "BowlingScoreSheet"(id) ON DELETE CASCADE,
+                    user_id UUID REFERENCES "User"(id) ON DELETE SET NULL,
+                    player_name TEXT NOT NULL,
+                    game_number INT NOT NULL,
+                    total_score INT,
+                    hdcp INT,
+                    frames JSONB,
+                    computed_total INT,
+                    flagged BOOLEAN NOT NULL DEFAULT false,
+                    flag_reason TEXT,
+                    confidence REAL,
+                    played_on DATE NOT NULL,
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    UNIQUE (sheet_id, player_name, game_number)
+                )
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_bowlinggame_user
+                    ON "BowlingGame" (user_id, played_on DESC)
+            """))
+            session.execute(sqlalchemy.text("""
+                CREATE INDEX IF NOT EXISTS idx_bowlingscoresheet_user
+                    ON "BowlingScoreSheet" (user_id, played_on DESC)
+            """))
+            session.commit()
+            logging.info("BowlingScoreSheet 017 migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"BowlingScoreSheet 017 migration note: {e}")
+
         # Create MagicLinkToken table (migration 014) — one-time passwordless
         # sign-in links. Only the token hash is stored; single-use is enforced
         # by an atomic UPDATE in the consume route.
@@ -304,6 +359,7 @@ app.register_blueprint(admin_bp)
 app.register_blueprint(weekly_lifts_bp)
 app.register_blueprint(email_upload_bp, url_prefix='/integrations')
 app.register_blueprint(bowling_bp)
+app.register_blueprint(bowling_sheet_bp)
 app.register_blueprint(lifting_bp)
 app.register_blueprint(golf_bp)
 app.register_blueprint(telemetry_bp)
