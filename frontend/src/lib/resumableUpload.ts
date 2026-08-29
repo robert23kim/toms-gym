@@ -17,7 +17,9 @@ const MAX_CHUNK_RETRIES = 5;
 const RESUMABLE_THRESHOLD = 32 * 1024 * 1024; // 32 MiB
 // Files at/above this (after compression) use the parallel composite path —
 // the transfer is parallelized across 4 connections instead of streamed serially.
-const PARALLEL_THRESHOLD = 48 * 1024 * 1024; // 48 MiB
+// Same as RESUMABLE_THRESHOLD: the serial chunked path is now only the fallback
+// when a part fails all its retries.
+const PARALLEL_THRESHOLD = 32 * 1024 * 1024; // 32 MiB
 // Compress videos at/above this size before uploading (smaller files aren't
 // worth the encode time). Best-effort: returns the original if it can't help.
 const COMPRESS_THRESHOLD = 24 * 1024 * 1024; // 24 MiB
