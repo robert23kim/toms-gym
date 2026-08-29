@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Dumbbell, Upload, Trophy, Flame, Timer } from "lucide-react";
+import { Dumbbell, Upload, Crown, Flame, Timer } from "lucide-react";
 import HubPage from "../components/HubPage";
 import { getCompetitions } from "../lib/api";
 
@@ -46,10 +46,10 @@ const LiftHub: React.FC = () => {
             ]
           : []),
         {
-          to: "/leaderboard",
-          label: "Leaderboard",
-          description: "Top lifts this month.",
-          icon: <Trophy className="w-5 h-5" />,
+          to: "/champions",
+          label: "Hall of Champions",
+          description: "Every challenge winner, crowned.",
+          icon: <Crown className="w-5 h-5" />,
         },
         {
           to: "/challenges",

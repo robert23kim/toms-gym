@@ -16,6 +16,13 @@ def shape_champions(ended):
         top = next((r for r in rows if r.get("rank") == 1 and r.get("score")), None)
         if top is None:
             continue
+        valued = [r for r in rows if r.get("score")]
+        runners_up = [
+            {"name": r.get("name"), "user_id": r.get("user_id"), "score": r.get("score")}
+            for r in valued if r.get("rank") in (2, 3)
+        ]
+        second = next((r for r in valued if r.get("rank") == 2), None)
+        margin = round(top["score"] - second["score"], 2) if second else None
         champions.append({
             "user_id": top.get("user_id"),
             "name": top.get("name"),
@@ -25,6 +32,11 @@ def shape_champions(ended):
             "score": top.get("score"),
             "ended_on": comp.get("end_date"),
             "attempt_id": top.get("attempt_id"),
+            "runners_up": runners_up,
+            "field_size": len(valued),
+            "margin": margin,
+            "winner_attempts": top.get("attempt_count") or 1,
+            "won_on": top.get("date"),
         })
     champions.sort(key=lambda c: str(c["ended_on"] or ""), reverse=True)
     return champions
