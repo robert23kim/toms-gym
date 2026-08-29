@@ -137,10 +137,28 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
     import requests
     from toms_gym.db import get_db_connection
 
+    from toms_gym.services.analysis_timing import (
+        StageTimer, format_timing_line, queue_wait_seconds,
+    )
     start_time = time.time()
+    timer = StageTimer()
+    status = 'failed'
+    queue_wait = None
+    engine_reported = None
+    engine_stages = {}
 
     try:
-        # Get identity token for service-to-service auth
+        session = get_db_connection()
+        try:
+            created_at = session.execute(
+                sqlalchemy.text('SELECT created_at FROM "BowlingResult" WHERE id = :id'),
+                {"id": result_id},
+            ).scalar()
+            queue_wait = queue_wait_seconds(created_at)
+        finally:
+            session.close()
+
+        timer.stage("token")
         id_token = _get_id_token()
 
         # Build payload with optional manual lane edges
@@ -148,7 +166,7 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
         if lane_edges_manual:
             payload["lane_edges"] = lane_edges_manual
 
-        # Call bowling service
+        timer.stage("engine")
         response = requests.post(
             f"{ANALYSIS_SERVICE_URL}/analyze",
             json=payload,
@@ -170,8 +188,10 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
             raise RuntimeError(f"Bowling service error: {result['error']}")
 
         processing_time = time.time() - start_time
+        engine_reported = result.get("processing_time_s")
+        engine_stages = result.get("stages") or {}
 
-        # Update BowlingResult with success
+        timer.stage("store")
         session = get_db_connection()
         try:
             session.execute(sqlalchemy.text("""
@@ -199,6 +219,7 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
                 "frame_url": result.get("frame_url"),
             })
             session.commit()
+            status = 'completed'
             logger.info(f"Bowling processing completed: result_id={result_id}, time={processing_time:.1f}s")
         except Exception as e:
             session.rollback()
@@ -208,6 +229,7 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
 
         # Best-effort: email the uploader a short link. Never blocks/fails
         # completion — notify_analysis_complete swallows all errors (T9).
+        timer.stage("notify")
         try:
             from toms_gym.db import get_db_connection as _get_conn
             from toms_gym.integrations.analysis_notify import notify_analysis_complete
@@ -241,3 +263,9 @@ def process_bowling_video(result_id, attempt_id, video_url, lane_edges_manual=No
             session.rollback()
         finally:
             session.close()
+
+    logger.info(format_timing_line(
+        'bowling', result_id, attempt_id, status, timer.stages, timer.total(),
+        queue_wait_s=queue_wait, engine_reported_s=engine_reported,
+            **{f'engine_{k}_s': v for k, v in engine_stages.items()},
+    ))

@@ -156,10 +156,24 @@ def _normalize_lift_type(db_lift_type):
 
 def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=None):
     """Call the analysis service and store results."""
+    from toms_gym.services.analysis_timing import (
+        StageTimer, format_timing_line, queue_wait_seconds,
+    )
+    timer = StageTimer()
+    status = 'failed'
+    engine_reported = None
+    engine_stages = {}
+    queue_wait = None
     session = get_connection()
     try:
+        created_at = session.execute(
+            sqlalchemy.text('SELECT created_at FROM "LiftingResult" WHERE id = :id'),
+            {"id": result_id},
+        ).scalar()
+        queue_wait = queue_wait_seconds(created_at)
         url = f"{ANALYSIS_SERVICE_URL}/analyze-lift"
         logger.info(f"Calling analysis service at: {url}")
+        timer.stage("token")
         id_token = _get_id_token()
 
         payload = {
@@ -169,20 +183,24 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
         if lift_type:
             payload["lift_type"] = _normalize_lift_type(lift_type)
 
+        timer.stage("engine")
         response = requests.post(
             url,
             json=payload,
             headers={"Authorization": f"Bearer {id_token}"},
-            # Must exceed bowling-service's own timeouts (gunicorn 600s / analyze 540s)
+            # Must exceed bowling-service's own timeouts (Cloud Run 880s / gunicorn 870s)
             # so the poller waits for long plank analyses instead of giving up early.
-            timeout=620,
+            timeout=890,
         )
 
         if response.status_code != 200:
             raise RuntimeError(f"Service at {url} returned {response.status_code}: {response.text[:500]}")
 
         result = response.json()
+        engine_reported = result.get("processing_time_s")
+        engine_stages = result.get("stages") or {}
 
+        timer.stage("store")
         session.execute(sqlalchemy.text("""
             UPDATE "LiftingResult"
             SET processing_status = 'completed',
@@ -209,10 +227,12 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             {"attempt_id": attempt_id},
         )
         session.commit()
+        status = 'completed'
         logger.info(f"Lifting analysis completed: result={result_id}")
 
         # Best-effort: email the uploader a short link. Never blocks/fails
         # completion — notify_analysis_complete swallows all errors (T9).
+        timer.stage("notify")
         try:
             from toms_gym.integrations.analysis_notify import notify_analysis_complete
             notify_analysis_complete(get_connection, 'lifting', str(attempt_id))
@@ -235,3 +255,9 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             session.rollback()
     finally:
         session.close()
+        logger.info(format_timing_line(
+            'lifting', result_id, attempt_id, status, timer.stages, timer.total(),
+            lift_type=lift_type, queue_wait_s=queue_wait,
+            engine_reported_s=engine_reported,
+            **{f'engine_{k}_s': v for k, v in engine_stages.items()},
+        ))
