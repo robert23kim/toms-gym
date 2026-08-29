@@ -392,7 +392,7 @@ const VideoPlayer: React.FC = () => {
   const liftReport = liftingResult?.report;
   const hasPassingGrade = liftReport && ['A', 'B', 'C', 'D'].includes(liftReport.overall_grade);
   const hasFailingGrade = liftReport && liftReport.overall_grade === 'F' && liftReport.total_reps > 0;
-  const badge = hasPassingGrade || hasFailingGrade ? null : statusBadge(videoData.status);
+  const badge = hasPassingGrade || hasFailingGrade || analysisDone ? null : statusBadge(videoData.status);
   const dateStr = formatDate(videoData.timestamp);
 
   return (
