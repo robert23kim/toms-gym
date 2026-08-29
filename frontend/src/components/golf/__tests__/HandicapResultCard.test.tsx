@@ -55,4 +55,13 @@ describe("HandicapResultCard", () => {
     expect(screen.getByText(/leaderboard/i)).toHaveAttribute("href", "/golf/leaderboard");
     expect(screen.getByText(/my rounds/i)).toHaveAttribute("href", "/golf/profile/u1");
   });
+
+  it("shows the round-in-context pill when given one", () => {
+    render(
+      <MemoryRouter>
+        <HandicapResultCard {...base} highlight="Your best at Birch Hill" />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText("Your best at Birch Hill")).toBeInTheDocument();
+  });
 });

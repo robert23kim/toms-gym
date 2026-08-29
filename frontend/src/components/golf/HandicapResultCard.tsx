@@ -8,6 +8,7 @@ interface Props {
   differential: number | null;
   profileTo: string;
   roundTo: string;
+  highlight?: string | null;
 }
 
 /**
@@ -22,6 +23,7 @@ const HandicapResultCard: React.FC<Props> = ({
   differential,
   profileTo,
   roundTo,
+  highlight = null,
 }) => {
   const delta =
     handicapIndex !== null && prevIndex !== null
@@ -54,6 +56,11 @@ const HandicapResultCard: React.FC<Props> = ({
         ) : (
           <div className="text-sm fw-text-secondary">
             Provisional index pending — confirm another round to establish it.
+          </div>
+        )}
+        {highlight && (
+          <div className="mt-3 inline-block rounded-full border-[0.5px] border-[var(--fw-border-success)] bg-[var(--fw-bg-success)] px-3 py-0.5 text-sm text-[var(--fw-text-success)]">
+            {highlight}
           </div>
         )}
       </div>

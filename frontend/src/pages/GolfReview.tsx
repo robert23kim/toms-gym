@@ -10,6 +10,8 @@ import TeePickerDrawer, {
   TeePickerApplyPayload,
 } from "../components/golf/TeePickerDrawer";
 import HandicapResultCard from "../components/golf/HandicapResultCard";
+import { fetchRounds as fetchGolfRounds } from "../lib/api";
+import { highlightCopy, roundHighlight } from "../lib/golfBest";
 import { API_URL } from "../config";
 import { fetchRound, searchCourses } from "../lib/api";
 import {
@@ -46,6 +48,7 @@ const GolfReview: React.FC = () => {
   const [editingHole, setEditingHole] = useState<number | null>(null);
   const [confirming, setConfirming] = useState(false);
   const [confirmed, setConfirmed] = useState(false);
+  const [highlight, setHighlight] = useState<string | null>(null);
   const [resultData, setResultData] = useState<{
     differential: number | null;
     handicap_index: number | null;
@@ -106,6 +109,21 @@ const GolfReview: React.FC = () => {
 
     load();
   }, [roundId]);
+
+  useEffect(() => {
+    if (!confirmed || !roundId) return;
+    const uid = round?.user_id || localStorage.getItem("userId");
+    if (!uid) return;
+    let cancelled = false;
+    fetchGolfRounds(uid, { limit: 100 })
+      .then((r) => {
+        if (cancelled) return;
+        const h = roundHighlight(r.rounds, roundId);
+        setHighlight(h ? highlightCopy(h) : null);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [confirmed, roundId, round?.user_id]);
 
   const handlePlayerPick = (name: string) => {
     const player = detectedPlayers.find((p) => p.name === name);
@@ -349,6 +367,7 @@ const GolfReview: React.FC = () => {
                 differential={resultData.differential}
                 profileTo={userId ? `/golf/profile/${userId}` : "/golf/profile"}
                 roundTo={`/golf/round/${roundId}`}
+                highlight={highlight}
               />
             </div>
           </motion.div>
