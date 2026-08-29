@@ -63,6 +63,13 @@ def test_frame_pins_rejects_third_ball_before_tenth():
         frame_pins(["9", "-", "5"], 3)
 
 
+def test_strike_ends_the_frame_before_the_tenth():
+    with pytest.raises(InvalidFrame):
+        frame_pins(["X", "5"], 0)
+    r = score_frames([["X", "5"]] + [["-", "-"]] * 9)
+    assert not r["valid"] and "frame 1" in r["errors"][0]
+
+
 def test_tenth_frame_requires_bonus_ball():
     with pytest.raises(InvalidFrame):
         frame_pins(["X"], 9)

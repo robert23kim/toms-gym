@@ -40,6 +40,8 @@ def frame_pins(rolls, frame_index):
         # a strike or a spare resets the rack; otherwise the next ball completes it
         prev = None if (p == 10 or prev is not None) else p
     if not tenth:
+        if pins[0] == 10 and len(pins) > 1:
+            raise InvalidFrame("a strike ends the frame")
         if len(rolls) == 1 and pins[0] != 10:
             raise InvalidFrame("open frame needs two balls")
     else:

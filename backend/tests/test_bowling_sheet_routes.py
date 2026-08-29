@@ -1,5 +1,6 @@
 import io
 import json
+import pathlib
 import uuid
 from datetime import datetime
 
@@ -374,3 +375,107 @@ def test_delete_sheet(client, db_session, stub_night):
         text('SELECT count(*) FROM "BowlingGame" WHERE sheet_id = :s'), {"s": sheet_id}
     ).scalar()
     assert remaining == 0
+
+
+# --- real parser wiring (Task 3), OCR replayed from the cached fixture -------
+
+FIXTURES = pathlib.Path(__file__).parent / "fixtures" / "bowling"
+
+
+def _ocr_fixture(stem):
+    return json.loads((FIXTURES / f"{stem}_ocr.json").read_text())
+
+
+def _truth(stem):
+    return json.loads((FIXTURES / f"{stem}_truth.json").read_text())
+
+
+def _real_jpeg():
+    from PIL import Image
+    buf = io.BytesIO()
+    Image.new("RGB", (40, 30), "white").save(buf, format="JPEG")
+    return buf.getvalue()
+
+
+def _replay(monkeypatch, passes):
+    """Feed _ocr_and_parse a canned (words, symbols, page_w, page_h) per rotation."""
+    from toms_gym.services import vision_ocr
+
+    calls = []
+
+    def fake_ocr(image_bytes):
+        calls.append(len(image_bytes))
+        return f"annotation-{len(calls)}"
+
+    def fake_extract(annotation):
+        data = passes[len(calls) - 1]
+        if data is None:
+            return [], [], 0, 0
+        return data["words"], data["symbols"], data["page_w"], data["page_h"]
+
+    monkeypatch.setattr(vision_ocr, "run_document_ocr", fake_ocr)
+    monkeypatch.setattr(vision_ocr, "extract_words_and_symbols", fake_extract)
+    return calls
+
+
+def test_upload_uses_real_parser_on_night_fixture(client, db_session, monkeypatch):
+    user_id = _make_user(db_session)
+    _replay(monkeypatch, [_ocr_fixture("night_01")])
+    res = client.post(
+        '/bowling/scoresheet/upload',
+        data={
+            "image": (io.BytesIO(_real_jpeg()), "night_01.jpg"),
+            "user_id": user_id,
+            "sheet_type": "night",
+            "played_on": "2026-08-28",
+        },
+        content_type='multipart/form-data',
+    )
+    assert res.status_code == 200
+    body = res.get_json()
+    assert body["processing_status"] == "parsed"
+    assert body["flagged_count"] == 0
+    truth = {p["name"]: p["games"] for p in _truth("night_01")["players"]}
+    parsed = {p["name"]: [g["total_score"] for g in p["games"]] for p in body["players"]}
+    assert parsed == truth
+
+
+def test_upload_retries_rotations_when_first_pass_is_blank(client, db_session, monkeypatch):
+    user_id = _make_user(db_session)
+    calls = _replay(monkeypatch, [None, _ocr_fixture("night_01")])
+    res = client.post(
+        '/bowling/scoresheet/upload',
+        data={
+            "image": (io.BytesIO(_real_jpeg()), "night_01.jpg"),
+            "user_id": user_id,
+            "sheet_type": "night",
+        },
+        content_type='multipart/form-data',
+    )
+    assert res.status_code == 200
+    body = res.get_json()
+    assert len(calls) == 2
+    assert body["processing_status"] == "parsed"
+    assert len(body["players"]) == 4
+
+
+def test_upload_uses_real_parser_on_game_fixture(client, db_session, monkeypatch):
+    user_id = _make_user(db_session)
+    _replay(monkeypatch, [_ocr_fixture("game_01")])
+    res = client.post(
+        '/bowling/scoresheet/upload',
+        data={
+            "image": (io.BytesIO(_real_jpeg()), "game_01.jpg"),
+            "user_id": user_id,
+            "sheet_type": "game",
+        },
+        content_type='multipart/form-data',
+    )
+    assert res.status_code == 200
+    body = res.get_json()
+    truth = {p["name"]: p for p in _truth("game_01")["players"]}
+    assert {p["name"] for p in body["players"]} == set(truth)
+    for player in body["players"]:
+        game = player["games"][0]
+        assert game["frames"] == truth[player["name"]]["frames"]
+        assert game["computed_total"] == truth[player["name"]]["total"]
