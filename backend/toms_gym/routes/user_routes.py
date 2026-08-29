@@ -184,15 +184,15 @@ def get_user_activity(user_id):
                 JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
                 LEFT JOIN "BowlingResult" br ON br.attempt_id = a.id
                 WHERE uc.user_id = :user_id AND a.video_url IS NOT NULL
-                  AND a.created_at >= NOW() - (:days || ' days')::interval
+                  AND a.created_at >= NOW() - make_interval(days => :days)
                 UNION ALL
                 SELECT (r.played_on::timestamp + interval '12 hours') AS at, 'golf' AS kind
                 FROM "Round" r
                 WHERE r.user_id = :user_id
-                  AND r.played_on >= CURRENT_DATE - :days
+                  AND r.played_on >= CURRENT_DATE - make_interval(days => :days)
                 ORDER BY at DESC
             """),
-            {"user_id": user_id, "days": days},
+            {"user_id": user_id, "days": int(days)},
         ).fetchall()
         activity = [
             {"at": row[0].isoformat() if row[0] is not None else None, "kind": row[1]}
