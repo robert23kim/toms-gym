@@ -196,10 +196,13 @@ export function standingShareText(args: {
   const where = args.challengeName ? `in the ${args.challengeName}` : "in this challenge";
   const score = formatWithUnit(standing.best, metric);
   const place = `#${standing.rank} of ${standing.participantCount}`;
+  const last = standing.rank === standing.participantCount && standing.participantCount > 2;
   if (isOwner) {
+    if (last) return `I just logged ${score} ${where}. Beat me:`;
     const dare = standing.isLeader ? "Take my spot:" : "Beat me:";
     return `I'm ${place} ${where} — ${score}. ${dare}`;
   }
+  if (last) return `${(args.athleteName || "Someone").split(/\s+/)[0]} just logged ${score} ${where}. Can you beat it?`;
   const name = (args.athleteName || "Someone").split(/\s+/)[0];
   return `${name} is ${place} ${where} — ${score}. Can you beat it?`;
 }

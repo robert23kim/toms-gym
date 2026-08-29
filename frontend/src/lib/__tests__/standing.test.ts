@@ -216,4 +216,12 @@ describe("standingShareText", () => {
     expect(standingShareText({ standing: me, metric: "time", challengeName: "Summer plank challenge", athleteName: "Toka Oka", isOwner: false }))
       .toBe("Toka is #3 of 4 in the Summer plank challenge — 18.6s. Can you beat it?");
   });
+
+  test("someone in last place is not made to announce it", () => {
+    const kim = deriveStanding(midPack(), "u4")!;
+    expect(standingShareText({ standing: kim, metric: "time", challengeName: "Summer plank challenge", athleteName: "Kim", isOwner: true }))
+      .toBe("I just logged 12.0s in the Summer plank challenge. Beat me:");
+    expect(standingShareText({ standing: kim, metric: "time", challengeName: null, athleteName: "Kim Lee", isOwner: false }))
+      .toBe("Kim just logged 12.0s in this challenge. Can you beat it?");
+  });
 });
