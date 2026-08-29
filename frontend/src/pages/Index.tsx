@@ -10,22 +10,21 @@ import ChampionSpotlight from "../components/ChampionSpotlight";
 import { getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 
-// The three analysis verticals — each tile IS the upload entry point.
 const VERTICALS = [
   {
-    to: "/lift/upload",
+    to: "/lift",
     icon: <Dumbbell className="w-5 h-5" />,
     title: "Lift",
     description: "Per-rep grades on squat, bench, deadlift & curls.",
   },
   {
-    to: "/bowling/upload",
+    to: "/bowl",
     icon: <Target className="w-5 h-5" />,
     title: "Bowl",
     description: "Ball trajectory, entry board & pocket impact.",
   },
   {
-    to: "/golf/snap",
+    to: "/golf",
     icon: <Flag className="w-5 h-5" />,
     title: "Golf",
     description: "Snap a scorecard, get your handicap.",

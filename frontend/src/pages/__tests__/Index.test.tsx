@@ -36,9 +36,9 @@ describe("Index (quiet-gym home)", () => {
   it("renders the three vertical tiles with the right upload targets", async () => {
     (api.getCompetitions as jest.Mock).mockResolvedValue([]);
     renderHome();
-    expect(screen.getByRole("link", { name: /lift/i })).toHaveAttribute("href", "/lift/upload");
-    expect(screen.getByRole("link", { name: /bowl/i })).toHaveAttribute("href", "/bowling/upload");
-    expect(screen.getByRole("link", { name: /golf/i })).toHaveAttribute("href", "/golf/snap");
+    expect(screen.getByRole("link", { name: /lift/i })).toHaveAttribute("href", "/lift");
+    expect(screen.getByRole("link", { name: /bowl/i })).toHaveAttribute("href", "/bowl");
+    expect(screen.getByRole("link", { name: /golf/i })).toHaveAttribute("href", "/golf");
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
   });
 

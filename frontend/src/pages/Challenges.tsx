@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
 import { Plus, Timer } from "lucide-react";
 import Layout from "../components/Layout";
 import RowCard from "../components/RowCard";
-import ChallengeCard from "../components/ChallengeCard";
 import CreateChallenge from "../components/CreateChallenge";
 import { Challenge } from "../lib/types";
+import { transformCompetitionData } from "../lib/api";
 import axios from "axios";
 import { API_URL, COMPETITIONS_API_URL } from "../config";
 
@@ -55,11 +54,7 @@ const Challenges = () => {
         description: challenge.description || '',
         image: challenge.image || 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1469&auto=format&fit=crop',
         status: determineStatus(challenge.start_date, challenge.end_date),
-        categories: [
-          ...(challenge.lifttypes || []),
-          ...(challenge.weightclasses || []),
-          challenge.gender === 'Female' ? 'Women' : 'Men'
-        ],
+        categories: transformCompetitionData(challenge).categories,
         participants: challenge.participants || 0,
         prizePool: {
           first: 1000,
@@ -163,9 +158,9 @@ const Challenges = () => {
         </div>
       )}
 
-      <div className="mb-6">
-        <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl font-semibold">All Challenges</h2>
+      <div className="max-w-2xl mx-auto mb-6">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xs uppercase tracking-widest text-muted-foreground">All challenges</h2>
           
           <div className="flex space-x-2">
             {(["all", "upcoming", "ongoing", "completed"] as const).map((filter) => (
@@ -184,13 +179,20 @@ const Challenges = () => {
           </div>
         </div>
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col gap-2.5">
           {filteredChallenges.length > 0 ? (
-            filteredChallenges.map((challenge, index) => (
-              <ChallengeCard key={challenge.id} challenge={challenge} index={index} />
+            filteredChallenges.map((c) => (
+              <RowCard
+                key={c.id}
+                to={`/challenges/${c.id}`}
+                icon={<Timer className="w-[18px] h-[18px]" />}
+                title={c.title}
+                pill={c.categories?.[0]}
+                trailing={c.status === "completed" ? "Results" : c.status === "upcoming" ? "Preview" : "Open"}
+              />
             ))
           ) : (
-            <div className="col-span-full py-16 text-center">
+            <div className="py-16 text-center">
               <p className="text-lg text-muted-foreground">
                 No {activeFilter !== "all" ? activeFilter : ""} challenges found.
               </p>
