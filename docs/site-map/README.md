@@ -1,6 +1,6 @@
 # Tom's Gym — Site Walk & Workflow Map
 
-Captured **2026-08-28** against production (`https://my-frontend-quyiiugyoq-ue.a.run.app`, frontend build `v2026-08-01 22:13 UTC`) with Playwright at 1280×900 (plus three 390×844 mobile shots). Screenshots live in [`screenshots/`](screenshots/); each section links the pages it covers. This supersedes the 2026-07-06 walk — everything shipped since (home redesign, plank stats, lift/attempt history, steadiness nicknames, Challenge Champions, Pushup challenge) is reflected below. Feature internals are in `CLAUDE.md`; this doc is the *what a user sees where* view.
+Captured **2026-08-28** against production (`https://my-frontend-quyiiugyoq-ue.a.run.app`, frontend build `v2026-08-01 22:13 UTC`; `01-home` and `02-challenges` re-captured on `v2026-08-29 02:40 UTC` after the two fixes noted below shipped) with Playwright at 1280×900 (plus three 390×844 mobile shots). Screenshots live in [`screenshots/`](screenshots/); each section links the pages it covers. This supersedes the 2026-07-06 walk — everything shipped since (home redesign, plank stats, lift/attempt history, steadiness nicknames, Challenge Champions, Pushup challenge) is reflected below. Feature internals are in `CLAUDE.md`; this doc is the *what a user sees where* view.
 
 **Re-capturing:** the walk is a `browser_run_code_unsafe` script that `page.goto`s each route, dumps `h1`/buttons/internal links, and `page.screenshot({fullPage:true})`s into `screenshots/`. Dynamic ids (challenges, videos, profiles) are discovered from the links of the static pages, so the script needs no fixtures.
 
@@ -64,7 +64,7 @@ flowchart LR
 ```
 
 - Home ([01](screenshots/01-home.jpeg)) is the quiet-gym redesign: centered column, no photos. Order top→bottom: hero copy → 12s DemoLoop card with 3 dots → champion spotlight card (gold border) → three IconTiles → "OPEN CHALLENGES" strip → "All challenges →".
-- **As of this build the three home tiles link straight to the upload flows** (`/lift/upload`, `/bowling/upload`, `/golf/snap`), while the navbar's Lift/Bowl/Golf go to the hubs. Changed 2026-08-28 (uncommitted at capture time): tiles now go to `/lift` · `/bowl` · `/golf` so both paths land on the same hub. `/upload` ([27](screenshots/27-upload-chooser.jpeg)) still links straight to the upload pages.
+- The three home tiles go to the hubs `/lift` · `/bowl` · `/golf` — the same place as the navbar items (until 2026-08-28 they went straight to the upload flows). `/upload` ([27](screenshots/27-upload-chooser.jpeg)) still links straight to the upload pages.
 - Hubs ([24](screenshots/24-lift-hub.jpeg)–[26](screenshots/26-golf-hub.jpeg)): one primary CTA + RowCards — Lift: Upload a lift · Leaderboard (+ "Plank challenge" when one is ongoing; none was); Bowl: Upload only; Golf: Snap scorecard · Leaderboard · My golf profile.
 - Status page ([44](screenshots/44-lift-status-404.jpeg)) renders the queued state for any id, including unknown ones (404 from the result endpoint = "in line"), so a bad link never errors — it just polls forever.
 
@@ -91,7 +91,7 @@ flowchart LR
     CL --> BC["/bowling/challenge/:id\n(bowling challenges route here)"]
 ```
 
-- `/challenges` ([02](screenshots/02-challenges.jpeg)) at capture: "Open now" RowCard strip, then an "All Challenges" **image-card grid** (Unsplash placeholder photo per challenge). Changed 2026-08-28 (uncommitted): the grid is replaced by the same RowCard list as "Open now", with trailing Open / Preview / Results by status. Four lifting challenges + one bowling challenge (`/bowling/challenge/e93c…`) exist in prod.
+- `/challenges` ([02](screenshots/02-challenges.jpeg)): "Open now" RowCard strip, then an "All challenges" list of the same RowCards (lift-type pill; trailing Open / Preview / Results by status). Until 2026-08-28 this was an image-card grid with Unsplash placeholder photos. Four lifting challenges + one bowling challenge (`/bowling/challenge/e93c…`) exist in prod.
 - Three metrics are live, each with its own column header and payoff format: **REPS** (Pushup challenge `4bd57523…`, ongoing, [03](screenshots/03-challenge-detail-pushup.jpeg)), **HOLD** (Summer plank `a0f27fa4…`, [34](screenshots/34-challenge-detail-a0f2.jpeg)) and **TOTAL** weight ([32](screenshots/32-challenge-detail-plank.jpeg), [33](screenshots/33-challenge-detail-857f.jpeg)).
 - Plank boards show **steadiness nicknames** next to names ("💪 The Elusive Steady Eddie", "🌊 One-Shot The Wobbler", "🪼 Human Jellyfish"); ended challenges show 👑 on the winner's podium chip.
 - [32](screenshots/32-challenge-detail-plank.jpeg) has the attempt accordion expanded: rows of date · weight · grade pill, 🏆 on the best, and "—" for an unanalyzed attempt.
@@ -135,8 +135,8 @@ Store ([17](screenshots/17-store.jpeg), coming-soon cart), About ([18](screensho
 
 ## Observations from this walk
 
-1. **Home tiles vs nav disagree on where "Lift/Bowl/Golf" goes** (tiles → upload, nav → hub). Fixed locally 2026-08-28, pending deploy.
-2. **`/challenges` "All Challenges" grid** uses stock photos and a heavy card, inconsistent with the RowCard strip above it. Replaced locally 2026-08-28, pending deploy.
+1. ✅ Home tiles vs nav disagreed on where "Lift/Bowl/Golf" goes (tiles → upload, nav → hub). Fixed + deployed 2026-08-28.
+2. ✅ `/challenges` "All Challenges" grid used stock photos and a heavy card. Replaced with RowCards + deployed 2026-08-28. Found while doing it: the page's private competition transform never read the lift types (the API only ships them inside the description's JSON tail), so every pill said "Men" — now reuses `transformCompetitionData` from `lib/api.ts`.
 3. **Feedback link preselects the wrong type** from the footer's "Request a feature" (user-reported ticket).
 4. **`/feedback/list` is public and writable** — anyone can flip statuses (user-reported; known accepted risk in `CLAUDE.md`, but users notice).
 5. **Bad status links poll forever** (`/lift/status/<garbage>` shows "Queued") — no "we can't find this attempt" state.
