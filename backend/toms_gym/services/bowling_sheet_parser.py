@@ -332,12 +332,17 @@ def parse_game_sheet(words, symbols, page_w, page_h):
     centres, bounds, header_at = _frame_columns(words)
     left = bounds[0]
     right = bounds[-1]
+    # deskew everything by the header's tilt so row bands and name/score filters see flat rows
+    slope = header_at(left + 1000.0) - header_at(left)
+    slope /= 1000.0
+    words = [dict(w, y=w["y"] - slope * (w["x"] - left)) for w in words]
+    symbols = [dict(s, y=s["y"] - slope * (s["x"] - left)) for s in symbols]
     header_y = header_at(left)
     footer_y = min([w["y"] for w in words if w["text"].upper() in ("TOT", "GAME") and w["y"] > header_y + page_h * 0.2]
                    or [page_h])
     names = [w for w in words if _alpha(w["text"]) and len(w["text"]) >= 2
              and w["text"].upper() not in GAME_LABELS and w["x"] < left - page_w * 0.02
-             and header_at(w["x"]) + w["h"] * 0.5 < w["y"] < footer_y]
+             and header_y + w["h"] * 0.5 < w["y"] < footer_y]
     names.sort(key=lambda w: w["y"])
     if not names:
         raise SheetParseError("no bowler names found")
