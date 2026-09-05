@@ -17,7 +17,7 @@ from flask import Blueprint, jsonify, request
 
 from toms_gym.db import get_db_connection
 from toms_gym.security import rate_limit
-from toms_gym.services.bowling_insights import compute_insights
+from toms_gym.services.bowling_insights import compute_insights, merge_duplicate_games
 from toms_gym.services.bowling_score import score_frames
 from toms_gym.storage import ALLOWED_IMAGE_EXTENSIONS, bucket
 
@@ -416,7 +416,7 @@ def delete_scoresheet(sheet_id):
 def _user_games(session, user_id, limit, offset, with_frames=False):
     rows = session.execute(sqlalchemy.text(f"""
         SELECT g.id, g.sheet_id, g.played_on, g.game_number, g.total_score, g.hdcp,
-               g.frames IS NOT NULL AS has_frames, g.flagged
+               g.frames IS NOT NULL AS has_frames, g.flagged, s.sheet_type
                {', g.frames' if with_frames else ''}
         FROM "BowlingGame" g
         JOIN "BowlingScoreSheet" s ON s.id = g.sheet_id
@@ -433,11 +433,12 @@ def _user_games(session, user_id, limit, offset, with_frames=False):
         "hdcp": r[5],
         "has_frames": bool(r[6]),
         "flagged": bool(r[7]),
+        "sheet_type": r[8],
     } for r in rows]
     if with_frames:
         for game, r in zip(games, rows):
-            game["frames"] = r[8]
-    return games
+            game["frames"] = r[9]
+    return merge_duplicate_games(games)
 
 
 @bowling_sheet_bp.route('/games', methods=['GET'])

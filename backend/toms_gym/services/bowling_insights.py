@@ -235,6 +235,34 @@ def _tips(summary, frame_stats):
     return tips[:MAX_TIPS]
 
 
+def merge_duplicate_games(games):
+    """Collapse the same game stored twice — once from the night RESULTS sheet (game slot,
+    handicap) and once from its End-of-game screen (frames) — into one row per (date, score).
+    Order of first appearance is kept; a frames-bearing row lends its frames to the night row."""
+    merged = []
+    by_key = {}
+    for game in games:
+        if not game or game.get("total_score") is None:
+            merged.append(game)
+            continue
+        key = (game.get("played_on"), game["total_score"])
+        seen = by_key.get(key)
+        if seen is None:
+            row = dict(game)
+            by_key[key] = row
+            merged.append(row)
+            continue
+        night, screen = (seen, game) if game.get("sheet_type") == "game" or seen.get("sheet_type") == "night" else (game, seen)
+        if not night.get("frames") and screen.get("frames"):
+            seen["frames"] = screen["frames"]
+            seen["has_frames"] = True
+        if night is game:
+            seen["game_number"] = game.get("game_number", seen.get("game_number"))
+            if game.get("hdcp") is not None:
+                seen["hdcp"] = game["hdcp"]
+    return merged
+
+
 def compute_insights(games):
     ordered = sorted(
         [g for g in games if g and g.get("total_score") is not None],

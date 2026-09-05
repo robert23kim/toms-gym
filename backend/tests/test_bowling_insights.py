@@ -1,4 +1,4 @@
-from toms_gym.services.bowling_insights import compute_insights
+from toms_gym.services.bowling_insights import compute_insights, merge_duplicate_games
 
 TOM_FRAMES = [["X"], ["8", "1"], ["X"], ["9", "/"], ["X"], ["6", "3"], ["8", "/"], ["X"], ["9", "-"], ["7", "/", "9"]]
 CHRIS_FRAMES = [["X"], ["9", "-"], ["X"], ["8", "-"], ["X"], ["9", "/"], ["9", "/"], ["9", "/"], ["X"], ["X", "8", "-"]]
@@ -118,3 +118,41 @@ def test_invalid_frames_are_skipped_not_fatal():
             "hdcp": None, "frames": [["9", "9"]] + [["9", "-"]] * 9}]
     fs = compute_insights(bad)["frame_stats"]
     assert fs["frames_analyzed"] == 9
+
+
+def test_merge_keeps_night_slot_and_takes_screen_frames():
+    night = [
+        {"id": "n1", "played_on": "2026-09-04", "game_number": 1, "total_score": 153, "hdcp": 0, "frames": None, "has_frames": False, "sheet_type": "night"},
+        {"id": "n2", "played_on": "2026-09-04", "game_number": 2, "total_score": 200, "hdcp": 0, "frames": None, "has_frames": False, "sheet_type": "night"},
+        {"id": "n3", "played_on": "2026-09-04", "game_number": 3, "total_score": 162, "hdcp": 0, "frames": None, "has_frames": False, "sheet_type": "night"},
+    ]
+    screens = [
+        {"id": "s1", "played_on": "2026-09-04", "game_number": 1, "total_score": 162, "hdcp": None, "frames": TOM_FRAMES, "has_frames": True, "sheet_type": "game"},
+        {"id": "s2", "played_on": "2026-09-04", "game_number": 1, "total_score": 200, "hdcp": None, "frames": CHRIS_FRAMES, "has_frames": True, "sheet_type": "game"},
+    ]
+    merged = merge_duplicate_games(screens + night)
+    assert [g["total_score"] for g in merged] == [162, 200, 153]
+    by_score = {g["total_score"]: g for g in merged}
+    assert by_score[162]["game_number"] == 3 and by_score[162]["frames"] == TOM_FRAMES and by_score[162]["hdcp"] == 0
+    assert by_score[200]["game_number"] == 2 and by_score[200]["frames"] == CHRIS_FRAMES
+    assert by_score[153]["frames"] is None and by_score[153]["has_frames"] is False
+    # the merge must not mutate the caller's rows
+    assert screens[0]["game_number"] == 1 and night[2]["frames"] is None
+
+
+def test_merge_leaves_distinct_games_and_other_dates_alone():
+    games = TOTALS + FRAME_GAMES
+    assert merge_duplicate_games(games) == games
+    same_score_other_day = [
+        {"played_on": "2026-09-04", "game_number": 1, "total_score": 153, "hdcp": 0, "frames": None, "sheet_type": "night"},
+        {"played_on": "2026-09-11", "game_number": 1, "total_score": 153, "hdcp": None, "frames": TOM_FRAMES, "sheet_type": "game"},
+    ]
+    assert len(merge_duplicate_games(same_score_other_day)) == 2
+
+
+def test_insights_count_a_double_stored_night_once():
+    night = [{"played_on": "2026-09-04", "game_number": i, "total_score": t, "hdcp": 0, "frames": None, "sheet_type": "night"}
+             for i, t in enumerate([153, 200, 162], start=1)]
+    screens = [{"played_on": "2026-09-04", "game_number": 1, "total_score": t, "hdcp": None, "frames": TOM_FRAMES, "sheet_type": "game"}
+               for t in [153, 200, 162]]
+    assert compute_insights(merge_duplicate_games(night + screens))["games"] == 3
