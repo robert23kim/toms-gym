@@ -156,3 +156,12 @@ def test_insights_count_a_double_stored_night_once():
     screens = [{"played_on": "2026-09-04", "game_number": 1, "total_score": t, "hdcp": None, "frames": TOM_FRAMES, "sheet_type": "game"}
                for t in [153, 200, 162]]
     assert compute_insights(merge_duplicate_games(night + screens))["games"] == 3
+
+
+def test_merge_propagates_has_frames_without_frame_payload():
+    rows = [
+        {"played_on": "2026-09-04", "game_number": 2, "total_score": 200, "hdcp": 0, "has_frames": False, "sheet_type": "night"},
+        {"played_on": "2026-09-04", "game_number": 1, "total_score": 200, "hdcp": None, "has_frames": True, "sheet_type": "game"},
+    ]
+    merged = merge_duplicate_games(rows)
+    assert len(merged) == 1 and merged[0]["has_frames"] is True and merged[0]["game_number"] == 2

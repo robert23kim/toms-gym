@@ -253,8 +253,9 @@ def merge_duplicate_games(games):
             merged.append(row)
             continue
         night, screen = (seen, game) if game.get("sheet_type") == "game" or seen.get("sheet_type") == "night" else (game, seen)
-        if not night.get("frames") and screen.get("frames"):
-            seen["frames"] = screen["frames"]
+        if not night.get("frames") and (screen.get("frames") or screen.get("has_frames")):
+            if screen.get("frames"):
+                seen["frames"] = screen["frames"]
             seen["has_frames"] = True
         if night is game:
             seen["game_number"] = game.get("game_number", seen.get("game_number"))
