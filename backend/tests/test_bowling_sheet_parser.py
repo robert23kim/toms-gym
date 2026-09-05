@@ -154,3 +154,19 @@ def test_fully_read_frames_are_not_inferred():
     frames, conflicts, inferred = _solve([list(f) for f in truth], printed)
     assert frames == truth
     assert inferred == []
+
+
+def test_game_sheet_survives_a_dropped_name():
+    ocr, truth = _load("game_01")
+    words = [w for w in ocr["words"] if w["text"].upper() != "ROB"]
+    parsed = bp.parse_game_sheet(words, ocr["symbols"], ocr["page_w"], ocr["page_h"])
+    names = [p["name"] for p in parsed["players"]]
+    assert len(names) == 4 and "Bowler 2" in names
+    placeholder = next(p for p in parsed["players"] if p["name"] == "Bowler 2")
+    assert placeholder["flagged"] and placeholder["flag_reason"] == "name not read"
+    rob = next(tp for tp in truth["players"] if tp["name"] == "ROB")
+    assert placeholder["frames"] == rob["frames"]
+    for tp in truth["players"]:
+        if tp["name"] != "ROB":
+            got = next(p for p in parsed["players"] if p["name"].upper() == tp["name"])
+            assert got["frames"] == tp["frames"] and not got["flagged"]

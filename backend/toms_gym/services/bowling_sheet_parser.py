@@ -215,10 +215,18 @@ def _frame_columns(words):
         header_rows.append(current)
     best = None
     for row in header_rows:
-        pts = [(num, x, y) for num, x, y, _ in row]
-        seen = {}
-        for num, x, y in pts:
-            seen.setdefault(num, (x, y))
+        by_num = {}
+        for num, x, y, _ in row:
+            by_num.setdefault(num, []).append((x, y))
+        # a steep tilt interleaves roll digits from the row below with the header; fit the
+        # line on digits seen once, then let each duplicated digit pick the x nearest that line
+        unique = {n: v[0] for n, v in by_num.items() if len(v) == 1}
+        if len(unique) >= 3 and len(unique) < len(by_num):
+            ua, ub = _fit_line([(n, x) for n, (x, _) in unique.items()])
+            seen = {n: (v[0] if len(v) == 1 else min(v, key=lambda xy: abs(ua + ub * n - xy[0])))
+                    for n, v in by_num.items()}
+        else:
+            seen = {n: v[0] for n, v in by_num.items()}
         if len(seen) >= 5:
             xs = sorted((n, x) for n, (x, _) in seen.items())
             a, b = _fit_line([(n, x) for n, x in xs])
@@ -373,8 +381,6 @@ def parse_game_sheet(words, symbols, page_w, page_h):
              and w["text"].upper() not in GAME_LABELS and w["x"] < left - page_w * 0.02
              and header_y + w["h"] * 0.5 < w["y"] < footer_y]
     names.sort(key=lambda w: w["y"])
-    if not names:
-        raise SheetParseError("no bowler names found")
     nums = sorted((w for w in words if _is_int(w["text"]) and left < w["x"] < right
                    and header_y + page_h * 0.02 < w["y"] < footer_y), key=lambda w: w["y"])
     lines = []
@@ -386,12 +392,23 @@ def parse_game_sheet(words, symbols, page_w, page_h):
             lines.append({"y": w["y"], "words": [w]})
     cum_lines = [ln for ln in lines if len(ln["words"]) >= 5
                  and sum(len(w["text"]) >= 2 for w in ln["words"]) >= 3]
-    if len(cum_lines) != len(names):
-        raise SheetParseError(f"found {len(names)} bowlers but {len(cum_lines)} score lines")
+    if not cum_lines:
+        raise SheetParseError(f"found {len(names)} bowlers but no score lines")
+    # pair each score line with the nearest unclaimed name above/around it; a line whose name
+    # OCR dropped still parses under a placeholder (flagged), a name with no line is skipped
+    pairs = []
+    unclaimed = list(names)
+    for line in cum_lines:
+        pick = min(unclaimed, key=lambda n: abs(n["y"] - line["y"]), default=None)
+        if pick is not None and abs(pick["y"] - line["y"]) < page_h * 0.08:
+            unclaimed.remove(pick)
+            pairs.append((pick, line, None))
+        else:
+            pairs.append(({"text": f"Bowler {len(pairs) + 1}"}, line, "name not read"))
 
     players = []
     prev_cum_y = header_y
-    for n, line in zip(names, cum_lines):
+    for n, line, name_issue in pairs:
         cum_y = line["y"]
         top = prev_cum_y + page_h * 0.02
         bot = cum_y + page_h * 0.03
@@ -427,6 +444,8 @@ def parse_game_sheet(words, symbols, page_w, page_h):
             flagged, reason = True, "printed score disagrees with the rolls read in frame " + ", ".join(map(str, conflicts))
         elif total is not None and printed[9] != total:
             flagged, reason = True, f"running score {printed[9]} != total {total}"
+        if name_issue and not flagged:
+            flagged, reason = True, name_issue
         players.append({"name": n["text"], "frames": frames, "printed_cumulative": printed,
                         "total": total, "flagged": flagged, "flag_reason": reason,
                         "inferred_frames": inferred})
