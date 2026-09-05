@@ -643,6 +643,8 @@ export interface BowlingSheetGame {
   flagged: boolean;
   flag_reason: string | null;
   confidence: number | null;
+  /** 1-based frames whose rolls the parser guessed from the running score alone. */
+  inferred_frames?: number[];
 }
 
 export interface BowlingSheetPlayer {

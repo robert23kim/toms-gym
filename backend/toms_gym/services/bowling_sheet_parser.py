@@ -240,9 +240,9 @@ def _legal_frames(tenth):
     out = []
     if not tenth:
         out.append(["X"])
-        for a in range(10):
+        # first ball descending: an unread spare reads "9 /" not "- /", an unread 7-pin frame "7 -" not "- 7"
+        for a in range(9, -1, -1):
             out.append([str(a) if a else "-", "/"])
-        # open frames ordered by first ball descending: an unobserved 7-pin frame reads "7 -", not "- 7"
         for a in range(9, -1, -1):
             for b in range(10 - a):
                 out.append([str(a) if a else "-", str(b) if b else "-"])
@@ -324,8 +324,37 @@ def _solve_frames(observed, printed):
 
     dfs(0, [])
     if best[0] is None:
-        return None, []
-    return best[0], [i + 1 for i in range(10) if observed[i] and _conflicts(best[0][i], observed[i])]
+        return None, [], []
+    solved = best[0]
+    conflicts = [i + 1 for i in range(10) if observed[i] and _conflicts(solved[i], observed[i])]
+    return solved, conflicts, _ambiguous_frames(solved, observed, printed)
+
+
+def _ambiguous_frames(solved, observed, printed):
+    """Frames where another legal frame also fits the glyphs read AND every printed score —
+    the reviewer should see those, since the split ("8 1" vs "1 8") was a guess."""
+    base = score_frames(solved)["cumulative"]
+    out = []
+    for i in range(10):
+        # Vision routinely drops "-" glyphs, so a lone "8" reading as "8 -" is expected, not a guess;
+        # a leading gutter or any digit/X// the solution needs but nobody read is worth marking
+        read = sum(1 for g in observed[i] if g != "-")
+        needed = [g for k, g in enumerate(solved[i]) if not (g == "-" and k > 0)]
+        if len(needed) <= read:
+            continue
+        pool = LEGAL_TENTH if i == 9 else LEGAL_FRAMES
+        for cand in pool:
+            if cand == solved[i] or _conflicts(cand, observed[i]):
+                continue
+            alt = score_frames(solved[:i] + [cand] + solved[i + 1:])
+            if not alt["valid"]:
+                continue
+            same = all(alt["cumulative"][j] == base[j] for j in range(10)
+                       if printed[j] is not None or j == 9)
+            if same:
+                out.append(i + 1)
+                break
+    return out
 
 
 def parse_game_sheet(words, symbols, page_w, page_h):
@@ -389,17 +418,18 @@ def parse_game_sheet(words, symbols, page_w, page_h):
         total = int(total_words[0]["text"]) if total_words else printed[9]
         if printed[9] is None and total is not None:
             printed[9] = total
-        frames, conflicts = _solve_frames(observed, printed)
+        frames, conflicts, inferred = _solve_frames(observed, printed)
         flagged, reason = False, None
         if frames is None:
-            frames = observed
+            frames, inferred = observed, []
             flagged, reason = True, "rolls could not be reconciled with the printed score"
         elif conflicts:
             flagged, reason = True, "printed score disagrees with the rolls read in frame " + ", ".join(map(str, conflicts))
         elif total is not None and printed[9] != total:
             flagged, reason = True, f"running score {printed[9]} != total {total}"
         players.append({"name": n["text"], "frames": frames, "printed_cumulative": printed,
-                        "total": total, "flagged": flagged, "flag_reason": reason})
+                        "total": total, "flagged": flagged, "flag_reason": reason,
+                        "inferred_frames": inferred})
     team_words = [w for w in words if w["text"].upper() == "TEAM"]
     team_name = None
     for tw in team_words:
@@ -443,10 +473,12 @@ def shape_games(parsed, sheet_type, played_on):
                 reason = None
             elif reason is None:
                 reason = f"computed {res['total']} != printed {p['total']}"
+            inferred = p.get("inferred_frames") or []
             rows.append({
                 "player_name": p["name"], "game_number": 1, "total_score": p["total"] if p["total"] is not None else res["total"],
                 "hdcp": None, "frames": p["frames"], "computed_total": res["total"],
                 "flagged": flagged, "flag_reason": reason,
-                "confidence": 0.4 if flagged else 0.95, "played_on": played_on,
+                "confidence": 0.4 if flagged else max(0.5, 0.95 - 0.1 * len(inferred)),
+                "inferred_frames": inferred, "played_on": played_on,
             })
     return rows

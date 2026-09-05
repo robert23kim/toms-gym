@@ -104,14 +104,28 @@ def _ocr_and_parse(image_bytes, sheet_type, played_on):
     return parsed, rows, degrees
 
 
+def _inferred_frames_by_player(raw_parse):
+    """Frame numbers the parser filled from the running score alone, per player name."""
+    if isinstance(raw_parse, str):
+        try:
+            raw_parse = json.loads(raw_parse)
+        except ValueError:
+            return {}
+    if not isinstance(raw_parse, dict):
+        return {}
+    return {p.get("name"): list(p.get("inferred_frames") or [])
+            for p in raw_parse.get("players") or [] if isinstance(p, dict)}
+
+
 def _sheet_payload(session, sheet_id):
     sheet = session.execute(sqlalchemy.text("""
         SELECT id, user_id, sheet_type, played_on, image_url, team_name,
-               processing_status, error_message
+               processing_status, error_message, raw_parse
         FROM "BowlingScoreSheet" WHERE id = :id
     """), {"id": sheet_id}).fetchone()
     if not sheet:
         return None
+    inferred_by_name = _inferred_frames_by_player(sheet[8]) if sheet[6] != 'confirmed' else {}
 
     rows = session.execute(sqlalchemy.text("""
         SELECT id, player_name, game_number, total_score, hdcp, frames,
@@ -134,6 +148,7 @@ def _sheet_payload(session, sheet_id):
             "flagged": bool(r[7]),
             "flag_reason": r[8],
             "confidence": float(r[9]) if r[9] is not None else None,
+            "inferred_frames": inferred_by_name.get(r[1], []) if r[5] else [],
         }
         if r[1] not in by_name:
             by_name[r[1]] = {"name": r[1], "games": []}

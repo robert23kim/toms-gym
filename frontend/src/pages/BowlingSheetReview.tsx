@@ -22,6 +22,7 @@ interface EditableGame {
   frames: Roll[][] | null;
   flagged: boolean;
   flagReason: string | null;
+  inferredFrames: number[];
 }
 
 interface EditablePlayer {
@@ -45,6 +46,7 @@ const blankPlayer = (sheetType: BowlingSheetType): EditablePlayer => ({
           frames: null,
           flagged: false,
           flagReason: null,
+          inferredFrames: [],
         }))
       : [
           {
@@ -53,6 +55,7 @@ const blankPlayer = (sheetType: BowlingSheetType): EditablePlayer => ({
             frames: emptyFrames(),
             flagged: false,
             flagReason: null,
+            inferredFrames: [],
           },
         ],
 });
@@ -68,6 +71,7 @@ const toEditable = (sheet: BowlingSheet): EditablePlayer[] => {
       frames: g.frames ? g.frames.map((f) => [...f]) : sheet.sheet_type === "game" ? emptyFrames() : null,
       flagged: g.flagged,
       flagReason: g.flag_reason,
+      inferredFrames: g.inferred_frames ?? [],
     })),
   }));
 };
@@ -420,6 +424,7 @@ const BowlingSheetReview: React.FC = () => {
                         key={game.gameNumber}
                         playerName={player.name}
                         frames={game.frames ?? emptyFrames()}
+                        inferred={game.inferredFrames}
                         onChange={(frames) => updateGame(playerIndex, gameIndex, { frames })}
                       />
                     ))

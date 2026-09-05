@@ -110,10 +110,47 @@ def test_game_irreconcilable_score_is_flagged():
 def test_solver_recovers_dropped_dash():
     observed = [["X"], ["9"], ["X"], ["8"], ["X"], ["9", "/"], ["9", "/"], ["9", "/"], ["X"], ["X", "8"]]
     printed = [19, 28, 46, 54, 74, 93, 112, 132, 160, 178]
-    frames, conflicts = bp._solve_frames(observed, printed)
+    frames, conflicts, _inferred = bp._solve_frames(observed, printed)
     assert conflicts == []
     assert frames == [["X"], ["9", "-"], ["X"], ["8", "-"], ["X"], ["9", "/"], ["9", "/"], ["9", "/"], ["X"], ["X", "8", "-"]]
 
 
 def test_solver_returns_none_when_impossible():
-    assert bp._solve_frames([[] for _ in range(10)], [31] + [None] * 9) == (None, [])
+    assert bp._solve_frames([[] for _ in range(10)], [31] + [None] * 9) == (None, [], [])
+
+
+def _solve(observed, printed):
+    return bp._solve_frames(observed, printed)
+
+
+def test_inferred_marks_unread_frame_but_not_dropped_dash():
+    # truth: 8 1 | 8 - | X | 9 / | 7 / | 9 / | 8 / | 7 / | 8 1 | 9 / X  = 17? use a real running score
+    truth = [["8", "1"], ["8", "-"], ["X"], ["9", "/"], ["7", "/"], ["9", "/"], ["8", "/"], ["7", "/"], ["8", "1"], ["9", "/", "X"]]
+    printed = bp.score_frames(truth)["cumulative"]
+    observed = [list(f) for f in truth]
+    observed[0] = ["1"]      # first-ball digit dropped: "1 8" and "8 1" both fit → inferred
+    observed[1] = ["8"]      # trailing miss dropped: expected, not inferred
+    observed[3] = []         # nothing read: "9 /" vs "8 /" … → inferred
+    frames, conflicts, inferred = _solve(observed, printed)
+    assert conflicts == []
+    assert frames[1] == ["8", "-"]
+    assert 1 in inferred and 4 in inferred
+    assert 2 not in inferred
+
+
+def test_inferred_marks_spare_with_unread_first_ball():
+    truth = [["X"], ["8", "/"], ["9", "-"], ["X"], ["X"], ["X"], ["X"], ["X"], ["X"], ["X", "X", "X"]]
+    printed = bp.score_frames(truth)["cumulative"]
+    observed = [list(f) for f in truth]
+    observed[1] = ["/"]
+    frames, conflicts, inferred = _solve(observed, printed)
+    assert frames[1][1] == "/" and frames[1][0] != "-"
+    assert 2 in inferred
+
+
+def test_fully_read_frames_are_not_inferred():
+    truth = [["X"], ["8", "/"], ["9", "-"], ["7", "2"], ["X"], ["X"], ["X"], ["X"], ["X"], ["X", "X", "X"]]
+    printed = bp.score_frames(truth)["cumulative"]
+    frames, conflicts, inferred = _solve([list(f) for f in truth], printed)
+    assert frames == truth
+    assert inferred == []

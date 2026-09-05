@@ -8,7 +8,7 @@ Perturbations (applied to every word/symbol of a cached `<stem>_ocr.json`):
   jitter <frac>    y += uniform(-frac, frac) * h            (seeded)
   drop <frac>      delete that fraction of symbols          (seeded; words untouched)
   dropw <frac>     delete that fraction of words            (seeded)
-Outcome per (stem, perturbation): exact / flagged-only / SILENT-WRONG / parse-error.
+Outcome per (stem, perturbation): exact / inferred / flagged / SILENT-WRONG / parse-error.
 Silent wrongs are the ones that matter: wrong cells with no flag raised.
 """
 import argparse
@@ -23,6 +23,7 @@ sys.path.insert(0, str(ROOT))
 sys.path.insert(0, str(ROOT / 'tools'))
 
 from toms_gym.services import bowling_sheet_parser as bp  # noqa: E402
+from toms_gym.services.bowling_score import score_frames  # noqa: E402
 
 FIXTURES = ROOT / 'tests' / 'fixtures' / 'bowling'
 
@@ -55,9 +56,9 @@ def perturb(ocr, kind, arg, seed=0):
 
 
 def compare(sheet_type, parsed, truth):
-    """Return (wrong_cells, flagged_rows, missing_rows)."""
+    """Return (wrong_cells, flagged_rows, missing_rows, wrong_cells_marked_inferred)."""
     got = {p['name'].upper(): p for p in parsed['players']}
-    wrong = flagged = missing = 0
+    wrong = flagged = missing = inferred_wrong = 0
     for tp in truth['players']:
         p = got.get(tp['name'].upper())
         if not p:
@@ -70,9 +71,13 @@ def compare(sheet_type, parsed, truth):
             want = tp['games'] + [tp['scratch'], tp['hdcp'], tp['total']]
             wrong += sum(1 for a, b in zip(have, want) if a != b)
         else:
-            wrong += sum(1 for i in range(10) if p['frames'][i] != tp['frames'][i])
-            wrong += sum(1 for i in range(10) if p['printed_cumulative'][i] != tp['cumulative'][i])
-    return wrong, flagged, missing
+            inferred = set(p.get('inferred_frames') or [])
+            wrong += sum(1 for i in range(10) if p['frames'][i] != tp['frames'][i] and i + 1 not in inferred)
+            inferred_wrong += sum(1 for i in range(10) if p['frames'][i] != tp['frames'][i] and i + 1 in inferred)
+            # what the reviewer sees is the running score recomputed from the frames
+            cum = score_frames(p['frames'])['cumulative']
+            wrong += sum(1 for i in range(10) if (cum[i] if i < len(cum) else None) != tp['cumulative'][i])
+    return wrong, flagged, missing, inferred_wrong
 
 
 def outcome(sheet_type, ocr, truth):
@@ -82,11 +87,13 @@ def outcome(sheet_type, ocr, truth):
         return 'error', str(e)
     except Exception as e:  # noqa: BLE001 - a crash is a finding
         return 'crash', f'{type(e).__name__}: {e}'
-    wrong, flagged, missing = compare(sheet_type, parsed, truth)
+    wrong, flagged, missing, inferred_wrong = compare(sheet_type, parsed, truth)
     if missing:
         return 'missing-row', f'{missing} row(s) missing'
-    if wrong == 0:
+    if wrong == 0 and inferred_wrong == 0:
         return 'exact', ''
+    if wrong == 0:
+        return 'inferred', f'{inferred_wrong} guessed roll split(s), marked inferred'
     if flagged:
         return 'flagged', f'{wrong} wrong cell(s), flagged'
     return 'SILENT-WRONG', f'{wrong} wrong cell(s), no flag'
@@ -119,7 +126,7 @@ def main():
             seeds = range(args.seeds) if kind in ('jitter', 'drop', 'dropw') else [0]
             results = [outcome(st, perturb(ocr, kind, arg, s), truth) for s in seeds]
             kinds = [r[0] for r in results]
-            worst = next((k for k in ('crash', 'SILENT-WRONG', 'missing-row', 'error', 'flagged', 'exact') if k in kinds), 'exact')
+            worst = next((k for k in ('crash', 'SILENT-WRONG', 'missing-row', 'error', 'flagged', 'inferred', 'exact') if k in kinds), 'exact')
             detail = next((d for k, d in results if k == worst), '')
             label = f'{kind} {arg}'
             print(f'  {label:<12} {"/".join(kinds):<40} {detail}')

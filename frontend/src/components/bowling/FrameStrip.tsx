@@ -11,6 +11,8 @@ interface Props {
   playerName: string;
   frames: Roll[][];
   onChange: (frames: Roll[][]) => void;
+  /** 1-based frames whose rolls were guessed from the running score — worth a second look. */
+  inferred?: number[];
 }
 
 export const frameErrors = (frames: Roll[][]): (string | null)[] =>
@@ -33,8 +35,9 @@ const filledPrefix = (frames: Roll[][]): Roll[][] => {
   return frames.slice(0, last + 1);
 };
 
-const FrameStrip: React.FC<Props> = ({ playerName, frames, onChange }) => {
+const FrameStrip: React.FC<Props> = ({ playerName, frames, onChange, inferred = [] }) => {
   const errors = frameErrors(frames);
+  const inferredSet = new Set(inferred);
   const scored = scoreFrames(filledPrefix(frames));
   const firstError = errors.find((e) => e !== null) || null;
 
@@ -56,8 +59,13 @@ const FrameStrip: React.FC<Props> = ({ playerName, frames, onChange }) => {
               value={formatFrameInput(frame)}
               onChange={(e) => setFrame(index, e.target.value)}
               maxLength={index === 9 ? 3 : 2}
+              title={inferredSet.has(index + 1) ? "Rolls guessed from the running score — check them" : undefined}
               className={`w-full h-9 text-center uppercase text-sm rounded-md bg-background border focus:outline-none focus:ring-2 focus:ring-accent ${
-                errors[index] ? "border-destructive" : "border-input"
+                errors[index]
+                  ? "border-destructive"
+                  : inferredSet.has(index + 1)
+                    ? "border-amber-500 border-dashed"
+                    : "border-input"
               }`}
             />
             <span
@@ -70,8 +78,13 @@ const FrameStrip: React.FC<Props> = ({ playerName, frames, onChange }) => {
         ))}
       </div>
       <div className="flex items-center justify-between text-xs">
-        <span className={firstError ? "text-destructive" : "text-muted-foreground"}>
-          {firstError || (scored.complete ? "Complete game" : "Fill every frame to finish")}
+        <span className={firstError ? "text-destructive" : inferred.length ? "text-amber-600" : "text-muted-foreground"}>
+          {firstError ||
+            (inferred.length
+              ? `Frame${inferred.length === 1 ? "" : "s"} ${inferred.join(", ")} read from the score — check the rolls`
+              : scored.complete
+                ? "Complete game"
+                : "Fill every frame to finish")}
         </span>
         <span className="font-medium tabular-nums">Total {scored.total}</span>
       </div>
