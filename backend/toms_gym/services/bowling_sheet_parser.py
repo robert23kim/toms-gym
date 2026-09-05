@@ -7,6 +7,7 @@ Every row is validated against the ten-pin rules / sheet checksums; a mismatch f
 the row rather than silently accepting it.
 """
 import re
+import unicodedata
 from statistics import median
 
 from toms_gym.services.bowling_score import (
@@ -20,12 +21,21 @@ class SheetParseError(Exception):
 
 NIGHT_LABELS = {"PLAYER", "TEAM", "RESULTS", "GAME", "SCRATCH", "HDCP", "TOTAL", "QUBICA", "AME", "AMF"}
 GAME_LABELS = {
-    "END", "OF", "GAME", "TOT", "PIN", "FALL", "HDCP", "BONUS", "POINTS", "TEAM", "TOTAL",
+    "END", "OF", "GAME", "TOT", "PIN", "FALL", "HDCP", "BONUS", "POINTS", "TEAM", "TOTAL", "PLAYER",
     "LANE", "YOUR", "WAY", "CHATTER", "BOWLERS", "BOWLER", "PHOTO", "RECAP", "STATISTICS",
     "SCORE", "STOP", "MPH", "YLYW", "ND", "RD", "ST", "TH",
 }
 ROLL_GLYPHS = {"X": "X", "/": "/", "-": "-", "―": "-", "—": "-", "–": "-", "_": "-", "F": "F",
                "O": "0", "I": "1", "L": "1", "|": "1"}
+
+
+def _roll_glyph(text):
+    """Normalise one OCR symbol to a roll glyph; circled split digits (⑦) become plain digits."""
+    if text.upper() in ROLL_GLYPHS:
+        return ROLL_GLYPHS[text.upper()]
+    if len(text) == 1 and text.isdigit():
+        return str(unicodedata.digit(text))
+    return None
 
 
 def _is_int(text):
@@ -178,8 +188,8 @@ def parse_night_sheet(words, page_w, page_h):
 # ---------------------------------------------------------------- game screen
 
 def _frame_columns(words):
-    """Fit frame column centres from the 1..10 header; returns (centres[10], boundaries[11])."""
-    header_rows = {}
+    """Fit frame column centres from the 1..10 header; returns (centres[10], boundaries[11], header_y_at(x))."""
+    candidates = []
     for w in words:
         t = w["text"].upper()
         num = None
@@ -191,10 +201,21 @@ def _frame_columns(words):
             num = 10
         if num is None:
             continue
-        key = round(w["y"] / max(w["h"], 1))
-        header_rows.setdefault(key, []).append((num, w["x"], w["y"]))
+        candidates.append((num, w["x"], w["y"], max(w["h"], 1)))
+    # A tilted photo drifts the header's y by a few px per column, so group by
+    # y-gap between neighbours (< one glyph height) rather than a rounded y bucket.
+    candidates.sort(key=lambda c: c[2])
+    header_rows, current = [], []
+    for cand in candidates:
+        if current and cand[2] - current[-1][2] > 0.75 * min(cand[3], current[-1][3]):
+            header_rows.append(current)
+            current = []
+        current.append(cand)
+    if current:
+        header_rows.append(current)
     best = None
-    for pts in header_rows.values():
+    for row in header_rows:
+        pts = [(num, x, y) for num, x, y, _ in row]
         seen = {}
         for num, x, y in pts:
             seen.setdefault(num, (x, y))
@@ -205,13 +226,14 @@ def _frame_columns(words):
                 continue
             resid = sum(abs(a + b * n - x) for n, x in xs) / len(xs)
             if resid < b * 0.25 and (best is None or len(seen) > best[0]):
-                best = (len(seen), a, b, median(y for _, y in seen.values()))
+                best = (len(seen), a, b, list(seen.values()))
     if not best:
         raise SheetParseError("no 1..10 frame header found")
-    _, a, b, y = best
+    _, a, b, xy = best
     centres = [a + b * n for n in range(1, 11)]
     bounds = [centres[0] - b / 2] + [(centres[i] + centres[i + 1]) / 2 for i in range(9)] + [centres[9] + b * 0.7]
-    return centres, bounds, y
+    ya, yb = _fit_line(xy)
+    return centres, bounds, lambda x: ya + yb * x
 
 
 def _legal_frames(tenth):
@@ -220,7 +242,8 @@ def _legal_frames(tenth):
         out.append(["X"])
         for a in range(10):
             out.append([str(a) if a else "-", "/"])
-        for a in range(10):
+        # open frames ordered by first ball descending: an unobserved 7-pin frame reads "7 -", not "- 7"
+        for a in range(9, -1, -1):
             for b in range(10 - a):
                 out.append([str(a) if a else "-", str(b) if b else "-"])
         return out
@@ -306,14 +329,15 @@ def _solve_frames(observed, printed):
 
 
 def parse_game_sheet(words, symbols, page_w, page_h):
-    centres, bounds, header_y = _frame_columns(words)
+    centres, bounds, header_at = _frame_columns(words)
     left = bounds[0]
     right = bounds[-1]
+    header_y = header_at(left)
     footer_y = min([w["y"] for w in words if w["text"].upper() in ("TOT", "GAME") and w["y"] > header_y + page_h * 0.2]
                    or [page_h])
     names = [w for w in words if _alpha(w["text"]) and len(w["text"]) >= 2
              and w["text"].upper() not in GAME_LABELS and w["x"] < left - page_w * 0.02
-             and header_y < w["y"] < footer_y]
+             and header_at(w["x"]) + w["h"] * 0.5 < w["y"] < footer_y]
     names.sort(key=lambda w: w["y"])
     if not names:
         raise SheetParseError("no bowler names found")
@@ -346,7 +370,7 @@ def parse_game_sheet(words, symbols, page_w, page_h):
         band_syms = [s for s in symbols if top < s["y"] < cum_y - page_h * 0.02 and left < s["x"] < right]
         observed = [[] for _ in range(10)]
         for s in sorted(band_syms, key=lambda s: s["x"]):
-            g = ROLL_GLYPHS.get(s["text"].upper(), s["text"] if s["text"].isdigit() else None)
+            g = _roll_glyph(s["text"])
             if g is None:
                 continue
             fi = next((i for i in range(10) if bounds[i] <= s["x"] < bounds[i + 1]), None)
