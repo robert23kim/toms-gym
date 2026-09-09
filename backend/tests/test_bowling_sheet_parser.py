@@ -148,6 +148,18 @@ def test_inferred_marks_spare_with_unread_first_ball():
     assert 2 in inferred
 
 
+def test_tenth_frame_unread_second_ball_reads_as_pins_and_is_inferred():
+    # open 9th frame, so nothing but the unread glyph decides the 10th's second ball
+    truth = [["X"], ["X"], ["X"], ["X"], ["X"], ["X"], ["X"], ["X"], ["9", "-"], ["X", "8", "/"]]
+    printed = bp.score_frames(truth)["cumulative"]
+    observed = [list(f) for f in truth]
+    observed[9] = ["X", "/"]
+    frames, conflicts, inferred = _solve(observed, printed)
+    assert conflicts == []
+    assert frames[9][1] != "-" and frames[9][2] == "/"
+    assert 10 in inferred
+
+
 def test_fully_read_frames_are_not_inferred():
     truth = [["X"], ["8", "/"], ["9", "-"], ["7", "2"], ["X"], ["X"], ["X"], ["X"], ["X"], ["X", "X", "X"]]
     printed = bp.score_frames(truth)["cumulative"]

@@ -26,7 +26,7 @@ GAME_LABELS = {
     "SCORE", "STOP", "MPH", "YLYW", "ND", "RD", "ST", "TH",
 }
 ROLL_GLYPHS = {"X": "X", "/": "/", "-": "-", "―": "-", "—": "-", "–": "-", "_": "-", "F": "F",
-               "O": "0", "I": "1", "L": "1", "|": "1"}
+               "O": "-", "0": "-", "I": "1", "L": "1", "|": "1"}
 
 
 def _roll_glyph(text):
@@ -34,7 +34,8 @@ def _roll_glyph(text):
     if text.upper() in ROLL_GLYPHS:
         return ROLL_GLYPHS[text.upper()]
     if len(text) == 1 and text.isdigit():
-        return str(unicodedata.digit(text))
+        d = unicodedata.digit(text)
+        return "-" if d == 0 else str(d)
     return None
 
 
@@ -179,7 +180,9 @@ def parse_night_sheet(words, page_w, page_h):
         ty = team_band["y"]
         tw = [w for w in words if w["x"] < first_col_x - page_w * 0.05 and ty < w["y"] < ty + page_h * 0.12
               and w["text"].upper() not in NIGHT_LABELS - {"TEAM"} and (_alpha(w["text"]) or _is_int(w["text"]))]
-        tw = [w for w in tw if not (w["text"].upper() == "TEAM" and abs(w["y"] - ty) < page_h * 0.02)]
+        # the "Team" column label sits level with the band's leftmost header, not its tilted median
+        label_y = min(team_band["cols"].values(), key=lambda xy: xy[0])[1]
+        tw = [w for w in tw if not (w["text"].upper() == "TEAM" and abs(w["y"] - label_y) < page_h * 0.04)]
         if tw:
             team_name = " ".join(w["text"] for w in sorted(tw, key=lambda w: w["x"]))
     return {"team_name": team_name, "players": players}
@@ -255,18 +258,19 @@ def _legal_frames(tenth):
             for b in range(10 - a):
                 out.append([str(a) if a else "-", str(b) if b else "-"])
         return out
+    # same descending order as the regular pool: an unread ball reads as pins, not a gutter
     sym = lambda v: "X" if v == 10 else ("-" if v == 0 else str(v))
-    for a in range(11):
+    for a in range(10, -1, -1):
         if a == 10:
-            for b in range(11):
+            for b in range(10, -1, -1):
                 if b == 10:
-                    out.extend([["X", "X", sym(c)] for c in range(11)])
+                    out.extend([["X", "X", sym(c)] for c in range(10, -1, -1)])
                 else:
-                    out.extend([["X", sym(b), "/"]] + [["X", sym(b), sym(c)] for c in range(10 - b)])
+                    out.extend([["X", sym(b), "/"]] + [["X", sym(b), sym(c)] for c in range(10 - b - 1, -1, -1)])
         else:
-            for b in range(10 - a + 1):
+            for b in range(10 - a, -1, -1):
                 if a + b == 10:
-                    out.extend([[sym(a), "/", sym(c)] for c in range(11)])
+                    out.extend([[sym(a), "/", sym(c)] for c in range(10, -1, -1)])
                 else:
                     out.append([sym(a), sym(b)])
     return out
@@ -365,6 +369,31 @@ def _ambiguous_frames(solved, observed, printed):
     return out
 
 
+def _clean_glyphs(syms):
+    """Vision reads a miss dash as a run of tiny digits ("1030303030" at a sixth of glyph height)
+    and emits some glyphs twice a few px apart; drop both before binning into cells."""
+    if not syms:
+        return []
+    ref = median(s.get("h", 0) for s in syms)
+    kept = []
+    for s in sorted(syms, key=lambda s: s["x"]):
+        h = s.get("h", ref)
+        if ref and h < ref * 0.4:
+            continue
+        if kept and kept[-1]["text"] == s["text"] and s["x"] - kept[-1]["x"] < h * 0.3 \
+                and abs(s["y"] - kept[-1]["y"]) < h * 0.5:
+            continue
+        kept.append(s)
+    return kept
+
+
+def _mostly_increasing(words):
+    """A running score climbs left to right; a roll line read as numbers ("85 47 17 29") does not."""
+    vals = [int(w["text"]) for w in sorted(words, key=lambda w: w["x"])]
+    drops = sum(1 for a, b in zip(vals, vals[1:]) if b < a)
+    return drops <= 1
+
+
 def parse_game_sheet(words, symbols, page_w, page_h):
     centres, bounds, header_at = _frame_columns(words)
     left = bounds[0]
@@ -391,7 +420,8 @@ def parse_game_sheet(words, symbols, page_w, page_h):
         else:
             lines.append({"y": w["y"], "words": [w]})
     cum_lines = [ln for ln in lines if len(ln["words"]) >= 5
-                 and sum(len(w["text"]) >= 2 for w in ln["words"]) >= 3]
+                 and sum(len(w["text"]) >= 2 for w in ln["words"]) >= 3
+                 and _mostly_increasing(ln["words"])]
     if not cum_lines:
         raise SheetParseError(f"found {len(names)} bowlers but no score lines")
     # pair each score line with the nearest unclaimed name above/around it; a line whose name
@@ -406,6 +436,20 @@ def parse_game_sheet(words, symbols, page_w, page_h):
         else:
             pairs.append(({"text": f"Bowler {len(pairs) + 1}"}, line, "name not read"))
 
+    # perspective squeezes lower rows toward the vanishing point, so each row's cells sit at a
+    # different x than the header's: map the grid through the shift+scale between the topmost
+    # fully-read running-score line and this row's (relative, so a vendor's constant offset
+    # between header digits and score numbers cancels out)
+    full = {line["y"]: sorted(w["x"] for w in line["words"]) for _, line, _ in pairs if len(line["words"]) == 10}
+    ref_xs = full[min(full)] if full else None
+
+    def row_grid(y):
+        if not full:
+            return bounds, left, right
+        a, b = _fit_line(list(zip(ref_xs, full[min(full, key=lambda fy: abs(fy - y))])))
+        rb = [a + b * x for x in bounds]
+        return rb, rb[0], rb[-1]
+
     players = []
     prev_cum_y = header_y
     for n, line, name_issue in pairs:
@@ -413,26 +457,31 @@ def parse_game_sheet(words, symbols, page_w, page_h):
         top = prev_cum_y + page_h * 0.02
         bot = cum_y + page_h * 0.03
         prev_cum_y = cum_y
+        rbounds, rleft, rright = row_grid(cum_y)
         printed = [None] * 10
-        for w in line["words"]:
-            fi = next((i for i in range(10) if bounds[i] <= w["x"] < bounds[i + 1]), None)
+        for w in sorted(line["words"], key=lambda w: w["x"]):
+            fi = next((i for i in range(10) if rbounds[i] <= w["x"] < rbounds[i + 1]), None)
             if fi is not None and printed[fi] is None:
                 printed[fi] = int(w["text"])
-        band_syms = [s for s in symbols if top < s["y"] < cum_y - page_h * 0.02 and left < s["x"] < right]
+        band_syms = [s for s in symbols if top < s["y"] < cum_y - page_h * 0.02 and rleft < s["x"] < rright]
         observed = [[] for _ in range(10)]
-        for s in sorted(band_syms, key=lambda s: s["x"]):
+        for s in _clean_glyphs(band_syms):
             g = _roll_glyph(s["text"])
             if g is None:
                 continue
-            fi = next((i for i in range(10) if bounds[i] <= s["x"] < bounds[i + 1]), None)
+            fi = next((i for i in range(10) if rbounds[i] <= s["x"] < rbounds[i + 1]), None)
             if fi is not None:
                 observed[fi].append(g)
         # a strike glyph hugs the cell's right edge; a stray leading "X" in the next cell belongs left
         for i in range(1, 10):
             if observed[i][:1] == ["X"] and len(observed[i]) > 1 and i < 9 and not observed[i - 1]:
                 observed[i - 1].append(observed[i].pop(0))
-        total_words = [w for w in words if _is_int(w["text"]) and w["x"] > right and top < w["y"] < bot]
-        total = int(total_words[0]["text"]) if total_words else printed[9]
+        # the TOTAL cell stacks this game's total (level with the rolls) over the night's running
+        # total (level with the scores); take the number nearest the roll band's centre
+        total_words = [w for w in words if _is_int(w["text"]) and rright < w["x"] < rright + 1.5 * (rbounds[9] - rbounds[8])
+                       and top < w["y"] < bot]
+        mid = (top + cum_y) / 2
+        total = int(min(total_words, key=lambda w: abs(w["y"] - mid))["text"]) if total_words else printed[9]
         if printed[9] is None and total is not None:
             printed[9] = total
         frames, conflicts, inferred = _solve_frames(observed, printed)
