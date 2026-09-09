@@ -235,32 +235,42 @@ def _tips(summary, frame_stats):
     return tips[:MAX_TIPS]
 
 
+def _sheet_kind(game):
+    if game.get("sheet_type") in ("night", "game"):
+        return game["sheet_type"]
+    return "game" if game.get("frames") or game.get("has_frames") else "night"
+
+
 def merge_duplicate_games(games):
     """Collapse the same game stored twice — once from the night RESULTS sheet (game slot,
-    handicap) and once from its End-of-game screen (frames) — into one row per (date, score).
-    Order of first appearance is kept; a frames-bearing row lends its frames to the night row."""
+    handicap) and once from its End-of-game screen (frames) — into one row. A night row pairs
+    with at most one screen row of the same date and score (and vice versa), so a bowler who
+    scores 134 twice in a night keeps both games. Order of first appearance is kept; the
+    screen row lends its frames to the night row."""
     merged = []
-    by_key = {}
+    unpaired = {}
     for game in games:
         if not game or game.get("total_score") is None:
             merged.append(game)
             continue
         key = (game.get("played_on"), game["total_score"])
-        seen = by_key.get(key)
-        if seen is None:
+        kind = _sheet_kind(game)
+        partner = next((r for r in unpaired.get(key, []) if _sheet_kind(r) != kind), None)
+        if partner is None:
             row = dict(game)
-            by_key[key] = row
+            unpaired.setdefault(key, []).append(row)
             merged.append(row)
             continue
-        night, screen = (seen, game) if game.get("sheet_type") == "game" or seen.get("sheet_type") == "night" else (game, seen)
+        unpaired[key].remove(partner)
+        night, screen = (partner, game) if kind == "game" else (game, partner)
         if not night.get("frames") and (screen.get("frames") or screen.get("has_frames")):
             if screen.get("frames"):
-                seen["frames"] = screen["frames"]
-            seen["has_frames"] = True
+                partner["frames"] = screen["frames"]
+            partner["has_frames"] = True
         if night is game:
-            seen["game_number"] = game.get("game_number", seen.get("game_number"))
+            partner["game_number"] = game.get("game_number", partner.get("game_number"))
             if game.get("hdcp") is not None:
-                seen["hdcp"] = game["hdcp"]
+                partner["hdcp"] = game["hdcp"]
     return merged
 
 

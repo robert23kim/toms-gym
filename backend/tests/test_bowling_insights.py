@@ -165,3 +165,18 @@ def test_merge_propagates_has_frames_without_frame_payload():
     ]
     merged = merge_duplicate_games(rows)
     assert len(merged) == 1 and merged[0]["has_frames"] is True and merged[0]["game_number"] == 2
+
+
+def test_merge_keeps_two_identical_scores_in_one_night():
+    # Brian, 2026-09-08: 134 / 139 / 134 on the RESULTS sheet and on three game screens
+    night = [{"played_on": "2026-09-08", "game_number": i, "total_score": t, "hdcp": 103, "frames": None, "sheet_type": "night"}
+             for i, t in enumerate([134, 139, 134], start=1)]
+    screens = [{"played_on": "2026-09-08", "game_number": 1, "total_score": t, "hdcp": None, "frames": TOM_FRAMES, "sheet_type": "game"}
+               for t in [134, 139, 134]]
+    merged = merge_duplicate_games(night + screens)
+    assert [(g["game_number"], g["total_score"]) for g in merged] == [(1, 134), (2, 139), (3, 134)]
+    assert all(g["frames"] == TOM_FRAMES and g["hdcp"] == 103 for g in merged)
+    assert compute_insights(merged)["games"] == 3
+    # screens first, then the night sheet: same answer
+    merged = merge_duplicate_games(screens + night)
+    assert sorted((g["game_number"], g["total_score"]) for g in merged) == [(1, 134), (2, 139), (3, 134)]
