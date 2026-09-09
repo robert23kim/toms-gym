@@ -18,6 +18,7 @@ from flask import Blueprint, jsonify, request
 from toms_gym.db import get_db_connection
 from toms_gym.security import rate_limit
 from toms_gym.services.bowling_insights import compute_insights, merge_duplicate_games
+from toms_gym.services.bowling_links import ME, NEW, guest_email, link_key, save_target
 from toms_gym.services.bowling_score import score_frames
 from toms_gym.storage import ALLOWED_IMAGE_EXTENSIONS, bucket
 
@@ -126,13 +127,15 @@ def _sheet_payload(session, sheet_id):
     if not sheet:
         return None
     inferred_by_name = _inferred_frames_by_player(sheet[8]) if sheet[6] != 'confirmed' else {}
+    remembered = _remembered_links(session, sheet[1]) if sheet[6] != 'confirmed' else {}
 
     rows = session.execute(sqlalchemy.text("""
-        SELECT id, player_name, game_number, total_score, hdcp, frames,
-               computed_total, flagged, flag_reason, confidence
-        FROM "BowlingGame"
-        WHERE sheet_id = :id
-        ORDER BY player_name, game_number
+        SELECT g.id, g.player_name, g.game_number, g.total_score, g.hdcp, g.frames,
+               g.computed_total, g.flagged, g.flag_reason, g.confidence, g.user_id, u.name
+        FROM "BowlingGame" g
+        LEFT JOIN "User" u ON u.id = g.user_id
+        WHERE g.sheet_id = :id
+        ORDER BY g.player_name, g.game_number
     """), {"id": sheet_id}).fetchall()
 
     players = []
@@ -151,7 +154,8 @@ def _sheet_payload(session, sheet_id):
             "inferred_frames": inferred_by_name.get(r[1], []) if r[5] else [],
         }
         if r[1] not in by_name:
-            by_name[r[1]] = {"name": r[1], "games": []}
+            linked = {"id": str(r[10]), "name": r[11]} if r[10] else remembered.get(link_key(r[1]))
+            by_name[r[1]] = {"name": r[1], "games": [], "linked_user": linked}
             players.append(by_name[r[1]])
         by_name[r[1]]["games"].append(game)
 
@@ -168,8 +172,80 @@ def _sheet_payload(session, sheet_id):
     }
 
 
-def _insert_games(session, sheet_id, user_id, played_on, rows, claim_player=None):
-    claim = (claim_player or '').strip().lower()
+def _remembered_links(session, owner_id):
+    """{lowercased sheet name: {id, name}} the owner has saved that name to before."""
+    if not owner_id:
+        return {}
+    rows = session.execute(sqlalchemy.text("""
+        SELECT l.player_name, l.user_id, u.name
+        FROM "BowlingPlayerLink" l JOIN "User" u ON u.id = l.user_id
+        WHERE l.owner_user_id = :owner
+    """), {"owner": owner_id}).fetchall()
+    return {r[0]: {"id": str(r[1]), "name": r[2]} for r in rows}
+
+
+def _remember_links(session, owner_id, user_by_name):
+    for name, uid in user_by_name.items():
+        session.execute(sqlalchemy.text("""
+            INSERT INTO "BowlingPlayerLink" (owner_user_id, player_name, user_id)
+            VALUES (:owner, :name, :uid)
+            ON CONFLICT (owner_user_id, player_name)
+            DO UPDATE SET user_id = EXCLUDED.user_id, updated_at = now()
+        """), {"owner": owner_id, "name": name, "uid": uid})
+
+
+def _find_or_create_profile(session, name):
+    """Passwordless profile for a league-mate; same name → same profile (also across golf)."""
+    email = guest_email(name)
+    if not email:
+        return None
+    row = session.execute(
+        sqlalchemy.text('SELECT id FROM "User" WHERE LOWER(email) = :email'), {"email": email}
+    ).fetchone()
+    if row:
+        return str(row[0])
+    new_id = str(uuid.uuid4())
+    session.execute(sqlalchemy.text("""
+        INSERT INTO "User" (id, email, name, username, status, role, created_at)
+        VALUES (:id, :email, :name, :username, 'active', 'user', NOW())
+    """), {"id": new_id, "email": email, "name": name.strip().title(), "username": email})
+    logger.info(f"Auto-created bowling profile {new_id} for {name!r}")
+    return new_id
+
+
+def _resolve_save_targets(session, owner_id, players, claim_player=None):
+    """{lowercased sheet name: user id} for every row that saves somewhere. Raises ValueError
+    with a client-facing message when a save_as is malformed or names an unknown profile."""
+    claim = link_key(claim_player)
+    out = {}
+    for player in players:
+        name = (player.get('name') or '').strip()
+        key = link_key(name)
+        kind, uid = save_target(player.get('save_as'))
+        if kind == 'none' and claim and key == claim:
+            kind = ME
+        if kind == 'none':
+            continue
+        if kind == ME:
+            if not owner_id:
+                raise ValueError("this sheet has no uploader to save 'me' to")
+            uid = owner_id
+        elif kind == NEW:
+            uid = _find_or_create_profile(session, name)
+            if not uid:
+                raise ValueError(f"cannot create a profile for {name!r}")
+        else:
+            exists = session.execute(
+                sqlalchemy.text('SELECT 1 FROM "User" WHERE id = :id'), {"id": uid}
+            ).fetchone()
+            if not exists:
+                raise ValueError(f"no profile {uid} to save {name!r} to")
+        out[key] = uid
+    return out
+
+
+def _insert_games(session, sheet_id, played_on, rows, user_by_name=None):
+    user_by_name = user_by_name or {}
     for row in rows:
         name = (row.get('player_name') or '').strip()
         if not name:
@@ -186,7 +262,7 @@ def _insert_games(session, sheet_id, user_id, played_on, rows, claim_player=None
         """), {
             "id": str(uuid.uuid4()),
             "sheet_id": sheet_id,
-            "user_id": user_id if claim and name.lower() == claim else None,
+            "user_id": user_by_name.get(link_key(name)),
             "player_name": name,
             "game_number": int(row.get('game_number') or 0),
             "total_score": row.get('total_score'),
@@ -301,7 +377,7 @@ def upload_scoresheet():
             "error_message": error_message,
             "team_name": (parsed or {}).get('team_name'),
         })
-        _insert_games(session, sheet_id, user_id, played_on, rows)
+        _insert_games(session, sheet_id, played_on, rows)
         session.commit()
         return jsonify(_sheet_payload(session, sheet_id)), 200
     except Exception as e:
@@ -373,10 +449,17 @@ def confirm_scoresheet(sheet_id):
                     "confidence": None,
                 })
 
+        try:
+            user_by_name = _resolve_save_targets(session, user_id, players, body.get('claim_player'))
+        except ValueError as e:
+            session.rollback()
+            return jsonify({'error': str(e)}), 400
         session.execute(
             sqlalchemy.text('DELETE FROM "BowlingGame" WHERE sheet_id = :id'), {"id": sheet_id}
         )
-        _insert_games(session, sheet_id, user_id, played_on, rows, body.get('claim_player'))
+        _insert_games(session, sheet_id, played_on, rows, user_by_name)
+        if user_id:
+            _remember_links(session, user_id, user_by_name)
         session.execute(sqlalchemy.text("""
             UPDATE "BowlingScoreSheet"
             SET processing_status = 'confirmed', updated_at = now()

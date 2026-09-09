@@ -277,6 +277,24 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"BowlingScoreSheet 017 migration note: {e}")
 
+        # BowlingPlayerLink (migration 018) — which profile each sheet name saves to, per uploader
+        try:
+            session.execute(sqlalchemy.text("""
+                CREATE TABLE IF NOT EXISTS "BowlingPlayerLink" (
+                    owner_user_id UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+                    player_name TEXT NOT NULL,
+                    user_id UUID NOT NULL REFERENCES "User"(id) ON DELETE CASCADE,
+                    created_at TIMESTAMPTZ DEFAULT now(),
+                    updated_at TIMESTAMPTZ DEFAULT now(),
+                    PRIMARY KEY (owner_user_id, player_name)
+                )
+            """))
+            session.commit()
+            logging.info("BowlingPlayerLink 018 migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"BowlingPlayerLink 018 migration note: {e}")
+
         # Create MagicLinkToken table (migration 014) — one-time passwordless
         # sign-in links. Only the token hash is stored; single-use is enforced
         # by an atomic UPDATE in the consume route.

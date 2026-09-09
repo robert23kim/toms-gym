@@ -479,3 +479,69 @@ def test_upload_uses_real_parser_on_game_fixture(client, db_session, monkeypatch
         game = player["games"][0]
         assert game["frames"] == truth[player["name"]]["frames"]
         assert game["computed_total"] == truth[player["name"]]["total"]
+
+
+def _confirm_body(save_as):
+    return {
+        "players": [
+            {"name": p["name"], "save_as": save_as.get(p["name"]), "games": [
+                {"game_number": i, "total_score": s, "hdcp": None}
+                for i, s in enumerate(p["games"], start=1)
+            ]}
+            for p in NIGHT_PLAYERS
+        ],
+    }
+
+
+def test_confirm_save_as_new_creates_profile_and_remembers_link(client, db_session, stub_night):
+    owner = _make_user(db_session)
+    sheet_id = _upload(client, owner).get_json()["sheet_id"]
+    res = client.put(f'/bowling/scoresheet/{sheet_id}/confirm',
+                     json=_confirm_body({"Tom": "me", "Jess": "new"}))
+    assert res.status_code == 200
+    saved = {p["name"]: p["linked_user"] for p in res.get_json()["players"]}
+    assert saved["Tom"]["id"] == owner
+    assert saved["Jess"]["name"] == "Jess" and saved["Jess"]["id"] != owner
+    assert saved["Jon"] is None
+
+    jess = client.get('/users/by-email/jess@guest.tomsgym.local').get_json()
+    assert jess["id"] == saved["Jess"]["id"]
+    games = client.get(f'/bowling/games?user_id={jess["id"]}').get_json()
+    assert [g["total_score"] for g in games["games"]] == [91, 133, 116]
+    assert client.get(f'/bowling/games?user_id={owner}').get_json()["total"] == 3
+
+    # next upload by the same owner: the review payload already knows where Jess goes
+    second = _upload(client, owner, played_on="2026-09-04").get_json()
+    linked = {p["name"]: p["linked_user"] for p in second["players"]}
+    assert linked["Jess"] == saved["Jess"]
+    assert linked["Tom"] == {"id": owner, "name": "Bowling Test User"}
+    assert linked["Jon"] is None
+
+
+def test_confirm_save_as_profile_id_links_existing_user(client, db_session, stub_night):
+    owner = _make_user(db_session)
+    paul = _make_user(db_session)
+    sheet_id = _upload(client, owner).get_json()["sheet_id"]
+    res = client.put(f'/bowling/scoresheet/{sheet_id}/confirm', json=_confirm_body({"Paul": paul}))
+    assert res.status_code == 200
+    games = client.get(f'/bowling/games?user_id={paul}').get_json()
+    assert games["total"] == 3
+    assert client.get(f'/bowling/games?user_id={owner}').get_json()["total"] == 0
+
+
+def test_confirm_rejects_unknown_save_as(client, db_session, stub_night):
+    owner = _make_user(db_session)
+    sheet_id = _upload(client, owner).get_json()["sheet_id"]
+    assert client.put(f'/bowling/scoresheet/{sheet_id}/confirm',
+                      json=_confirm_body({"Paul": "someone"})).status_code == 400
+    assert client.put(f'/bowling/scoresheet/{sheet_id}/confirm',
+                      json=_confirm_body({"Paul": str(uuid.uuid4())})).status_code == 400
+
+
+def test_legacy_claim_player_still_links_and_remembers(client, db_session, stub_night):
+    owner = _make_user(db_session)
+    sheet_id = _upload(client, owner).get_json()["sheet_id"]
+    body = _confirm_body({})
+    body["claim_player"] = "Tom"
+    assert client.put(f'/bowling/scoresheet/{sheet_id}/confirm', json=body).status_code == 200
+    assert client.get(f'/bowling/games?user_id={owner}').get_json()["total"] == 3

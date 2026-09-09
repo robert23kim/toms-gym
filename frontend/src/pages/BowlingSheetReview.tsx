@@ -8,6 +8,8 @@ import FrameStrip, { frameErrors } from "../components/bowling/FrameStrip";
 import { API_URL } from "../config";
 import { scoreFrames, Roll } from "../lib/bowlingScore";
 import {
+  BowlingLinkedUser,
+  BowlingSaveAs,
   BowlingSheet,
   BowlingSheetConfirmGame,
   BowlingSheetType,
@@ -29,6 +31,8 @@ interface EditablePlayer {
   name: string;
   hdcp: number | null;
   games: EditableGame[];
+  saveAs: BowlingSaveAs;
+  linkedUser: BowlingLinkedUser | null;
 }
 
 const NIGHT_GAMES = 3;
@@ -38,6 +42,8 @@ const emptyFrames = (): Roll[][] => Array.from({ length: 10 }, () => []);
 const blankPlayer = (sheetType: BowlingSheetType): EditablePlayer => ({
   name: "",
   hdcp: null,
+  saveAs: null,
+  linkedUser: null,
   games:
     sheetType === "night"
       ? Array.from({ length: NIGHT_GAMES }, (_, i) => ({
@@ -60,11 +66,14 @@ const blankPlayer = (sheetType: BowlingSheetType): EditablePlayer => ({
         ],
 });
 
-const toEditable = (sheet: BowlingSheet): EditablePlayer[] => {
+const toEditable = (sheet: BowlingSheet, viewerId: string | null): EditablePlayer[] => {
   if (sheet.players.length === 0) return [blankPlayer(sheet.sheet_type)];
   return sheet.players.map((player) => ({
     name: player.name,
     hdcp: player.games.find((g) => g.hdcp !== null)?.hdcp ?? null,
+    linkedUser: player.linked_user ?? null,
+    // remembered from the last time this uploader saved that name
+    saveAs: !player.linked_user ? null : player.linked_user.id === viewerId ? "me" : player.linked_user.id,
     games: player.games.map((g) => ({
       gameNumber: g.game_number,
       totalScore: g.total_score,
@@ -101,7 +110,6 @@ const BowlingSheetReview: React.FC = () => {
   const navigate = useNavigate();
   const [sheet, setSheet] = useState<BowlingSheet | null>(null);
   const [players, setPlayers] = useState<EditablePlayer[]>([]);
-  const [claim, setClaim] = useState<string | null>(null);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
@@ -117,7 +125,7 @@ const BowlingSheetReview: React.FC = () => {
       .then((data) => {
         if (cancelled) return;
         setSheet(data);
-        setPlayers(toEditable(data));
+        setPlayers(toEditable(data, localStorage.getItem("userId")));
       })
       .catch(() => {
         if (!cancelled) setLoadError("Could not load this score sheet.");
@@ -129,22 +137,22 @@ const BowlingSheetReview: React.FC = () => {
 
   useEffect(() => {
     const userId = localStorage.getItem("userId");
-    if (!userId || players.length === 0 || claim !== null) return;
+    if (!userId || players.length === 0 || players.some((p) => p.saveAs === "me")) return;
     let cancelled = false;
     axios
       .get(`${API_URL}/users/${userId}/profile`)
       .then((res) => {
         const profileName = (res.data as { user?: { name?: string } })?.user?.name;
         if (cancelled || !profileName) return;
-        const match = players.find((p) => matchesProfileName(p.name, profileName));
-        if (match) setClaim(match.name);
+        const match = players.findIndex((p) => matchesProfileName(p.name, profileName));
+        if (match >= 0) setSaveAs(match, "me");
       })
       .catch(() => undefined);
     return () => {
       cancelled = true;
     };
-    // Runs once the parsed roster arrives; re-running on every claim change
-    // would fight the user's own selection.
+    // Runs once the parsed roster arrives; re-running on every selection change
+    // would fight the user's own choice.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [players.length]);
 
@@ -170,6 +178,16 @@ const BowlingSheetReview: React.FC = () => {
     },
     [],
   );
+
+  const setSaveAs = useCallback((index: number, saveAs: BowlingSaveAs) => {
+    setPlayers((current) =>
+      current.map((player, i) => {
+        if (i === index) return { ...player, saveAs };
+        // only one row can be the signed-in bowler
+        return saveAs === "me" && player.saveAs === "me" ? { ...player, saveAs: null } : player;
+      }),
+    );
+  }, []);
 
   const updateGame = useCallback(
     (playerIndex: number, gameIndex: number, patch: Partial<EditableGame>) => {
@@ -206,11 +224,11 @@ const BowlingSheetReview: React.FC = () => {
     setSaveError(null);
     try {
       const body = {
-        claim_player: claim,
         players: players
           .filter((player) => player.name.trim() !== "")
           .map((player) => ({
             name: player.name.trim(),
+            save_as: player.saveAs,
             games: player.games.map((game): BowlingSheetConfirmGame => {
               const scored = game.frames ? scoreFrames(game.frames) : null;
               const usableFrames = scored && scored.valid && scored.complete;
@@ -225,7 +243,8 @@ const BowlingSheetReview: React.FC = () => {
       };
       await confirmBowlingSheet(id, body);
       const userId = localStorage.getItem("userId");
-      navigate(claim && userId ? `/bowling/insights/${userId}?sheet=${id}` : "/bowl");
+      const savedMe = players.some((p) => p.saveAs === "me");
+      navigate(savedMe && userId ? `/bowling/insights/${userId}?sheet=${id}` : "/bowl");
     } catch {
       setSaveError("Could not save these scores. Try again.");
     } finally {
@@ -339,24 +358,27 @@ const BowlingSheetReview: React.FC = () => {
                 >
                   <div className="flex items-center gap-3">
                     <input
-                      type="radio"
-                      name="claim"
-                      aria-label={`Claim ${player.name || `player ${playerIndex + 1}`}`}
-                      checked={claim !== null && claim === player.name}
-                      onChange={() => setClaim(player.name)}
-                      className="accent-[hsl(var(--accent))]"
-                    />
-                    <input
                       type="text"
                       aria-label={`Player name ${playerIndex + 1}`}
                       value={player.name}
-                      onChange={(e) => {
-                        if (claim === player.name) setClaim(e.target.value);
-                        updatePlayer(playerIndex, { name: e.target.value });
-                      }}
+                      onChange={(e) => updatePlayer(playerIndex, { name: e.target.value })}
                       placeholder="Name on the sheet"
                       className="flex-1 min-w-0 h-9 px-2 rounded-md bg-background border border-input text-sm font-medium focus:outline-none focus:ring-2 focus:ring-accent"
                     />
+                    <select
+                      aria-label={`Save ${player.name || `player ${playerIndex + 1}`} to`}
+                      value={player.saveAs ?? ""}
+                      onChange={(e) => setSaveAs(playerIndex, e.target.value === "" ? null : e.target.value)}
+                      className="h-9 max-w-[45%] px-2 rounded-md bg-background border border-input text-sm focus:outline-none focus:ring-2 focus:ring-accent"
+                    >
+                      <option value="">Don't save</option>
+                      <option value="me">Me</option>
+                      {player.linkedUser && player.linkedUser.id !== localStorage.getItem("userId") ? (
+                        <option value={player.linkedUser.id}>{player.linkedUser.name}'s profile</option>
+                      ) : (
+                        <option value="new">New profile{player.name ? ` for ${player.name}` : ""}</option>
+                      )}
+                    </select>
                   </div>
 
                   {reasons.length > 0 && (
@@ -434,17 +456,9 @@ const BowlingSheetReview: React.FC = () => {
             })}
           </div>
 
-          <div className="flex items-center gap-3">
-            <input
-              type="radio"
-              name="claim"
-              aria-label="Claim nobody"
-              checked={claim === null}
-              onChange={() => setClaim(null)}
-              className="accent-[hsl(var(--accent))]"
-            />
-            <span className="text-sm text-muted-foreground">None of these are me</span>
-          </div>
+          <p className="text-xs text-muted-foreground">
+            Each name saves to the profile you pick; the app remembers it for next time.
+          </p>
 
           <button
             type="button"

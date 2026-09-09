@@ -647,9 +647,16 @@ export interface BowlingSheetGame {
   inferred_frames?: number[];
 }
 
+export interface BowlingLinkedUser {
+  id: string;
+  name: string;
+}
+
 export interface BowlingSheetPlayer {
   name: string;
   games: BowlingSheetGame[];
+  /** Where this name saved (confirmed) or last saved for this uploader (suggestion). */
+  linked_user?: BowlingLinkedUser | null;
 }
 
 export interface BowlingSheet {
@@ -731,9 +738,12 @@ export interface BowlingSheetConfirmGame {
   frames?: string[][] | null;
 }
 
+/** "me" · "new" (passwordless profile for that name) · a profile id · null (don't save). */
+export type BowlingSaveAs = "me" | "new" | string | null;
+
 export interface BowlingSheetConfirmRequest {
-  claim_player: string | null;
-  players: { name: string; games: BowlingSheetConfirmGame[] }[];
+  claim_player?: string | null;
+  players: { name: string; save_as?: BowlingSaveAs; games: BowlingSheetConfirmGame[] }[];
 }
 
 export async function uploadBowlingSheet(form: FormData): Promise<BowlingSheet> {

@@ -172,22 +172,21 @@ describe("BowlingSheetReview — night sheet", () => {
   it("preselects the player matching the signed-in profile name", async () => {
     renderReview();
     await screen.findByTestId("player-TOM");
-    await waitFor(() =>
-      expect(screen.getByLabelText("Claim TOM")).toBeChecked(),
-    );
+    await waitFor(() => expect(screen.getByLabelText("Save TOM to")).toHaveValue("me"));
+    expect(screen.getByLabelText("Save CHRIS to")).toHaveValue("");
   });
 
-  it("confirms with the claimed player and lands on insights", async () => {
+  it("saves each row to its own profile and lands on insights", async () => {
     renderReview();
     await screen.findByTestId("player-TOM");
-    fireEvent.click(screen.getByLabelText("Claim CHRIS"));
+    await waitFor(() => expect(screen.getByLabelText("Save TOM to")).toHaveValue("me"));
+    fireEvent.change(screen.getByLabelText("Save CHRIS to"), { target: { value: "new" } });
     fireEvent.click(screen.getByRole("button", { name: /save these scores/i }));
 
     await waitFor(() => expect(mockedConfirm).toHaveBeenCalled());
     const [sheetId, body] = mockedConfirm.mock.calls[0];
     expect(sheetId).toBe("sheet-1");
-    expect(body.claim_player).toBe("CHRIS");
-    expect(body.players).toHaveLength(4);
+    expect(body.players.map((p) => p.save_as)).toEqual(["me", "new", null, null]);
     expect(body.players[0].games[0]).toEqual({
       game_number: 1,
       total_score: 164,
@@ -197,13 +196,39 @@ describe("BowlingSheetReview — night sheet", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/bowling/insights/user-1?sheet=sheet-1");
   });
 
-  it("returns to the hub when nothing is claimed", async () => {
+  it("only one row can be me", async () => {
     renderReview();
     await screen.findByTestId("player-TOM");
-    fireEvent.click(screen.getByLabelText("Claim nobody"));
+    await waitFor(() => expect(screen.getByLabelText("Save TOM to")).toHaveValue("me"));
+    fireEvent.change(screen.getByLabelText("Save CHRIS to"), { target: { value: "me" } });
+    expect(screen.getByLabelText("Save CHRIS to")).toHaveValue("me");
+    expect(screen.getByLabelText("Save TOM to")).toHaveValue("");
+  });
+
+  it("defaults a name to the profile it saved to last time", async () => {
+    mockedFetch.mockResolvedValueOnce({
+      ...nightSheet,
+      players: nightSheet.players.map((p) =>
+        p.name === "PAT" ? { ...p, linked_user: { id: "user-pat", name: "Pat" } } : p,
+      ),
+    });
+    renderReview();
+    await screen.findByTestId("player-PAT");
+    expect(screen.getByLabelText("Save PAT to")).toHaveValue("user-pat");
+    expect(screen.getByRole("option", { name: "Pat's profile" })).toBeInTheDocument();
     fireEvent.click(screen.getByRole("button", { name: /save these scores/i }));
     await waitFor(() => expect(mockedConfirm).toHaveBeenCalled());
-    expect(mockedConfirm.mock.calls[0][1].claim_player).toBeNull();
+    expect(mockedConfirm.mock.calls[0][1].players[2].save_as).toBe("user-pat");
+  });
+
+  it("returns to the hub when nothing saves to me", async () => {
+    renderReview();
+    await screen.findByTestId("player-TOM");
+    await waitFor(() => expect(screen.getByLabelText("Save TOM to")).toHaveValue("me"));
+    fireEvent.change(screen.getByLabelText("Save TOM to"), { target: { value: "" } });
+    fireEvent.click(screen.getByRole("button", { name: /save these scores/i }));
+    await waitFor(() => expect(mockedConfirm).toHaveBeenCalled());
+    expect(mockedConfirm.mock.calls[0][1].players.every((p) => p.save_as === null)).toBe(true);
     expect(mockNavigate).toHaveBeenCalledWith("/bowl");
   });
 
