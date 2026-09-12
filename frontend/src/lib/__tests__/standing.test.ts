@@ -190,6 +190,8 @@ describe("result ladder additions", () => {
     expect(attemptScore("reps", null, 60)).toBeNull();
     expect(metricForLift("Plank")).toBe("time");
     expect(metricForLift("pushup")).toBe("reps");
+    expect(metricForLift("Situp")).toBe("reps");
+    expect(attemptScore("reps", { lift_type: "situp", total_reps: 3, rep_metrics: [{ form_score: 90 }, { form_score: 50 }, { form_score: 71 }] }, 0)).toBe(2.5);
     expect(metricForLift("Bench Press")).toBe("weight");
   });
 

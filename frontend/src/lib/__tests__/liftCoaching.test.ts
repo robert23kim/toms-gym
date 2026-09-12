@@ -159,3 +159,30 @@ describe("pushup copy never uses barbell/weight language", () => {
     expect(getMetricDescription("squat", "rom", "engine text")).toBe("engine text");
   });
 });
+
+describe("situp copy never uses barbell/arm language", () => {
+  const BANNED = /\b(weight|barbell|bar|lighter|curl|bench|press|elbow)\b/i;
+
+  it.each(["A", "B", "C", "D", "F"])("overall summary for grade %s is clean", (g) => {
+    const copy = getOverallSummary("situp", g);
+    expect(copy).not.toMatch(BANNED);
+    expect(copy.length).toBeGreaterThan(0);
+  });
+
+  it.each(LIFT_METRIC_KEYS.situp)("fail coaching for %s is clean", (key) => {
+    const copy = getMetricCoaching("situp", key, "fail", 0);
+    expect(copy).toBeTruthy();
+    expect(copy).not.toMatch(BANNED);
+  });
+
+  it("renders only the metrics that describe a situp", () => {
+    expect(LIFT_METRIC_KEYS.situp).toEqual(["rom", "control", "tempo"]);
+    expect(normalizeCoachingLiftType("Situp")).toBe("situp");
+  });
+
+  it("overrides the curl-flavored range label and description", () => {
+    expect(getMetricLabel("situp", "rom", "Range of Motion")).toBe("Range");
+    const engine = "How much of the full curl range you used.";
+    expect(getMetricDescription("situp", "rom", engine)).not.toMatch(BANNED);
+  });
+});

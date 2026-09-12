@@ -5,6 +5,7 @@ import type {
   ChallengeMetric,
 } from "./types";
 import { formatScoreValue, scoreUnit, uploadCtaLabel } from "../components/challenge/metric";
+import { boardReps, type RepReport } from "./cleanReps";
 
 // Pure, DB-free derivation of the viewer's "Your standing" from the leaderboard
 // `rows` + their `user_id`. No server-side viewer awareness — everything the
@@ -134,10 +135,10 @@ export function deriveStanding(
 /** Score the athlete's *viewed* attempt contributes, in the board's metric. */
 export function attemptScore(
   metric: ChallengeMetric,
-  report: { total_reps?: number | null; total_in_plank_s?: number | null } | null | undefined,
+  report: (RepReport & { total_in_plank_s?: number | null }) | null | undefined,
   weight: number | null | undefined,
 ): number | null {
-  if (metric === "reps") return report?.total_reps ?? null;
+  if (metric === "reps") return boardReps(report);
   if (metric === "time") return report?.total_in_plank_s ?? null;
   return weight ?? null;
 }
@@ -145,7 +146,7 @@ export function attemptScore(
 export function metricForLift(liftType: string | null | undefined): ChallengeMetric {
   const t = (liftType || "").toLowerCase();
   if (t === "plank") return "time";
-  if (t === "pushup") return "reps";
+  if (t === "pushup" || t === "situp") return "reps";
   return "weight";
 }
 
@@ -180,8 +181,9 @@ export function formatWithUnit(value: number, metric: ChallengeMetric): string {
 export function ctaLabelFor(
   standing: Standing | null,
   metric: ChallengeMetric,
+  liftTypes?: string[],
 ): string {
-  return standing ? standing.ctaLabel : uploadCtaLabel(metric);
+  return standing ? standing.ctaLabel : uploadCtaLabel(metric, liftTypes);
 }
 
 /** Words to travel with a shared result link — written for a group chat. */

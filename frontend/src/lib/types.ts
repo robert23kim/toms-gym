@@ -423,6 +423,9 @@ export interface ChallengeLeaderboardRow {
   weight_class: string | null;
   gender: string | null;
   attempt_count: number;
+  /** Raw and clean rep counts of the best attempt on quality-scored boards. */
+  reps_total?: number | null;
+  clean_reps?: number | null;
   /** chronological qualifying attempts — powers the (step 3) sparkline. */
   history: ChallengeLeaderboardHistoryPoint[];
 }

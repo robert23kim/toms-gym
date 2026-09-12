@@ -20,10 +20,10 @@ interface UserProfile {
   }[];
 }
 
-// Pushups are scored by rep count, so no weight is collected. Module-level so
+// Rep lifts (pushups, situps) collect no weight. Module-level so
 // it can never be shadowed by a block-scoped binding inside the render tree.
 function isBodyweightLift(liftType: string): boolean {
-  return liftType === 'Pushup';
+  return liftType === 'Pushup' || liftType === 'Situp';
 }
 
 const UploadVideo: React.FC = () => {
@@ -294,6 +294,7 @@ const UploadVideo: React.FC = () => {
                     <option value="Bench">Bench Press</option>
                     <option value="Deadlift">Deadlift</option>
                     <option value="Pushup">Pushup</option>
+                    <option value="Situp">Situp</option>
                   </select>
                 </div>
 

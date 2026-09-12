@@ -8,6 +8,8 @@ import { API_URL, PROD_API_URL } from "../config";
 import { triggerLiftingAnalysis, getLiftingResult, getChallengeLeaderboard, determineStatus } from '../lib/api';
 import { useToast } from "../components/ui/use-toast";
 import type { LiftingResult, ChallengeLeaderboard } from '../lib/types';
+import { boardReps, cleanRepCount, isQualityScoredLift } from '../lib/cleanReps';
+import { formatScoreValue } from '../components/challenge/metric';
 import { deriveStanding, personalBest, attemptScore, standingShareText } from '../lib/standing';
 import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
@@ -20,12 +22,13 @@ import PlankSteadiness from '../components/lifting/PlankSteadiness';
 // Module-level so it can never be shadowed inside the render tree.
 function isBodyweightLift(liftType: string | undefined | null): boolean {
   const key = (liftType || '').trim().toLowerCase();
-  return key === 'plank' || key === 'pushup';
+  return key === 'plank' || key === 'pushup' || key === 'situp';
 }
 
-/** Pushups are judged as a set, not rep by rep. */
+/** Pushups and situps are judged as a set, not rep by rep. */
 function usesSetSummary(liftType: string | undefined | null): boolean {
-  return (liftType || '').trim().toLowerCase() === 'pushup';
+  const key = (liftType || '').trim().toLowerCase();
+  return key === 'pushup' || key === 'situp';
 }
 
 interface VideoData {
@@ -718,6 +721,11 @@ const VideoPlayer: React.FC = () => {
                                     <span className="font-medium">{report.total_reps} rep{report.total_reps !== 1 ? 's' : ''} detected</span>
                                     <span className="text-sm text-muted-foreground">{report.overall_score?.toFixed(0)}%</span>
                                   </div>
+                                  {isQualityScoredLift(report.lift_type) && cleanRepCount(report.rep_metrics) != null && (
+                                    <div data-testid="board-score" className="mb-1 text-xs text-amber-200/80">
+                                      Board score {formatScoreValue(boardReps(report) ?? 0, 'reps')} · {cleanRepCount(report.rep_metrics)} clean of {report.total_reps} · sloppy reps count half
+                                    </div>
+                                  )}
                                   <div className="w-full bg-muted rounded-full h-2.5">
                                     <div
                                       className={`h-2.5 rounded-full transition-all ${gradeBg(report.overall_grade)}`}

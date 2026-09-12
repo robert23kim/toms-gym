@@ -26,7 +26,7 @@ export const sinceCopy = (iso: string | null | undefined, now: Date = new Date()
 
 const title = (s: string): string => s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
 
-const isBodyweight = (lift: string): boolean => /plank|pushup/i.test(lift);
+const isBodyweight = (lift: string): boolean => /plank|pushup|situp/i.test(lift);
 
 /** "Pushup · 35 reps · C" / "Plank · 3:21" / "Bench press · 80kg · D" */
 export const lastLiftCopy = (lift: LastLift): string => {

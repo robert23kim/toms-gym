@@ -144,6 +144,11 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
             <span className="ml-0.5 text-[60%] font-semibold text-white/50">
               {scoreUnit(metric)}
             </span>
+            {row.clean_reps != null && row.reps_total != null && (
+              <span className="block text-[10px] font-normal text-white/40">
+                {row.clean_reps} clean of {row.reps_total}
+              </span>
+            )}
           </>
         )}
       </span>

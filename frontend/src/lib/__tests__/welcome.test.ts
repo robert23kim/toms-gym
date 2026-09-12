@@ -21,6 +21,7 @@ describe("sinceCopy", () => {
 describe("lastLiftCopy", () => {
   it("leads with the lift and its payoff in the lift's own unit", () => {
     expect(lastLiftCopy({ lift_type: "pushup", total_reps: 35, grade: "C", weight: 60, created_at: null })).toBe("Pushup · 35 reps · C");
+    expect(lastLiftCopy({ lift_type: "situp", total_reps: 1, grade: "B", weight: 0, created_at: null })).toBe("Situp · 1 rep · B");
     expect(lastLiftCopy({ lift_type: "plank", hold_s: 201.3, grade: null, weight: 60, created_at: null })).toBe("Plank · 3:21");
     expect(lastLiftCopy({ lift_type: "Bench Press", weight: 80, grade: "D", created_at: null })).toBe("Bench press · 80kg · D");
     expect(lastLiftCopy({ lift_type: null, created_at: null })).toBe("Lift");

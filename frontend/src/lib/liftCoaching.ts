@@ -27,7 +27,8 @@ export type CoachingLiftType =
   | "squat"
   | "bench_press"
   | "deadlift"
-  | "pushup";
+  | "pushup"
+  | "situp";
 
 export const SUPPORTED_LIFT_TYPES: CoachingLiftType[] = [
   "bicep_curl",
@@ -35,6 +36,7 @@ export const SUPPORTED_LIFT_TYPES: CoachingLiftType[] = [
   "bench_press",
   "deadlift",
   "pushup",
+  "situp",
 ];
 
 /**
@@ -48,6 +50,9 @@ export const LIFT_METRIC_KEYS: Record<CoachingLiftType, string[]> = {
   bench_press: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
   deadlift: ["rom", "lockout", "back_position", "control", "tempo"],
   pushup: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
+  // Situps cycle the hip; the engine still emits the arm metrics but they
+  // describe nothing, so only the three that mean something are rendered.
+  situp: ["rom", "control", "tempo"],
 };
 
 interface MetricCoaching {
@@ -151,6 +156,17 @@ const COACHING: LiftCoachingMap = {
     },
     tempo: TEMPO_COACHING,
   },
+  // Situps reuse the generic rep pipeline on the hip angle. Only the metrics
+  // that describe a situp get copy; the arm metrics are hidden for this lift.
+  situp: {
+    rom: {
+      fail: "You're cutting the range short — lower all the way back to the floor and sit up until your chest reaches your knees.",
+    },
+    control: {
+      fail: "You're dropping back down — lower your torso under control instead of falling to the floor.",
+    },
+    tempo: TEMPO_COACHING,
+  },
 };
 
 /** Human-friendly lift name used in overall-summary copy. */
@@ -160,6 +176,7 @@ const LIFT_DISPLAY_NAME: Record<CoachingLiftType, string> = {
   bench_press: "bench press",
   deadlift: "deadlift",
   pushup: "pushup",
+  situp: "situp",
 };
 
 /**
@@ -176,6 +193,13 @@ const OVERALL_SUMMARY_OVERRIDES: Partial<
     C: "Decent set — clean up the flagged metrics to get more out of each rep.",
     D: "Your form slipped over the set — focus on the failed metrics below.",
     F: "Your form broke down — drop to your knees or a raised surface and rebuild the movement.",
+  },
+  situp: {
+    A: "Excellent form — every rep was full range and controlled, and every one counted.",
+    B: "Solid set with just a little room to tighten up — nearly every rep counted.",
+    C: "Decent set — sloppy reps don't count, so clean up the flagged metrics to bank more of them.",
+    D: "Your form slipped over the set and it cost you reps — focus on the failed metrics below.",
+    F: "Your form broke down — slow each rep down and rebuild the movement before adding more.",
   },
 };
 
@@ -215,6 +239,22 @@ const METRIC_COPY_OVERRIDES: Partial<
     tempo: {
       description:
         "Ratio of lowering time to pressing time. Around 2:1 — lowering twice as slowly as you press — builds the most strength.",
+    },
+  },
+  situp: {
+    rom: {
+      label: "Range",
+      description:
+        "How far each situp travelled. Measures your hip angle from lying flat on the floor to sitting up — the fuller the range, the better.",
+    },
+    control: {
+      label: "Control",
+      description:
+        "How smoothly you lowered back down. Measures how much you decelerate near the floor instead of dropping onto it.",
+    },
+    tempo: {
+      description:
+        "Ratio of lowering time to sitting-up time. Around 2:1 — lowering twice as slowly as you rise — works the core hardest.",
     },
   },
 };

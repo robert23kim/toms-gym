@@ -24,7 +24,7 @@ import MomentumLine from "../components/challenge/MomentumLine";
 import { viewerProcessingAttempts } from "../components/challenge/processing";
 import StandingCard from "../components/challenge/StandingCard";
 import RankChangeBanner from "../components/challenge/RankChangeBanner";
-import { scoreColumnLabel } from "../components/challenge/metric";
+import { scoreColumnLabel, scoringNote } from "../components/challenge/metric";
 import { deriveStanding, ctaLabelFor } from "../lib/standing";
 import { rankChange, readRank, writeRank, RankShift } from "../lib/rankMemory";
 
@@ -64,7 +64,7 @@ function genderToCategories(gender: string | null | undefined): string[] {
 // field for these. Module-level so it can never be shadowed by a block-scoped
 // binding inside the render tree.
 function isBodyweightLift(liftType: string): boolean {
-  return liftType === 'Plank' || liftType === 'Pushup';
+  return liftType === 'Plank' || liftType === 'Pushup' || liftType === 'Situp';
 }
 
 const ChallengeDetail: React.FC = () => {
@@ -490,6 +490,7 @@ const ChallengeDetail: React.FC = () => {
         'Bicep Curl': 'BicepCurl',
         'Plank': 'Plank',
         'Pushup': 'Pushup',
+        'Situp': 'Situp',
       };
       const allowedFormIds = allowedDbValues.map(d => dbToFormId[d]).filter(Boolean);
       if (allowedFormIds.length > 0 && !allowedFormIds.includes(liftType)) {
@@ -654,7 +655,7 @@ const ChallengeDetail: React.FC = () => {
   // and the goal-reframed CTA). Null when the viewer isn't entered.
   const standing = leaderboard ? deriveStanding(leaderboard, viewerId) : null;
   const uploadCta = leaderboard
-    ? ctaLabelFor(standing, leaderboard.metric)
+    ? ctaLabelFor(standing, leaderboard.metric, leaderboard.lift_types)
     : "Upload Lift";
   const heroDescription = challenge.description
     ? challenge.description.split(" - ")[0]
@@ -719,6 +720,14 @@ const ChallengeDetail: React.FC = () => {
             {heroDescription && (
               <p className="text-sm text-muted-foreground lg:max-w-[560px] lg:text-[14.5px] lg:leading-relaxed">
                 {heroDescription}
+              </p>
+            )}
+            {leaderboard && scoringNote(leaderboard.metric, leaderboard.lift_types) && (
+              <p
+                data-testid="scoring-note"
+                className="mt-1.5 text-[12.5px] text-amber-200/80 lg:max-w-[560px]"
+              >
+                {scoringNote(leaderboard.metric, leaderboard.lift_types)}
               </p>
             )}
             {leaderboard && (
@@ -980,6 +989,7 @@ const ChallengeDetail: React.FC = () => {
                     { id: 'BicepCurl', label: 'Bicep Curl', dbValue: 'Bicep Curl' },
                     { id: 'Plank', label: 'Plank', dbValue: 'Plank' },
                     { id: 'Pushup', label: 'Pushup', dbValue: 'Pushup' },
+                    { id: 'Situp', label: 'Situp', dbValue: 'Situp' },
                   ];
                   const challengeLiftDbValues = (challenge?.categories || []).filter(
                     c => !c.includes('kg') && c !== 'Men' && c !== 'Women'

@@ -44,6 +44,21 @@ const renderRow = (
   );
 
 describe("LeaderboardRow", () => {
+  test("quality-scored reps show the clean count under a half-credit score", () => {
+    renderRow(
+      makeRow({ score: 24.5, best_by_lift: { Situp: 24.5 }, reps_total: 30, clean_reps: 19 }),
+      "reps",
+    );
+    const row = screen.getByTestId("leaderboard-row");
+    expect(row).toHaveTextContent("24.5reps");
+    expect(row).toHaveTextContent("19 clean of 30");
+  });
+
+  test("plain rep boards show no clean-of subtitle", () => {
+    renderRow(makeRow({ score: 30, best_by_lift: { Pushup: 30 } }), "reps");
+    expect(screen.queryByText(/clean of/)).not.toBeInTheDocument();
+  });
+
   test("renders rank, name, and time score with unit", () => {
     renderRow(makeRow());
     const row = screen.getByTestId("leaderboard-row");
