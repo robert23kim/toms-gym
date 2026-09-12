@@ -31,6 +31,7 @@ LIFT_TYPE_MAPPING = {
     "Overhead": "Overhead Press",
     "Plank": "Plank",
     "Pushup": "Pushup",
+    "Situp": "Situp",
 }
 
 def allowed_file(filename):

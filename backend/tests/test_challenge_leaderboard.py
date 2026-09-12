@@ -383,3 +383,86 @@ def test_reps_board_clip_and_date_from_best_attempt():
     assert rows[0]["attempt_id"] == "a2"
     assert rows[0]["clip_url"] == "ann2.mp4"
     assert rows[0]["date"] == "2026-08-02"
+
+
+# --- reps metric: situps -----------------------------------------------------
+
+def test_reps_board_counts_situp_attempts():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 20, "2026-09-01T10:00:00", lift_type="Situp"),
+            _pushup("a2", 34, "2026-09-02T10:00:00", lift_type="Situp"),
+        ]),
+        _participant("u2", "Bo", [
+            _pushup("b1", 28, "2026-09-01T10:00:00", lift_type="Situp"),
+        ]),
+    ], metric="reps")
+
+    assert [r["user_id"] for r in rows] == ["u1", "u2"]
+    assert rows[0]["score"] == 34
+    assert rows[0]["best_by_lift"] == {"Situp": 34}
+    assert rows[0]["attempt_count"] == 2
+
+
+def test_situp_sloppy_reps_earn_half_credit():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            {**_pushup("a1", 10, "2026-09-01T10:00:00", lift_type="Situp"),
+             "rep_form_scores": [90, 80, 75, 70, 69.9, 50, 20, 0, None, "x"]},
+        ]),
+    ], metric="reps")
+
+    # 4 clean (>= 70) + 6 sloppy * 0.5 = 7.0
+    assert rows[0]["score"] == 7.0
+    assert rows[0]["reps_total"] == 10
+    assert rows[0]["clean_reps"] == 4
+    assert rows[0]["history"] == [{"score": 7.0, "date": "2026-09-01"}]
+
+
+def test_situp_best_attempt_is_chosen_by_board_score_not_raw_reps():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            {**_pushup("a1", 12, "2026-09-01T10:00:00", lift_type="Situp"),
+             "rep_form_scores": [30] * 12},                    # 6.0
+            {**_pushup("a2", 8, "2026-09-02T10:00:00", lift_type="Situp"),
+             "rep_form_scores": [85] * 8},                     # 8.0
+        ]),
+    ], metric="reps")
+
+    assert rows[0]["score"] == 8.0
+    assert rows[0]["attempt_id"] == "a2"
+    assert rows[0]["reps_total"] == 8
+
+
+def test_situp_without_per_rep_scores_falls_back_to_raw_reps():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 9, "2026-09-01T10:00:00", lift_type="Situp"),
+        ]),
+    ], metric="reps")
+
+    assert rows[0]["score"] == 9
+    assert rows[0]["clean_reps"] is None
+
+
+def test_pushup_scores_stay_raw_even_with_per_rep_scores():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            {**_pushup("a1", 5, "2026-09-01T10:00:00"), "rep_form_scores": [10] * 5},
+        ]),
+    ], metric="reps")
+
+    assert rows[0]["score"] == 5
+
+
+def test_reps_board_best_by_lift_is_keyed_by_the_best_attempts_lift():
+    rows = rank_challenge([
+        _participant("u1", "Amy", [
+            _pushup("a1", 20, "2026-09-01T10:00:00", lift_type="Pushup"),
+            _pushup("a2", 34, "2026-09-02T10:00:00", lift_type="Situp"),
+        ]),
+    ], metric="reps")
+
+    assert rows[0]["score"] == 34
+    assert rows[0]["best_by_lift"] == {"Situp": 34}
+    assert rows[0]["attempt_count"] == 2

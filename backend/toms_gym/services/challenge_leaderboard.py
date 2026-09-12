@@ -9,8 +9,8 @@ A challenge is ranked by exactly one metric:
 
 * ``"time"`` (plank challenges) — rank by the athlete's longest hold
   (``held_s``) across their completed plank attempts, descending.
-* ``"reps"`` (pushup challenges) — rank by the athlete's best single-attempt
-  rep count (``reps``) across their pushup attempts, descending.
+* ``"reps"`` (pushup/situp challenges) — rank by the athlete's best
+  single-attempt rep count (``reps``) across their rep-lift attempts, descending.
 * ``"weight"`` (lifting challenges) — rank by best-lift total: per athlete, the
   max ``weight_kg`` per lift type among completed attempts, summed. Planks are
   excluded from a weight board (you can't add seconds to kilograms).
@@ -19,6 +19,51 @@ from __future__ import annotations
 
 from functools import cmp_to_key
 from typing import List, Optional
+
+# Lift types scored by counting reps. A challenge declaring only these (or
+# any mix of them) is ranked on the ``reps`` metric.
+REPS_LIFT_TYPES = frozenset({"Pushup", "Situp"})
+
+# Rep lifts where quality changes the score: a rep whose form grade is C or
+# better (form score >= CLEAN_REP_MIN_FORM) counts in full, anything sloppier
+# counts SLOPPY_REP_CREDIT. Computed from the report's per-rep scores so the
+# bar can move without re-analysis. Mirrored in frontend lib/cleanReps.ts.
+QUALITY_SCORED_LIFT_TYPES = frozenset({"Situp"})
+CLEAN_REP_MIN_FORM = 70.0
+SLOPPY_REP_CREDIT = 0.5
+
+
+def clean_rep_count(rep_form_scores) -> Optional[int]:
+    """Reps whose form score clears the bar; None without per-rep scores."""
+    if not rep_form_scores:
+        return None
+    clean = 0
+    for value in rep_form_scores:
+        try:
+            if float(value) >= CLEAN_REP_MIN_FORM:
+                clean += 1
+        except (TypeError, ValueError):
+            continue
+    return clean
+
+
+def attempt_rep_score(attempt) -> Optional[float]:
+    """Board score of one rep-lift attempt.
+
+    Raw reps for ordinary rep lifts. For quality-scored lifts, clean reps plus
+    half credit for the rest; falls back to raw reps when the report carries
+    no per-rep scores (nothing to judge quality by). None until analysed.
+    """
+    reps = attempt.get("reps")
+    if reps is None:
+        return None
+    if attempt.get("lift_type") not in QUALITY_SCORED_LIFT_TYPES:
+        return reps
+    clean = clean_rep_count(attempt.get("rep_form_scores"))
+    if clean is None:
+        return reps
+    sloppy = max(0, reps - clean)
+    return clean + SLOPPY_REP_CREDIT * sloppy
 
 
 def _created_key(created) -> str:
@@ -67,9 +112,9 @@ def _compare_time_attempts(a, b) -> int:
 
 
 def _compare_reps_attempts(a, b) -> int:
-    """Best-first ordering for pushup attempts: most reps, then higher form
-    score, then earliest created_at."""
-    ar, br = a["reps"], b["reps"]
+    """Best-first ordering for rep-lift attempts: highest board score, then
+    higher form score, then earliest created_at."""
+    ar, br = a["_score"], b["_score"]
     if ar != br:
         return -1 if ar > br else 1
     af = a["form_score"] if a["form_score"] is not None else float("-inf")
@@ -158,22 +203,26 @@ def _rank_reps(participants) -> List[dict]:
         # ``reps is not None`` check gates on completion (mirrors _rank_time).
         submitted = [a for a in p.get("attempts", []) if a.get("status") != "failed"]
         qualifying = [
-            a for a in submitted
-            if a.get("lift_type") == "Pushup" and a.get("reps") is not None
+            {**a, "_score": attempt_rep_score(a),
+             "_clean": clean_rep_count(a.get("rep_form_scores"))}
+            for a in submitted
+            if a.get("lift_type") in REPS_LIFT_TYPES and a.get("reps") is not None
         ]
 
         chrono = sorted(qualifying, key=lambda a: _created_key(a["created_at"]))
         history = [
-            {"score": a["reps"], "date": _iso_date(a["created_at"])}
+            {"score": a["_score"], "date": _iso_date(a["created_at"])}
             for a in chrono
         ]
 
         if qualifying:
             best = sorted(qualifying, key=cmp_to_key(_compare_reps_attempts))[0]
-            score = best["reps"]
+            score = best["_score"]
             row = {
                 "score": score,
-                "best_by_lift": {"Pushup": score},
+                "best_by_lift": {best["lift_type"]: score},
+                "reps_total": best["reps"],
+                "clean_reps": best["_clean"],
                 "form_score": best["form_score"],
                 "steadiness": None,
                 "attempt_id": best.get("attempt_id"),
@@ -187,6 +236,8 @@ def _rank_reps(participants) -> List[dict]:
             row = {
                 "score": 0,
                 "best_by_lift": {},
+                "reps_total": None,
+                "clean_reps": None,
                 "form_score": None,
                 "steadiness": None,
                 "attempt_id": None,
@@ -306,7 +357,7 @@ def _finalize(rows, sort_key) -> List[dict]:
 def rank_challenge(participants, *, metric) -> List[dict]:
     """Rank challenge participants best-first for the given metric.
 
-    ``metric`` is ``"time"`` (plank: best hold), ``"reps"`` (pushup: best rep
+    ``metric`` is ``"time"`` (plank: best hold), ``"reps"`` (pushup/situp: best rep
     count) or ``"weight"`` (best-lift total).
     See the module docstring for the participant shape and scoring rules.
     """

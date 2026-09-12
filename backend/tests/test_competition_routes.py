@@ -110,6 +110,7 @@ def _prow(**kw):
         "form_score": kw.get("form_score"),
         "steadiness": kw.get("steadiness"),
         "reps": kw.get("reps"),
+        "rep_form_scores": kw.get("rep_form_scores"),
     }
     return base
 
@@ -392,6 +393,81 @@ def test_leaderboard_pushup_challenge_metric_reps(test_client):
     assert top["score"] == 31
     assert top["best_by_lift"] == {"Pushup": 31}
     assert top["clip_url"] == "ann2"
+
+
+def test_leaderboard_situp_challenge_metric_reps(test_client):
+    """Situp-only declared challenge -> metric 'reps', ranked by best rep count."""
+    description = 'Gym - {"lifttypes": ["Situp"], "weightclasses": [], "gender": "M"}'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Situp",
+              status="completed", created_at="2026-09-12",
+              video_url="v1", annotated_video_url="ann1",
+              reps="22", form_score="0.80"),
+        _prow(user_id="u2", name="bob", attempt_id="b1", lift_type="Situp",
+              status="completed", created_at="2026-09-12",
+              video_url="v2", annotated_video_url="ann2",
+              reps="40", form_score="0.91"),
+    ]
+    session = _make_session(description, rows, uploaded_today=2)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "reps"
+    assert data["lift_types"] == ["Situp"]
+    assert [r["name"] for r in data["rows"]] == ["bob", "alice"]
+    assert data["rows"][0]["score"] == 40
+    assert data["rows"][0]["best_by_lift"] == {"Situp": 40}
+
+
+def test_leaderboard_situp_sloppy_reps_count_half(test_client):
+    """Situp boards score clean reps in full and the rest at half credit."""
+    description = 'Gym - {"lifttypes": ["Situp"], "weightclasses": [], "gender": "M"}'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Situp",
+              status="completed", created_at="2026-09-12",
+              video_url="v1", annotated_video_url="ann1",
+              reps="4", form_score="0.70",
+              rep_form_scores=[90.0, 71.2, 40.0, 69.9]),
+        _prow(user_id="u2", name="bob", attempt_id="b1", lift_type="Situp",
+              status="completed", created_at="2026-09-12",
+              video_url="v2", annotated_video_url="ann2",
+              reps="3", form_score="0.95",
+              rep_form_scores=[95.0, 92.0, 88.0]),
+    ]
+    session = _make_session(description, rows, uploaded_today=2)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "reps"
+    # alice: 2 clean + 2 sloppy * 0.5 = 3.0; bob: 3 clean = 3 -> bob wins on form.
+    assert [r["name"] for r in data["rows"]] == ["bob", "alice"]
+    assert data["rows"][0]["score"] == 3
+    assert data["rows"][1]["score"] == 3.0
+    assert data["rows"][1]["reps_total"] == 4
+    assert data["rows"][1]["clean_reps"] == 2
+
+
+def test_leaderboard_mixed_rep_lifts_declared_metric_reps(test_client):
+    """A challenge declaring both rep lifts is still a reps board."""
+    description = 'Gym - {"lifttypes": ["Pushup", "Situp"], "weightclasses": [], "gender": "M"}'
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Situp",
+              status="completed", created_at="2026-09-12",
+              video_url="v1", annotated_video_url="ann1",
+              reps="22", form_score="0.80"),
+    ]
+    session = _make_session(description, rows, uploaded_today=1)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "reps"
+    assert data["rows"][0]["score"] == 22
 
 
 def test_leaderboard_metric_inferred_pushup_only(test_client):

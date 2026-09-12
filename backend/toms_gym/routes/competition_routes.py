@@ -382,7 +382,7 @@ def _leaderboard_payload(session, competition_id):
     pure `rank_challenge` helper. Shared by the leaderboard route and
     `GET /champions`.
     """
-    from toms_gym.services.challenge_leaderboard import rank_challenge
+    from toms_gym.services.challenge_leaderboard import REPS_LIFT_TYPES, rank_challenge
 
     comp = session.execute(
         sqlalchemy.text('SELECT id, description FROM "Competition" WHERE id = :id'),
@@ -412,7 +412,11 @@ def _leaderboard_payload(session, competition_id):
                    lr.report->>'total_in_plank_s'  AS held_s,
                    lr.report->>'overall_form_score' AS form_score,
                    lr.report->>'body_line_stdev_deg' AS steadiness,
-                   lr.report->>'total_reps'        AS reps
+                   lr.report->>'total_reps'        AS reps,
+                   CASE WHEN jsonb_typeof(lr.report->'rep_metrics') = 'array'
+                        THEN (SELECT jsonb_agg(rm->'form_score')
+                              FROM jsonb_array_elements(lr.report->'rep_metrics') rm)
+                   END AS rep_form_scores
             FROM "UserCompetition" uc
             JOIN "User" u ON uc.user_id = u.id
             LEFT JOIN "Attempt" a
@@ -471,21 +475,22 @@ def _leaderboard_payload(session, competition_id):
                 "form_score": _to_float(row['form_score']),
                 "steadiness": _to_float(row['steadiness']),
                 "reps": _to_int(row['reps']),
+                "rep_form_scores": row['rep_form_scores'],
             })
 
-    # Metric selection: declared plank-only -> time; declared pushup-only ->
-    # reps; other declared -> weight; no metadata -> infer from completed
-    # attempts (all-Plank -> time, all-Pushup -> reps).
+    # Metric selection: declared plank-only -> time; declared rep-lifts-only
+    # (pushup/situp) -> reps; other declared -> weight; no metadata -> infer
+    # from completed attempts the same way.
     declared_set = set(declared)
     if declared_set == {"Plank"}:
         metric = "time"
-    elif declared_set == {"Pushup"}:
+    elif declared_set and declared_set <= REPS_LIFT_TYPES:
         metric = "reps"
     elif declared_set:
         metric = "weight"
     elif completed_lift_types and completed_lift_types == {"Plank"}:
         metric = "time"
-    elif completed_lift_types and completed_lift_types == {"Pushup"}:
+    elif completed_lift_types and completed_lift_types <= REPS_LIFT_TYPES:
         metric = "reps"
     else:
         metric = "weight"

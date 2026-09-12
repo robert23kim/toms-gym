@@ -23,3 +23,11 @@ def test_plank_mapping_is_unchanged():
 
 def test_unknown_still_falls_back_to_bicep_curl():
     assert _normalize_lift_type("Zumba") == "bicep_curl"
+
+
+def test_situp_frontend_label_maps_to_db_enum():
+    assert LIFT_TYPE_MAPPING["Situp"] == "Situp"
+
+
+def test_situp_db_enum_maps_to_engine_name():
+    assert _normalize_lift_type("Situp") == "situp"
