@@ -52,6 +52,15 @@ describe("YouRow", () => {
     expect(row).toHaveTextContent("18.6s");
   });
 
+  test("entered variant shows the clean count on a quality-scored board", () => {
+    render(
+      <MemoryRouter>
+        <YouRow entered row={makeRow({ score: 3, reps_total: 4, clean_reps: 2 })} metric="reps" clipHref={null} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByTestId("you-row")).toHaveTextContent("2 clean of 4");
+  });
+
   test("entered variant renders the live goal subtitle when provided", () => {
     render(
       <MemoryRouter>

@@ -13,7 +13,7 @@ import { formatScoreValue } from '../components/challenge/metric';
 import { deriveStanding, personalBest, attemptScore, standingShareText } from '../lib/standing';
 import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
-import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription } from '../lib/liftCoaching';
+import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription, metricAppliesToLift } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
 import PlankSteadiness from '../components/lifting/PlankSteadiness';
@@ -748,7 +748,9 @@ const VideoPlayer: React.FC = () => {
                                     rep_number: 0,
                                     form_grade: report.overall_grade,
                                     form_score: report.overall_score,
-                                    metrics: summarizeSet(report.rep_metrics),
+                                    metrics: summarizeSet(report.rep_metrics).filter((m) =>
+                                      metricAppliesToLift(report.lift_type, m.key)
+                                    ),
                                   }]
                                 : report.rep_metrics;
                               const repTotal = report.rep_metrics.length;

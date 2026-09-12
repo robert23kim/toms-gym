@@ -42,6 +42,18 @@ const renderPodium = (
     </MemoryRouter>,
   );
 
+describe("Podium quality-scored reps", () => {
+  test("shows the clean count under a half-credit score", () => {
+    renderPodium(
+      [makeRow({ rank: 1, user_id: "u1", name: "Amy", score: 3.5, best_by_lift: { Situp: 3.5 }, reps_total: 4, clean_reps: 3 })],
+      "reps",
+    );
+    const score = screen.getByTestId("podium-score-1");
+    expect(score).toHaveTextContent("3.5reps");
+    expect(score).toHaveTextContent("3 clean of 4");
+  });
+});
+
 const topThree = (): ChallengeLeaderboardRow[] => [
   makeRow({ rank: 1, user_id: "u1", name: "robert23kim", score: 65.8 }),
   makeRow({ rank: 2, user_id: "u2", name: "Priya K", score: 61.2 }),

@@ -6,6 +6,7 @@ import {
   getOverallSummary,
   getMetricLabel,
   getMetricDescription,
+  metricAppliesToLift,
   normalizeCoachingLiftType,
   type CoachingLiftType,
 } from "../liftCoaching";
@@ -178,6 +179,10 @@ describe("situp copy never uses barbell/arm language", () => {
   it("renders only the metrics that describe a situp", () => {
     expect(LIFT_METRIC_KEYS.situp).toEqual(["rom", "control", "tempo"]);
     expect(normalizeCoachingLiftType("Situp")).toBe("situp");
+    expect(metricAppliesToLift("situp", "elbow_stability")).toBe(false);
+    expect(metricAppliesToLift("situp", "shoulder_swing")).toBe(false);
+    expect(metricAppliesToLift("situp", "rom")).toBe(true);
+    expect(metricAppliesToLift("pushup", "elbow_stability")).toBe(true);
   });
 
   it("overrides the curl-flavored range label and description", () => {

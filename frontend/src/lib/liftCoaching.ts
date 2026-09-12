@@ -259,6 +259,14 @@ const METRIC_COPY_OVERRIDES: Partial<
   },
 };
 
+/** Whether a metric the engine emitted describes this lift at all. */
+export function metricAppliesToLift(
+  liftType: string | undefined | null,
+  metricKey: string
+): boolean {
+  return LIFT_METRIC_KEYS[normalizeCoachingLiftType(liftType)].includes(metricKey);
+}
+
 /** Metric label for display, preferring a lift-specific override. */
 export function getMetricLabel(
   liftType: string | undefined | null,

@@ -110,6 +110,11 @@ const PodiumColumn: React.FC<{
       >
         {formatScoreValue(row.score, metric)}
         <span className="ml-0.5 text-[55%] opacity-80">{scoreUnit(metric)}</span>
+        {row.clean_reps != null && row.reps_total != null && (
+          <span className="block text-[11px] font-normal text-white/50">
+            {row.clean_reps} clean of {row.reps_total}
+          </span>
+        )}
       </div>
       <div
         data-testid={`podium-pedestal-${row.rank}`}
