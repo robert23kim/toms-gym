@@ -1,0 +1,164 @@
+{
+ "sample_input": {
+  "frames": 180,
+  "sec_per_frame": 0.632,
+  "0.01": {
+   "tp": 22,
+   "fn": 64,
+   "fp": 2,
+   "total": 86,
+   "recall": 25.58139534883721,
+   "precision": 91.66666666666667,
+   "mean_err_px": 16.268389674042258,
+   "max_err_px": 25.202211396486295
+  },
+  "0.05": {
+   "tp": 3,
+   "fn": 83,
+   "fp": 0,
+   "total": 86,
+   "recall": 3.488372093023256,
+   "precision": 100.0,
+   "mean_err_px": 20.72285483828409,
+   "max_err_px": 25.202211396486295
+  },
+  "0.1": {
+   "tp": 0,
+   "fn": 86,
+   "fp": 0,
+   "total": 86,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  },
+  "0.25": {
+   "tp": 0,
+   "fn": 86,
+   "fp": 0,
+   "total": 86,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  },
+  "0.5": {
+   "tp": 0,
+   "fn": 86,
+   "fp": 0,
+   "total": 86,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  }
+ },
+ "20260112_121117": {
+  "frames": 171,
+  "sec_per_frame": 0.759,
+  "0.01": {
+   "tp": 7,
+   "fn": 59,
+   "fp": 32,
+   "total": 66,
+   "recall": 10.606060606060606,
+   "precision": 17.94871794871795,
+   "mean_err_px": 21.72230507710872,
+   "max_err_px": 27.024861629974477
+  },
+  "0.05": {
+   "tp": 2,
+   "fn": 64,
+   "fp": 5,
+   "total": 66,
+   "recall": 3.0303030303030303,
+   "precision": 28.571428571428573,
+   "mean_err_px": 22.50558976721402,
+   "max_err_px": 25.122169484127177
+  },
+  "0.1": {
+   "tp": 0,
+   "fn": 66,
+   "fp": 2,
+   "total": 66,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  },
+  "0.25": {
+   "tp": 0,
+   "fn": 66,
+   "fp": 0,
+   "total": 66,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  },
+  "0.5": {
+   "tp": 0,
+   "fn": 66,
+   "fp": 0,
+   "total": 66,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  }
+ },
+ "tom_old": {
+  "frames": 169,
+  "sec_per_frame": 0.736,
+  "0.01": {
+   "tp": 17,
+   "fn": 131,
+   "fp": 2,
+   "total": 148,
+   "recall": 11.486486486486486,
+   "precision": 89.47368421052632,
+   "mean_err_px": 3.4809197886565544,
+   "max_err_px": 8.597665627557632
+  },
+  "0.05": {
+   "tp": 3,
+   "fn": 145,
+   "fp": 0,
+   "total": 148,
+   "recall": 2.027027027027027,
+   "precision": 100.0,
+   "mean_err_px": 3.162701711687187,
+   "max_err_px": 5.87372862003872
+  },
+  "0.1": {
+   "tp": 0,
+   "fn": 148,
+   "fp": 0,
+   "total": 148,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  },
+  "0.25": {
+   "tp": 0,
+   "fn": 148,
+   "fp": 0,
+   "total": 148,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  },
+  "0.5": {
+   "tp": 0,
+   "fn": 148,
+   "fp": 0,
+   "total": 148,
+   "recall": 0.0,
+   "precision": 0.0,
+   "mean_err_px": null,
+   "max_err_px": null
+  }
+ }
+}

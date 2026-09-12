@@ -1,0 +1,176 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 38,
+  "point": [
+   [
+    454,
+    1058
+   ],
+   [
+    505,
+    1000
+   ],
+   [
+    529,
+    970
+   ],
+   [
+    545,
+    952
+   ],
+   [
+    547,
+    941
+   ]
+  ],
+  "latency_s": 1.68,
+  "ok": true,
+  "pred": {
+   "top_left": [
+    538,
+    919
+   ],
+   "top_right": [
+    591,
+    919
+   ],
+   "bottom_left": [
+    189,
+    1203
+   ],
+   "bottom_right": [
+    423,
+    1203
+   ]
+  },
+  "corner_err_px": {
+   "top_left": 2.3,
+   "top_right": 3.1,
+   "bottom_left": 16.2,
+   "bottom_right": 5.4
+  },
+  "corner_err_mean_px": 6.775394541529881,
+  "board_abs_err_mean": 0.3505614399909973,
+  "board_abs_err_max": 1.3121566772460938,
+  "board_within_1": 91.86046511627907,
+  "top_width_true_px": 58.0,
+  "top_width_pred_px": 52.77400455237682
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 60,
+  "point": [
+   [
+    404,
+    636
+   ],
+   [
+    420,
+    586
+   ],
+   [
+    427,
+    571
+   ],
+   [
+    431,
+    562
+   ],
+   [
+    432,
+    555
+   ]
+  ],
+  "latency_s": 1.64,
+  "ok": true,
+  "pred": {
+   "top_left": [
+    417,
+    549
+   ],
+   "top_right": [
+    464,
+    549
+   ],
+   "bottom_left": [
+    275,
+    746
+   ],
+   "bottom_right": [
+    414,
+    746
+   ]
+  },
+  "corner_err_px": {
+   "top_left": 19.6,
+   "top_right": 27.6,
+   "bottom_left": 46.6,
+   "bottom_right": 22.6
+  },
+  "corner_err_mean_px": 29.07492012981627,
+  "board_abs_err_mean": 17.28696060180664,
+  "board_abs_err_max": 82.63597106933594,
+  "board_within_1": 0.0,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 46.980063117066834
+ },
+ {
+  "stem": "tom_old",
+  "frame": 18,
+  "point": [
+   [
+    426,
+    814
+   ],
+   [
+    483,
+    745
+   ],
+   [
+    513,
+    709
+   ],
+   [
+    527,
+    689
+   ],
+   [
+    533,
+    670
+   ]
+  ],
+  "latency_s": 1.58,
+  "ok": true,
+  "pred": {
+   "top_left": [
+    482,
+    668
+   ],
+   "top_right": [
+    565,
+    668
+   ],
+   "bottom_left": [
+    98,
+    1066
+   ],
+   "bottom_right": [
+    439,
+    1066
+   ]
+  },
+  "corner_err_px": {
+   "top_left": 11.4,
+   "top_right": 5.0,
+   "bottom_left": 55.4,
+   "bottom_right": 17.2
+  },
+  "corner_err_mean_px": 22.268668923835605,
+  "board_abs_err_mean": 0.9185019731521606,
+  "board_abs_err_max": 3.263975143432617,
+  "board_within_1": 64.86486486486487,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 83.37235841615836
+ }
+]

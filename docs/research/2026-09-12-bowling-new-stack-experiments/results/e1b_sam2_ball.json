@@ -1,0 +1,92 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 38,
+  "point": [
+   533,
+   969
+  ],
+  "latency_s": 1.7,
+  "ok": false
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 60,
+  "point": [
+   427,
+   569
+  ],
+  "latency_s": 1.54,
+  "ok": true,
+  "pred": {
+   "top_left": [
+    417,
+    549
+   ],
+   "top_right": [
+    464,
+    549
+   ],
+   "bottom_left": [
+    278,
+    746
+   ],
+   "bottom_right": [
+    413,
+    746
+   ]
+  },
+  "corner_err_px": {
+   "top_left": 20.4,
+   "top_right": 28.4,
+   "bottom_left": 50.1,
+   "bottom_right": 21.6
+  },
+  "corner_err_mean_px": 30.10224872952987,
+  "board_abs_err_mean": 18.092952728271484,
+  "board_abs_err_max": 101.09141540527344,
+  "board_within_1": 0.0,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 46.91245277837328
+ },
+ {
+  "stem": "tom_old",
+  "frame": 18,
+  "point": [
+   513,
+   709
+  ],
+  "latency_s": 1.63,
+  "ok": true,
+  "pred": {
+   "top_left": [
+    476,
+    668
+   ],
+   "top_right": [
+    565,
+    668
+   ],
+   "bottom_left": [
+    113,
+    1066
+   ],
+   "bottom_right": [
+    439,
+    1066
+   ]
+  },
+  "corner_err_px": {
+   "top_left": 17.3,
+   "top_right": 5.0,
+   "bottom_left": 69.9,
+   "bottom_right": 17.2
+  },
+  "corner_err_mean_px": 27.358393113454134,
+  "board_abs_err_mean": 1.1824417114257812,
+  "board_abs_err_max": 4.199649810791016,
+  "board_within_1": 54.729729729729726,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 89.25668916155871
+ }
+]
