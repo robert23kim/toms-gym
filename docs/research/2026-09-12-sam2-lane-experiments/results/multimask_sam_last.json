@@ -1,0 +1,311 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 2.27,
+  "prompts": {
+   "points": [
+    [
+     443,
+     1069
+    ],
+    [
+     496,
+     1010
+    ],
+    [
+     524,
+     979
+    ],
+    [
+     539,
+     960
+    ],
+    [
+     546,
+     946
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.38,
+  "board_max": 0.76,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.1,
+   "top_right": 2.9,
+   "bottom_left": 12.5,
+   "bottom_right": 4.1
+  },
+  "corner_err_mean_px": 5.2,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 57.0,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 241.6,
+  "fit_resid_px": 3.81,
+  "row_coverage": 0.98,
+  "candidates": [
+   {
+    "i": 0,
+    "sam_score": 0.319,
+    "area": 139229.0,
+    "geo": 0.196,
+    "resid": 4.11,
+    "coverage": 1.0,
+    "inside": 1.0,
+    "board_mae": 13.53
+   },
+   {
+    "i": 1,
+    "sam_score": 0.657,
+    "area": 29652.0,
+    "geo": 0.082,
+    "resid": 10.85,
+    "coverage": 0.97,
+    "inside": 1.0,
+    "board_mae": 0.27
+   },
+   {
+    "i": 2,
+    "sam_score": 0.85,
+    "area": 39843.0,
+    "geo": 0.204,
+    "resid": 3.81,
+    "coverage": 0.98,
+    "inside": 1.0,
+    "board_mae": 0.38
+   }
+  ],
+  "picked": 2,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.1,
+    934
+   ],
+   "top_right": [
+    574.1,
+    934
+   ],
+   "bottom_left": [
+    165.3,
+    1210
+   ],
+   "bottom_right": [
+    406.9,
+    1210
+   ]
+  },
+  "method": "multimask_sam_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "3 candidate masks from the path points; keep the one SAM scores highest"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 2.25,
+  "prompts": {
+   "points": [
+    [
+     404,
+     636
+    ],
+    [
+     420,
+     586
+    ],
+    [
+     427,
+     571
+    ],
+    [
+     431,
+     562
+    ],
+    [
+     431,
+     558
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.07,
+  "board_max": 1.46,
+  "within_1": 29.2,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 5.4,
+   "top_right": 2.1,
+   "bottom_left": 9.9,
+   "bottom_right": 5.6
+  },
+  "corner_err_mean_px": 5.8,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 45.1,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 160.6,
+  "fit_resid_px": 3.22,
+  "row_coverage": 0.96,
+  "candidates": [
+   {
+    "i": 0,
+    "sam_score": 0.353,
+    "area": 63989.0,
+    "geo": 0.124,
+    "resid": 7.06,
+    "coverage": 1.0,
+    "inside": 1.0,
+    "board_mae": 17.58
+   },
+   {
+    "i": 1,
+    "sam_score": 0.13,
+    "area": 9890.0,
+    "geo": 0.117,
+    "resid": 4.32,
+    "coverage": 0.62,
+    "inside": 1.0,
+    "board_mae": 5.0
+   },
+   {
+    "i": 2,
+    "sam_score": 0.422,
+    "area": 24173.0,
+    "geo": 0.227,
+    "resid": 3.22,
+    "coverage": 0.96,
+    "inside": 1.0,
+    "board_mae": 1.07
+   }
+  ],
+  "picked": 2,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    391.6,
+    549.0
+   ],
+   "top_right": [
+    436.8,
+    549.0
+   ],
+   "bottom_left": [
+    224.9,
+    746.0
+   ],
+   "bottom_right": [
+    385.4,
+    746.0
+   ]
+  },
+  "method": "multimask_sam_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "3 candidate masks from the path points; keep the one SAM scores highest"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 2.2,
+  "prompts": {
+   "points": [
+    [
+     426,
+     814
+    ],
+    [
+     483,
+     745
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.07,
+  "board_max": 2.3,
+  "within_1": 48.6,
+  "within_2": 81.8,
+  "corner_err_px": {
+   "top_left": 6.2,
+   "top_right": 2.5,
+   "bottom_left": 9.5,
+   "bottom_right": 19.3
+  },
+  "corner_err_mean_px": 9.4,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 63.6,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 405.7,
+  "fit_resid_px": 5.43,
+  "row_coverage": 0.94,
+  "candidates": [
+   {
+    "i": 0,
+    "sam_score": 0.704,
+    "area": 115151.0,
+    "geo": 0.146,
+    "resid": 5.44,
+    "coverage": 0.94,
+    "inside": 1.0,
+    "board_mae": 1.19
+   },
+   {
+    "i": 1,
+    "sam_score": 0.241,
+    "area": 13150.0,
+    "geo": 0.02,
+    "resid": 13.1,
+    "coverage": 0.28,
+    "inside": 1.0,
+    "board_mae": 14.34
+   },
+   {
+    "i": 2,
+    "sam_score": 0.924,
+    "area": 88611.0,
+    "geo": 0.146,
+    "resid": 5.43,
+    "coverage": 0.94,
+    "inside": 1.0,
+    "board_mae": 1.07
+   }
+  ],
+  "picked": 2,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    503.4,
+    667.5
+   ],
+   "top_right": [
+    567.0,
+    667.5
+   ],
+   "bottom_left": [
+    37.9,
+    1069.2
+   ],
+   "bottom_right": [
+    443.5,
+    1069.2
+   ]
+  },
+  "method": "multimask_sam_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "3 candidate masks from the path points; keep the one SAM scores highest"
+ }
+]

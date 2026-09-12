@@ -1,0 +1,259 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 2.23,
+  "prompts": {
+   "points": [
+    [
+     443,
+     1069
+    ],
+    [
+     496,
+     1010
+    ],
+    [
+     524,
+     979
+    ],
+    [
+     539,
+     960
+    ],
+    [
+     546,
+     946
+    ],
+    [
+     87,
+     967
+    ],
+    [
+     87,
+     1149
+    ],
+    [
+     87,
+     1300
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ],
+   "person_boxes": [
+    [
+     3,
+     785,
+     172,
+     1392
+    ]
+   ]
+  },
+  "board_mae": 0.9,
+  "board_max": 2.59,
+  "within_1": 61.0,
+  "within_2": 92.2,
+  "corner_err_px": {
+   "top_left": 9.2,
+   "top_right": 0.5,
+   "bottom_left": 14.3,
+   "bottom_right": 5.1
+  },
+  "corner_err_mean_px": 7.3,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 70.7,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 220.8,
+  "fit_resid_px": 10.31,
+  "row_coverage": 0.96,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    506.8,
+    934
+   ],
+   "top_right": [
+    577.5,
+    934
+   ],
+   "bottom_left": [
+    185.2,
+    1210
+   ],
+   "bottom_right": [
+    405.9,
+    1210
+   ]
+  },
+  "method": "person_neg_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points plus negative points on every YOLO-detected person, last frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 2.16,
+  "prompts": {
+   "points": [
+    [
+     404,
+     636
+    ],
+    [
+     420,
+     586
+    ],
+    [
+     427,
+     571
+    ],
+    [
+     431,
+     562
+    ],
+    [
+     431,
+     558
+    ],
+    [
+     96,
+     591
+    ],
+    [
+     96,
+     764
+    ],
+    [
+     96,
+     907
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ],
+   "person_boxes": [
+    [
+     1,
+     419,
+     191,
+     994
+    ]
+   ]
+  },
+  "board_mae": 2.47,
+  "board_max": 6.06,
+  "within_1": 20.0,
+  "within_2": 46.2,
+  "corner_err_px": {
+   "top_left": 42.4,
+   "top_right": 2.0,
+   "bottom_left": 24.9,
+   "bottom_right": 31.5
+  },
+  "corner_err_mean_px": 25.2,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 81.8,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 216.7,
+  "fit_resid_px": 21.67,
+  "row_coverage": 0.97,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    354.6,
+    549.0
+   ],
+   "top_right": [
+    436.4,
+    549.0
+   ],
+   "bottom_left": [
+    205.8,
+    746.0
+   ],
+   "bottom_right": [
+    422.5,
+    746.0
+   ]
+  },
+  "method": "person_neg_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points plus negative points on every YOLO-detected person, last frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 2.17,
+  "prompts": {
+   "points": [
+    [
+     426,
+     814
+    ],
+    [
+     483,
+     745
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ],
+   "person_boxes": []
+  },
+  "board_mae": 0.93,
+  "board_max": 2.05,
+  "within_1": 55.4,
+  "within_2": 96.6,
+  "corner_err_px": {
+   "top_left": 5.9,
+   "top_right": 2.0,
+   "bottom_left": 10.3,
+   "bottom_right": 19.1
+  },
+  "corner_err_mean_px": 9.3,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 63.5,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.7,
+  "fit_resid_px": 5.24,
+  "row_coverage": 0.94,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    503.0,
+    667.5
+   ],
+   "top_right": [
+    566.5,
+    667.5
+   ],
+   "bottom_left": [
+    37.1,
+    1069.2
+   ],
+   "bottom_right": [
+    443.9,
+    1069.2
+   ]
+  },
+  "method": "person_neg_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points plus negative points on every YOLO-detected person, last frame"
+ }
+]

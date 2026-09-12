@@ -1,0 +1,257 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 2.38,
+  "prompts": {
+   "points": [
+    [
+     411,
+     1107
+    ],
+    [
+     460,
+     1050
+    ],
+    [
+     486,
+     1020
+    ],
+    [
+     509,
+     995
+    ],
+    [
+     524,
+     979
+    ],
+    [
+     534,
+     965
+    ],
+    [
+     542,
+     953
+    ],
+    [
+     546,
+     949
+    ],
+    [
+     547,
+     941
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 4.85,
+  "board_max": 17.19,
+  "within_1": 11.7,
+  "within_2": 23.4,
+  "corner_err_px": {
+   "top_left": 40.7,
+   "top_right": 0.2,
+   "bottom_left": 117.9,
+   "bottom_right": 3.5
+  },
+  "corner_err_mean_px": 40.6,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 102.0,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 115.9,
+  "fit_resid_px": 14.4,
+  "row_coverage": 0.96,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    475.3,
+    934
+   ],
+   "top_right": [
+    577.2,
+    934
+   ],
+   "bottom_left": [
+    291.6,
+    1210
+   ],
+   "bottom_right": [
+    407.5,
+    1210
+   ]
+  },
+  "method": "track9_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "9 positive points along the ball path, last frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 2.2,
+  "prompts": {
+   "points": [
+    [
+     394,
+     663
+    ],
+    [
+     408,
+     622
+    ],
+    [
+     420,
+     589
+    ],
+    [
+     420,
+     582
+    ],
+    [
+     427,
+     571
+    ],
+    [
+     429,
+     566
+    ],
+    [
+     431,
+     560
+    ],
+    [
+     431,
+     559
+    ],
+    [
+     432,
+     552
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 3.9,
+  "board_max": 5.3,
+  "within_1": 0.0,
+  "within_2": 0.0,
+  "corner_err_px": {
+   "top_left": 40.1,
+   "top_right": 3.1,
+   "bottom_left": 58.2,
+   "bottom_right": 4.0
+  },
+  "corner_err_mean_px": 26.4,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 81.5,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 215.5,
+  "fit_resid_px": 17.37,
+  "row_coverage": 0.97,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    356.9,
+    549.0
+   ],
+   "top_right": [
+    438.4,
+    549.0
+   ],
+   "bottom_left": [
+    171.5,
+    746.0
+   ],
+   "bottom_right": [
+    387.0,
+    746.0
+   ]
+  },
+  "method": "track9_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "9 positive points along the ball path, last frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 2.04,
+  "prompts": {
+   "points": [
+    [
+     386,
+     861
+    ],
+    [
+     438,
+     797
+    ],
+    [
+     473,
+     758
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.31,
+  "board_max": 2.73,
+  "within_1": 41.9,
+  "within_2": 69.6,
+  "corner_err_px": {
+   "top_left": 6.4,
+   "top_right": 3.7,
+   "bottom_left": 11.6,
+   "bottom_right": 19.4
+  },
+  "corner_err_mean_px": 10.3,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 64.7,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 407.3,
+  "fit_resid_px": 5.43,
+  "row_coverage": 0.94,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    503.5,
+    667.5
+   ],
+   "top_right": [
+    568.2,
+    667.5
+   ],
+   "bottom_left": [
+    35.8,
+    1069.2
+   ],
+   "bottom_right": [
+    443.1,
+    1069.2
+   ]
+  },
+  "method": "track9_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "9 positive points along the ball path, last frame"
+ }
+]

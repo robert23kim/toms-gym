@@ -1,0 +1,314 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 10.39,
+  "prompts": {
+   "points": [
+    [
+     443,
+     1069
+    ],
+    [
+     496,
+     1010
+    ],
+    [
+     524,
+     979
+    ],
+    [
+     539,
+     960
+    ],
+    [
+     546,
+     946
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.79,
+  "board_max": 2.95,
+  "within_1": 3.9,
+  "within_2": 59.7,
+  "corner_err_px": {
+   "top_left": 2.7,
+   "top_right": 8.6,
+   "bottom_left": 13.2,
+   "bottom_right": 12.9
+  },
+  "corner_err_mean_px": 9.3,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 49.7,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 233.8,
+  "frames": [
+   103,
+   109,
+   116,
+   122,
+   128
+  ],
+  "per_frame": [
+   {
+    "frame": 103,
+    "board_mae": 3.0,
+    "fit_resid_px": 13.17
+   },
+   {
+    "frame": 109,
+    "board_mae": 0.44,
+    "fit_resid_px": 10.86
+   },
+   {
+    "frame": 116,
+    "board_mae": 0.2,
+    "fit_resid_px": 4.76
+   },
+   {
+    "frame": 122,
+    "board_mae": 0.19,
+    "fit_resid_px": 3.9
+   },
+   {
+    "frame": 128,
+    "board_mae": 0.09,
+    "fit_resid_px": 3.85
+   }
+  ],
+  "combine": "median",
+  "frames_ok": 5,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    518.7,
+    934
+   ],
+   "top_right": [
+    568.4,
+    934
+   ],
+   "bottom_left": [
+    164.4,
+    1210
+   ],
+   "bottom_right": [
+    398.1,
+    1210
+   ]
+  },
+  "method": "median5_late",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points on 5 frames in the last 30% of the throw, median of edge lines"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 10.49,
+  "prompts": {
+   "points": [
+    [
+     404,
+     636
+    ],
+    [
+     420,
+     586
+    ],
+    [
+     427,
+     571
+    ],
+    [
+     431,
+     562
+    ],
+    [
+     431,
+     558
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.43,
+  "board_max": 0.97,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.0,
+   "top_right": 2.1,
+   "bottom_left": 10.8,
+   "bottom_right": 6.0
+  },
+  "corner_err_mean_px": 5.7,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 35.5,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 162.0,
+  "frames": [
+   116,
+   130,
+   143,
+   156,
+   170
+  ],
+  "per_frame": [
+   {
+    "frame": 116,
+    "board_mae": 0.55,
+    "fit_resid_px": 2.59
+   },
+   {
+    "frame": 130,
+    "board_mae": 0.47,
+    "fit_resid_px": 1.03
+   },
+   {
+    "frame": 143,
+    "board_mae": 0.57,
+    "fit_resid_px": 1.32
+   },
+   {
+    "frame": 156,
+    "board_mae": 0.57,
+    "fit_resid_px": 1.94
+   },
+   {
+    "frame": 170,
+    "board_mae": 1.07,
+    "fit_resid_px": 3.22
+   }
+  ],
+  "combine": "median",
+  "frames_ok": 5,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    401.0,
+    549.0
+   ],
+   "top_right": [
+    436.5,
+    549.0
+   ],
+   "bottom_left": [
+    223.1,
+    746.0
+   ],
+   "bottom_right": [
+    385.0,
+    746.0
+   ]
+  },
+  "method": "median5_late",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points on 5 frames in the last 30% of the throw, median of edge lines"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 10.44,
+  "prompts": {
+   "points": [
+    [
+     426,
+     814
+    ],
+    [
+     483,
+     745
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.0,
+  "board_max": 3.7,
+  "within_1": 20.9,
+  "within_2": 50.7,
+  "corner_err_px": {
+   "top_left": 8.7,
+   "top_right": 4.6,
+   "bottom_left": 0.4,
+   "bottom_right": 19.1
+  },
+  "corner_err_mean_px": 8.2,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 63.3,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 396.3,
+  "frames": [
+   127,
+   138,
+   149,
+   160,
+   171
+  ],
+  "per_frame": [
+   {
+    "frame": 127,
+    "board_mae": 2.27,
+    "fit_resid_px": 16.94
+   },
+   {
+    "frame": 138,
+    "board_mae": 1.88,
+    "fit_resid_px": 7.74
+   },
+   {
+    "frame": 149,
+    "board_mae": 2.08,
+    "fit_resid_px": 4.14
+   },
+   {
+    "frame": 160,
+    "board_mae": 2.06,
+    "fit_resid_px": 3.49
+   },
+   {
+    "frame": 171,
+    "board_mae": 0.93,
+    "fit_resid_px": 5.24
+   }
+  ],
+  "combine": "median",
+  "frames_ok": 5,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    505.8,
+    667.5
+   ],
+   "top_right": [
+    569.1,
+    667.5
+   ],
+   "bottom_left": [
+    47.7,
+    1069.2
+   ],
+   "bottom_right": [
+    444.0,
+    1069.2
+   ]
+  },
+  "method": "median5_late",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points on 5 frames in the last 30% of the throw, median of edge lines"
+ }
+]

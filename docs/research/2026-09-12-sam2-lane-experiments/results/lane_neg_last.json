@@ -1,0 +1,297 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 4.35,
+  "prompts": {
+   "points": [
+    [
+     443,
+     1069
+    ],
+    [
+     496,
+     1010
+    ],
+    [
+     524,
+     979
+    ],
+    [
+     539,
+     960
+    ],
+    [
+     546,
+     946
+    ],
+    [
+     423,
+     975
+    ],
+    [
+     592,
+     975
+    ],
+    [
+     244,
+     1085
+    ],
+    [
+     562,
+     1085
+    ],
+    [
+     64,
+     1196
+    ],
+    [
+     533,
+     1196
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "board_mae": 2.93,
+  "board_max": 7.57,
+  "within_1": 16.9,
+  "within_2": 35.1,
+  "corner_err_px": {
+   "top_left": 34.9,
+   "top_right": 1.6,
+   "bottom_left": 39.6,
+   "bottom_right": 5.6
+  },
+  "corner_err_mean_px": 20.4,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 97.6,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 192.9,
+  "fit_resid_px": 9.62,
+  "row_coverage": 0.95,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    481.1,
+    934
+   ],
+   "top_right": [
+    578.6,
+    934
+   ],
+   "bottom_left": [
+    212.5,
+    1210
+   ],
+   "bottom_right": [
+    405.4,
+    1210
+   ]
+  },
+  "method": "lane_neg_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Two passes: path points, then negatives half a lane-width outside the first mask, last frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 4.16,
+  "prompts": {
+   "points": [
+    [
+     404,
+     636
+    ],
+    [
+     420,
+     586
+    ],
+    [
+     427,
+     571
+    ],
+    [
+     431,
+     562
+    ],
+    [
+     431,
+     558
+    ],
+    [
+     335,
+     578
+    ],
+    [
+     460,
+     578
+    ],
+    [
+     245,
+     657
+    ],
+    [
+     462,
+     657
+    ],
+    [
+     155,
+     736
+    ],
+    [
+     465,
+     736
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "board_mae": 3.78,
+  "board_max": 4.48,
+  "within_1": 0.0,
+  "within_2": 0.0,
+  "corner_err_px": {
+   "top_left": 9.3,
+   "top_right": 2.9,
+   "bottom_left": 9.1,
+   "bottom_right": 22.8
+  },
+  "corner_err_mean_px": 11.0,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 31.8,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 185.9,
+  "fit_resid_px": 5.11,
+  "row_coverage": 0.94,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    406.3,
+    549.0
+   ],
+   "top_right": [
+    438.2,
+    549.0
+   ],
+   "bottom_left": [
+    227.9,
+    746.0
+   ],
+   "bottom_right": [
+    413.8,
+    746.0
+   ]
+  },
+  "method": "lane_neg_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Two passes: path points, then negatives half a lane-width outside the first mask, last frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 4.22,
+  "prompts": {
+   "points": [
+    [
+     426,
+     814
+    ],
+    [
+     483,
+     745
+    ],
+    [
+     375,
+     727
+    ],
+    [
+     605,
+     727
+    ],
+    [
+     120,
+     888
+    ],
+    [
+     625,
+     888
+    ],
+    [
+     644,
+     1049
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0
+   ]
+  },
+  "board_mae": 1.2,
+  "board_max": 2.58,
+  "within_1": 42.6,
+  "within_2": 79.7,
+  "corner_err_px": {
+   "top_left": 6.9,
+   "top_right": 2.7,
+   "bottom_left": 10.1,
+   "bottom_right": 19.3
+  },
+  "corner_err_mean_px": 9.7,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 63.2,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.1,
+  "fit_resid_px": 5.55,
+  "row_coverage": 0.93,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    504.0,
+    667.5
+   ],
+   "top_right": [
+    567.2,
+    667.5
+   ],
+   "bottom_left": [
+    37.3,
+    1069.2
+   ],
+   "bottom_right": [
+    443.5,
+    1069.2
+   ]
+  },
+  "method": "lane_neg_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Two passes: path points, then negatives half a lane-width outside the first mask, last frame"
+ }
+]

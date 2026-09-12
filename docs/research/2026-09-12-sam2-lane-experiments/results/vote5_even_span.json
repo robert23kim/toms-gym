@@ -1,0 +1,330 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 7.73,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     412,
+     1089
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     503,
+     991
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.48,
+  "board_max": 3.9,
+  "within_1": 7.8,
+  "within_2": 33.8,
+  "corner_err_px": {
+   "top_left": 3.9,
+   "top_right": 8.3,
+   "bottom_left": 10.4,
+   "bottom_right": 12.4
+  },
+  "corner_err_mean_px": 8.8,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 56.6,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 229.8,
+  "frames": [
+   38,
+   60,
+   83,
+   106,
+   128
+  ],
+  "per_frame": [
+   {
+    "frame": 38,
+    "board_mae": 0.56,
+    "fit_resid_px": 9.98
+   },
+   {
+    "frame": 60,
+    "board_mae": 0.67,
+    "fit_resid_px": 9.83
+   },
+   {
+    "frame": 83,
+    "board_mae": 4.81,
+    "fit_resid_px": 12.94
+   },
+   {
+    "frame": 106,
+    "board_mae": 2.48,
+    "fit_resid_px": 12.06
+   },
+   {
+    "frame": 128,
+    "board_mae": 0.17,
+    "fit_resid_px": 3.68
+   }
+  ],
+  "combine": "vote",
+  "frames_ok": 5,
+  "fit_resid_px": 10.61,
+  "row_coverage": 0.95,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    512.1,
+    934
+   ],
+   "top_right": [
+    568.7,
+    934
+   ],
+   "bottom_left": [
+    168.8,
+    1210
+   ],
+   "bottom_right": [
+    398.6,
+    1210
+   ]
+  },
+  "method": "vote5_even_span",
+  "weights": "sam2.1_b.pt",
+  "desc": "vote5_span with evenly spaced path points"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 7.68,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     372,
+     655
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     407,
+     595
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.4,
+  "board_max": 0.86,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.5,
+   "top_right": 2.0,
+   "bottom_left": 10.2,
+   "bottom_right": 6.0
+  },
+  "corner_err_mean_px": 5.7,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 34.4,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 160.8,
+  "frames": [
+   60,
+   88,
+   115,
+   142,
+   170
+  ],
+  "per_frame": [
+   {
+    "frame": 60,
+    "board_mae": 0.86,
+    "fit_resid_px": 5.29
+   },
+   {
+    "frame": 88,
+    "board_mae": 13.94,
+    "fit_resid_px": 3.7
+   },
+   {
+    "frame": 115,
+    "board_mae": 0.43,
+    "fit_resid_px": 5.11
+   },
+   {
+    "frame": 142,
+    "board_mae": 0.91,
+    "fit_resid_px": 1.31
+   },
+   {
+    "frame": 170,
+    "board_mae": 0.5,
+    "fit_resid_px": 2.08
+   }
+  ],
+  "combine": "vote",
+  "frames_ok": 5,
+  "fit_resid_px": 3.91,
+  "row_coverage": 0.91,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    401.5,
+    549.0
+   ],
+   "top_right": [
+    435.8,
+    549.0
+   ],
+   "bottom_left": [
+    224.2,
+    746.0
+   ],
+   "bottom_right": [
+    385.0,
+    746.0
+   ]
+  },
+  "method": "vote5_even_span",
+  "weights": "sam2.1_b.pt",
+  "desc": "vote5_span with evenly spaced path points"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 7.74,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     390,
+     861
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     487,
+     744
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.91,
+  "board_max": 2.26,
+  "within_1": 68.9,
+  "within_2": 96.6,
+  "corner_err_px": {
+   "top_left": 6.0,
+   "top_right": 5.4,
+   "bottom_left": 38.7,
+   "bottom_right": 19.2
+  },
+  "corner_err_mean_px": 17.3,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 78.5,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 357.5,
+  "frames": [
+   18,
+   56,
+   94,
+   133,
+   171
+  ],
+  "per_frame": [
+   {
+    "frame": 18,
+    "board_mae": 1.0,
+    "fit_resid_px": 16.91
+   },
+   {
+    "frame": 56,
+    "board_mae": 1.89,
+    "fit_resid_px": 10.79
+   },
+   {
+    "frame": 94,
+    "board_mae": 7.45,
+    "fit_resid_px": 10.33
+   },
+   {
+    "frame": 133,
+    "board_mae": 0.97,
+    "fit_resid_px": 13.28
+   },
+   {
+    "frame": 171,
+    "board_mae": 1.54,
+    "fit_resid_px": 5.32
+   }
+  ],
+  "combine": "vote",
+  "frames_ok": 5,
+  "fit_resid_px": 13.21,
+  "row_coverage": 0.96,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    491.3,
+    667.5
+   ],
+   "top_right": [
+    569.8,
+    667.5
+   ],
+   "bottom_left": [
+    86.1,
+    1069.2
+   ],
+   "bottom_right": [
+    443.6,
+    1069.2
+   ]
+  },
+  "method": "vote5_even_span",
+  "weights": "sam2.1_b.pt",
+  "desc": "vote5_span with evenly spaced path points"
+ }
+]

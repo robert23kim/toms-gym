@@ -1,0 +1,222 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 2.16,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     412,
+     1089
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     503,
+     991
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.17,
+  "board_max": 0.75,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 3.6,
+   "top_right": 3.0,
+   "bottom_left": 12.2,
+   "bottom_right": 4.8
+  },
+  "corner_err_mean_px": 5.9,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 54.4,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 240.5,
+  "fit_resid_px": 3.68,
+  "row_coverage": 0.96,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    519.6,
+    934
+   ],
+   "top_right": [
+    574.0,
+    934
+   ],
+   "bottom_left": [
+    165.7,
+    1210
+   ],
+   "bottom_right": [
+    406.2,
+    1210
+   ]
+  },
+  "method": "even_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "5 points spaced evenly along the path's image length (15-85%), last frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 2.07,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     372,
+     655
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     407,
+     595
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.5,
+  "board_max": 1.46,
+  "within_1": 86.2,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 5.6,
+   "top_right": 2.0,
+   "bottom_left": 10.2,
+   "bottom_right": 5.5
+  },
+  "corner_err_mean_px": 5.8,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 33.8,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 161.3,
+  "fit_resid_px": 2.08,
+  "row_coverage": 0.93,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    402.6,
+    549.0
+   ],
+   "top_right": [
+    436.4,
+    549.0
+   ],
+   "bottom_left": [
+    224.2,
+    746.0
+   ],
+   "bottom_right": [
+    385.5,
+    746.0
+   ]
+  },
+  "method": "even_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "5 points spaced evenly along the path's image length (15-85%), last frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 2.08,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     390,
+     861
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     487,
+     744
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.54,
+  "board_max": 3.12,
+  "within_1": 37.8,
+  "within_2": 64.9,
+  "corner_err_px": {
+   "top_left": 6.6,
+   "top_right": 4.9,
+   "bottom_left": 12.2,
+   "bottom_right": 19.8
+  },
+  "corner_err_mean_px": 10.9,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 65.7,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.9,
+  "fit_resid_px": 5.32,
+  "row_coverage": 0.94,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    503.7,
+    667.5
+   ],
+   "top_right": [
+    569.4,
+    667.5
+   ],
+   "bottom_left": [
+    35.2,
+    1069.2
+   ],
+   "bottom_right": [
+    442.1,
+    1069.2
+   ]
+  },
+  "method": "even_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "5 points spaced evenly along the path's image length (15-85%), last frame"
+ }
+]

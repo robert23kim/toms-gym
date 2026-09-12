@@ -1,0 +1,206 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 86,
+  "latency_s": 2.18,
+  "prompts": {
+   "points": [
+    [
+     443,
+     1069
+    ],
+    [
+     496,
+     1010
+    ],
+    [
+     546,
+     946
+    ],
+    [
+     292,
+     934
+    ],
+    [
+     292,
+     1073
+    ],
+    [
+     292,
+     1188
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ],
+   "person_boxes": [
+    [
+     228,
+     796,
+     356,
+     1258
+    ]
+   ]
+  },
+  "board_mae": 6.15,
+  "board_max": 17.16,
+  "within_1": 6.5,
+  "within_2": 15.6,
+  "corner_err_px": {
+   "top_left": 62.3,
+   "top_right": 2.6,
+   "bottom_left": 119.4,
+   "bottom_right": 8.8
+  },
+  "corner_err_mean_px": 48.3,
+  "top_width_true_px": 58,
+  "top_width_pred_px": 117.9,
+  "bottom_width_true_px": 236,
+  "bottom_width_pred_px": 108.3,
+  "fit_resid_px": 12.12,
+  "row_coverage": 0.97,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    463.7,
+    930
+   ],
+   "top_right": [
+    581.6,
+    930
+   ],
+   "bottom_left": [
+    305.9,
+    1204
+   ],
+   "bottom_right": [
+    414.2,
+    1204
+   ]
+  },
+  "method": "person_neg_mid",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points plus negative points on every YOLO-detected person, mid frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 103,
+  "latency_s": 2.07,
+  "prompts": {
+   "points": [
+    [
+     330,
+     543
+    ],
+    [
+     330,
+     640
+    ],
+    [
+     330,
+     720
+    ]
+   ],
+   "labels": [
+    0,
+    0,
+    0
+   ],
+   "person_boxes": [
+    [
+     254,
+     447,
+     406,
+     769
+    ]
+   ]
+  },
+  "ok": false,
+  "method": "person_neg_mid",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points plus negative points on every YOLO-detected person, mid frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 97,
+  "latency_s": 2.22,
+  "prompts": {
+   "points": [
+    [
+     426,
+     814
+    ],
+    [
+     260,
+     525
+    ],
+    [
+     260,
+     802
+    ],
+    [
+     260,
+     1033
+    ]
+   ],
+   "labels": [
+    1,
+    0,
+    0,
+    0
+   ],
+   "person_boxes": [
+    [
+     92,
+     248,
+     428,
+     1172
+    ]
+   ]
+  },
+  "board_mae": 7.08,
+  "board_max": 41.98,
+  "within_1": 10.1,
+  "within_2": 27.7,
+  "corner_err_px": {
+   "top_left": 47.1,
+   "top_right": 4.5,
+   "bottom_left": 285.4,
+   "bottom_right": 16.4
+  },
+  "corner_err_mean_px": 88.3,
+  "top_width_true_px": 67.1,
+  "top_width_pred_px": 118.6,
+  "bottom_width_true_px": 402.4,
+  "bottom_width_pred_px": 112.0,
+  "fit_resid_px": 14.0,
+  "row_coverage": 0.95,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    446.2,
+    668.2
+   ],
+   "top_right": [
+    564.8,
+    668.2
+   ],
+   "bottom_left": [
+    327.9,
+    1066.1
+   ],
+   "bottom_right": [
+    439.9,
+    1066.1
+   ]
+  },
+  "method": "person_neg_mid",
+  "weights": "sam2.1_b.pt",
+  "desc": "Path points plus negative points on every YOLO-detected person, mid frame"
+ }
+]

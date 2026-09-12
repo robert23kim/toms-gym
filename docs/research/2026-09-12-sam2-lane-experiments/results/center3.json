@@ -1,0 +1,197 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 0.89,
+  "prompts": {
+   "points": [
+    [
+     540,
+     576
+    ],
+    [
+     540,
+     960
+    ],
+    [
+     540,
+     1344
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 13.0,
+  "board_max": 14.99,
+  "within_1": 0.0,
+  "within_2": 0.0,
+  "corner_err_px": {
+   "top_left": 0.1,
+   "top_right": 86.3,
+   "bottom_left": 12.8,
+   "bottom_right": 394.4
+  },
+  "corner_err_mean_px": 123.4,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 147.1,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 640.5,
+  "fit_resid_px": 5.39,
+  "row_coverage": 1.0,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    516.1,
+    934
+   ],
+   "top_right": [
+    663.3,
+    934
+   ],
+   "bottom_left": [
+    164.8,
+    1210
+   ],
+   "bottom_right": [
+    805.4,
+    1210
+   ]
+  },
+  "method": "center3",
+  "weights": "sam2.1_b.pt",
+  "desc": "Feb-2026 fallback prompt: three points down the frame centre line"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 0.91,
+  "prompts": {
+   "points": [
+    [
+     360,
+     384
+    ],
+    [
+     360,
+     640
+    ],
+    [
+     360,
+     896
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 6.89,
+  "board_max": 8.77,
+  "within_1": 0.0,
+  "within_2": 0.0,
+  "corner_err_px": {
+   "top_left": 15.0,
+   "top_right": 29.5,
+   "bottom_left": 92.3,
+   "bottom_right": 111.4
+  },
+  "corner_err_mean_px": 62.0,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 83.4,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 365.2,
+  "fit_resid_px": 7.76,
+  "row_coverage": 1.0,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    382.0,
+    549.0
+   ],
+   "top_right": [
+    465.4,
+    549.0
+   ],
+   "bottom_left": [
+    137.2,
+    746.0
+   ],
+   "bottom_right": [
+    502.4,
+    746.0
+   ]
+  },
+  "method": "center3",
+  "weights": "sam2.1_b.pt",
+  "desc": "Feb-2026 fallback prompt: three points down the frame centre line"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 0.94,
+  "prompts": {
+   "points": [
+    [
+     344,
+     379
+    ],
+    [
+     344,
+     632
+    ],
+    [
+     344,
+     884
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 7.77,
+  "board_max": 443.86,
+  "within_1": 2.7,
+  "within_2": 12.8,
+  "corner_err_px": {
+   "top_left": 96.7,
+   "top_right": 136.6,
+   "bottom_left": 371.1,
+   "bottom_right": 425.7
+  },
+  "corner_err_mean_px": 257.5,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 300.5,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": -393.0,
+  "fit_resid_px": 9.8,
+  "row_coverage": 0.08,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    400.5,
+    667.5
+   ],
+   "top_right": [
+    701.1,
+    667.5
+   ],
+   "bottom_left": [
+    418.5,
+    1069.2
+   ],
+   "bottom_right": [
+    25.5,
+    1069.2
+   ]
+  },
+  "method": "center3",
+  "weights": "sam2.1_b.pt",
+  "desc": "Feb-2026 fallback prompt: three points down the frame centre line"
+ }
+]

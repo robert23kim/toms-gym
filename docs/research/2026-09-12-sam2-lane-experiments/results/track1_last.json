@@ -1,0 +1,160 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 2.06,
+  "prompts": {
+   "points": [
+    [
+     524,
+     979
+    ]
+   ],
+   "labels": [
+    1
+   ]
+  },
+  "board_mae": 0.12,
+  "board_max": 0.52,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.8,
+   "top_right": 2.6,
+   "bottom_left": 12.2,
+   "bottom_right": 3.5
+  },
+  "corner_err_mean_px": 5.3,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 55.5,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 241.8,
+  "fit_resid_px": 4.06,
+  "row_coverage": 0.96,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    518.8,
+    934
+   ],
+   "top_right": [
+    574.4,
+    934
+   ],
+   "bottom_left": [
+    165.7,
+    1210
+   ],
+   "bottom_right": [
+    407.5,
+    1210
+   ]
+  },
+  "method": "track1_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "A single positive point on the ball path (the 2026-09-12 report's prompt), last frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 2.04,
+  "prompts": {
+   "points": [
+    [
+     427,
+     571
+    ]
+   ],
+   "labels": [
+    1
+   ]
+  },
+  "board_mae": 0.39,
+  "board_max": 0.94,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.3,
+   "top_right": 2.1,
+   "bottom_left": 9.5,
+   "bottom_right": 7.3
+  },
+  "corner_err_mean_px": 5.3,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 37.4,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 157.8,
+  "fit_resid_px": 1.8,
+  "row_coverage": 0.95,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    399.3,
+    549.0
+   ],
+   "top_right": [
+    436.7,
+    549.0
+   ],
+   "bottom_left": [
+    226.0,
+    746.0
+   ],
+   "bottom_right": [
+    383.7,
+    746.0
+   ]
+  },
+  "method": "track1_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "A single positive point on the ball path (the 2026-09-12 report's prompt), last frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 60.23,
+  "prompts": {
+   "points": [],
+   "labels": []
+  },
+  "board_mae": 16.54,
+  "board_max": 30.46,
+  "within_1": 0.0,
+  "within_2": 0.0,
+  "corner_err_px": {
+   "top_left": 11127.9,
+   "top_right": 106.1,
+   "bottom_left": 86.2,
+   "bottom_right": 237.2
+  },
+  "corner_err_mean_px": 2889.4,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": -10954.5,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 726.1,
+  "fit_resid_px": 10.58,
+  "row_coverage": 0.06,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    11625.1,
+    667.5
+   ],
+   "top_right": [
+    670.6,
+    667.5
+   ],
+   "bottom_left": [
+    -38.8,
+    1069.2
+   ],
+   "bottom_right": [
+    687.3,
+    1069.2
+   ]
+  },
+  "method": "track1_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "A single positive point on the ball path (the 2026-09-12 report's prompt), last frame"
+ }
+]

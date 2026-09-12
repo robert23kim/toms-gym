@@ -1,0 +1,170 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 86,
+  "latency_s": 1.53,
+  "prompts": {
+   "points": [
+    [
+     443,
+     1069
+    ],
+    [
+     496,
+     1010
+    ],
+    [
+     546,
+     946
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 6.06,
+  "board_max": 17.26,
+  "within_1": 7.8,
+  "within_2": 14.3,
+  "corner_err_px": {
+   "top_left": 60.9,
+   "top_right": 2.3,
+   "bottom_left": 119.6,
+   "bottom_right": 7.9
+  },
+  "corner_err_mean_px": 47.7,
+  "top_width_true_px": 58,
+  "top_width_pred_px": 116.8,
+  "bottom_width_true_px": 236,
+  "bottom_width_pred_px": 109.0,
+  "fit_resid_px": 11.84,
+  "row_coverage": 0.97,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    465.1,
+    930
+   ],
+   "top_right": [
+    581.9,
+    930
+   ],
+   "bottom_left": [
+    306.0,
+    1204
+   ],
+   "bottom_right": [
+    415.1,
+    1204
+   ]
+  },
+  "method": "track_mid",
+  "weights": "sam2.1_b.pt",
+  "desc": "5 positive points along the ball path, mid frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 103,
+  "latency_s": 55.79,
+  "prompts": {
+   "points": [],
+   "labels": []
+  },
+  "board_mae": 31.11,
+  "board_max": 36.47,
+  "within_1": 0.0,
+  "within_2": 0.0,
+  "corner_err_px": {
+   "top_left": 407.1,
+   "top_right": 7902.5,
+   "bottom_left": 241.6,
+   "bottom_right": 176.2
+  },
+  "corner_err_mean_px": 2181.9,
+  "top_width_true_px": 38.8,
+  "top_width_pred_px": -7456.6,
+  "bottom_width_true_px": 161.2,
+  "bottom_width_pred_px": 578.9,
+  "fit_resid_px": 9.89,
+  "row_coverage": 0.07,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    0.0,
+    545.4
+   ],
+   "top_right": [
+    -7456.6,
+    545.4
+   ],
+   "bottom_left": [
+    0.0,
+    741.4
+   ],
+   "bottom_right": [
+    578.9,
+    741.4
+   ]
+  },
+  "method": "track_mid",
+  "weights": "sam2.1_b.pt",
+  "desc": "5 positive points along the ball path, mid frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 97,
+  "latency_s": 2.01,
+  "prompts": {
+   "points": [
+    [
+     426,
+     814
+    ]
+   ],
+   "labels": [
+    1
+   ]
+  },
+  "board_mae": 7.2,
+  "board_max": 43.22,
+  "within_1": 16.2,
+  "within_2": 28.4,
+  "corner_err_px": {
+   "top_left": 43.2,
+   "top_right": 5.3,
+   "bottom_left": 287.2,
+   "bottom_right": 16.4
+  },
+  "corner_err_mean_px": 88.0,
+  "top_width_true_px": 67.1,
+  "top_width_pred_px": 115.5,
+  "bottom_width_true_px": 402.4,
+  "bottom_width_pred_px": 110.3,
+  "fit_resid_px": 13.47,
+  "row_coverage": 0.96,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    450.1,
+    668.2
+   ],
+   "top_right": [
+    565.6,
+    668.2
+   ],
+   "bottom_left": [
+    329.7,
+    1066.1
+   ],
+   "bottom_right": [
+    440.0,
+    1066.1
+   ]
+  },
+  "method": "track_mid",
+  "weights": "sam2.1_b.pt",
+  "desc": "5 positive points along the ball path, mid frame"
+ }
+]

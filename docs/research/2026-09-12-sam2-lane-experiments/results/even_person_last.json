@@ -1,0 +1,252 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "latency_s": 2.14,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     412,
+     1089
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     503,
+     991
+    ],
+    [
+     532,
+     957
+    ],
+    [
+     87,
+     967
+    ],
+    [
+     87,
+     1149
+    ],
+    [
+     87,
+     1300
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ]
+  },
+  "board_mae": 0.29,
+  "board_max": 1.16,
+  "within_1": 94.8,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 3.6,
+   "top_right": 1.2,
+   "bottom_left": 12.5,
+   "bottom_right": 5.7
+  },
+  "corner_err_mean_px": 5.8,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 56.1,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 240.0,
+  "fit_resid_px": 4.38,
+  "row_coverage": 0.89,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    519.6,
+    934
+   ],
+   "top_right": [
+    575.8,
+    934
+   ],
+   "bottom_left": [
+    165.3,
+    1210
+   ],
+   "bottom_right": [
+    405.3,
+    1210
+   ]
+  },
+  "method": "even_person_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Evenly spaced path points plus negatives on detected people, last frame"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "latency_s": 2.14,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     372,
+     655
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     407,
+     595
+    ],
+    [
+     418,
+     571
+    ],
+    [
+     96,
+     591
+    ],
+    [
+     96,
+     764
+    ],
+    [
+     96,
+     907
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0
+   ]
+  },
+  "board_mae": 0.38,
+  "board_max": 1.01,
+  "within_1": 96.9,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.4,
+   "top_right": 2.0,
+   "bottom_left": 10.4,
+   "bottom_right": 5.0
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 34.9,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 162.3,
+  "fit_resid_px": 2.04,
+  "row_coverage": 0.93,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    401.4,
+    549.0
+   ],
+   "top_right": [
+    436.3,
+    549.0
+   ],
+   "bottom_left": [
+    223.7,
+    746.0
+   ],
+   "bottom_right": [
+    386.0,
+    746.0
+   ]
+  },
+  "method": "even_person_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Evenly spaced path points plus negatives on detected people, last frame"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "latency_s": 2.2,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     390,
+     861
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     487,
+     744
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.54,
+  "board_max": 3.12,
+  "within_1": 37.8,
+  "within_2": 64.9,
+  "corner_err_px": {
+   "top_left": 6.6,
+   "top_right": 4.9,
+   "bottom_left": 12.2,
+   "bottom_right": 19.8
+  },
+  "corner_err_mean_px": 10.9,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 65.7,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.9,
+  "fit_resid_px": 5.32,
+  "row_coverage": 0.94,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    503.7,
+    667.5
+   ],
+   "top_right": [
+    569.4,
+    667.5
+   ],
+   "bottom_left": [
+    35.2,
+    1069.2
+   ],
+   "bottom_right": [
+    442.1,
+    1069.2
+   ]
+  },
+  "method": "even_person_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "Evenly spaced path points plus negatives on detected people, last frame"
+ }
+]
