@@ -13,7 +13,13 @@ Ball tracking was out of scope (annotated ball positions stand in for a detector
   `run_methods.py` (35 registered methods), `camera_motion.py` (ORB similarity per frame
   + validation against sample_input's per-frame annotation), `make_review_video.py`,
   `results/*.json` + `results/summary.md`, `overlays/*.jpg`, and `review.mp4`.
-- Session doc + memory note. No product, engine or deploy code touched.
+- `CLAUDE.md` gained a "Bowling Lane via SAM 2 (research, 2026-09-12)" section with the
+  durable rules (prompt spacing, frame choice, the ultralytics nested-points gotcha, the
+  prompt-anchored component rule, handheld drift, the pin-hit cut, tiny weights).
+- Committed as `132280e` on `main` (165 files; overlays shrunk to ~8 MB; `review.mp4` is
+  gitignored inside the research folder). The earlier new-stack folder went in as `3c99747`.
+  Not pushed.
+- Memory note `sam2_lane_experiments.md`. No product, engine or deploy code touched.
 
 ## What we learned
 - **The Feb-2026 attempt exists and failed on prompts alone.** `sam2_segmentor.py` in the
@@ -59,10 +65,11 @@ Ball tracking was out of scope (annotated ball positions stand in for a detector
 - Nothing is wired into the engine. Recommended order in the README: even path prompts →
   clean late frame(s) → video-mode propagation for handheld → gradient snap → tiny weights.
   ultralytics + weights still need adding to `requirements-service.txt`.
-- The research folder and this doc are uncommitted at time of writing, as are the earlier
-  2026-09-12 new-stack experiments.
-- Frames, weights, per-frame masks and clips live only in the session scratchpad; the
-  README has the regeneration commands (~35 min CPU for everything).
+- `main` is 7 commits ahead of `origin/main` and none of this is backed up; push it.
+- The session scratchpad (frames, weights, per-frame masks, clips) is gone. `review.mp4`
+  exists only on this laptop; the README has the regeneration commands (~35 min CPU).
+- `make_review_video.py` and `run_methods.py` hard-code the old scratchpad path in
+  `SCRATCH`; set `SAM_FRAMES` / `SAM_WEIGHTS` and edit `SCRATCH` before rerunning.
 
 ## Verification
 - Every number in the README is read from `results/*.json` by `make_review_video.py`
