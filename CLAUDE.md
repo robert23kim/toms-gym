@@ -211,12 +211,13 @@ Third challenge metric — `reps` — alongside `time` (plank) and `weight` (lif
 
 Fourth lift on the `reps` metric, with a twist: **form changes the score**. Live challenge: `95b60b42-9220-4195-a659-b1d362093ea1` (2026-09-12 → 2026-10-12).
 
-- **Engine** `bowling-service-00050-q8m`, built from branch `feat/situp-config` (commit d4d8bb2, worktree `/private/tmp/situp-engine`, branched off the still-unmerged `feat/pushup-config`). Rollback: `bowling-service-00049-knc`. Deployed with `gcloud run services update --image …` so the four env vars (`GCS_BUCKET_NAME`, `PLANK_POSE_WORKERS`, `NORMALIZE_BEFORE_ANALYZE`, `CLIP_UPLOAD_WORKERS`), 8Gi/8cpu and the 880s timeout carried over untouched — keep using that form, `deploy.sh` still drops env vars.
-- **Analyzer:** `EXERCISE_CONFIGS["situp"]` segments reps on the **hip angle** (shoulder-hip-knee, `compute_hip_angle`), ROM band **130° lying / 70° up** (anatomical guess — no real situp footage exists; only synthetic skeletons were validated), momentum on the shoulder, `elbow_drift` weight 0. Two new config keys wired in `analyze_from_skeletons`: `side_view_only` (skips the front-view wrist-height fallback, which counted a synthetic 5-rep set as 10 and would win the "more reps" tie-break) and `side_keypoints` (`shoulder/hip/knee` confidence picks the visible side instead of the wrist). The ROM branch `if lift_type in ("pushup","situp")` now passes `angle_fn=signal_fn`. Tests: `tests/test_lifting/test_situp_end_to_end.py` (rigid folded arms so the elbow angle is constant — the fixture must be insensitive to the wrong signal or the mutation check passes vacuously).
+- **Engine** `bowling-service-00051-k5f` (image `situp-05267b1`), branch `feat/situp-config` at 05267b1, worktree `~/code/bowling-app/situp-engine` (the old `/private/tmp/situp-engine` was wiped by tmp cleanup), branched off the still-unmerged `feat/pushup-config`. Rollback: `bowling-service-00050-q8m`. Deploy with `gcloud builds submit --tag gcr.io/toms-gym/bowling-service:situp-<sha>` then `gcloud run services update --image …` so the four env vars (`GCS_BUCKET_NAME`, `PLANK_POSE_WORKERS`, `NORMALIZE_BEFORE_ANALYZE`, `CLIP_UPLOAD_WORKERS`), 8Gi/8cpu and the 880s timeout carry over — `deploy.sh` still drops env vars.
+- **Analyzer:** `EXERCISE_CONFIGS["situp"]` segments reps on the **trunk lift** (ear-hip-knee, nose fallback, `compute_trunk_lift_angle`), not the hip angle: the first real upload (2026-09-13, attempt `8211b5b2`, 101 s side-on) was **crunch depth** — shoulder-hip-knee moves ~10°, ear-hip-knee ~15°, a full synthetic situp ~65°. Tom chose to count crunch-depth reps. Config keys: `min_prominence_deg` 10 (other lifts keep the segmenter's 20), ROM band **125/105** (score_rom rates the swing against the band's width, so full situps still score 100), `mask_mirrored_pose` (MediaPipe flips a lying body end-to-end for 1-6 frame runs — 85 in that video — putting the head on the knees' side; those frames are NaN'd from the signal and skipped by `score_body_sway`/`score_momentum`, which they drove to 0), `trim_edge_reps` (drops leading/trailing reps whose length is outside 0.5-2.5× the set median — setup and getting up; never mid-set), plus the older `side_view_only` / `side_keypoints`. A magnitude despike (rolling median) was tried and rejected: the threshold that fixes crunches would erase full-situp peaks. Tests: `test_situp_end_to_end.py` (synthetic) and `test_situp_real_footage.py` against `tests/fixtures/lifting/situp_crunch_real_keypoints.npz` (real keypoints; tops hand-marked at 4 fps in 40-50 s and 60-70 s, 8/8 each within 0.35 s). All five guards mutation-checked. Prod result: 67 reps, 43 clean, board 55 (local macOS pose gives 49 clean — Linux MediaPipe shifts borderline form scores, not rep counts).
+- **Clip-render OOM (fixed 047b841):** `_render_metric_clips` used to buffer every frame between the first and last rep — 101 s at 720p ≈ 8.3 GB — so the 8Gi engine was killed ~3 min in on all three Cloud Tasks retries and the attempt stayed `failed` (leaderboard showed `attempt_count 0`). It now streams rep by rep; peak RSS 1.7 GB on that video, prod run 317 s. `test_metric_clips_memory.py` caps tracemalloc peak at 20 frames. Any rep lift over ~95 s at 720p was affected, not just situps.
 - **Backend:** migration **019** adds `Situp` to `lift_type` (startup pattern in `app.py`). `services/challenge_leaderboard.py` gained `REPS_LIFT_TYPES = {Pushup, Situp}` (metric selection in `competition_routes.py` is `declared_set <= REPS_LIFT_TYPES`), and the quality rule: `QUALITY_SCORED_LIFT_TYPES = {Situp}`, `CLEAN_REP_MIN_FORM = 70`, `SLOPPY_REP_CREDIT = 0.5` → `attempt_rep_score()` = clean reps + 0.5 × the rest, computed from `rep_form_scores` (a new leaderboard SQL column: `jsonb_agg(rm->'form_score')` over `report->'rep_metrics'`, NULL when the report has no per-rep data → falls back to raw reps). Rows carry `reps_total` + `clean_reps`; `best_by_lift` is keyed by the best attempt's lift type; the best attempt is chosen by board score, not raw reps. Pushup boards are unchanged. Moving the bar needs no re-analysis. Fixture gotcha again: `_prow` in `test_competition_routes.py` gained `rep_form_scores`.
 - **Frontend:** `lib/cleanReps.ts` mirrors the rule (`boardReps(report)`) and feeds `attemptScore` so the result ladder and the board agree; `formatScoreValue` keeps a `.5` on reps. `metric.ts`: `uploadCtaLabel(metric, liftTypes)` says "Upload your situps" on situp-only boards and `scoringNote()` renders the amber rule line under the challenge hero (`data-testid="scoring-note"`). `LeaderboardRow` shows "N clean of M" under a quality-scored score; `VideoPlayer` shows "Board score X · N clean of M" (`data-testid="board-score"`) on situp results and uses the set summary like pushups. `liftCoaching.ts`: `situp` renders only `rom / control / tempo` (the engine still emits elbow/shoulder metrics for it — they describe nothing) with rewritten copy; `LIFT_METRIC_KEYS.situp` is the allow-list. Bodyweight checks in `ChallengeDetail`/`UploadVideo`/`VideoPlayer`/`welcome.ts` include Situp.
 - **Prod verification (2026-09-12):** engine → backend rev `00192` → frontend rev `00188` (then `00189` for two things only the browser showed: the set card listed the engine's Elbow Stability/Shoulder Swing for a situp — now filtered by `metricAppliesToLift()`; and "N clean of M" only rendered on ranked rows, so a one-entrant board never showed it — now also on `Podium` and `YouRow`); the deadlift sample clip produced 0 reps (single slow rep > the 8s cap — not a situp bug) and rendered the honest low-tracking state; a curl clip read as 4 hip cycles (form 64/87/70/73) verified the 3.5-point half-credit path end to end. Test user/attempts were deleted by SQL afterwards (no user-delete route exists; `LiftingResult`/`AnalysisNotification` reference `Attempt` without cascade, so `DELETE /attempts/<id>` 500s on analysed attempts — open follow-up).
-- **Open follow-ups:** real situp footage to tune the 130/70 band and confirm rep counting; `AttemptHistory` per-attempt rows still show raw `total_reps` (the board's best attempt may differ); the low-tracking tip says "bar/body" on bodyweight lifts.
+- **Open follow-ups:** a genuine full-depth situp clip (only synthetic full situps are validated); the uploaded situp attempt stored `weight 60` (bodyweight lift); `AttemptHistory` per-attempt rows still show raw `total_reps` (the board's best attempt may differ); the low-tracking tip says "bar/body" on bodyweight lifts.
 - Suite at ship: backend gate 294; frontend 85 suites / 572 tests; engine lifting suite 208 passed, 2 skipped.
 
 ## Bowling Score Sheets (shipped 2026-08-28)
@@ -326,6 +327,36 @@ gitignored). Physical landmarks as the lane ruler; what changes what to ship:
   sign enumeration against the stored widths + MAE); loop 1 is on `sys.path`, so a script named
   `make_review_video.py` imports loop 1's — name new scripts distinctly; `camera_all`'s
   `static_frame` (122) is not the frame sample_input's static corners belong to (~frame 0).
+
+## Alley Face (research, 2026-09-14)
+
+`docs/research/2026-09-14-alley-face/` (README, scripts, `results/*.json`, overlays; `review.mp4`
+gitignored). The lane's markings as one constellation (foul corners, seven foul-line dots 1.8 in
+behind the line, eleven guide dots at 7.04 ft on a 3-board pitch, seven approach dots at -11.7 ft,
+seven arrows, ten pin bases, gutter lines) with one degree of freedom, a homography. What to keep:
+
+- **Measure the marks, do not assume symmetry**: every dot row sits 0.4-0.7 in LEFT of the lane
+  centre under the truths (1.8 in for the approach dots); `results/constellation.json` carries the
+  measured positions, `x_rule_in` the symmetric ones. The visible lane edges confirm the annotated
+  foul ends on tom_old only.
+- **The face can be found with no ball path, mask or prompt** - chains of regularly spaced dark
+  marks read as arrow rows, paired with rack-shaped white blobs (the ten pins merge into one white
+  mass; px/in = width / 40.8 in, base row = top + 15 in), chance-corrected constellation score:
+  right lane on 50 % of tom_old's throw frames (0.31 pre-hit, 0.62 median vs pins), 26 % of
+  sample_input, 0 % of Chardie (720p). Arrows alone 13 % at 3 boards; the rack is what makes it
+  findable. **The top-scoring face is the neighbouring lane on most frames**: pick the lane by the
+  bowler or the ball, never by the score.
+- **Aligning does not beat finding**: rack refit + arrows fix the far end (2-4 px) and the pre-hit
+  frame, but the near-end rows (foul-line / guide dots) are not in a whole-frame black-hat pool on
+  handheld video, so the joint fit is 0.81 vs E3's 0.62; gutter segments around a coarse lane pick
+  the lip or the next lane. The mask student's near end (loop 4) remains the engine's floor.
+- **Heatmap landmark models (U-Net, exact homography augmentation, LOVO)**: the per-landmark
+  variant memorises positions (held-out tom_old arrows 0.20, dots 0, pins 0.96); the per-CLASS
+  variant transfers appearance (arrows 0.92 recall at 3.7 px, precision 0.85 - the black-hat pool is
+  5 % precise). Five videos of one alley cannot teach placement; collect other phones and angles.
+- Harness: loop 4's modules `import common`, so this loop's shared module is `af.py`; a chain
+  waiting on result files fired on probe runs' stale files (wait on the process); rank chains by
+  spacing regularity, not length (1080p six-lane frames flood the budget with ceiling chains).
 
 ## Delight Loop (started 2026-08-29)
 

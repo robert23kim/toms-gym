@@ -1,0 +1,1562 @@
+{
+ "stem": "sample_input",
+ "summary": {
+  "frames": 40,
+  "ref_frame": 117,
+  "ref_landmarks": 17,
+  "camera_fits": 39,
+  "common_median": 16.0,
+  "common_median_after_hit": 5.0,
+  "pooled_pins": 10,
+  "pooled_frames_median": 36,
+  "throw_median_annotated": 2.51,
+  "tail_median_annotated": 1.82,
+  "post_hit_median_annotated": null,
+  "last_annotated": null,
+  "throw_median_pins": 1.91,
+  "tail_median_pins": 0.81,
+  "post_hit_median_pins": null,
+  "last_pins": null,
+  "throw_median_all": 1.93,
+  "tail_median_all": 0.83,
+  "post_hit_median_all": null,
+  "last_all": null,
+  "ok_in_throw": 21,
+  "post_hit_frames": 0,
+  "throw_frames_all": 82,
+  "cam_err_px": {
+   "landmarks": 10.42,
+   "orb": 4.15,
+   "landmarks_top": 7.88,
+   "orb_top": 3.7
+  },
+  "cam_err_px_max": {
+   "landmarks": 138.0,
+   "orb": 15.05
+  }
+ },
+ "camera": [
+  {
+   "frame": 0,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 2,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 3,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 4,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 5,
+   "n_common": 17,
+   "inliers": 15,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 7,
+   "n_common": 16,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 9,
+   "n_common": 17,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 10,
+   "n_common": 15,
+   "inliers": 10,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 5,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 16,
+   "n_common": 16,
+   "inliers": 15,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 19,
+   "n_common": 14,
+   "inliers": 11,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 4,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 25,
+   "n_common": 6,
+   "inliers": 3,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 0,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 27,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 28,
+   "n_common": 17,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 29,
+   "n_common": 17,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 30,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 37,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 38,
+   "n_common": 17,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 43,
+   "n_common": 17,
+   "inliers": 15,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 63,
+   "n_common": 17,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 64,
+   "n_common": 17,
+   "inliers": 14,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 75,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 76,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 77,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 81,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 84,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 87,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 103,
+   "n_common": 17,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 104,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 105,
+   "n_common": 16,
+   "inliers": 16,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 6,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 106,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 107,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 109,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 110,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 113,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 115,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 116,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 117,
+   "n_common": 17,
+   "inliers": 17,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 10,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 122,
+   "n_common": 7,
+   "inliers": 6,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 7,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 0,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 145,
+   "n_common": 5,
+   "inliers": 3,
+   "how": "landmarks",
+   "by_class": {
+    "arrow": 5,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 0,
+    "foul": 0
+   }
+  },
+  {
+   "frame": 157,
+   "n_common": 3,
+   "inliers": 0,
+   "how": "hold",
+   "by_class": {
+    "arrow": 3,
+    "dot": 0,
+    "fdot": 0,
+    "adot": 0,
+    "pin": 0,
+    "foul": 0
+   }
+  }
+ ],
+ "per_frame": [
+  {
+   "frame": 0,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.14,
+    "pins": 1.4,
+    "all": 1.42
+   },
+   "tail": {
+    "annotated": 1.66,
+    "pins": 0.5,
+    "all": 0.52
+   },
+   "width_err_px_pins": 3.7,
+   "cam_err_px": {
+    "landmarks": 0.0,
+    "orb": 0.0,
+    "landmarks_top": 0.0,
+    "orb_top": 0.0
+   }
+  },
+  {
+   "frame": 2,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.74,
+    "pins": 2.02,
+    "all": 2.03
+   },
+   "tail": {
+    "annotated": 2.35,
+    "pins": 1.22,
+    "all": 1.24
+   },
+   "width_err_px_pins": 4.5,
+   "cam_err_px": {
+    "landmarks": 2.06,
+    "orb": 1.86,
+    "landmarks_top": 1.6,
+    "orb_top": 1.49
+   }
+  },
+  {
+   "frame": 3,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.73,
+    "pins": 2.0,
+    "all": 2.02
+   },
+   "tail": {
+    "annotated": 2.33,
+    "pins": 1.2,
+    "all": 1.22
+   },
+   "width_err_px_pins": 4.5,
+   "cam_err_px": {
+    "landmarks": 2.02,
+    "orb": 1.89,
+    "landmarks_top": 1.59,
+    "orb_top": 1.52
+   }
+  },
+  {
+   "frame": 4,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.75,
+    "pins": 2.03,
+    "all": 2.04
+   },
+   "tail": {
+    "annotated": 2.38,
+    "pins": 1.25,
+    "all": 1.27
+   },
+   "width_err_px_pins": 4.5,
+   "cam_err_px": {
+    "landmarks": 1.96,
+    "orb": 1.84,
+    "landmarks_top": 1.64,
+    "orb_top": 1.51
+   }
+  },
+  {
+   "frame": 5,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.1,
+    "pins": 0.38,
+    "all": 0.4
+   },
+   "tail": {
+    "annotated": 1.57,
+    "pins": 0.46,
+    "all": 0.48
+   },
+   "width_err_px_pins": 4.2,
+   "cam_err_px": {
+    "landmarks": 1.95,
+    "orb": 1.93,
+    "landmarks_top": 1.67,
+    "orb_top": 1.71
+   }
+  },
+  {
+   "frame": 7,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.36,
+    "pins": 1.64,
+    "all": 1.66
+   },
+   "tail": {
+    "annotated": 2.28,
+    "pins": 1.18,
+    "all": 1.19
+   },
+   "width_err_px_pins": 5.3,
+   "cam_err_px": {
+    "landmarks": 2.12,
+    "orb": 1.92,
+    "landmarks_top": 1.67,
+    "orb_top": 1.68
+   }
+  },
+  {
+   "frame": 9,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.1,
+    "pins": 0.39,
+    "all": 0.41
+   },
+   "tail": {
+    "annotated": 1.67,
+    "pins": 0.58,
+    "all": 0.6
+   },
+   "width_err_px_pins": 4.3,
+   "cam_err_px": {
+    "landmarks": 2.11,
+    "orb": 2.25,
+    "landmarks_top": 1.96,
+    "orb_top": 2.14
+   }
+  },
+  {
+   "frame": 10,
+   "n_detected": 15,
+   "n_carried": 2,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 8.65,
+    "pins": 9.34,
+    "all": 9.32
+   },
+   "tail": {
+    "annotated": 0.99,
+    "pins": 1.96,
+    "all": 1.94
+   },
+   "width_err_px_pins": 1.6,
+   "cam_err_px": {
+    "landmarks": 2.42,
+    "orb": 2.4,
+    "landmarks_top": 1.95,
+    "orb_top": 2.34
+   }
+  },
+  {
+   "frame": 16,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.57,
+    "pins": 1.76,
+    "all": 1.75
+   },
+   "tail": {
+    "annotated": 0.89,
+    "pins": 0.22,
+    "all": 0.22
+   },
+   "width_err_px_pins": -2.0,
+   "cam_err_px": {
+    "landmarks": 21.19,
+    "orb": 2.55,
+    "landmarks_top": 3.62,
+    "orb_top": 2.76
+   }
+  },
+  {
+   "frame": 19,
+   "n_detected": 14,
+   "n_carried": 3,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 6.35,
+    "pins": 5.66,
+    "all": 5.67
+   },
+   "tail": {
+    "annotated": 3.5,
+    "pins": 2.45,
+    "all": 2.46
+   },
+   "width_err_px_pins": 11.2,
+   "cam_err_px": {
+    "landmarks": 23.21,
+    "orb": 3.01,
+    "landmarks_top": 4.43,
+    "orb_top": 3.36
+   }
+  },
+  {
+   "frame": 25,
+   "n_detected": 13,
+   "n_carried": 11,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 72.26,
+    "pins": 71.61,
+    "all": 71.62
+   },
+   "tail": {
+    "annotated": 166.11,
+    "pins": 165.06,
+    "all": 165.07
+   },
+   "width_err_px_pins": -63.3,
+   "cam_err_px": {
+    "landmarks": 138.0,
+    "orb": 3.8,
+    "landmarks_top": 137.58,
+    "orb_top": 4.33
+   }
+  },
+  {
+   "frame": 27,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.81,
+    "pins": 2.13,
+    "all": 2.14
+   },
+   "tail": {
+    "annotated": 2.55,
+    "pins": 1.51,
+    "all": 1.52
+   },
+   "width_err_px_pins": 6.2,
+   "cam_err_px": {
+    "landmarks": 3.85,
+    "orb": 3.79,
+    "landmarks_top": 3.68,
+    "orb_top": 4.33
+   }
+  },
+  {
+   "frame": 28,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.31,
+    "pins": 0.63,
+    "all": 0.64
+   },
+   "tail": {
+    "annotated": 2.07,
+    "pins": 1.03,
+    "all": 1.04
+   },
+   "width_err_px_pins": 3.7,
+   "cam_err_px": {
+    "landmarks": 3.94,
+    "orb": 3.84,
+    "landmarks_top": 3.72,
+    "orb_top": 4.37
+   }
+  },
+  {
+   "frame": 29,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.31,
+    "pins": 0.62,
+    "all": 0.64
+   },
+   "tail": {
+    "annotated": 2.07,
+    "pins": 1.02,
+    "all": 1.04
+   },
+   "width_err_px_pins": 3.7,
+   "cam_err_px": {
+    "landmarks": 3.94,
+    "orb": 4.08,
+    "landmarks_top": 3.72,
+    "orb_top": 4.53
+   }
+  },
+  {
+   "frame": 30,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.91,
+    "pins": 2.22,
+    "all": 2.24
+   },
+   "tail": {
+    "annotated": 2.58,
+    "pins": 1.54,
+    "all": 1.55
+   },
+   "width_err_px_pins": 3.9,
+   "cam_err_px": {
+    "landmarks": 4.18,
+    "orb": 4.27,
+    "landmarks_top": 4.34,
+    "orb_top": 4.71
+   }
+  },
+  {
+   "frame": 37,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.91,
+    "pins": 1.19,
+    "all": 1.2
+   },
+   "tail": {
+    "annotated": 1.28,
+    "pins": 0.15,
+    "all": 0.16
+   },
+   "width_err_px_pins": 4.1,
+   "cam_err_px": {
+    "landmarks": 2.81,
+    "orb": 2.94,
+    "landmarks_top": 1.16,
+    "orb_top": 1.69
+   }
+  },
+  {
+   "frame": 38,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.57,
+    "pins": 2.26,
+    "all": 2.24
+   },
+   "tail": {
+    "annotated": 0.15,
+    "pins": 1.1,
+    "all": 1.08
+   },
+   "width_err_px_pins": -1.6,
+   "cam_err_px": {
+    "landmarks": 17.19,
+    "orb": 3.06,
+    "landmarks_top": 3.26,
+    "orb_top": 1.66
+   }
+  },
+  {
+   "frame": 43,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 0.54,
+    "pins": 0.3,
+    "all": 0.28
+   },
+   "tail": {
+    "annotated": 0.51,
+    "pins": 0.62,
+    "all": 0.6
+   },
+   "width_err_px_pins": 2.3,
+   "cam_err_px": {
+    "landmarks": 4.28,
+    "orb": 3.84,
+    "landmarks_top": 2.39,
+    "orb_top": 2.65
+   }
+  },
+  {
+   "frame": 63,
+   "n_detected": 21,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 0.7,
+    "pins": 0.2,
+    "all": 0.19
+   },
+   "tail": {
+    "annotated": 1.4,
+    "pins": 0.43,
+    "all": 0.43
+   },
+   "width_err_px_pins": 6.4,
+   "cam_err_px": {
+    "landmarks": 2.28,
+    "orb": 3.15,
+    "landmarks_top": 1.18,
+    "orb_top": 2.74
+   }
+  },
+  {
+   "frame": 64,
+   "n_detected": 23,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 0.99,
+    "pins": 0.42,
+    "all": 0.43
+   },
+   "tail": {
+    "annotated": 1.82,
+    "pins": 0.81,
+    "all": 0.82
+   },
+   "width_err_px_pins": 2.1,
+   "cam_err_px": {
+    "landmarks": 2.39,
+    "orb": 2.93,
+    "landmarks_top": 1.07,
+    "orb_top": 2.63
+   }
+  },
+  {
+   "frame": 75,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.63,
+    "pins": 1.91,
+    "all": 1.93
+   },
+   "tail": {
+    "annotated": 2.2,
+    "pins": 1.08,
+    "all": 1.1
+   },
+   "width_err_px_pins": 3.9,
+   "cam_err_px": {
+    "landmarks": 3.4,
+    "orb": 3.19,
+    "landmarks_top": 2.3,
+    "orb_top": 2.81
+   }
+  },
+  {
+   "frame": 76,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.51,
+    "pins": 1.86,
+    "all": 1.87
+   },
+   "tail": {
+    "annotated": 2.11,
+    "pins": 1.13,
+    "all": 1.13
+   },
+   "width_err_px_pins": 4.1,
+   "cam_err_px": {
+    "landmarks": 3.64,
+    "orb": 4.9,
+    "landmarks_top": 2.31,
+    "orb_top": 4.46
+   }
+  },
+  {
+   "frame": 77,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.58,
+    "pins": 1.93,
+    "all": 1.95
+   },
+   "tail": {
+    "annotated": 2.14,
+    "pins": 1.17,
+    "all": 1.18
+   },
+   "width_err_px_pins": 3.7,
+   "cam_err_px": {
+    "landmarks": 3.65,
+    "orb": 5.29,
+    "landmarks_top": 2.89,
+    "orb_top": 4.8
+   }
+  },
+  {
+   "frame": 81,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.72,
+    "pins": 2.02,
+    "all": 2.04
+   },
+   "tail": {
+    "annotated": 2.13,
+    "pins": 1.05,
+    "all": 1.07
+   },
+   "width_err_px_pins": 3.7,
+   "cam_err_px": {
+    "landmarks": 4.31,
+    "orb": 4.27,
+    "landmarks_top": 3.28,
+    "orb_top": 3.76
+   }
+  },
+  {
+   "frame": 84,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.84,
+    "pins": 2.16,
+    "all": 2.18
+   },
+   "tail": {
+    "annotated": 2.42,
+    "pins": 1.37,
+    "all": 1.38
+   },
+   "width_err_px_pins": 3.8,
+   "cam_err_px": {
+    "landmarks": 5.03,
+    "orb": 4.54,
+    "landmarks_top": 3.64,
+    "orb_top": 4.34
+   }
+  },
+  {
+   "frame": 87,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.85,
+    "pins": 2.18,
+    "all": 2.2
+   },
+   "tail": {
+    "annotated": 2.38,
+    "pins": 1.35,
+    "all": 1.36
+   },
+   "width_err_px_pins": 3.4,
+   "cam_err_px": {
+    "landmarks": 5.6,
+    "orb": 4.24,
+    "landmarks_top": 4.53,
+    "orb_top": 4.64
+   }
+  },
+  {
+   "frame": 103,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.84,
+    "pins": 1.12,
+    "all": 1.14
+   },
+   "tail": {
+    "annotated": 1.7,
+    "pins": 0.61,
+    "all": 0.63
+   },
+   "width_err_px_pins": 2.1,
+   "cam_err_px": {
+    "landmarks": 5.52,
+    "orb": 2.59,
+    "landmarks_top": 2.49,
+    "orb_top": 2.03
+   }
+  },
+  {
+   "frame": 104,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.87,
+    "pins": 2.12,
+    "all": 2.15
+   },
+   "tail": {
+    "annotated": 2.12,
+    "pins": 0.97,
+    "all": 1.0
+   },
+   "width_err_px_pins": 3.8,
+   "cam_err_px": {
+    "landmarks": 5.57,
+    "orb": 3.53,
+    "landmarks_top": 2.9,
+    "orb_top": 3.45
+   }
+  },
+  {
+   "frame": 105,
+   "n_detected": 16,
+   "n_carried": 1,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.74,
+    "pins": 1.99,
+    "all": 2.01
+   },
+   "tail": {
+    "annotated": 1.95,
+    "pins": 0.8,
+    "all": 0.83
+   },
+   "width_err_px_pins": 4.1,
+   "cam_err_px": {
+    "landmarks": 6.09,
+    "orb": 3.18,
+    "landmarks_top": 3.06,
+    "orb_top": 3.21
+   }
+  },
+  {
+   "frame": 106,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.83,
+    "pins": 2.16,
+    "all": 2.17
+   },
+   "tail": {
+    "annotated": 2.21,
+    "pins": 1.22,
+    "all": 1.22
+   },
+   "width_err_px_pins": 4.1,
+   "cam_err_px": {
+    "landmarks": 6.17,
+    "orb": 3.9,
+    "landmarks_top": 3.0,
+    "orb_top": 3.21
+   }
+  },
+  {
+   "frame": 107,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.6,
+    "pins": 2.09,
+    "all": 2.09
+   },
+   "tail": {
+    "annotated": 2.19,
+    "pins": 1.53,
+    "all": 1.5
+   },
+   "width_err_px_pins": 3.8,
+   "cam_err_px": {
+    "landmarks": 6.45,
+    "orb": 12.6,
+    "landmarks_top": 3.16,
+    "orb_top": 10.84
+   }
+  },
+  {
+   "frame": 109,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.86,
+    "pins": 1.17,
+    "all": 1.19
+   },
+   "tail": {
+    "annotated": 1.03,
+    "pins": 0.15,
+    "all": 0.14
+   },
+   "width_err_px_pins": 4.3,
+   "cam_err_px": {
+    "landmarks": 1.33,
+    "orb": 3.95,
+    "landmarks_top": 1.06,
+    "orb_top": 1.61
+   }
+  },
+  {
+   "frame": 110,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 1.88,
+    "pins": 1.16,
+    "all": 1.17
+   },
+   "tail": {
+    "annotated": 1.11,
+    "pins": 0.09,
+    "all": 0.08
+   },
+   "width_err_px_pins": 4.4,
+   "cam_err_px": {
+    "landmarks": 1.37,
+    "orb": 4.22,
+    "landmarks_top": 1.37,
+    "orb_top": 1.68
+   }
+  },
+  {
+   "frame": 113,
+   "n_detected": 21,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.65,
+    "pins": 2.09,
+    "all": 2.09
+   },
+   "tail": {
+    "annotated": 1.13,
+    "pins": 0.37,
+    "all": 0.35
+   },
+   "width_err_px_pins": 8.2,
+   "cam_err_px": {
+    "landmarks": 1.36,
+    "orb": 8.17,
+    "landmarks_top": 1.39,
+    "orb_top": 8.3
+   }
+  },
+  {
+   "frame": 115,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.26,
+    "pins": 1.48,
+    "all": 1.51
+   },
+   "tail": {
+    "annotated": 1.63,
+    "pins": 0.41,
+    "all": 0.44
+   },
+   "width_err_px_pins": 2.8,
+   "cam_err_px": {
+    "landmarks": 1.44,
+    "orb": 4.52,
+    "landmarks_top": 1.46,
+    "orb_top": 2.65
+   }
+  },
+  {
+   "frame": 116,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.03,
+    "pins": 1.31,
+    "all": 1.33
+   },
+   "tail": {
+    "annotated": 1.28,
+    "pins": 0.19,
+    "all": 0.2
+   },
+   "width_err_px_pins": 4.1,
+   "cam_err_px": {
+    "landmarks": 2.24,
+    "orb": 4.34,
+    "landmarks_top": 2.47,
+    "orb_top": 2.54
+   }
+  },
+  {
+   "frame": 117,
+   "n_detected": 17,
+   "n_carried": 0,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 2.19,
+    "pins": 1.45,
+    "all": 1.47
+   },
+   "tail": {
+    "annotated": 1.43,
+    "pins": 0.29,
+    "all": 0.31
+   },
+   "width_err_px_pins": 4.2,
+   "cam_err_px": {
+    "landmarks": 2.14,
+    "orb": 4.42,
+    "landmarks_top": 2.35,
+    "orb_top": 2.14
+   }
+  },
+  {
+   "frame": 122,
+   "n_detected": 7,
+   "n_carried": 10,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 7.85,
+    "pins": 8.48,
+    "all": 8.46
+   },
+   "tail": {
+    "annotated": 16.75,
+    "pins": 17.88,
+    "all": 17.86
+   },
+   "width_err_px_pins": -4.2,
+   "cam_err_px": {
+    "landmarks": 23.19,
+    "orb": 4.92,
+    "landmarks_top": 19.97,
+    "orb_top": 2.79
+   }
+  },
+  {
+   "frame": 145,
+   "n_detected": 5,
+   "n_carried": 12,
+   "camera": "landmarks",
+   "ok": true,
+   "mae": {
+    "annotated": 3.08,
+    "pins": 3.54,
+    "all": 3.53
+   },
+   "tail": {
+    "annotated": 8.05,
+    "pins": 8.97,
+    "all": 8.97
+   },
+   "width_err_px_pins": -24.9,
+   "cam_err_px": {
+    "landmarks": 43.2,
+    "orb": 9.0,
+    "landmarks_top": 34.66,
+    "orb_top": 11.0
+   }
+  },
+  {
+   "frame": 157,
+   "n_detected": 6,
+   "n_carried": 14,
+   "camera": "hold",
+   "ok": true,
+   "mae": {
+    "annotated": 20.77,
+    "pins": 21.27,
+    "all": 21.27
+   },
+   "tail": {
+    "annotated": 18.34,
+    "pins": 19.05,
+    "all": 19.06
+   },
+   "width_err_px_pins": NaN,
+   "cam_err_px": {
+    "landmarks": 43.2,
+    "orb": 15.05,
+    "landmarks_top": 34.66,
+    "orb_top": 15.42
+   }
+  }
+ ]
+}

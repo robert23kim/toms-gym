@@ -1,0 +1,146 @@
+{
+ "answer": {
+  "title": "Does the alley have a face?  Yes - and it can be found without a ball, a mask or a prompt, where the camera can see its eyes.",
+  "sub": "Alley-face loop, 2026-09-14: the lane's markings (arrows, three dot rows, the rack, the foul line) as one constellation with one degree of freedom - a homography",
+  "lines": [
+   "Found from the raw feature pool alone: the right lane on 50 % of tom_old's throw frames (0.31 boards pre-hit, 0.62 median vs the pins truth),",
+   "26 % of sample_input's, 0 % of Chardie's (720p: the arrows have no contrast); four lanes per frame on the six-lane video.",
+   "Arrows alone cannot do it (13 % at 2.83 boards); arrows + the rack can (45-55 %).",
+   "",
+   [
+    "The constellation itself is off-centre: every dot row sits 0.4-0.7 in left of the lane centre under the truth.",
+    [
+     150,
+     150,
+     160
+    ]
+   ],
+   [
+    "The top-scoring face is usually the neighbouring lane; choosing the bowler's lane needs the bowler or the ball.",
+    [
+     150,
+     150,
+     160
+    ]
+   ],
+   [
+    "Aligning fixes the far end (rack) but not the near end: the dot rows are not in the pool on handheld video, so 0.62 -> 0.81.",
+    [
+     150,
+     150,
+     160
+    ]
+   ],
+   [
+    "A class-level heatmap model transfers the arrows to a new placement (recall 0.92, precision 0.85); a per-landmark one memorises positions (0.20).",
+    [
+     150,
+     150,
+     160
+    ]
+   ]
+  ],
+  "secs": 16,
+  "scale": 0.8,
+  "dy": 46
+ },
+ "clip": {
+  "frames": null,
+  "max_frames": 900
+ },
+ "table": {
+  "title": "Board MAE vs the pins truth (throw median) - finding, aligning, and loop 4's baselines",
+  "sub": "every row: the same ball path, the same metric; E3 = found from the pool with no lane input; E4 = rack refit + arrows as a rigid pattern; loop 4 = mask student + pin refit",
+  "header": [
+   "video",
+   "loop 4: student",
+   "loop 4: student + pins",
+   "E3 found (frames)",
+   "E3 pre-hit",
+   "E4 aligned",
+   "far width err px E3 -> E4",
+   "top score = right lane"
+  ],
+  "cols": [
+   60,
+   300,
+   560,
+   860,
+   1120,
+   1320,
+   1520,
+   1760
+  ],
+  "rows": [
+   [
+    "tom_old",
+    "1.61",
+    "0.41",
+    "0.62 (50 %)",
+    "0.31",
+    "0.81",
+    "2.0 -> 2.6",
+    "40 %"
+   ],
+   [
+    "sample_input",
+    "1.19",
+    "0.37",
+    "1.73 (26 %)",
+    "1.43",
+    "1.92",
+    "11.5 -> 4.3",
+    "1 %"
+   ],
+   [
+    "Chardie",
+    "0.64",
+    "0.78",
+    "not found (0 %)",
+    "-",
+    "-",
+    "-",
+    "-"
+   ],
+   [
+    [
+     "bowling_video (6 lanes)",
+     "-",
+     "-",
+     "4 lanes / frame, ball's lane found 55 %",
+     "-",
+     "-",
+     "-",
+     "10 %"
+    ],
+    [
+     150,
+     150,
+     160
+    ]
+   ]
+  ],
+  "note": [
+   "heatmap model, held-out tom_old: class-level arrows recall 0.92 (precision 0.85) vs the black-hat pool's 0.95 at 5 % precision; per-landmark model: arrows 0.20, pins 0.96, dots 0",
+   "constellation match on the class model's arrows, held-out tom_old: right lane on 56 % of throw frames at 0.43 boards (pool: 50 % at 0.62)"
+  ],
+  "secs": 18,
+  "scale": 0.68,
+  "dy": 40
+ },
+ "recommend": {
+  "title": "For the engine",
+  "sub": null,
+  "lines": [
+   "1. The constellation is a prompt-free lane proposal: dark-mark chains + a rack blob find a lane on sharp, close video (~1 s Python). Not at 720p.",
+   "2. Never pick the lane by constellation score - anchor on the bowler's feet or the ball; the best face is a neighbour on most frames.",
+   "3. Far end from the rack (loop 4), near end still from the mask student: the pool has no foul-line dots on handheld video.",
+   "4. Learned landmarks: class-level heatmaps transfer appearance (arrows 0.92 on a new placement), per-landmark heatmaps memorise geometry.",
+   "   The next data is other phones and angles, not more throws at this alley.",
+   "5. Truth near end: verified on tom_old by the visible lane edge, unverified on the other two; the dot rows are 0.4-0.7 in off the lane centre."
+  ],
+  "secs": 14,
+  "scale": 0.8,
+  "dy": 50
+ }
+}

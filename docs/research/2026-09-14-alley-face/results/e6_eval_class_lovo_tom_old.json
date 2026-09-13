@@ -1,0 +1,191 @@
+{
+ "held_out": {
+  "per_class": {
+   "foul": {
+    "clear": 774,
+    "found": 28,
+    "recall": 0.036,
+    "detections": 70,
+    "precision": 0.4,
+    "px_err_median": 5.6
+   },
+   "fdot": {
+    "clear": 2528,
+    "found": 0,
+    "recall": 0.0,
+    "detections": 22,
+    "precision": 0.0,
+    "px_err_median": null
+   },
+   "dot": {
+    "clear": 4280,
+    "found": 0,
+    "recall": 0.0,
+    "detections": 269,
+    "precision": 0.0,
+    "px_err_median": null
+   },
+   "adot": {
+    "clear": 0,
+    "found": 0,
+    "recall": null,
+    "detections": 16,
+    "precision": 0.0,
+    "px_err_median": null
+   },
+   "arrow": {
+    "clear": 2824,
+    "found": 2594,
+    "recall": 0.919,
+    "detections": 3040,
+    "precision": 0.853,
+    "px_err_median": 3.71
+   },
+   "pin": {
+    "clear": 1306,
+    "found": 481,
+    "recall": 0.368,
+    "detections": 1089,
+    "precision": 0.442,
+    "px_err_median": 2.68
+   }
+  }
+ },
+ "ms_median": 73.6,
+ "in_distribution": {
+  "sample_input": {
+   "per_class": {
+    "foul": {
+     "clear": 31,
+     "found": 28,
+     "recall": 0.903,
+     "detections": 36,
+     "precision": 0.778,
+     "px_err_median": 3.16
+    },
+    "fdot": {
+     "clear": 105,
+     "found": 58,
+     "recall": 0.552,
+     "detections": 131,
+     "precision": 0.443,
+     "px_err_median": 4.43
+    },
+    "dot": {
+     "clear": 193,
+     "found": 159,
+     "recall": 0.824,
+     "detections": 180,
+     "precision": 0.883,
+     "px_err_median": 3.88
+    },
+    "adot": {
+     "clear": 0,
+     "found": 0,
+     "recall": null,
+     "detections": 1,
+     "precision": 0.0,
+     "px_err_median": null
+    },
+    "arrow": {
+     "clear": 126,
+     "found": 122,
+     "recall": 0.968,
+     "detections": 126,
+     "precision": 0.968,
+     "px_err_median": 3.07
+    },
+    "pin": {
+     "clear": 118,
+     "found": 26,
+     "recall": 0.22,
+     "detections": 35,
+     "precision": 0.743,
+     "px_err_median": 1.94
+    }
+   }
+  },
+  "20260112_121117": {
+   "per_class": {
+    "foul": {
+     "clear": 27,
+     "found": 27,
+     "recall": 1.0,
+     "detections": 33,
+     "precision": 0.818,
+     "px_err_median": 2.54
+    },
+    "fdot": {
+     "clear": 101,
+     "found": 91,
+     "recall": 0.901,
+     "detections": 117,
+     "precision": 0.778,
+     "px_err_median": 4.42
+    },
+    "dot": {
+     "clear": 153,
+     "found": 97,
+     "recall": 0.634,
+     "detections": 99,
+     "precision": 0.98,
+     "px_err_median": 2.87
+    },
+    "adot": {
+     "clear": 85,
+     "found": 0,
+     "recall": 0.0,
+     "detections": 93,
+     "precision": 0.0,
+     "px_err_median": null
+    },
+    "arrow": {
+     "clear": 101,
+     "found": 101,
+     "recall": 1.0,
+     "detections": 105,
+     "precision": 0.962,
+     "px_err_median": 2.17
+    },
+    "pin": {
+     "clear": 96,
+     "found": 12,
+     "recall": 0.125,
+     "detections": 22,
+     "precision": 0.545,
+     "px_err_median": 1.32
+    }
+   }
+  }
+ },
+ "classical_e2_same_frames": {
+  "arrow": {
+   "clear": 2824,
+   "found": 2674,
+   "recall": 0.947,
+   "px_err_median": 3.14,
+   "marks_per_frame": 532.3
+  },
+  "dot": {
+   "clear": 4280,
+   "found": 1625,
+   "recall": 0.38,
+   "px_err_median": 1.49,
+   "marks_per_frame": 532.3
+  },
+  "fdot": {
+   "clear": 2528,
+   "found": 2336,
+   "recall": 0.924,
+   "px_err_median": 4.57,
+   "marks_per_frame": 532.3
+  },
+  "adot": {
+   "clear": 0,
+   "found": 0,
+   "recall": null,
+   "px_err_median": null,
+   "marks_per_frame": 532.3
+  }
+ }
+}

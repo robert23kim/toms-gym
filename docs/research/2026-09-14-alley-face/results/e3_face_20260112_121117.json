@@ -1,0 +1,4716 @@
+{
+ "stem": "20260112_121117",
+ "sets": [
+  "arrows+dots+rack+gutters"
+ ],
+ "summary": {
+  "arrows+dots+rack+gutters": {
+   "frames": 171,
+   "lanes_per_frame_median": 0.0,
+   "ms_median": 1323.0,
+   "throw_frames": 75,
+   "right_found_frac": 0.0,
+   "top_is_right_frac": 0.0,
+   "feet_pick_right_frac": 0.0,
+   "centre_pick_right_frac": 0.0,
+   "widest_pick_right_frac": 0.0,
+   "mae_median_annotated": null,
+   "tail_median_annotated": null,
+   "prehit_annotated": null,
+   "mae_median_pins": null,
+   "tail_median_pins": null,
+   "prehit_pins": null,
+   "mae_median_all": null,
+   "tail_median_all": null,
+   "prehit_all": null,
+   "far_width_err_px_medabs_pins": null,
+   "far_centre_err_px_medabs_pins": null,
+   "right_found_all_frames_frac": 0.035
+  }
+ },
+ "per_frame": {
+  "arrows+dots+rack+gutters": [
+   {
+    "frame": 0,
+    "n_chains": 600,
+    "n_hyps": 50,
+    "n_lanes": 2,
+    "ms": 1215.0,
+    "lanes": [
+     {
+      "score": 9.729747716871382,
+      "det": {
+       "arrow": 7.0,
+       "dot": 0,
+       "fdot": 2.5,
+       "adot": 2.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.270252283128615
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       532.7,
+       477.9
+      ],
+      "near_w": 395.7,
+      "far_c": [
+       669.9,
+       221.6
+      ],
+      "rack": false
+     },
+     {
+      "score": 6.361481534853926,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.13851846514607338
+      },
+      "cls": "arrow",
+      "foul_c": [
+       479.2,
+       1517.4
+      ],
+      "near_w": 67.8,
+      "far_c": [
+       406.8,
+       542.2
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 1,
+    "n_chains": 600,
+    "n_hyps": 0,
+    "n_lanes": 0,
+    "ms": 1471.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 2,
+    "n_chains": 600,
+    "n_hyps": 6,
+    "n_lanes": 0,
+    "ms": 1224.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 3,
+    "n_chains": 600,
+    "n_hyps": 7,
+    "n_lanes": 0,
+    "ms": 1056.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 4,
+    "n_chains": 600,
+    "n_hyps": 10,
+    "n_lanes": 0,
+    "ms": 1309.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 5,
+    "n_chains": 600,
+    "n_hyps": 3,
+    "n_lanes": 0,
+    "ms": 1067.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 6,
+    "n_chains": 600,
+    "n_hyps": 39,
+    "n_lanes": 2,
+    "ms": 1197.0,
+    "lanes": [
+     {
+      "score": 7.199442282651783,
+      "det": {
+       "arrow": 4.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8005577173482186
+      },
+      "cls": "arrow",
+      "foul_c": [
+       72.6,
+       726.7
+      ],
+      "near_w": 90.4,
+      "far_c": [
+       11.9,
+       528.2
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.289904895906446,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.7100951040935504
+      },
+      "cls": "arrow",
+      "foul_c": [
+       79.7,
+       849.2
+      ],
+      "near_w": 151.1,
+      "far_c": [
+       11.8,
+       527.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 7,
+    "n_chains": 600,
+    "n_hyps": 52,
+    "n_lanes": 1,
+    "ms": 1249.0,
+    "lanes": [
+     {
+      "score": 8.163308915933316,
+      "det": {
+       "arrow": 5.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8366910840666846
+      },
+      "cls": "arrow",
+      "foul_c": [
+       46.1,
+       716.8
+      ],
+      "near_w": 75.7,
+      "far_c": [
+       12.5,
+       528.9
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 8,
+    "n_chains": 600,
+    "n_hyps": 0,
+    "n_lanes": 0,
+    "ms": 1402.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 9,
+    "n_chains": 600,
+    "n_hyps": 0,
+    "n_lanes": 0,
+    "ms": 1140.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 10,
+    "n_chains": 600,
+    "n_hyps": 4,
+    "n_lanes": 0,
+    "ms": 1276.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 11,
+    "n_chains": 600,
+    "n_hyps": 30,
+    "n_lanes": 0,
+    "ms": 1317.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 12,
+    "n_chains": 600,
+    "n_hyps": 29,
+    "n_lanes": 0,
+    "ms": 1200.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 13,
+    "n_chains": 600,
+    "n_hyps": 40,
+    "n_lanes": 0,
+    "ms": 1453.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 14,
+    "n_chains": 600,
+    "n_hyps": 46,
+    "n_lanes": 3,
+    "ms": 1598.0,
+    "lanes": [
+     {
+      "score": 5.496087311179569,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5039126888204333
+      },
+      "cls": "arrow",
+      "foul_c": [
+       155.8,
+       742.1
+      ],
+      "near_w": 67.6,
+      "far_c": [
+       279.4,
+       55.5
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.248034332747926,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.7519656672520766
+      },
+      "cls": "arrow",
+      "foul_c": [
+       486.1,
+       1070.4
+      ],
+      "near_w": 181.7,
+      "far_c": [
+       282.2,
+       53.6
+      ],
+      "rack": true
+     },
+     {
+      "score": 3.854991758309845,
+      "det": {
+       "arrow": 3.5,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6450082416901542
+      },
+      "cls": "arrow",
+      "foul_c": [
+       155.4,
+       681.3
+      ],
+      "near_w": 72.7,
+      "far_c": [
+       279.2,
+       56.3
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 15,
+    "n_chains": 600,
+    "n_hyps": 16,
+    "n_lanes": 0,
+    "ms": 1157.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 16,
+    "n_chains": 600,
+    "n_hyps": 20,
+    "n_lanes": 0,
+    "ms": 1105.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 17,
+    "n_chains": 600,
+    "n_hyps": 47,
+    "n_lanes": 1,
+    "ms": 1294.0,
+    "lanes": [
+     {
+      "score": 10.903097395817943,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 5.5,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5969026041820605
+      },
+      "cls": "fdot",
+      "foul_c": [
+       215.8,
+       376.2
+      ],
+      "near_w": 52.2,
+      "far_c": [
+       281.1,
+       48.5
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 18,
+    "n_chains": 600,
+    "n_hyps": 18,
+    "n_lanes": 0,
+    "ms": 1421.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 19,
+    "n_chains": 600,
+    "n_hyps": 55,
+    "n_lanes": 0,
+    "ms": 1288.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 20,
+    "n_chains": 600,
+    "n_hyps": 60,
+    "n_lanes": 0,
+    "ms": 1318.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 21,
+    "n_chains": 600,
+    "n_hyps": 165,
+    "n_lanes": 1,
+    "ms": 1124.0,
+    "lanes": [
+     {
+      "score": 10.410109014773518,
+      "det": {
+       "arrow": 3.5,
+       "dot": 2.0,
+       "fdot": 7.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.0898909852264818
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       458.8,
+       369.9
+      ],
+      "near_w": 536.1,
+      "far_c": [
+       289.5,
+       36.8
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 22,
+    "n_chains": 540,
+    "n_hyps": 46,
+    "n_lanes": 3,
+    "ms": 887.0,
+    "lanes": [
+     {
+      "score": 7.509792086459165,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 1.5,
+       "adot": 0.5,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.9902079135408356
+      },
+      "cls": "arrow",
+      "foul_c": [
+       344.0,
+       1091.2
+      ],
+      "near_w": 392.7,
+      "far_c": [
+       415.3,
+       526.3
+      ],
+      "rack": true
+     },
+     {
+      "score": 6.041339744422196,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.4586602555778068
+      },
+      "cls": "arrow",
+      "foul_c": [
+       288.5,
+       719.4
+      ],
+      "near_w": 114.3,
+      "far_c": [
+       512.6,
+       541.3
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.863241546429036,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6367584535709663
+      },
+      "cls": "arrow",
+      "foul_c": [
+       387.2,
+       757.1
+      ],
+      "near_w": 174.8,
+      "far_c": [
+       447.8,
+       541.7
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": true,
+    "right_rank": 3,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false,
+    "mae": {
+     "annotated": 6.05,
+     "pins": 5.3,
+     "all": 5.47
+    },
+    "tail": {
+     "annotated": 1.63,
+     "pins": 0.76,
+     "all": 0.71
+    },
+    "width_err_px_pins": -1.2,
+    "centre_err_px_pins": -0.5,
+    "right_det": {
+     "arrow": 3.5,
+     "dot": 0,
+     "fdot": 0,
+     "adot": 0,
+     "rack": 3,
+     "gutter": 0,
+     "foul_line": 0,
+     "chance": 0.6367584535709663
+    },
+    "right_score": 5.863241546429036,
+    "right_cls": "arrow"
+   },
+   {
+    "frame": 23,
+    "n_chains": 504,
+    "n_hyps": 9,
+    "n_lanes": 0,
+    "ms": 840.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 24,
+    "n_chains": 472,
+    "n_hyps": 19,
+    "n_lanes": 1,
+    "ms": 828.0,
+    "lanes": [
+     {
+      "score": 8.579198464791869,
+      "det": {
+       "arrow": 4.5,
+       "dot": 0,
+       "fdot": 5.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.9208015352081318
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       540.3,
+       473.6
+      ],
+      "near_w": 417.1,
+      "far_c": [
+       462.4,
+       211.4
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 25,
+    "n_chains": 579,
+    "n_hyps": 0,
+    "n_lanes": 0,
+    "ms": 990.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 26,
+    "n_chains": 600,
+    "n_hyps": 36,
+    "n_lanes": 4,
+    "ms": 1026.0,
+    "lanes": [
+     {
+      "score": 6.174125399099352,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8258746009006465
+      },
+      "cls": "arrow",
+      "foul_c": [
+       390.2,
+       741.2
+      ],
+      "near_w": 157.5,
+      "far_c": [
+       448.7,
+       541.8
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.54364071560402,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.4563592843959782
+      },
+      "cls": "arrow",
+      "foul_c": [
+       287.2,
+       744.8
+      ],
+      "near_w": 91.1,
+      "far_c": [
+       513.2,
+       542.5
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.438023640846802,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5619763591531979
+      },
+      "cls": "arrow",
+      "foul_c": [
+       359.2,
+       924.0
+      ],
+      "near_w": 272.8,
+      "far_c": [
+       417.3,
+       527.1
+      ],
+      "rack": true
+     },
+     {
+      "score": 1.5893473216048952,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.410652678395104
+      },
+      "cls": "arrow",
+      "foul_c": [
+       338.0,
+       953.2
+      ],
+      "near_w": 795.3,
+      "far_c": [
+       99.6,
+       229.9
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": true,
+    "right_rank": 1,
+    "top_is_right": true,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false,
+    "mae": {
+     "annotated": 6.13,
+     "pins": 5.28,
+     "all": 5.53
+    },
+    "tail": {
+     "annotated": 2.06,
+     "pins": 0.68,
+     "all": 1.06
+    },
+    "width_err_px_pins": 0.0,
+    "centre_err_px_pins": -0.1,
+    "right_det": {
+     "arrow": 3.0,
+     "dot": 1.0,
+     "fdot": 0,
+     "adot": 0,
+     "rack": 3,
+     "gutter": 0,
+     "foul_line": 0,
+     "chance": 0.8258746009006465
+    },
+    "right_score": 6.174125399099352,
+    "right_cls": "arrow"
+   },
+   {
+    "frame": 27,
+    "n_chains": 600,
+    "n_hyps": 41,
+    "n_lanes": 3,
+    "ms": 1058.0,
+    "lanes": [
+     {
+      "score": 7.582169067907439,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 3,
+       "foul_line": 0,
+       "chance": 0.917830932092561
+      },
+      "cls": "arrow",
+      "foul_c": [
+       340.2,
+       727.0
+      ],
+      "near_w": 158.6,
+      "far_c": [
+       448.4,
+       541.5
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.522931974967566,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.4770680250324344
+      },
+      "cls": "arrow",
+      "foul_c": [
+       238.8,
+       733.3
+      ],
+      "near_w": 174.7,
+      "far_c": [
+       512.9,
+       542.1
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.503835978210426,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.49616402178957403
+      },
+      "cls": "arrow",
+      "foul_c": [
+       407.9,
+       824.8
+      ],
+      "near_w": 194.5,
+      "far_c": [
+       417.3,
+       527.3
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": true,
+    "right_rank": 1,
+    "top_is_right": true,
+    "feet_pick_right": false,
+    "centre_pick_right": true,
+    "widest_pick_right": false,
+    "mae": {
+     "annotated": 0.62,
+     "pins": 1.47,
+     "all": 1.2
+    },
+    "tail": {
+     "annotated": 0.1,
+     "pins": 1.53,
+     "all": 1.06
+    },
+    "width_err_px_pins": -0.4,
+    "centre_err_px_pins": -0.9,
+    "right_det": {
+     "arrow": 3.0,
+     "dot": 0,
+     "fdot": 1.0,
+     "adot": 0,
+     "rack": 3,
+     "gutter": 3,
+     "foul_line": 0,
+     "chance": 0.917830932092561
+    },
+    "right_score": 7.582169067907439,
+    "right_cls": "arrow"
+   },
+   {
+    "frame": 28,
+    "n_chains": 600,
+    "n_hyps": 37,
+    "n_lanes": 2,
+    "ms": 1074.0,
+    "lanes": [
+     {
+      "score": 6.796872465847506,
+      "det": {
+       "arrow": 3.0,
+       "dot": 5.0,
+       "fdot": 2.0,
+       "adot": 0.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 3.7031275341525007
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       395.6,
+       471.5
+      ],
+      "near_w": 665.9,
+      "far_c": [
+       327.4,
+       25.6
+      ],
+      "rack": false
+     },
+     {
+      "score": 5.503266323727255,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.4967336762727456
+      },
+      "cls": "arrow",
+      "foul_c": [
+       407.8,
+       828.6
+      ],
+      "near_w": 197.5,
+      "far_c": [
+       417.3,
+       527.3
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 29,
+    "n_chains": 600,
+    "n_hyps": 17,
+    "n_lanes": 0,
+    "ms": 1361.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 30,
+    "n_chains": 600,
+    "n_hyps": 5,
+    "n_lanes": 0,
+    "ms": 1292.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 31,
+    "n_chains": 600,
+    "n_hyps": 81,
+    "n_lanes": 3,
+    "ms": 1096.0,
+    "lanes": [
+     {
+      "score": 7.323616144612465,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 4.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6763838553875338
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       527.3,
+       468.1
+      ],
+      "near_w": 322.2,
+      "far_c": [
+       403.6,
+       201.2
+      ],
+      "rack": false
+     },
+     {
+      "score": 6.482189378375242,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.517810621624755
+      },
+      "cls": "arrow",
+      "foul_c": [
+       295.2,
+       714.2
+      ],
+      "near_w": 112.4,
+      "far_c": [
+       512.5,
+       542.3
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.750599314791186,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 1,
+       "foul_line": 0,
+       "chance": 0.7494006852088112
+      },
+      "cls": "arrow",
+      "foul_c": [
+       373.0,
+       713.1
+      ],
+      "near_w": 129.4,
+      "far_c": [
+       449.2,
+       541.6
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": true,
+    "right_rank": 3,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": true,
+    "widest_pick_right": false,
+    "mae": {
+     "annotated": 2.98,
+     "pins": 2.15,
+     "all": 2.39
+    },
+    "tail": {
+     "annotated": 1.61,
+     "pins": 0.29,
+     "all": 0.61
+    },
+    "width_err_px_pins": 1.4,
+    "centre_err_px_pins": -0.1,
+    "right_det": {
+     "arrow": 3.0,
+     "dot": 0,
+     "fdot": 0,
+     "adot": 0,
+     "rack": 3,
+     "gutter": 1,
+     "foul_line": 0,
+     "chance": 0.7494006852088112
+    },
+    "right_score": 5.750599314791186,
+    "right_cls": "arrow"
+   },
+   {
+    "frame": 32,
+    "n_chains": 528,
+    "n_hyps": 161,
+    "n_lanes": 6,
+    "ms": 1051.0,
+    "lanes": [
+     {
+      "score": 8.992980838335516,
+      "det": {
+       "arrow": 4.0,
+       "dot": 2.0,
+       "fdot": 4.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.0070191616644852
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       387.1,
+       492.4
+      ],
+      "near_w": 439.1,
+      "far_c": [
+       436.0,
+       228.7
+      ],
+      "rack": false
+     },
+     {
+      "score": 7.656072391055492,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0.5,
+       "fdot": 5.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 1,
+       "chance": 1.343927608944508
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       639.1,
+       368.7
+      ],
+      "near_w": 485.6,
+      "far_c": [
+       154.5,
+       20.1
+      ],
+      "rack": false
+     },
+     {
+      "score": 7.058839923077905,
+      "det": {
+       "arrow": 4.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 3.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.441160076922093
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       409.4,
+       254.9
+      ],
+      "near_w": 249.2,
+      "far_c": [
+       429.3,
+       101.0
+      ],
+      "rack": false
+     },
+     {
+      "score": 6.4482861125906075,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5517138874093952
+      },
+      "cls": "arrow",
+      "foul_c": [
+       295.6,
+       714.0
+      ],
+      "near_w": 112.4,
+      "far_c": [
+       512.5,
+       542.3
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.749899926185588,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 1,
+       "foul_line": 0,
+       "chance": 0.7501000738144142
+      },
+      "cls": "arrow",
+      "foul_c": [
+       374.4,
+       712.7
+      ],
+      "near_w": 129.4,
+      "far_c": [
+       448.2,
+       541.6
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.461820418112527,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5381795818874751
+      },
+      "cls": "arrow",
+      "foul_c": [
+       406.0,
+       861.6
+      ],
+      "near_w": 218.9,
+      "far_c": [
+       417.8,
+       526.9
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": true,
+    "right_rank": 5,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": true,
+    "widest_pick_right": false,
+    "mae": {
+     "annotated": 2.76,
+     "pins": 2.1,
+     "all": 2.23
+    },
+    "tail": {
+     "annotated": 0.99,
+     "pins": 0.57,
+     "all": 0.33
+    },
+    "width_err_px_pins": 1.5,
+    "centre_err_px_pins": -0.8,
+    "right_det": {
+     "arrow": 3.0,
+     "dot": 0,
+     "fdot": 0,
+     "adot": 0,
+     "rack": 3,
+     "gutter": 1,
+     "foul_line": 0,
+     "chance": 0.7501000738144142
+    },
+    "right_score": 5.749899926185588,
+    "right_cls": "arrow"
+   },
+   {
+    "frame": 33,
+    "n_chains": 600,
+    "n_hyps": 89,
+    "n_lanes": 1,
+    "ms": 1410.0,
+    "lanes": [
+     {
+      "score": 7.682205222025887,
+      "det": {
+       "arrow": 5.0,
+       "dot": 1.5,
+       "fdot": 3.5,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.3177947779741137
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       648.5,
+       477.8
+      ],
+      "near_w": 517.6,
+      "far_c": [
+       149.6,
+       104.2
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 34,
+    "n_chains": 600,
+    "n_hyps": 54,
+    "n_lanes": 4,
+    "ms": 1140.0,
+    "lanes": [
+     {
+      "score": 9.402994654955297,
+      "det": {
+       "arrow": 5.0,
+       "dot": 0,
+       "fdot": 5.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5970053450447012
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       287.3,
+       501.4
+      ],
+      "near_w": 273.5,
+      "far_c": [
+       211.9,
+       327.4
+      ],
+      "rack": false
+     },
+     {
+      "score": 6.704646703762749,
+      "det": {
+       "arrow": 3.5,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.7953532962372519
+      },
+      "cls": "arrow",
+      "foul_c": [
+       388.9,
+       749.3
+      ],
+      "near_w": 164.3,
+      "far_c": [
+       448.3,
+       542.4
+      ],
+      "rack": true
+     },
+     {
+      "score": 6.010660128664485,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.4893398713355198
+      },
+      "cls": "arrow",
+      "foul_c": [
+       238.0,
+       733.8
+      ],
+      "near_w": 175.4,
+      "far_c": [
+       513.3,
+       542.5
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.554111934532629,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.9458880654673751
+      },
+      "cls": "arrow",
+      "foul_c": [
+       349.0,
+       984.1
+      ],
+      "near_w": 319.4,
+      "far_c": [
+       417.8,
+       527.7
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": true,
+    "right_rank": 2,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false,
+    "mae": {
+     "annotated": 5.85,
+     "pins": 5.15,
+     "all": 5.3
+    },
+    "tail": {
+     "annotated": 1.47,
+     "pins": 0.78,
+     "all": 0.69
+    },
+    "width_err_px_pins": -1.1,
+    "centre_err_px_pins": -0.6,
+    "right_det": {
+     "arrow": 3.5,
+     "dot": 1.0,
+     "fdot": 0,
+     "adot": 0,
+     "rack": 3,
+     "gutter": 0,
+     "foul_line": 0,
+     "chance": 0.7953532962372519
+    },
+    "right_score": 6.704646703762749,
+    "right_cls": "arrow"
+   },
+   {
+    "frame": 35,
+    "n_chains": 600,
+    "n_hyps": 24,
+    "n_lanes": 0,
+    "ms": 1286.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 36,
+    "n_chains": 600,
+    "n_hyps": 39,
+    "n_lanes": 1,
+    "ms": 1585.0,
+    "lanes": [
+     {
+      "score": 7.688906236240251,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.5,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8110937637597487
+      },
+      "cls": "arrow",
+      "foul_c": [
+       350.5,
+       1139.3
+      ],
+      "near_w": 137.8,
+      "far_c": [
+       223.1,
+       16.4
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 37,
+    "n_chains": 600,
+    "n_hyps": 23,
+    "n_lanes": 0,
+    "ms": 1340.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 38,
+    "n_chains": 600,
+    "n_hyps": 13,
+    "n_lanes": 0,
+    "ms": 1335.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 39,
+    "n_chains": 600,
+    "n_hyps": 12,
+    "n_lanes": 0,
+    "ms": 1137.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 40,
+    "n_chains": 600,
+    "n_hyps": 12,
+    "n_lanes": 0,
+    "ms": 998.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 41,
+    "n_chains": 600,
+    "n_hyps": 52,
+    "n_lanes": 1,
+    "ms": 1025.0,
+    "lanes": [
+     {
+      "score": 5.840824490164543,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0.5,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6591755098354579
+      },
+      "cls": "arrow",
+      "foul_c": [
+       588.6,
+       611.3
+      ],
+      "near_w": 325.3,
+      "far_c": [
+       282.0,
+       47.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 42,
+    "n_chains": 600,
+    "n_hyps": 117,
+    "n_lanes": 1,
+    "ms": 1113.0,
+    "lanes": [
+     {
+      "score": 5.686276734487802,
+      "det": {
+       "arrow": 3.0,
+       "dot": 3.0,
+       "fdot": 1.0,
+       "adot": 1.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.8137232655122006
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       398.2,
+       302.1
+      ],
+      "near_w": 469.4,
+      "far_c": [
+       454.1,
+       12.7
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 43,
+    "n_chains": 554,
+    "n_hyps": 30,
+    "n_lanes": 2,
+    "ms": 944.0,
+    "lanes": [
+     {
+      "score": 7.777041931704844,
+      "det": {
+       "arrow": 4.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 4.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.2229580682951564
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       344.1,
+       750.4
+      ],
+      "near_w": 314.5,
+      "far_c": [
+       717.8,
+       164.5
+      ],
+      "rack": false
+     },
+     {
+      "score": 5.748402641474324,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 4.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.2515973585256774
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       497.3,
+       303.2
+      ],
+      "near_w": 424.1,
+      "far_c": [
+       465.7,
+       2.2
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 44,
+    "n_chains": 600,
+    "n_hyps": 95,
+    "n_lanes": 0,
+    "ms": 1150.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 45,
+    "n_chains": 600,
+    "n_hyps": 54,
+    "n_lanes": 0,
+    "ms": 1077.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 46,
+    "n_chains": 600,
+    "n_hyps": 61,
+    "n_lanes": 0,
+    "ms": 1181.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 47,
+    "n_chains": 600,
+    "n_hyps": 29,
+    "n_lanes": 1,
+    "ms": 1356.0,
+    "lanes": [
+     {
+      "score": 5.10775192307482,
+      "det": {
+       "arrow": 5.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8922480769251715
+      },
+      "cls": "arrow",
+      "foul_c": [
+       395.6,
+       436.1
+      ],
+      "near_w": 30.5,
+      "far_c": [
+       507.5,
+       396.8
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 48,
+    "n_chains": 600,
+    "n_hyps": 18,
+    "n_lanes": 0,
+    "ms": 1487.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 49,
+    "n_chains": 600,
+    "n_hyps": 17,
+    "n_lanes": 0,
+    "ms": 1357.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 50,
+    "n_chains": 600,
+    "n_hyps": 31,
+    "n_lanes": 0,
+    "ms": 1384.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 51,
+    "n_chains": 600,
+    "n_hyps": 26,
+    "n_lanes": 1,
+    "ms": 1176.0,
+    "lanes": [
+     {
+      "score": 5.289674654657631,
+      "det": {
+       "arrow": 4.5,
+       "dot": 1.0,
+       "fdot": 1.5,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.7103253453423681
+      },
+      "cls": "arrow",
+      "foul_c": [
+       236.2,
+       594.0
+      ],
+      "near_w": 626.7,
+      "far_c": [
+       560.4,
+       87.2
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 52,
+    "n_chains": 600,
+    "n_hyps": 18,
+    "n_lanes": 0,
+    "ms": 1297.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 53,
+    "n_chains": 600,
+    "n_hyps": 59,
+    "n_lanes": 2,
+    "ms": 1158.0,
+    "lanes": [
+     {
+      "score": 10.604966818913676,
+      "det": {
+       "arrow": 4.0,
+       "dot": 2.5,
+       "fdot": 5.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8950331810863268
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       380.5,
+       454.7
+      ],
+      "near_w": 388.1,
+      "far_c": [
+       524.0,
+       217.6
+      ],
+      "rack": false
+     },
+     {
+      "score": 5.67727231491575,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 2.5,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.8227276850842511
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       502.2,
+       493.4
+      ],
+      "near_w": 346.2,
+      "far_c": [
+       408.0,
+       179.3
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 54,
+    "n_chains": 600,
+    "n_hyps": 32,
+    "n_lanes": 0,
+    "ms": 1200.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 55,
+    "n_chains": 600,
+    "n_hyps": 27,
+    "n_lanes": 1,
+    "ms": 1247.0,
+    "lanes": [
+     {
+      "score": 7.068874559841602,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 3.0,
+       "adot": 2.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.9311254401583975
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       391.7,
+       290.0
+      ],
+      "near_w": 343.9,
+      "far_c": [
+       250.3,
+       41.8
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 56,
+    "n_chains": 600,
+    "n_hyps": 12,
+    "n_lanes": 0,
+    "ms": 1141.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 57,
+    "n_chains": 600,
+    "n_hyps": 16,
+    "n_lanes": 0,
+    "ms": 1340.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 58,
+    "n_chains": 600,
+    "n_hyps": 45,
+    "n_lanes": 0,
+    "ms": 1753.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 59,
+    "n_chains": 600,
+    "n_hyps": 26,
+    "n_lanes": 1,
+    "ms": 1927.0,
+    "lanes": [
+     {
+      "score": 7.745841588438561,
+      "det": {
+       "arrow": 5.0,
+       "dot": 0.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.7541584115614473
+      },
+      "cls": "arrow",
+      "foul_c": [
+       40.9,
+       728.9
+      ],
+      "near_w": 89.1,
+      "far_c": [
+       12.6,
+       531.3
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 60,
+    "n_chains": 600,
+    "n_hyps": 16,
+    "n_lanes": 1,
+    "ms": 1448.0,
+    "lanes": [
+     {
+      "score": 5.267041220813991,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.7329587791860087
+      },
+      "cls": "arrow",
+      "foul_c": [
+       455.0,
+       1111.4
+      ],
+      "near_w": 84.3,
+      "far_c": [
+       280.2,
+       53.5
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 61,
+    "n_chains": 600,
+    "n_hyps": 8,
+    "n_lanes": 0,
+    "ms": 1393.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 62,
+    "n_chains": 600,
+    "n_hyps": 56,
+    "n_lanes": 1,
+    "ms": 1398.0,
+    "lanes": [
+     {
+      "score": 8.752219424191054,
+      "det": {
+       "arrow": 5.0,
+       "dot": 2.0,
+       "fdot": 3.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.247780575808945
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       434.9,
+       466.1
+      ],
+      "near_w": 430.7,
+      "far_c": [
+       508.3,
+       183.6
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 63,
+    "n_chains": 600,
+    "n_hyps": 30,
+    "n_lanes": 0,
+    "ms": 1321.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 64,
+    "n_chains": 600,
+    "n_hyps": 0,
+    "n_lanes": 0,
+    "ms": 1518.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 65,
+    "n_chains": 600,
+    "n_hyps": 127,
+    "n_lanes": 1,
+    "ms": 1548.0,
+    "lanes": [
+     {
+      "score": 10.794926793267996,
+      "det": {
+       "arrow": 4.0,
+       "dot": 2.0,
+       "fdot": 6.5,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.705073206732003
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       385.8,
+       483.9
+      ],
+      "near_w": 500.7,
+      "far_c": [
+       335.6,
+       22.8
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 66,
+    "n_chains": 600,
+    "n_hyps": 22,
+    "n_lanes": 0,
+    "ms": 1545.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 67,
+    "n_chains": 600,
+    "n_hyps": 0,
+    "n_lanes": 0,
+    "ms": 1415.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 68,
+    "n_chains": 600,
+    "n_hyps": 28,
+    "n_lanes": 1,
+    "ms": 1408.0,
+    "lanes": [
+     {
+      "score": 7.448922453575931,
+      "det": {
+       "arrow": 5.0,
+       "dot": 0,
+       "fdot": 1.0,
+       "adot": 4.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 3.0510775464240667
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       386.1,
+       309.4
+      ],
+      "near_w": 464.0,
+      "far_c": [
+       323.2,
+       7.4
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 69,
+    "n_chains": 600,
+    "n_hyps": 20,
+    "n_lanes": 0,
+    "ms": 1438.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 70,
+    "n_chains": 600,
+    "n_hyps": 16,
+    "n_lanes": 1,
+    "ms": 1234.0,
+    "lanes": [
+     {
+      "score": 4.991867286290651,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 3.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.50813271370935
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       507.3,
+       301.8
+      ],
+      "near_w": 428.0,
+      "far_c": [
+       497.4,
+       16.6
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 71,
+    "n_chains": 600,
+    "n_hyps": 37,
+    "n_lanes": 0,
+    "ms": 1360.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 72,
+    "n_chains": 600,
+    "n_hyps": 43,
+    "n_lanes": 1,
+    "ms": 1198.0,
+    "lanes": [
+     {
+      "score": 2.508359157482651,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.4916408425173478
+      },
+      "cls": "arrow",
+      "foul_c": [
+       582.7,
+       862.9
+      ],
+      "near_w": 193.9,
+      "far_c": [
+       703.3,
+       19.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 73,
+    "n_chains": 600,
+    "n_hyps": 8,
+    "n_lanes": 0,
+    "ms": 1414.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 74,
+    "n_chains": 600,
+    "n_hyps": 17,
+    "n_lanes": 1,
+    "ms": 1258.0,
+    "lanes": [
+     {
+      "score": 6.194140546910798,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0.5,
+       "fdot": 1.0,
+       "adot": 3.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.8058594530892007
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       384.9,
+       280.4
+      ],
+      "near_w": 341.6,
+      "far_c": [
+       231.5,
+       74.0
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 75,
+    "n_chains": 600,
+    "n_hyps": 32,
+    "n_lanes": 0,
+    "ms": 1325.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 76,
+    "n_chains": 600,
+    "n_hyps": 62,
+    "n_lanes": 0,
+    "ms": 1431.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 77,
+    "n_chains": 600,
+    "n_hyps": 55,
+    "n_lanes": 0,
+    "ms": 1305.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 78,
+    "n_chains": 600,
+    "n_hyps": 25,
+    "n_lanes": 1,
+    "ms": 1322.0,
+    "lanes": [
+     {
+      "score": 6.463885511599525,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5361144884004759
+      },
+      "cls": "arrow",
+      "foul_c": [
+       45.7,
+       748.0
+      ],
+      "near_w": 235.7,
+      "far_c": [
+       500.0,
+       542.3
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 79,
+    "n_chains": 600,
+    "n_hyps": 72,
+    "n_lanes": 0,
+    "ms": 1218.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 80,
+    "n_chains": 600,
+    "n_hyps": 74,
+    "n_lanes": 0,
+    "ms": 1345.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 81,
+    "n_chains": 600,
+    "n_hyps": 33,
+    "n_lanes": 0,
+    "ms": 1106.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 82,
+    "n_chains": 600,
+    "n_hyps": 20,
+    "n_lanes": 0,
+    "ms": 1351.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 83,
+    "n_chains": 600,
+    "n_hyps": 41,
+    "n_lanes": 0,
+    "ms": 1195.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 84,
+    "n_chains": 600,
+    "n_hyps": 59,
+    "n_lanes": 1,
+    "ms": 1395.0,
+    "lanes": [
+     {
+      "score": 7.537331162546365,
+      "det": {
+       "arrow": 5.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 4.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.462668837453634
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       391.8,
+       301.1
+      ],
+      "near_w": 437.6,
+      "far_c": [
+       257.9,
+       31.7
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 85,
+    "n_chains": 600,
+    "n_hyps": 39,
+    "n_lanes": 1,
+    "ms": 1515.0,
+    "lanes": [
+     {
+      "score": 5.405560224578179,
+      "det": {
+       "arrow": 4.5,
+       "dot": 3.0,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 3.094439775421817
+      },
+      "cls": "arrow",
+      "foul_c": [
+       593.4,
+       585.6
+      ],
+      "near_w": 578.1,
+      "far_c": [
+       479.1,
+       110.9
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 86,
+    "n_chains": 600,
+    "n_hyps": 7,
+    "n_lanes": 0,
+    "ms": 1260.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 87,
+    "n_chains": 600,
+    "n_hyps": 179,
+    "n_lanes": 2,
+    "ms": 1275.0,
+    "lanes": [
+     {
+      "score": 7.492252359209853,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 2.0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5077476407901472
+      },
+      "cls": "fdot",
+      "foul_c": [
+       490.0,
+       593.7
+      ],
+      "near_w": 175.0,
+      "far_c": [
+       374.8,
+       450.1
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.624983139916865,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.375016860083135
+      },
+      "cls": "arrow",
+      "foul_c": [
+       535.5,
+       1545.3
+      ],
+      "near_w": 325.7,
+      "far_c": [
+       688.7,
+       22.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 88,
+    "n_chains": 600,
+    "n_hyps": 103,
+    "n_lanes": 1,
+    "ms": 1241.0,
+    "lanes": [
+     {
+      "score": 6.712746035984022,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.2872539640159777
+      },
+      "cls": "arrow",
+      "foul_c": [
+       379.1,
+       535.6
+      ],
+      "near_w": 137.5,
+      "far_c": [
+       374.4,
+       449.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 89,
+    "n_chains": 600,
+    "n_hyps": 42,
+    "n_lanes": 0,
+    "ms": 1369.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 90,
+    "n_chains": 600,
+    "n_hyps": 72,
+    "n_lanes": 1,
+    "ms": 1371.0,
+    "lanes": [
+     {
+      "score": 1.7406199385019239,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.2593800614980777
+      },
+      "cls": "arrow",
+      "foul_c": [
+       202.8,
+       329.2
+      ],
+      "near_w": 52.2,
+      "far_c": [
+       19.5,
+       231.1
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 91,
+    "n_chains": 600,
+    "n_hyps": 114,
+    "n_lanes": 4,
+    "ms": 1323.0,
+    "lanes": [
+     {
+      "score": 8.865637584977772,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 3.5,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6343624150222285
+      },
+      "cls": "adot",
+      "foul_c": [
+       689.5,
+       313.1
+      ],
+      "near_w": 78.1,
+      "far_c": [
+       686.5,
+       22.5
+      ],
+      "rack": true
+     },
+     {
+      "score": 7.845174281267383,
+      "det": {
+       "arrow": 4.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0.5,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.654825718732623
+      },
+      "cls": "arrow",
+      "foul_c": [
+       603.3,
+       510.0
+      ],
+      "near_w": 75.2,
+      "far_c": [
+       703.1,
+       436.2
+      ],
+      "rack": true
+     },
+     {
+      "score": 6.91575554067483,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 1.0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.584244459325169
+      },
+      "cls": "arrow",
+      "foul_c": [
+       827.1,
+       657.0
+      ],
+      "near_w": 216.1,
+      "far_c": [
+       601.4,
+       437.8
+      ],
+      "rack": true
+     },
+     {
+      "score": 6.470474418413952,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5295255815860466
+      },
+      "cls": "arrow",
+      "foul_c": [
+       542.3,
+       581.0
+      ],
+      "near_w": 108.9,
+      "far_c": [
+       703.6,
+       435.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 92,
+    "n_chains": 600,
+    "n_hyps": 74,
+    "n_lanes": 0,
+    "ms": 1300.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 93,
+    "n_chains": 600,
+    "n_hyps": 30,
+    "n_lanes": 0,
+    "ms": 1328.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 94,
+    "n_chains": 600,
+    "n_hyps": 67,
+    "n_lanes": 1,
+    "ms": 1340.0,
+    "lanes": [
+     {
+      "score": 5.407979780551602,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5920202194484002
+      },
+      "cls": "arrow",
+      "foul_c": [
+       510.2,
+       1015.6
+      ],
+      "near_w": 246.2,
+      "far_c": [
+       685.3,
+       26.9
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 95,
+    "n_chains": 600,
+    "n_hyps": 67,
+    "n_lanes": 1,
+    "ms": 1424.0,
+    "lanes": [
+     {
+      "score": 3.0532423230949277,
+      "det": {
+       "arrow": 4.5,
+       "dot": 0.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.9467576769050718
+      },
+      "cls": "arrow",
+      "foul_c": [
+       737.4,
+       885.5
+      ],
+      "near_w": 661.9,
+      "far_c": [
+       281.8,
+       37.3
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 96,
+    "n_chains": 600,
+    "n_hyps": 38,
+    "n_lanes": 0,
+    "ms": 1485.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 97,
+    "n_chains": 600,
+    "n_hyps": 24,
+    "n_lanes": 0,
+    "ms": 1354.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 98,
+    "n_chains": 600,
+    "n_hyps": 16,
+    "n_lanes": 0,
+    "ms": 1432.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 99,
+    "n_chains": 600,
+    "n_hyps": 21,
+    "n_lanes": 0,
+    "ms": 1328.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 100,
+    "n_chains": 600,
+    "n_hyps": 44,
+    "n_lanes": 0,
+    "ms": 1408.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 101,
+    "n_chains": 600,
+    "n_hyps": 69,
+    "n_lanes": 1,
+    "ms": 1444.0,
+    "lanes": [
+     {
+      "score": 8.632289523855112,
+      "det": {
+       "arrow": 4.0,
+       "dot": 6.0,
+       "fdot": 3.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 4.367710476144887
+      },
+      "cls": "arrow+dot",
+      "foul_c": [
+       360.8,
+       602.4
+      ],
+      "near_w": 775.8,
+      "far_c": [
+       578.4,
+       108.4
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 102,
+    "n_chains": 600,
+    "n_hyps": 55,
+    "n_lanes": 0,
+    "ms": 1199.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 103,
+    "n_chains": 600,
+    "n_hyps": 26,
+    "n_lanes": 0,
+    "ms": 1259.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 104,
+    "n_chains": 600,
+    "n_hyps": 34,
+    "n_lanes": 2,
+    "ms": 1283.0,
+    "lanes": [
+     {
+      "score": 6.972231295299297,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5277687047007028
+      },
+      "cls": "arrow",
+      "foul_c": [
+       461.4,
+       543.5
+      ],
+      "near_w": 131.7,
+      "far_c": [
+       256.9,
+       59.9
+      ],
+      "rack": true
+     },
+     {
+      "score": 6.49071837842197,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5092816215780326
+      },
+      "cls": "arrow",
+      "foul_c": [
+       423.7,
+       400.6
+      ],
+      "near_w": 144.2,
+      "far_c": [
+       257.1,
+       60.2
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 105,
+    "n_chains": 600,
+    "n_hyps": 63,
+    "n_lanes": 0,
+    "ms": 1360.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 106,
+    "n_chains": 600,
+    "n_hyps": 46,
+    "n_lanes": 0,
+    "ms": 1197.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 107,
+    "n_chains": 600,
+    "n_hyps": 36,
+    "n_lanes": 0,
+    "ms": 1558.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 108,
+    "n_chains": 600,
+    "n_hyps": 19,
+    "n_lanes": 0,
+    "ms": 1473.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 109,
+    "n_chains": 600,
+    "n_hyps": 56,
+    "n_lanes": 3,
+    "ms": 1450.0,
+    "lanes": [
+     {
+      "score": 7.825719253631689,
+      "det": {
+       "arrow": 4.0,
+       "dot": 6.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.674280746368311
+      },
+      "cls": "arrow+dot",
+      "foul_c": [
+       747.6,
+       658.1
+      ],
+      "near_w": 852.6,
+      "far_c": [
+       129.3,
+       77.4
+      ],
+      "rack": false
+     },
+     {
+      "score": 5.8537502716829835,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.14624972831701702
+      },
+      "cls": "arrow",
+      "foul_c": [
+       466.5,
+       1500.0
+      ],
+      "near_w": 65.5,
+      "far_c": [
+       396.9,
+       551.9
+      ],
+      "rack": true
+     },
+     {
+      "score": 5.8537502716829835,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.14624972831701702
+      },
+      "cls": "arrow",
+      "foul_c": [
+       362.6,
+       1576.2
+      ],
+      "near_w": 80.2,
+      "far_c": [
+       524.9,
+       547.6
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 110,
+    "n_chains": 600,
+    "n_hyps": 15,
+    "n_lanes": 0,
+    "ms": 1653.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 111,
+    "n_chains": 600,
+    "n_hyps": 40,
+    "n_lanes": 1,
+    "ms": 1611.0,
+    "lanes": [
+     {
+      "score": 1.8867936249665787,
+      "det": {
+       "arrow": 4.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.113206375033421
+      },
+      "cls": "arrow",
+      "foul_c": [
+       1047.6,
+       1284.7
+      ],
+      "near_w": 760.8,
+      "far_c": [
+       73.0,
+       154.3
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 112,
+    "n_chains": 600,
+    "n_hyps": 31,
+    "n_lanes": 0,
+    "ms": 1825.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 113,
+    "n_chains": 600,
+    "n_hyps": 41,
+    "n_lanes": 2,
+    "ms": 1613.0,
+    "lanes": [
+     {
+      "score": 6.228042154472444,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.7719578455275578
+      },
+      "cls": "arrow",
+      "foul_c": [
+       484.4,
+       1085.6
+      ],
+      "near_w": 189.7,
+      "far_c": [
+       250.4,
+       66.4
+      ],
+      "rack": true
+     },
+     {
+      "score": 4.910603131786112,
+      "det": {
+       "arrow": 5.5,
+       "dot": 1.5,
+       "fdot": 1.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 3.0893968682138913
+      },
+      "cls": "arrow",
+      "foul_c": [
+       593.6,
+       743.3
+      ],
+      "near_w": 534.7,
+      "far_c": [
+       536.8,
+       164.3
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 114,
+    "n_chains": 600,
+    "n_hyps": 49,
+    "n_lanes": 1,
+    "ms": 1577.0,
+    "lanes": [
+     {
+      "score": 5.832051089033127,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6679489109668741
+      },
+      "cls": "arrow",
+      "foul_c": [
+       473.5,
+       1038.2
+      ],
+      "near_w": 172.9,
+      "far_c": [
+       250.4,
+       66.6
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 115,
+    "n_chains": 600,
+    "n_hyps": 7,
+    "n_lanes": 0,
+    "ms": 1460.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 116,
+    "n_chains": 600,
+    "n_hyps": 39,
+    "n_lanes": 0,
+    "ms": 1858.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 117,
+    "n_chains": 600,
+    "n_hyps": 27,
+    "n_lanes": 0,
+    "ms": 1226.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 118,
+    "n_chains": 600,
+    "n_hyps": 55,
+    "n_lanes": 0,
+    "ms": 1265.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 119,
+    "n_chains": 600,
+    "n_hyps": 70,
+    "n_lanes": 0,
+    "ms": 1255.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 120,
+    "n_chains": 600,
+    "n_hyps": 43,
+    "n_lanes": 0,
+    "ms": 1156.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 121,
+    "n_chains": 600,
+    "n_hyps": 24,
+    "n_lanes": 1,
+    "ms": 1304.0,
+    "lanes": [
+     {
+      "score": 8.57871652858184,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 1.0,
+       "adot": 6.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.421283471418162
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       319.6,
+       342.4
+      ],
+      "near_w": 413.8,
+      "far_c": [
+       7.6,
+       80.8
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 122,
+    "n_chains": 600,
+    "n_hyps": 42,
+    "n_lanes": 0,
+    "ms": 1444.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 123,
+    "n_chains": 600,
+    "n_hyps": 42,
+    "n_lanes": 0,
+    "ms": 1458.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 124,
+    "n_chains": 600,
+    "n_hyps": 18,
+    "n_lanes": 0,
+    "ms": 1367.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 125,
+    "n_chains": 600,
+    "n_hyps": 21,
+    "n_lanes": 0,
+    "ms": 1303.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 126,
+    "n_chains": 600,
+    "n_hyps": 78,
+    "n_lanes": 1,
+    "ms": 1499.0,
+    "lanes": [
+     {
+      "score": 4.516299496097979,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.4837005039020212
+      },
+      "cls": "arrow",
+      "foul_c": [
+       382.5,
+       903.5
+      ],
+      "near_w": 643.6,
+      "far_c": [
+       703.3,
+       444.7
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 127,
+    "n_chains": 600,
+    "n_hyps": 12,
+    "n_lanes": 0,
+    "ms": 1496.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 128,
+    "n_chains": 600,
+    "n_hyps": 25,
+    "n_lanes": 0,
+    "ms": 1489.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 129,
+    "n_chains": 600,
+    "n_hyps": 10,
+    "n_lanes": 0,
+    "ms": 1364.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 130,
+    "n_chains": 600,
+    "n_hyps": 52,
+    "n_lanes": 1,
+    "ms": 1340.0,
+    "lanes": [
+     {
+      "score": 4.335859834171735,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0.5,
+       "fdot": 3.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 1,
+       "foul_line": 0,
+       "chance": 2.6641401658282633
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       620.9,
+       514.8
+      ],
+      "near_w": 666.9,
+      "far_c": [
+       117.7,
+       12.0
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 131,
+    "n_chains": 600,
+    "n_hyps": 34,
+    "n_lanes": 0,
+    "ms": 1582.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 132,
+    "n_chains": 600,
+    "n_hyps": 66,
+    "n_lanes": 0,
+    "ms": 1339.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 133,
+    "n_chains": 600,
+    "n_hyps": 44,
+    "n_lanes": 0,
+    "ms": 1548.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 134,
+    "n_chains": 600,
+    "n_hyps": 110,
+    "n_lanes": 0,
+    "ms": 1502.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 135,
+    "n_chains": 600,
+    "n_hyps": 14,
+    "n_lanes": 0,
+    "ms": 1431.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 136,
+    "n_chains": 600,
+    "n_hyps": 43,
+    "n_lanes": 1,
+    "ms": 1357.0,
+    "lanes": [
+     {
+      "score": 5.364376509009621,
+      "det": {
+       "arrow": 3.5,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 3.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.1356234909903797
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       388.3,
+       314.3
+      ],
+      "near_w": 367.7,
+      "far_c": [
+       152.3,
+       16.8
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 137,
+    "n_chains": 600,
+    "n_hyps": 23,
+    "n_lanes": 0,
+    "ms": 1525.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 138,
+    "n_chains": 600,
+    "n_hyps": 64,
+    "n_lanes": 0,
+    "ms": 1421.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 139,
+    "n_chains": 600,
+    "n_hyps": 48,
+    "n_lanes": 0,
+    "ms": 1257.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 140,
+    "n_chains": 600,
+    "n_hyps": 37,
+    "n_lanes": 0,
+    "ms": 1425.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 141,
+    "n_chains": 600,
+    "n_hyps": 44,
+    "n_lanes": 1,
+    "ms": 1752.0,
+    "lanes": [
+     {
+      "score": 3.6046356135560944,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.5,
+       "fdot": 0,
+       "adot": 3.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 3.8953643864439047
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       413.9,
+       421.7
+      ],
+      "near_w": 510.3,
+      "far_c": [
+       398.1,
+       109.6
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 142,
+    "n_chains": 600,
+    "n_hyps": 46,
+    "n_lanes": 0,
+    "ms": 1385.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 143,
+    "n_chains": 600,
+    "n_hyps": 132,
+    "n_lanes": 0,
+    "ms": 1356.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 144,
+    "n_chains": 600,
+    "n_hyps": 38,
+    "n_lanes": 0,
+    "ms": 1426.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 145,
+    "n_chains": 600,
+    "n_hyps": 52,
+    "n_lanes": 0,
+    "ms": 1382.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 146,
+    "n_chains": 600,
+    "n_hyps": 87,
+    "n_lanes": 0,
+    "ms": 1497.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 147,
+    "n_chains": 600,
+    "n_hyps": 105,
+    "n_lanes": 1,
+    "ms": 1642.0,
+    "lanes": [
+     {
+      "score": 7.225578071820702,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 1.0,
+       "adot": 5.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.774421928179299
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       338.5,
+       311.2
+      ],
+      "near_w": 420.6,
+      "far_c": [
+       105.2,
+       46.4
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 148,
+    "n_chains": 600,
+    "n_hyps": 32,
+    "n_lanes": 2,
+    "ms": 1289.0,
+    "lanes": [
+     {
+      "score": 9.420320761655251,
+      "det": {
+       "arrow": 6.0,
+       "dot": 0,
+       "fdot": 4.5,
+       "adot": 1.5,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.5796792383447484
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       515.7,
+       500.7
+      ],
+      "near_w": 424.8,
+      "far_c": [
+       626.9,
+       221.2
+      ],
+      "rack": false
+     },
+     {
+      "score": 5.996854301573512,
+      "det": {
+       "arrow": 3.5,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5031456984264906
+      },
+      "cls": "arrow",
+      "foul_c": [
+       262.9,
+       1210.8
+      ],
+      "near_w": 127.2,
+      "far_c": [
+       59.0,
+       78.7
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 149,
+    "n_chains": 600,
+    "n_hyps": 78,
+    "n_lanes": 1,
+    "ms": 1494.0,
+    "lanes": [
+     {
+      "score": 12.20174123775466,
+      "det": {
+       "arrow": 5.0,
+       "dot": 1.0,
+       "fdot": 7.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.798258762245341
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       441.2,
+       456.8
+      ],
+      "near_w": 336.0,
+      "far_c": [
+       400.2,
+       214.4
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 150,
+    "n_chains": 600,
+    "n_hyps": 53,
+    "n_lanes": 0,
+    "ms": 1353.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 151,
+    "n_chains": 600,
+    "n_hyps": 55,
+    "n_lanes": 1,
+    "ms": 1517.0,
+    "lanes": [
+     {
+      "score": 11.475910813587902,
+      "det": {
+       "arrow": 3.0,
+       "dot": 8.5,
+       "fdot": 4.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 4.0240891864120965
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       446.1,
+       488.7
+      ],
+      "near_w": 617.4,
+      "far_c": [
+       171.6,
+       39.7
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 152,
+    "n_chains": 600,
+    "n_hyps": 25,
+    "n_lanes": 0,
+    "ms": 1326.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 153,
+    "n_chains": 600,
+    "n_hyps": 62,
+    "n_lanes": 1,
+    "ms": 1133.0,
+    "lanes": [
+     {
+      "score": 5.524461623901342,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0.5,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.9755383760986577
+      },
+      "cls": "arrow",
+      "foul_c": [
+       666.8,
+       796.3
+      ],
+      "near_w": 129.5,
+      "far_c": [
+       189.5,
+       17.1
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 154,
+    "n_chains": 600,
+    "n_hyps": 58,
+    "n_lanes": 0,
+    "ms": 1195.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 155,
+    "n_chains": 600,
+    "n_hyps": 41,
+    "n_lanes": 1,
+    "ms": 1035.0,
+    "lanes": [
+     {
+      "score": 5.647451540832947,
+      "det": {
+       "arrow": 3.0,
+       "dot": 2.0,
+       "fdot": 3.0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 2.352548459167053
+      },
+      "cls": "arrow+fdot",
+      "foul_c": [
+       547.8,
+       385.8
+      ],
+      "near_w": 545.4,
+      "far_c": [
+       300.0,
+       4.1
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 156,
+    "n_chains": 600,
+    "n_hyps": 39,
+    "n_lanes": 0,
+    "ms": 1142.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 157,
+    "n_chains": 600,
+    "n_hyps": 79,
+    "n_lanes": 3,
+    "ms": 1317.0,
+    "lanes": [
+     {
+      "score": 8.972310608967332,
+      "det": {
+       "arrow": 5.5,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5276893910326609
+      },
+      "cls": "arrow",
+      "foul_c": [
+       398.5,
+       366.8
+      ],
+      "near_w": 93.9,
+      "far_c": [
+       253.2,
+       60.4
+      ],
+      "rack": true
+     },
+     {
+      "score": 8.824557579478185,
+      "det": {
+       "arrow": 3.5,
+       "dot": 3.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.6754424205218056
+      },
+      "cls": "arrow",
+      "foul_c": [
+       156.2,
+       655.5
+      ],
+      "near_w": 51.5,
+      "far_c": [
+       250.4,
+       67.7
+      ],
+      "rack": true
+     },
+     {
+      "score": 6.0860782313493935,
+      "det": {
+       "arrow": 3.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.913921768650608
+      },
+      "cls": "arrow",
+      "foul_c": [
+       387.5,
+       314.0
+      ],
+      "near_w": 99.4,
+      "far_c": [
+       253.4,
+       60.7
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 158,
+    "n_chains": 600,
+    "n_hyps": 20,
+    "n_lanes": 1,
+    "ms": 1165.0,
+    "lanes": [
+     {
+      "score": 5.963045707506355,
+      "det": {
+       "arrow": 4.5,
+       "dot": 2.0,
+       "fdot": 0,
+       "adot": 3.0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 3.5369542924936472
+      },
+      "cls": "arrow+adot",
+      "foul_c": [
+       370.4,
+       341.6
+      ],
+      "near_w": 521.9,
+      "far_c": [
+       61.5,
+       10.2
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 159,
+    "n_chains": 600,
+    "n_hyps": 34,
+    "n_lanes": 0,
+    "ms": 1186.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 160,
+    "n_chains": 600,
+    "n_hyps": 17,
+    "n_lanes": 1,
+    "ms": 951.0,
+    "lanes": [
+     {
+      "score": 4.214286761561171,
+      "det": {
+       "arrow": 5.0,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 1.7857132384388297
+      },
+      "cls": "arrow",
+      "foul_c": [
+       661.8,
+       640.8
+      ],
+      "near_w": 507.3,
+      "far_c": [
+       468.8,
+       161.5
+      ],
+      "rack": false
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 161,
+    "n_chains": 600,
+    "n_hyps": 79,
+    "n_lanes": 1,
+    "ms": 1141.0,
+    "lanes": [
+     {
+      "score": 2.437358328028754,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5626416719712477
+      },
+      "cls": "arrow",
+      "foul_c": [
+       439.5,
+       745.0
+      ],
+      "near_w": 246.6,
+      "far_c": [
+       692.8,
+       40.2
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 162,
+    "n_chains": 600,
+    "n_hyps": 121,
+    "n_lanes": 1,
+    "ms": 1156.0,
+    "lanes": [
+     {
+      "score": 6.821888205131398,
+      "det": {
+       "arrow": 3.5,
+       "dot": 1.0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.678111794868604
+      },
+      "cls": "arrow",
+      "foul_c": [
+       367.0,
+       757.6
+      ],
+      "near_w": 301.3,
+      "far_c": [
+       34.6,
+       466.6
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 163,
+    "n_chains": 600,
+    "n_hyps": 121,
+    "n_lanes": 0,
+    "ms": 1091.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 164,
+    "n_chains": 600,
+    "n_hyps": 137,
+    "n_lanes": 0,
+    "ms": 1118.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 165,
+    "n_chains": 600,
+    "n_hyps": 59,
+    "n_lanes": 0,
+    "ms": 1118.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 166,
+    "n_chains": 600,
+    "n_hyps": 69,
+    "n_lanes": 1,
+    "ms": 1096.0,
+    "lanes": [
+     {
+      "score": 2.4968543015735114,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 0,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5031456984264906
+      },
+      "cls": "arrow",
+      "foul_c": [
+       554.4,
+       853.0
+      ],
+      "near_w": 185.1,
+      "far_c": [
+       688.1,
+       39.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 167,
+    "n_chains": 600,
+    "n_hyps": 45,
+    "n_lanes": 0,
+    "ms": 1212.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   },
+   {
+    "frame": 168,
+    "n_chains": 600,
+    "n_hyps": 36,
+    "n_lanes": 1,
+    "ms": 1010.0,
+    "lanes": [
+     {
+      "score": 5.505801506255425,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.49419849374457386
+      },
+      "cls": "arrow",
+      "foul_c": [
+       541.9,
+       944.0
+      ],
+      "near_w": 213.8,
+      "far_c": [
+       688.8,
+       35.7
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 169,
+    "n_chains": 522,
+    "n_hyps": 83,
+    "n_lanes": 1,
+    "ms": 877.0,
+    "lanes": [
+     {
+      "score": 5.91137310671124,
+      "det": {
+       "arrow": 3.0,
+       "dot": 0,
+       "fdot": 0.5,
+       "adot": 0,
+       "rack": 3,
+       "gutter": 0,
+       "foul_line": 0,
+       "chance": 0.5886268932887582
+      },
+      "cls": "arrow",
+      "foul_c": [
+       502.2,
+       654.3
+      ],
+      "near_w": 126.3,
+      "far_c": [
+       483.9,
+       552.8
+      ],
+      "rack": true
+     }
+    ],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false,
+    "feet_pick_right": false,
+    "centre_pick_right": false,
+    "widest_pick_right": false
+   },
+   {
+    "frame": 170,
+    "n_chains": 600,
+    "n_hyps": 84,
+    "n_lanes": 0,
+    "ms": 1362.0,
+    "lanes": [],
+    "right_found": false,
+    "right_rank": null,
+    "top_is_right": false
+   }
+  ]
+ }
+}
