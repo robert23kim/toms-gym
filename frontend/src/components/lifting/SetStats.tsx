@@ -1,5 +1,6 @@
 import React from "react";
 import { setPace, type TimedRepInput } from "../../lib/setPace";
+import { CLEAN_REP_MIN_FORM } from "../../lib/cleanReps";
 
 interface Props {
   repMetrics: TimedRepInput[] | null | undefined;
@@ -9,7 +10,7 @@ const THIRD_LABELS = ["Start", "Middle", "End"];
 
 function formColor(form: number | null): string {
   if (form == null) return "bg-muted";
-  if (form >= 70) return "bg-green-500";
+  if (form >= CLEAN_REP_MIN_FORM) return "bg-green-500";
   if (form >= 50) return "bg-yellow-500";
   return "bg-red-500";
 }
