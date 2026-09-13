@@ -50,9 +50,9 @@ export const LIFT_METRIC_KEYS: Record<CoachingLiftType, string[]> = {
   bench_press: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
   deadlift: ["rom", "lockout", "back_position", "control", "tempo"],
   pushup: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
-  // Situps cycle the hip; the engine still emits the arm metrics but they
-  // describe nothing, so only the three that mean something are rendered.
-  situp: ["rom", "control", "tempo"],
+  // Older situp reports also carry the arm metrics; they describe nothing, so
+  // only the trunk metrics are rendered.
+  situp: ["rom", "control", "hips_planted", "neck_pull", "tempo"],
 };
 
 interface MetricCoaching {
@@ -156,14 +156,20 @@ const COACHING: LiftCoachingMap = {
     },
     tempo: TEMPO_COACHING,
   },
-  // Situps reuse the generic rep pipeline on the hip angle. Only the metrics
-  // that describe a situp get copy; the arm metrics are hidden for this lift.
+  // Situps segment reps on the trunk lift. Only the metrics that describe a
+  // situp get copy; the arm metrics are hidden for this lift.
   situp: {
     rom: {
-      fail: "You're cutting the range short — lower all the way back to the floor and sit up until your chest reaches your knees.",
+      fail: "You're cutting the range short — lower your shoulders back to the floor and lift your head and shoulders clearly off it each rep.",
     },
     control: {
       fail: "You're dropping back down — lower your torso under control instead of falling to the floor.",
+    },
+    hips_planted: {
+      fail: "Your hips are lifting or rocking — keep your lower back and hips on the floor and let your abs do the lifting.",
+    },
+    neck_pull: {
+      fail: "You're pulling on your head — lead with your chest and keep a fist of space between your chin and chest.",
     },
     tempo: TEMPO_COACHING,
   },
@@ -245,12 +251,22 @@ const METRIC_COPY_OVERRIDES: Partial<
     rom: {
       label: "Range",
       description:
-        "How far each situp travelled. Measures your hip angle from lying flat on the floor to sitting up — the fuller the range, the better.",
+        "How far your head and shoulders lifted off the floor on each rep. A full crunch counts as full range.",
     },
     control: {
       label: "Control",
       description:
         "How smoothly you lowered back down. Measures how much you decelerate near the floor instead of dropping onto it.",
+    },
+    hips_planted: {
+      label: "Hips Planted",
+      description:
+        "How still your hips stayed on the floor through each rep. Higher is better — above 70% means they stayed put.",
+    },
+    neck_pull: {
+      label: "Neck Pull",
+      description:
+        "How far your head curled forward past your torso at the top of the rep. Lower is better — under 20° means you weren't pulling on your neck.",
     },
     tempo: {
       description:

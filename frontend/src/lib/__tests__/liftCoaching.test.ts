@@ -177,7 +177,16 @@ describe("situp copy never uses barbell/arm language", () => {
   });
 
   it("renders only the metrics that describe a situp", () => {
-    expect(LIFT_METRIC_KEYS.situp).toEqual(["rom", "control", "tempo"]);
+    expect(LIFT_METRIC_KEYS.situp).toEqual([
+      "rom",
+      "control",
+      "hips_planted",
+      "neck_pull",
+      "tempo",
+    ]);
+    expect(metricAppliesToLift("situp", "hips_planted")).toBe(true);
+    expect(metricAppliesToLift("situp", "neck_pull")).toBe(true);
+    expect(metricAppliesToLift("pushup", "neck_pull")).toBe(false);
     expect(normalizeCoachingLiftType("Situp")).toBe("situp");
     expect(metricAppliesToLift("situp", "elbow_stability")).toBe(false);
     expect(metricAppliesToLift("situp", "shoulder_swing")).toBe(false);
@@ -189,5 +198,19 @@ describe("situp copy never uses barbell/arm language", () => {
     expect(getMetricLabel("situp", "rom", "Range of Motion")).toBe("Range");
     const engine = "How much of the full curl range you used.";
     expect(getMetricDescription("situp", "rom", engine)).not.toMatch(BANNED);
+    expect(getMetricDescription("situp", "rom", engine)).not.toMatch(/hip angle/i);
+  });
+
+  it("labels and explains the trunk metrics", () => {
+    expect(getMetricLabel("situp", "hips_planted", "hips_planted")).toBe("Hips Planted");
+    expect(getMetricLabel("situp", "neck_pull", "neck_pull")).toBe("Neck Pull");
+    expect(getMetricDescription("situp", "neck_pull", undefined)).toMatch(/lower is better/i);
+    expect(getMetricDescription("situp", "hips_planted", undefined)).toMatch(/higher is better/i);
+  });
+
+  it("coaches the trunk metrics only when they fail", () => {
+    expect(getMetricCoaching("situp", "neck_pull", "fail", 42)).toMatch(/chin/);
+    expect(getMetricCoaching("situp", "hips_planted", "fail", 20)).toMatch(/hips/);
+    expect(getMetricCoaching("situp", "neck_pull", "warn", 30)).toBeNull();
   });
 });
