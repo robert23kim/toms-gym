@@ -1,0 +1,692 @@
+{
+ "sample_input": {
+  "frame": 117,
+  "pin_base_row_y": 931.7,
+  "arrows_used": [
+   5,
+   10,
+   15,
+   20,
+   25,
+   30,
+   35
+  ],
+  "fits": {
+   "annotation quad": {
+    "far_width_px": 59.439998626708984,
+    "far_centre_px": 548.6599731445312,
+    "foul_width_px": 242.41000366210938,
+    "arrow_resid_in": [
+     0.51,
+     0.44,
+     0.34,
+     0.27,
+     0.29,
+     0.27,
+     0.39
+    ],
+    "pin_resid_in": [
+     3.12,
+     4.16,
+     4.17,
+     5.14,
+     5.21,
+     5.4,
+     6.17,
+     6.23,
+     6.36,
+     6.59
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.0,
+     "board_max": 0.0,
+     "within_1": 100.0,
+     "within_2": 100.0,
+     "board_mae_last20": 0.0
+    }
+   },
+   "A foul + arrows(x)": {
+    "far_width_px": NaN,
+    "far_centre_px": NaN,
+    "foul_width_px": NaN,
+    "arrow_resid_in": [
+     36.71,
+     31.39,
+     26.07,
+     20.75,
+     15.43,
+     10.11,
+     4.79
+    ],
+    "pin_resid_in": [
+     720.3,
+     730.54,
+     730.88,
+     740.84,
+     741.08,
+     741.51,
+     751.18,
+     751.32,
+     751.65,
+     752.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     41.5
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 24.24,
+     "board_max": 27.89,
+     "within_1": 0.0,
+     "within_2": 0.0,
+     "board_mae_last20": 22.58
+    }
+   },
+   "B foul + pins 7,10": {
+    "far_width_px": 53.93000030517578,
+    "far_centre_px": 547.3099975585938,
+    "foul_width_px": 242.27999877929688,
+    "arrow_resid_in": [
+     0.06,
+     0.03,
+     0.02,
+     0.03,
+     0.18,
+     0.29,
+     0.53
+    ],
+    "pin_resid_in": [
+     0.51,
+     0.49,
+     0.53,
+     0.18,
+     0.38,
+     0.21,
+     0.0,
+     0.52,
+     0.29,
+     0.0
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.73,
+     "board_max": 1.53,
+     "within_1": 66.2,
+     "within_2": 100.0,
+     "board_mae_last20": 1.12
+    }
+   },
+   "C foul + arrows + pins 7,10": {
+    "far_width_px": 55.209999084472656,
+    "far_centre_px": 546.9199829101562,
+    "foul_width_px": 242.3000030517578,
+    "arrow_resid_in": [
+     0.04,
+     0.04,
+     0.06,
+     0.05,
+     0.08,
+     0.16,
+     0.38
+    ],
+    "pin_resid_in": [
+     1.05,
+     0.98,
+     0.82,
+     0.77,
+     0.27,
+     0.29,
+     0.72,
+     0.09,
+     0.13,
+     0.12
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.79,
+     "board_max": 1.56,
+     "within_1": 57.1,
+     "within_2": 100.0,
+     "board_mae_last20": 1.27
+    }
+   },
+   "D foul + arrows + all pins": {
+    "far_width_px": 54.4900016784668,
+    "far_centre_px": 547.260009765625,
+    "foul_width_px": 242.3000030517578,
+    "arrow_resid_in": [
+     0.03,
+     0.02,
+     0.02,
+     0.01,
+     0.16,
+     0.25,
+     0.48
+    ],
+    "pin_resid_in": [
+     0.59,
+     0.59,
+     0.52,
+     0.34,
+     0.33,
+     0.13,
+     0.23,
+     0.42,
+     0.33,
+     0.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.72,
+     "board_max": 1.48,
+     "within_1": 66.2,
+     "within_2": 100.0,
+     "board_mae_last20": 1.12
+    }
+   },
+   "E arrows + pins 7,10 (no foul)": {
+    "far_width_px": NaN,
+    "far_centre_px": NaN,
+    "foul_width_px": NaN,
+    "arrow_resid_in": [
+     36.71,
+     31.39,
+     26.07,
+     20.75,
+     15.43,
+     10.11,
+     4.79
+    ],
+    "pin_resid_in": [
+     720.3,
+     730.54,
+     730.88,
+     740.84,
+     741.08,
+     741.51,
+     751.18,
+     751.32,
+     751.65,
+     752.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     41.5
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 24.24,
+     "board_max": 27.89,
+     "within_1": 0.0,
+     "within_2": 0.0,
+     "board_mae_last20": 22.58
+    }
+   }
+  }
+ },
+ "20260112_121117": {
+  "frame": 132,
+  "pin_base_row_y": 547.2,
+  "arrows_used": [
+   10,
+   20,
+   25,
+   30
+  ],
+  "fits": {
+   "annotation quad": {
+    "far_width_px": 38.4900016784668,
+    "far_centre_px": 424.6700134277344,
+    "foul_width_px": 162.13,
+    "arrow_resid_in": [
+     0.51,
+     0.3,
+     0.15,
+     0.09
+    ],
+    "pin_resid_in": [
+     5.98,
+     6.34,
+     6.31,
+     6.66,
+     6.69,
+     6.56,
+     6.98,
+     7.09,
+     6.98,
+     6.86
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.0,
+     "board_max": 0.0,
+     "within_1": 100.0,
+     "within_2": 100.0,
+     "board_mae_last20": 0.0
+    }
+   },
+   "A foul + arrows(x)": {
+    "far_width_px": NaN,
+    "far_centre_px": NaN,
+    "foul_width_px": NaN,
+    "arrow_resid_in": [
+     31.39,
+     20.75,
+     15.43,
+     10.11
+    ],
+    "pin_resid_in": [
+     720.3,
+     730.54,
+     730.88,
+     740.84,
+     741.08,
+     741.51,
+     751.18,
+     751.32,
+     751.65,
+     752.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     41.5
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 27.69,
+     "board_max": 30.73,
+     "within_1": 0.0,
+     "within_2": 0.0,
+     "board_mae_last20": 27.32
+    }
+   },
+   "B foul + pins 7,10": {
+    "far_width_px": 37.52000045776367,
+    "far_centre_px": 426.19000244140625,
+    "foul_width_px": 162.17,
+    "arrow_resid_in": [
+     0.85,
+     0.72,
+     0.59,
+     0.36
+    ],
+    "pin_resid_in": [
+     0.14,
+     0.28,
+     0.26,
+     0.06,
+     0.5,
+     0.14,
+     0.0,
+     0.58,
+     0.32,
+     0.0
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.71,
+     "board_max": 1.3,
+     "within_1": 81.5,
+     "within_2": 100.0,
+     "board_mae_last20": 1.2
+    }
+   },
+   "C foul + arrows + pins 7,10": {
+    "far_width_px": 37.599998474121094,
+    "far_centre_px": 425.25,
+    "foul_width_px": 162.13,
+    "arrow_resid_in": [
+     0.6,
+     0.45,
+     0.33,
+     0.11
+    ],
+    "pin_resid_in": [
+     1.14,
+     1.31,
+     1.27,
+     1.11,
+     0.63,
+     1.15,
+     1.08,
+     0.6,
+     0.78,
+     1.02
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.2,
+     "board_max": 0.39,
+     "within_1": 100.0,
+     "within_2": 100.0,
+     "board_mae_last20": 0.35
+    }
+   },
+   "D foul + arrows + all pins": {
+    "far_width_px": 37.599998474121094,
+    "far_centre_px": 425.8900146484375,
+    "foul_width_px": 162.16,
+    "arrow_resid_in": [
+     0.77,
+     0.63,
+     0.5,
+     0.27
+    ],
+    "pin_resid_in": [
+     0.47,
+     0.64,
+     0.58,
+     0.43,
+     0.18,
+     0.45,
+     0.41,
+     0.25,
+     0.14,
+     0.31
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.55,
+     "board_max": 1.01,
+     "within_1": 96.9,
+     "within_2": 100.0,
+     "board_mae_last20": 0.93
+    }
+   },
+   "E arrows + pins 7,10 (no foul)": {
+    "far_width_px": NaN,
+    "far_centre_px": NaN,
+    "foul_width_px": NaN,
+    "arrow_resid_in": [
+     31.39,
+     20.75,
+     15.43,
+     10.11
+    ],
+    "pin_resid_in": [
+     720.3,
+     730.54,
+     730.88,
+     740.84,
+     741.08,
+     741.51,
+     751.18,
+     751.32,
+     751.65,
+     752.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     41.5
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 27.69,
+     "board_max": 30.73,
+     "within_1": 0.0,
+     "within_2": 0.0,
+     "board_mae_last20": 27.32
+    }
+   }
+  }
+ },
+ "tom_old": {
+  "frame": 169,
+  "pin_base_row_y": 666.3,
+  "arrows_used": [
+   5,
+   10,
+   15,
+   20,
+   25,
+   30,
+   35
+  ],
+  "fits": {
+   "annotation quad": {
+    "far_width_px": 63.90999984741211,
+    "far_centre_px": 528.9000244140625,
+    "foul_width_px": 397.23,
+    "arrow_resid_in": [
+     0.68,
+     0.54,
+     0.42,
+     0.31,
+     0.15,
+     0.13,
+     0.15
+    ],
+    "pin_resid_in": [
+     3.45,
+     3.06,
+     3.52,
+     2.45,
+     3.14,
+     3.29,
+     1.93,
+     2.55,
+     2.96,
+     3.82
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 0.0,
+     "board_max": 0.0,
+     "within_1": 100.0,
+     "within_2": 100.0,
+     "board_mae_last20": 0.0
+    }
+   },
+   "A foul + arrows(x)": {
+    "far_width_px": NaN,
+    "far_centre_px": NaN,
+    "foul_width_px": NaN,
+    "arrow_resid_in": [
+     36.71,
+     31.39,
+     26.07,
+     20.75,
+     15.43,
+     10.11,
+     4.79
+    ],
+    "pin_resid_in": [
+     720.3,
+     730.54,
+     730.88,
+     740.84,
+     741.08,
+     741.51,
+     751.18,
+     751.32,
+     751.65,
+     752.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     41.5
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 22.51,
+     "board_max": 27.28,
+     "within_1": 0.0,
+     "within_2": 0.0,
+     "board_mae_last20": 22.46
+    }
+   },
+   "B foul + pins 7,10": {
+    "far_width_px": 67.55999755859375,
+    "far_centre_px": 532.97998046875,
+    "foul_width_px": 396.98,
+    "arrow_resid_in": [
+     0.1,
+     0.19,
+     0.27,
+     0.32,
+     0.39,
+     0.32,
+     0.22
+    ],
+    "pin_resid_in": [
+     0.79,
+     0.78,
+     0.58,
+     0.47,
+     0.48,
+     0.06,
+     0.0,
+     0.03,
+     0.23,
+     0.0
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 1.44,
+     "board_max": 2.43,
+     "within_1": 33.1,
+     "within_2": 68.2,
+     "board_mae_last20": 2.38
+    }
+   },
+   "C foul + arrows + pins 7,10": {
+    "far_width_px": 68.1500015258789,
+    "far_centre_px": 531.9299926757812,
+    "foul_width_px": 397.02,
+    "arrow_resid_in": [
+     0.02,
+     0.06,
+     0.12,
+     0.16,
+     0.22,
+     0.15,
+     0.04
+    ],
+    "pin_resid_in": [
+     1.41,
+     1.43,
+     1.14,
+     1.2,
+     1.11,
+     0.51,
+     0.8,
+     0.72,
+     0.36,
+     0.49
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 1.11,
+     "board_max": 1.91,
+     "within_1": 42.6,
+     "within_2": 100.0,
+     "board_mae_last20": 1.83
+    }
+   },
+   "D foul + arrows + all pins": {
+    "far_width_px": 67.77999877929688,
+    "far_centre_px": 532.9500122070312,
+    "foul_width_px": 396.98,
+    "arrow_resid_in": [
+     0.11,
+     0.2,
+     0.27,
+     0.32,
+     0.38,
+     0.31,
+     0.2
+    ],
+    "pin_resid_in": [
+     0.8,
+     0.8,
+     0.58,
+     0.52,
+     0.5,
+     0.05,
+     0.13,
+     0.07,
+     0.23,
+     0.12
+    ],
+    "foul_resid_in": [
+     0.0,
+     0.0
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 1.43,
+     "board_max": 2.41,
+     "within_1": 33.8,
+     "within_2": 68.2,
+     "board_mae_last20": 2.37
+    }
+   },
+   "E arrows + pins 7,10 (no foul)": {
+    "far_width_px": NaN,
+    "far_centre_px": NaN,
+    "foul_width_px": NaN,
+    "arrow_resid_in": [
+     36.71,
+     31.39,
+     26.07,
+     20.75,
+     15.43,
+     10.11,
+     4.79
+    ],
+    "pin_resid_in": [
+     720.3,
+     730.54,
+     730.88,
+     740.84,
+     741.08,
+     741.51,
+     751.18,
+     751.32,
+     751.65,
+     752.18
+    ],
+    "foul_resid_in": [
+     0.0,
+     41.5
+    ],
+    "mae_vs_annotation": {
+     "board_mae": 22.51,
+     "board_max": 27.28,
+     "within_1": 0.0,
+     "within_2": 0.0,
+     "board_mae_last20": 22.46
+    }
+   }
+  }
+ }
+}

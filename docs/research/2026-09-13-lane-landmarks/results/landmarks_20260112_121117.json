@@ -1,0 +1,232 @@
+{
+ "stem": "20260112_121117",
+ "frame": 132,
+ "landmarks": {
+  "pin_1_base": {
+   "x": 425.49,
+   "y": 549.11,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_2_base": {
+   "x": 420.54,
+   "y": 548.27,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_3_base": {
+   "x": 431.39,
+   "y": 548.67,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_4_base": {
+   "x": 415.36,
+   "y": 547.44,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_5_base": {
+   "x": 425.66,
+   "y": 547.83,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_6_base": {
+   "x": 436.94,
+   "y": 548.23,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_7_base": {
+   "x": 410.45,
+   "y": 546.63,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_8_base": {
+   "x": 420.62,
+   "y": 547.02,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_9_base": {
+   "x": 431.47,
+   "y": 547.41,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "pin_10_base": {
+   "x": 442.36,
+   "y": 547.8,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.74
+  },
+  "arrow_5": {
+   "x": 413.88,
+   "y": 631.72,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.68
+  },
+  "arrow_10": {
+   "x": 402.99,
+   "y": 629.56,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.61
+  },
+  "arrow_20": {
+   "x": 381.92,
+   "y": 625.91,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.51
+  },
+  "arrow_25": {
+   "x": 369.59,
+   "y": 627.66,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.65
+  },
+  "arrow_30": {
+   "x": 356.9,
+   "y": 629.75,
+   "frame": 132,
+   "source": "detected",
+   "confidence": 0.42
+  },
+  "foul_left": {
+   "x": 240.95963274080873,
+   "y": 736.7924319093471,
+   "frame": 132,
+   "source": "annotation",
+   "confidence": 0.9
+  },
+  "foul_right": {
+   "x": 401.67957229457784,
+   "y": 743.3481792654763,
+   "frame": 132,
+   "source": "annotation",
+   "confidence": 0.9
+  }
+ },
+ "top_edge_fraction": {
+  "annotated": {
+   "a_l": 0.0,
+   "a_r": 1.0
+  },
+  "pins": {
+   "a_l": 0.06685,
+   "a_r": 1.02939
+  },
+  "all": {
+   "a_l": 0.04351,
+   "a_r": 1.02141
+  }
+ },
+ "pins_far_end": {
+  "pin_base_row_y": 547.2,
+  "pin_centre_x": 426.41,
+  "pin_lane_width_px": 36.78
+ },
+ "truth_pins_corners": {
+  "top_left": [
+   407.34,
+   547.98
+  ],
+  "bottom_left": [
+   235.18,
+   743.35
+  ],
+  "top_right": [
+   444.63,
+   547.98
+  ],
+  "bottom_right": [
+   401.68,
+   743.35
+  ]
+ },
+ "truth_all_corners": {
+  "top_left": [
+   406.44,
+   547.98
+  ],
+  "bottom_left": [
+   235.2,
+   743.35
+  ],
+  "top_right": [
+   444.32,
+   547.98
+  ],
+  "bottom_right": [
+   401.66,
+   743.35
+  ]
+ },
+ "all_fit": {
+  "arrow_resid_in": [
+   0.74,
+   0.73,
+   0.61,
+   0.49,
+   0.26
+  ],
+  "pin_resid_in": [
+   0.55,
+   0.69,
+   0.71,
+   0.45,
+   0.15,
+   0.61,
+   0.43,
+   0.16,
+   0.2,
+   0.51
+  ],
+  "V": {
+   "centre_ft": 15.42,
+   "ft_per_5_boards": 0.372,
+   "arrow_ft": {
+    "5": 14.43,
+    "10": 14.83,
+    "20": 15.52,
+    "25": 14.98,
+    "30": 14.38
+   }
+  }
+ },
+ "repeatability_3_frames": {
+  "centre_px": [
+   1.74,
+   1.13,
+   1.14
+  ],
+  "width_ratio": [
+   0.956,
+   0.955,
+   0.954
+  ],
+  "arrows_found": [
+   5,
+   5,
+   6
+  ],
+  "centre_px_std": 0.29,
+  "width_ratio_std": 0.0008
+ },
+ "top_edge_depth_in": 725.9
+}

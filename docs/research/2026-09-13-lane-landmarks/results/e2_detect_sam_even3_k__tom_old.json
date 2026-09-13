@@ -1,0 +1,100 @@
+{
+ "stem": "tom_old",
+ "source": "results/lanes_sam_even3_k__tom_old.json",
+ "summary": {
+  "frames": 2,
+  "pins": {
+   "frames_standing": 1,
+   "fired": 1,
+   "recall": 1.0,
+   "px_err_mean_median": 0.74,
+   "centre_err_boards_median_abs": 0.28,
+   "span_err_boards_median_abs": 0.55,
+   "ms": 740.0
+  },
+  "arrows": {
+   "found_per_frame_mean": 3.5,
+   "correct_per_frame_mean": 3.5,
+   "recall_within_1.5_boards": 0.5,
+   "false_per_frame": 0.0,
+   "dx_boards_median_abs": 0.61,
+   "px_err_median": 3.2,
+   "frames_with_ge5_correct": 0.5,
+   "ms": 33.0
+  }
+ },
+ "per_frame": [
+  {
+   "frame": 169,
+   "pins": {
+    "contrast_sigma": 3.2,
+    "score": 0.466,
+    "px_err": {
+     "1": 1.49,
+     "2": 1.06,
+     "3": 0.87,
+     "4": 0.17,
+     "5": 0.48,
+     "6": 0.49,
+     "7": 0.97,
+     "8": 0.53,
+     "9": 0.84,
+     "10": 0.52
+    },
+    "px_err_mean": 0.74,
+    "centre_err_px": -0.5,
+    "centre_err_boards": -0.28,
+    "span_err_px": 0.83,
+    "span_err_boards": 0.55,
+    "alias_margin": 0.0556,
+    "ok": true
+   },
+   "arrows": {
+    "5": {
+     "px_err": 0.63,
+     "dx_boards": -0.13,
+     "darkness": 54.0
+    },
+    "10": {
+     "px_err": 1.42,
+     "dx_boards": -0.27,
+     "darkness": 55.4
+    },
+    "15": {
+     "px_err": 2.29,
+     "dx_boards": -0.44,
+     "darkness": 39.7
+    },
+    "20": {
+     "px_err": 3.2,
+     "dx_boards": -0.61,
+     "darkness": 40.5
+    },
+    "25": {
+     "px_err": 3.81,
+     "dx_boards": -0.73,
+     "darkness": 37.5
+    },
+    "30": {
+     "px_err": 4.7,
+     "dx_boards": -0.85,
+     "darkness": 42.6
+    },
+    "35": {
+     "px_err": 5.33,
+     "dx_boards": -0.92,
+     "darkness": 42.5
+    }
+   },
+   "arrows_found": 7,
+   "arrows_correct": 7
+  },
+  {
+   "frame": 171,
+   "pins": null,
+   "arrows": {},
+   "arrows_found": 0,
+   "arrows_correct": 0
+  }
+ ]
+}

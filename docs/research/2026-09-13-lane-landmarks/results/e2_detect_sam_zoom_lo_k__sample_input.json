@@ -1,0 +1,136 @@
+{
+ "stem": "sample_input",
+ "source": "results/lanes_sam_zoom_lo_k__sample_input.json",
+ "summary": {
+  "frames": 2,
+  "pins": {
+   "frames_standing": 1,
+   "fired": 1,
+   "recall": 1.0,
+   "px_err_mean_median": 0.55,
+   "centre_err_boards_median_abs": 0.02,
+   "span_err_boards_median_abs": 0.4,
+   "ms": 720.0
+  },
+  "arrows": {
+   "found_per_frame_mean": 7.0,
+   "correct_per_frame_mean": 7.0,
+   "recall_within_1.5_boards": 1.0,
+   "false_per_frame": 0.0,
+   "dx_boards_median_abs": 0.28,
+   "px_err_median": 1.52,
+   "frames_with_ge5_correct": 1.0,
+   "ms": 48.0
+  }
+ },
+ "per_frame": [
+  {
+   "frame": 117,
+   "pins": {
+    "contrast_sigma": 3.5,
+    "score": 0.441,
+    "px_err": {
+     "1": 0.76,
+     "2": 0.82,
+     "3": 0.83,
+     "4": 0.45,
+     "5": 0.7,
+     "6": 0.17,
+     "7": 0.28,
+     "8": 0.72,
+     "9": 0.57,
+     "10": 0.22
+    },
+    "px_err_mean": 0.55,
+    "centre_err_px": 0.03,
+    "centre_err_boards": 0.02,
+    "span_err_px": -0.5,
+    "span_err_boards": -0.4,
+    "alias_margin": 0.0992,
+    "ok": true
+   },
+   "arrows": {
+    "5": {
+     "px_err": 1.1,
+     "dx_boards": -0.14,
+     "darkness": 45.4
+    },
+    "10": {
+     "px_err": 0.81,
+     "dx_boards": -0.13,
+     "darkness": 48.8
+    },
+    "15": {
+     "px_err": 0.46,
+     "dx_boards": -0.08,
+     "darkness": 52.8
+    },
+    "20": {
+     "px_err": 0.05,
+     "dx_boards": -0.01,
+     "darkness": 38.3
+    },
+    "25": {
+     "px_err": 0.39,
+     "dx_boards": -0.04,
+     "darkness": 45.5
+    },
+    "30": {
+     "px_err": 0.7,
+     "dx_boards": -0.01,
+     "darkness": 39.8
+    },
+    "35": {
+     "px_err": 1.06,
+     "dx_boards": -0.12,
+     "darkness": 33.5
+    }
+   },
+   "arrows_found": 7,
+   "arrows_correct": 7
+  },
+  {
+   "frame": 128,
+   "pins": null,
+   "arrows": {
+    "5": {
+     "px_err": 3.64,
+     "dx_boards": -0.57,
+     "darkness": 47.2
+    },
+    "10": {
+     "px_err": 3.08,
+     "dx_boards": -0.53,
+     "darkness": 52.2
+    },
+    "15": {
+     "px_err": 2.68,
+     "dx_boards": -0.48,
+     "darkness": 54.3
+    },
+    "20": {
+     "px_err": 2.12,
+     "dx_boards": -0.41,
+     "darkness": 43.8
+    },
+    "25": {
+     "px_err": 2.09,
+     "dx_boards": -0.44,
+     "darkness": 48.7
+    },
+    "30": {
+     "px_err": 2.42,
+     "dx_boards": -0.54,
+     "darkness": 44.2
+    },
+    "35": {
+     "px_err": 1.95,
+     "dx_boards": -0.5,
+     "darkness": 37.0
+    }
+   },
+   "arrows_found": 7,
+   "arrows_correct": 7
+  }
+ ]
+}

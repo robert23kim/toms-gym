@@ -1,0 +1,52 @@
+{
+ "stem": "sample_input",
+ "method": "zoom_lo_k",
+ "per_frame": [
+  {
+   "frame": 117,
+   "kind": "prehit",
+   "corners": {
+    "top_left": [
+     516.2,
+     934
+    ],
+    "top_right": [
+     573.1,
+     934
+    ],
+    "bottom_left": [
+     164.5,
+     1210
+    ],
+    "bottom_right": [
+     407.4,
+     1210
+    ]
+   },
+   "stored_mae": 0.89
+  },
+  {
+   "frame": 128,
+   "kind": "last",
+   "corners": {
+    "top_left": [
+     517.6,
+     934
+    ],
+    "top_right": [
+     572.2,
+     934
+    ],
+    "bottom_left": [
+     164.6,
+     1210
+    ],
+    "bottom_right": [
+     407.2,
+     1210
+    ]
+   },
+   "stored_mae": 0.7
+  }
+ ]
+}
