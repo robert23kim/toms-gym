@@ -295,4 +295,9 @@ test_db.py
 .playwright-mcp/
 
 # Local Capacitor experiment — commit deliberately if Android becomes a real target
-frontend/android/
+
+# Claude Code personal settings
+.claude/settings.local.json
+
+# Local Android builds (distributed via GCS short link, never committed)
+frontend/*.apk
