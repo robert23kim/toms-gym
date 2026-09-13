@@ -1,6 +1,6 @@
 # Does the alley have a face? Constellation detection of the lane's landmarks (2026-09-14)
 
-Status: complete for E1-E5 and the tom_old fold of E6; the two remaining E6 folds train in the background and are folded into the E6 table when they land. Review video: `review.mp4` (gitignored; regenerate with the commands at the
+Status: complete for E1-E5 and the tom_old fold of E6. The `lovo_sample_input` and `lovo_20260112_121117` heatmap folds were still training when the session ended (hand-over in `docs/sessions/2026-09-13-alley-face-loop-wrapup.md`); rerun `e6_eval.py`, `e6_face.py <fold> class`, `tables.py`, `fill_readme.py` to fold them in. Review video: `review.mp4` (gitignored; regenerate with the commands at the
 end). Scripts, result JSON (`results/`) and overlays (`overlays/`) are in this folder; frames,
 candidate pools, per-frame fits, datasets and training runs live in the session scratchpad
 (`AF_SCRATCH`). Nothing in the earlier loops' folders was edited; loop 4's `common.py` /
