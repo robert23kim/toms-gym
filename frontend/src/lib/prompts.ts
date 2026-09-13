@@ -44,6 +44,6 @@ export const buildPrompts = (openChallenges: OpenChallenge[]): Prompt[] => [
     }
     return { id: `challenge:${c.id}`, kind: "link", title: c.title, to: `/challenges/${c.id}`, pill };
   }),
-  { id: "golf-snap", kind: "link", title: "Snap a scorecard", to: "/golf/snap" },
+  { id: "golf-snap", kind: "link", title: "Snap a golf scorecard", to: "/golf/snap" },
   { id: "lift-upload", kind: "link", title: "Log a lift", to: "/lift/upload" },
 ];

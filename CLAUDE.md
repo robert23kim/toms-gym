@@ -676,7 +676,7 @@ from opening the app. Spec: `docs/superpowers/specs/2026-09-13-finch-shell-desig
   `/find-profile`. `Navbar` lost its hamburger + phone menu; Feedback/Store are footer/desktop only.
 - **`components/home/PromptList.tsx`** renders `lib/prompts.ts::buildPrompts(openChallenges)`:
   "Snap tonight's bowling recap" (night sheet) → "Snap a bowling game" (game sheet) → one row per
-  ongoing challenge → "Snap a scorecard" `/golf/snap` → "Log a lift" `/lift/upload`. With a saved
+  ongoing challenge → "Snap a golf scorecard" `/golf/snap` → "Log a lift" `/lift/upload`. With a saved
   `userId` each bowling row has two pickers, camera (`home-bowl-camera` / `home-game-camera`,
   `capture="environment"`) and library (`home-bowl-library` / `home-game-library`), both uploading the
   photo immediately with that row's `sheetType`, **dated today**, via `lib/bowlingSheetForm.ts::buildSheetForm`

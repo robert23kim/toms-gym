@@ -50,7 +50,7 @@ describe("PromptList", () => {
     expect(screen.queryByTestId("home-game-camera")).toBeNull();
     expect(screen.getByText("Situp challenge").closest("a")).toHaveAttribute("href", "/challenges/c1");
     expect(screen.getByText("Squat-off").closest("a")).toHaveAttribute("href", "/challenges/c2");
-    expect(screen.getByText("Snap a scorecard").closest("a")).toHaveAttribute("href", "/golf/snap");
+    expect(screen.getByText("Snap a golf scorecard").closest("a")).toHaveAttribute("href", "/golf/snap");
     expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");
   });
 

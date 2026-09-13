@@ -44,7 +44,7 @@ describe("Index (quiet-gym home)", () => {
     renderHome();
     expect(screen.getByRole("link", { name: /^lift/i })).toHaveAttribute("href", "/lift");
     expect(screen.getByRole("link", { name: /^bowl/i })).toHaveAttribute("href", "/bowl");
-    expect(screen.getByRole("link", { name: /golf/i })).toHaveAttribute("href", "/golf");
+    expect(screen.getByRole("link", { name: /^golf/i })).toHaveAttribute("href", "/golf");
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
   });
 
@@ -66,7 +66,7 @@ describe("Index (quiet-gym home)", () => {
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
     expect(screen.getByText("Snap tonight's bowling recap").closest("a")).toHaveAttribute("href", "/bowling/snap");
     expect(screen.getByText("Snap a bowling game").closest("a")).toHaveAttribute("href", "/bowling/snap");
-    expect(screen.getByText("Snap a scorecard").closest("a")).toHaveAttribute("href", "/golf/snap");
+    expect(screen.getByText("Snap a golf scorecard").closest("a")).toHaveAttribute("href", "/golf/snap");
     expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");
   });
 
