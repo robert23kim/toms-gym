@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import Navbar from "./Navbar";
+import BottomTabBar from "./BottomTabBar";
 import AmbientBackground from "./AmbientBackground";
 import { motion } from "framer-motion";
 import { Bug } from "lucide-react";
@@ -16,7 +17,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
       <AmbientBackground />
       <Navbar />
       <motion.main 
-        className="flex-1 px-4 py-6 md:px-6 lg:px-8 max-w-7xl mx-auto w-full"
+        className="flex-1 px-4 py-6 pb-24 md:pb-6 md:px-6 lg:px-8 max-w-7xl mx-auto w-full"
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, ease: "easeOut" }}
@@ -46,6 +47,7 @@ const Layout: React.FC<LayoutProps> = ({ children }) => {
           </span>
         </div>
       </footer>
+      <BottomTabBar />
     </div>
   );
 };

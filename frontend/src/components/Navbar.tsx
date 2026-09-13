@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import { Menu, X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy, CircleDot, Flag } from "lucide-react";
+import { X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy, CircleDot, Flag } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
 
@@ -33,11 +32,6 @@ const Navbar: React.FC = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
-  useEffect(() => {
-    // Close mobile menu when route changes
-    setIsMobileMenuOpen(false);
-  }, [location.pathname]);
 
   const links = [
     { href: "/", label: "Home" },
@@ -150,92 +144,10 @@ const Navbar: React.FC = () => {
               <AuthButton />
             </nav>
 
-            <div className="flex md:hidden">
-              <button
-                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className="text-foreground/70 hover:text-foreground focus:outline-none"
-                aria-label="Toggle menu"
-              >
-                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
-              </button>
-            </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile menu */}
-      {isMobileMenuOpen && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: "auto" }}
-          exit={{ opacity: 0, height: 0 }}
-          transition={{ duration: 0.3 }}
-          className="md:hidden bg-background/95 backdrop-blur-md border-b border-border/40"
-        >
-          <div className="px-4 py-3 space-y-2">
-            {links.map((item) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${
-                  item.href === "/"
-                    ? location.pathname === "/"
-                      ? "text-accent font-semibold"
-                      : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
-                    : location.pathname === item.href || location.pathname.startsWith(item.href + "/")
-                      ? "text-accent font-semibold"
-                      : "text-foreground/70 hover:text-foreground hover:bg-secondary/50"
-                }`}
-              >
-                {item.label}
-              </Link>
-            ))}
-            {isAuthenticated ? (
-              <>
-                <Link
-                  to="/profile"
-                  className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
-                >
-                  <User size={18} />
-                  <span>{user?.name || 'My Profile'}</span>
-                </Link>
-                <button
-                  onClick={logout}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-accent hover:text-accent/90 transition-colors"
-                >
-                  <LogOut size={18} />
-                  <span>Logout</span>
-                </button>
-              </>
-            ) : hasLocalUserId && localUserId ? (
-              <>
-                <Link
-                  to={`/profile/${localUserId}`}
-                  className="flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
-                >
-                  <User size={18} />
-                  <span>My Profile</span>
-                </Link>
-                <button
-                  onClick={handleForgetMe}
-                  className="w-full flex items-center gap-2 px-3 py-2 text-muted-foreground hover:text-foreground transition-colors"
-                >
-                  <X size={18} />
-                  <span>Forget Me</span>
-                </button>
-              </>
-            ) : (
-              <Link
-                to="/find-profile"
-                className="w-full flex items-center gap-2 px-3 py-2 text-foreground/70 hover:text-foreground transition-colors"
-              >
-                <Search size={18} />
-                <span>Find Profile</span>
-              </Link>
-            )}
-          </div>
-        </motion.div>
-      )}
     </>
   );
 };
