@@ -17,6 +17,7 @@ import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescript
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
 import PlankSteadiness from '../components/lifting/PlankSteadiness';
+import SetStats from '../components/lifting/SetStats';
 
 // Lifts scored by the body, not the bar — no weight is shown for these.
 // Module-level so it can never be shadowed inside the render tree.
@@ -869,6 +870,8 @@ const VideoPlayer: React.FC = () => {
                               </div>
                               );
                             })()}
+
+                            {usesSetSummary(report.lift_type) && <SetStats repMetrics={report.rep_metrics} />}
 
                             {(() => {
                               const insights = isBodyweightLift(report.lift_type)
