@@ -4,7 +4,6 @@ import { Dumbbell, Target, Flag } from "lucide-react";
 import Layout from "../components/Layout";
 import IconTile from "../components/IconTile";
 import DemoLoop from "../components/DemoLoop";
-import ChampionSpotlight from "../components/ChampionSpotlight";
 import StreakCard from "../components/StreakCard";
 import PromptList from "../components/home/PromptList";
 import { buildPrompts } from "../lib/prompts";
@@ -58,12 +57,6 @@ const Index = () => {
     };
   }, []);
 
-  const spotlight = (
-    <section aria-label="Latest champion">
-      <ChampionSpotlight />
-    </section>
-  );
-
   const verticals = (
     <section aria-label="Verticals" className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
       {VERTICALS.map((v) => (
@@ -80,7 +73,7 @@ const Index = () => {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5, ease: "easeOut" }}
-        className="max-w-2xl mx-auto text-center flex flex-col gap-14 py-10"
+        className="max-w-2xl mx-auto text-center flex flex-col gap-14 py-10 md:py-10 max-md:pt-4"
       >
         {!returning && (
           <section aria-label="Pitch">
@@ -93,24 +86,17 @@ const Index = () => {
           </section>
         )}
 
+        {returning && todo}
+
         <section aria-label="Your streak">
           <StreakCard />
         </section>
 
         {!returning && (
-          <section aria-label="Analysis demo">
-            <DemoLoop />
-          </section>
-        )}
-
-        {returning ? (
           <>
-            {todo}
-            {spotlight}
-          </>
-        ) : (
-          <>
-            {spotlight}
+            <section aria-label="Analysis demo">
+              <DemoLoop />
+            </section>
             {verticals}
             {todo}
           </>

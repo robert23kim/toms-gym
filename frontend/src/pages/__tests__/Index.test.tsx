@@ -54,7 +54,7 @@ describe("Index (quiet-gym home)", () => {
     await waitFor(() =>
       expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument()
     );
-    expect(screen.getByText("Summer Plank Challenge").closest("a")).toHaveAttribute("href", "/challenges/c1/upload");
+    expect(screen.getByText("Summer Plank Challenge").closest("a")).toHaveAttribute("href", "/challenges/c1");
     expect(screen.getByText("Plank")).toBeInTheDocument();
     expect(screen.queryByText("Old Squat-Off")).toBeNull();
     expect(screen.getByText(/tonight's to-do/i)).toBeInTheDocument();
@@ -82,14 +82,14 @@ describe("Index (quiet-gym home)", () => {
     await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
     expect(screen.getByText(/AI analysis of your lift/i)).toBeInTheDocument();
     const labels = [...container.querySelectorAll("section[aria-label]")].map((s) => s.getAttribute("aria-label"));
-    expect(labels).toEqual(["Pitch", "Your streak", "Analysis demo", "Latest champion", "Verticals", "To-do"]);
+    expect(labels).toEqual(["Pitch", "Your streak", "Analysis demo", "Verticals", "To-do"]);
   });
 
   describe("for a returning user", () => {
     beforeEach(() => (localStorage.getItem as jest.Mock).mockReturnValue("u1"));
     afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
 
-    it("skips the pitch, demo and tiles and leads with streak then the to-do list", async () => {
+    it("skips the pitch, demo and tiles and leads with the to-do list above the streak", async () => {
       (api.getCompetitions as jest.Mock).mockResolvedValue([ongoing]);
       const { container } = renderHome();
       await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
@@ -97,10 +97,12 @@ describe("Index (quiet-gym home)", () => {
       expect(screen.queryByText(/plank · hold \+ form/i)).toBeNull();
       expect(screen.getByText("streak-card")).toBeInTheDocument();
       const labels = [...container.querySelectorAll("section[aria-label]")].map((s) => s.getAttribute("aria-label"));
-      expect(labels).toEqual(["Your streak", "To-do", "Latest champion"]);
+      expect(labels).toEqual(["To-do", "Your streak"]);
       expect(screen.queryByRole("link", { name: /^lift$/i })).toBeNull();
       expect(screen.getByTestId("home-bowl-camera")).toBeInTheDocument();
-      expect(screen.getByText("Summer Plank Challenge").closest("a")).toHaveAttribute("href", "/challenges/c1/upload");
+      expect(screen.getByTestId("home-bowl-library")).toBeInTheDocument();
+      expect(screen.getByTestId("home-challenge-c1-record")).toBeInTheDocument();
+      expect(screen.getByText("Summer Plank Challenge").closest("a")).toBeNull();
     });
   });
 });
