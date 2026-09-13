@@ -1,0 +1,51 @@
+{
+ "title": {
+  "title": "SAM lane calibration in the bowling engine: before vs after",
+  "sub": "2026-09-13 engine-integration loop, Tom's Gym bowling analysis",
+  "lines": [
+   "Five research loops (2026-09-12/13) found how to locate the lane to a board or better:",
+   "SAM 2 prompted with three points along the ball path on a clean pre-hit frame, a far-end crop pass,",
+   "the standing pin rack as a far-end ruler, and one calibrated lane carried per frame through a camera model.",
+   "",
+   "This loop ships that recipe as one pass of the engine (--sam-lane) and measures the deployed",
+   "engine against it on the three annotated videos, with the loops' own metric."
+  ]
+ },
+ "method": {
+  "title": "What changed in the engine",
+  "sub": "worktree lane-engine, branch feat/sam-lane-calibration; the old engine is the deployed lineage (situp-config)",
+  "lines": [
+   "BEFORE: one static lane per video from classical anchor detection (foul line, gutters, pins) before the ball is tracked;",
+   "        boards come from the ball's x between that lane's edges. A handheld phone drifts 24-36 px over a throw: 10+ boards at the pins.",
+   "AFTER (pass 5, after tracking): the ball path prompts SAM 2 tiny on pin-hit minus 4 frames -> the mask component holding the prompts",
+   "        -> one robust line per edge; a second SAM pass on a crop of the far 55 % of the lane re-samples the pin end;",
+   "        the pin rack is fitted from that lane and, when it passes its gate, a metric homography from foul corners + 10 pin bases;",
+   "        ORB + RANSAC similarity per frame carries the lane to every frame; boards are recomputed; the debug video is re-rendered.",
+   "",
+   "Metric (loops 1-4): the annotated ball path on each frame mapped to boards through the engine's lane vs the truth lane; board MAE.",
+   "Truth = loop 4's pins-based corners (the hand corners are 1-2 boards off at the pins). Chardie needs the engine's YOLO ball detector",
+   "to get any track (0 % without it), so the AFTER runs use --yolo; the lane metric uses the annotated path, so it is detector-independent."
+  ]
+ },
+ "results": {
+  "title": "Board MAE of the ball path through the engine's lane, per frame of the throw (pins truth)",
+  "sub": "median over throw frames; <=2 boards = share of frames within two boards; final board = the engine's product number",
+  "note": [
+   "Before = deployed config (--simple-detect). After = --simple-detect --yolo --sam-lane (far-end crop on, pin rack off: from the SAM lane it finds the one-column alias).",
+   "Truth final board = annotated ball at pin hit under the pins-based lane. Chardie's after-number is capped by the tracker losing the ball at frame 108 of 134."
+  ]
+ },
+ "end": {
+  "title": "What to do with it",
+  "sub": "docs/research/2026-09-13-engine-lane-integration/README.md",
+  "lines": [
+   "The pass is behind --sam-lane (service: SAM_LANE=1). Deploying it needs torch + ultralytics in the service image and the",
+   "78 MB sam2.1_t weights; the service reads final_board / entry_board / lane_edges from summary.json. Ship --yolo with it.",
+   "Every stage degrades to the previous one: no weights, no mask, every candidate frame rejected -> the old lane and boards stand.",
+   "",
+   "Real tracker output needed four gates the research never did: the rolling segment, candidates past the track's end,",
+   "the mask must reach the path's far end, and it must be static across two frames (a bowler's legs pass everything else).",
+   "Left out: the pin-rack refit (finds the one-column alias from the SAM lane), the seg student, SAM video mode, the alley face."
+  ]
+ }
+}
