@@ -67,7 +67,8 @@
     "test": "jest",
     "android:build": "bash scripts/build-android.sh",
     "android:install": "bash scripts/build-android.sh --install",
-    "android:release": "bash scripts/build-android.sh --release"
+    "android:release": "bash scripts/build-android.sh --release",
+    "android:publish": "bash scripts/publish-apk.sh"
   },
   "browserslist": {
     "production": [
