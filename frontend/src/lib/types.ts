@@ -137,6 +137,9 @@ export interface RepMetrics {
   form_grade: string;
   form_score: number;
   metrics?: MetricFeedback[];
+  start_s?: number;
+  peak_s?: number;
+  end_s?: number;
 }
 
 export interface PlankPerSecond {
