@@ -41,8 +41,8 @@ const SetStats: React.FC<Props> = ({ repMetrics }) => {
           <div className="text-[11px] text-muted-foreground">clean in a row</div>
         </div>
         <div className="border border-border rounded-lg p-2 min-w-0">
-          <div className="text-lg font-bold" data-testid="set-stats-pause">{formatSeconds(pace.longestPauseS)}</div>
-          <div className="text-[11px] text-muted-foreground">longest pause</div>
+          <div className="text-lg font-bold" data-testid="set-stats-slowest">{formatSeconds(pace.slowestRepS)}</div>
+          <div className="text-[11px] text-muted-foreground">slowest rep</div>
         </div>
       </div>
       <div className="grid grid-cols-3 gap-2" data-testid="set-stats-thirds">
@@ -65,7 +65,7 @@ const SetStats: React.FC<Props> = ({ repMetrics }) => {
         ))}
       </div>
       <p className="text-[11px] text-muted-foreground">
-        {pace.reps} reps in {formatSeconds(pace.durationS)} · reps {pace.fastestRepS}–{pace.slowestRepS}s each
+        {pace.reps} reps in {formatSeconds(pace.durationS)} · fastest rep {formatSeconds(pace.fastestRepS)}
       </p>
     </div>
   );

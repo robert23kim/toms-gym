@@ -23,7 +23,6 @@ export interface SetPace {
   durationS: number;
   repsPerMinute: number;
   thirds: [SetThird, SetThird, SetThird];
-  longestPauseS: number;
   bestCleanStreak: number;
   fastestRepS: number;
   slowestRepS: number;
@@ -79,11 +78,6 @@ export function setPace(repMetrics: TimedRepInput[] | null | undefined): SetPace
     };
   }) as [SetThird, SetThird, SetThird];
 
-  let longestPause = 0;
-  for (let i = 1; i < reps.length; i++) {
-    longestPause = Math.max(longestPause, reps[i].start - reps[i - 1].end);
-  }
-
   let streak = 0;
   let bestStreak = 0;
   for (const r of reps) {
@@ -98,7 +92,6 @@ export function setPace(repMetrics: TimedRepInput[] | null | undefined): SetPace
     durationS: round1(duration),
     repsPerMinute: round1((reps.length / duration) * 60),
     thirds,
-    longestPauseS: round1(longestPause),
     bestCleanStreak: bestStreak,
     fastestRepS: round1(Math.min(...lengths)),
     slowestRepS: round1(Math.max(...lengths)),

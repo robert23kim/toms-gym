@@ -11,16 +11,17 @@ const rep = (start: number, peak: number, end: number, form: number) => ({
 });
 
 describe("SetStats", () => {
-  it("renders pace, streak, pause and the three thirds", () => {
+  it("renders pace, streak, slowest rep and the three thirds", () => {
     render(
       <SetStats
-        repMetrics={[rep(0, 1, 2, 90), rep(2, 3, 4, 80), rep(4, 5, 6, 60), rep(10, 11, 12, 40)]}
+        repMetrics={[rep(0, 1, 2, 90), rep(2, 3, 4, 80), rep(4, 5, 7, 60), rep(10, 11, 12, 40)]}
       />
     );
     expect(screen.getByTestId("set-stats")).toHaveTextContent("Set Stats");
     expect(screen.getByTestId("set-stats-pace")).toHaveTextContent("20");
     expect(screen.getByTestId("set-stats-streak")).toHaveTextContent("2");
-    expect(screen.getByTestId("set-stats-pause")).toHaveTextContent("4s");
+    expect(screen.getByTestId("set-stats-slowest")).toHaveTextContent("3s");
+    expect(screen.getByTestId("set-stats")).toHaveTextContent("fastest rep 2s");
     const thirds = screen.getByTestId("set-stats-thirds");
     expect(thirds).toHaveTextContent("Start");
     expect(thirds).toHaveTextContent("form 85");

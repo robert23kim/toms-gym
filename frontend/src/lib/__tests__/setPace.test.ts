@@ -32,7 +32,6 @@ describe("setPace", () => {
     expect(out.repsPerMinute).toBe(30);
     expect(out.fastestRepS).toBe(1.5);
     expect(out.slowestRepS).toBe(2.5);
-    expect(out.longestPauseS).toBe(0);
   });
 
   it("rounds pace to one decimal", () => {
@@ -40,14 +39,11 @@ describe("setPace", () => {
     expect(setPace([rep(0, 1, 2), rep(2, 3, 4), rep(4, 5, 7)])!.repsPerMinute).toBe(25.7);
   });
 
-  it("finds the longest pause between one rep's end and the next start", () => {
-    const out = setPace([rep(0, 1, 2), rep(2.5, 3, 4), rep(9.26, 10, 11), rep(11, 12, 13)])!;
-    expect(out.longestPauseS).toBe(5.3);
-  });
-
-  it("sorts reps by start time before measuring gaps", () => {
-    const out = setPace([rep(9, 10, 11), rep(0, 1, 2), rep(4, 5, 6)])!;
-    expect(out.longestPauseS).toBe(3);
+  it("sorts reps by start time before measuring the set", () => {
+    const out = setPace([rep(9, 10, 11.5), rep(0, 1, 2), rep(4, 5, 6)])!;
+    expect(out.durationS).toBe(11.5);
+    expect(out.slowestRepS).toBe(2.5);
+    expect(out.thirds.map((t) => t.reps)).toEqual([1, 1, 1]);
   });
 
   it("splits reps into equal-time thirds by peak, boundary peaks going later", () => {
