@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { Link } from "react-router-dom";
-import { Dumbbell, Target, Flag, Timer } from "lucide-react";
+import { Dumbbell, Target, Flag } from "lucide-react";
 import Layout from "../components/Layout";
 import IconTile from "../components/IconTile";
-import RowCard from "../components/RowCard";
 import DemoLoop from "../components/DemoLoop";
 import ChampionSpotlight from "../components/ChampionSpotlight";
 import StreakCard from "../components/StreakCard";
+import PromptList from "../components/home/PromptList";
+import { buildPrompts } from "../lib/prompts";
 import { getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 
@@ -42,7 +42,8 @@ const readUserId = (): string | null => {
 
 const Index = () => {
   const [open, setOpen] = useState<Competition[]>([]);
-  const returning = Boolean(readUserId());
+  const userId = readUserId();
+  const returning = Boolean(userId);
 
   useEffect(() => {
     let cancelled = false;
@@ -71,34 +72,7 @@ const Index = () => {
     </section>
   );
 
-  const challenges = (
-    <section aria-label="Open challenges" className="flex flex-col gap-2.5">
-          {open.length > 0 && (
-            <>
-              <div className="flex items-center gap-3.5 text-xs uppercase tracking-widest text-muted-foreground mb-1">
-                <span className="flex-1 h-px bg-border" aria-hidden="true" />
-                Open challenges
-                <span className="flex-1 h-px bg-border" aria-hidden="true" />
-              </div>
-              {open.map((c) => (
-                <RowCard
-                  key={c.id}
-                  to={`/challenges/${c.id}`}
-                  icon={<Timer className="w-[18px] h-[18px]" />}
-                  title={c.title}
-                  pill={c.categories?.[0]}
-                />
-              ))}
-            </>
-          )}
-          <Link
-            to="/challenges"
-            className="text-sm text-muted-foreground hover:text-foreground transition-colors mt-1"
-          >
-            All challenges →
-          </Link>
-        </section>
-  );
+  const todo = <PromptList prompts={buildPrompts(open)} userId={userId} />;
 
   return (
     <Layout>
@@ -129,10 +103,18 @@ const Index = () => {
           </section>
         )}
 
-        {!returning && spotlight}
-        {returning && challenges}
-        {verticals}
-        {returning ? spotlight : challenges}
+        {returning ? (
+          <>
+            {todo}
+            {spotlight}
+          </>
+        ) : (
+          <>
+            {spotlight}
+            {verticals}
+            {todo}
+          </>
+        )}
       </motion.div>
     </Layout>
   );

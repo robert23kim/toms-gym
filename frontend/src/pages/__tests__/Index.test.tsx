@@ -23,6 +23,7 @@ jest.mock("../../components/StreakCard", () => ({
 jest.mock("../../lib/api", () => ({
   ...jest.requireActual("../../lib/api"),
   getCompetitions: jest.fn(),
+  uploadBowlingSheet: jest.fn(),
 }));
 
 const ongoing = { id: "c1", title: "Summer Plank Challenge", status: "ongoing", categories: ["Plank"] };
@@ -41,30 +42,31 @@ describe("Index (quiet-gym home)", () => {
   it("renders the three vertical tiles with the right upload targets", async () => {
     (api.getCompetitions as jest.Mock).mockResolvedValue([]);
     renderHome();
-    expect(screen.getByRole("link", { name: /lift/i })).toHaveAttribute("href", "/lift");
+    expect(screen.getByRole("link", { name: /^lift/i })).toHaveAttribute("href", "/lift");
     expect(screen.getByRole("link", { name: /bowl/i })).toHaveAttribute("href", "/bowl");
     expect(screen.getByRole("link", { name: /golf/i })).toHaveAttribute("href", "/golf");
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
   });
 
-  it("shows only ongoing challenges as row cards linking to their pages", async () => {
+  it("lists only ongoing challenges as to-do rows that go straight to upload", async () => {
     (api.getCompetitions as jest.Mock).mockResolvedValue([ongoing, completed]);
     renderHome();
     await waitFor(() =>
       expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument()
     );
-    expect(screen.getByText("Summer Plank Challenge").closest("a")).toHaveAttribute("href", "/challenges/c1");
+    expect(screen.getByText("Summer Plank Challenge").closest("a")).toHaveAttribute("href", "/challenges/c1/upload");
     expect(screen.getByText("Plank")).toBeInTheDocument();
     expect(screen.queryByText("Old Squat-Off")).toBeNull();
-    expect(screen.getByText(/open challenges/i)).toBeInTheDocument();
+    expect(screen.getByText(/tonight's to-do/i)).toBeInTheDocument();
   });
 
-  it("hides the strip label entirely when nothing is ongoing but keeps an All challenges link", async () => {
+  it("keeps the standing to-do rows when nothing is ongoing", async () => {
     (api.getCompetitions as jest.Mock).mockResolvedValue([completed]);
     renderHome();
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
-    expect(screen.queryByText(/open challenges/i)).toBeNull();
-    expect(screen.getByRole("link", { name: /all challenges/i })).toHaveAttribute("href", "/challenges");
+    expect(screen.getByText("Snap tonight's scores").closest("a")).toHaveAttribute("href", "/bowling/snap");
+    expect(screen.getByText("Snap a scorecard").closest("a")).toHaveAttribute("href", "/golf/snap");
+    expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");
   });
 
   it("renders the demo loop", async () => {
@@ -80,14 +82,14 @@ describe("Index (quiet-gym home)", () => {
     await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
     expect(screen.getByText(/AI analysis of your lift/i)).toBeInTheDocument();
     const labels = [...container.querySelectorAll("section[aria-label]")].map((s) => s.getAttribute("aria-label"));
-    expect(labels).toEqual(["Pitch", "Your streak", "Analysis demo", "Latest champion", "Verticals", "Open challenges"]);
+    expect(labels).toEqual(["Pitch", "Your streak", "Analysis demo", "Latest champion", "Verticals", "To-do"]);
   });
 
   describe("for a returning user", () => {
     beforeEach(() => (localStorage.getItem as jest.Mock).mockReturnValue("u1"));
     afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
 
-    it("skips the pitch and demo and leads with streak then open challenges", async () => {
+    it("skips the pitch, demo and tiles and leads with streak then the to-do list", async () => {
       (api.getCompetitions as jest.Mock).mockResolvedValue([ongoing]);
       const { container } = renderHome();
       await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
@@ -95,8 +97,10 @@ describe("Index (quiet-gym home)", () => {
       expect(screen.queryByText(/plank · hold \+ form/i)).toBeNull();
       expect(screen.getByText("streak-card")).toBeInTheDocument();
       const labels = [...container.querySelectorAll("section[aria-label]")].map((s) => s.getAttribute("aria-label"));
-      expect(labels).toEqual(["Your streak", "Open challenges", "Verticals", "Latest champion"]);
-      expect(screen.getByRole("link", { name: /lift/i })).toHaveAttribute("href", "/lift");
+      expect(labels).toEqual(["Your streak", "To-do", "Latest champion"]);
+      expect(screen.queryByRole("link", { name: /^lift$/i })).toBeNull();
+      expect(screen.getByTestId("home-bowl-camera")).toBeInTheDocument();
+      expect(screen.getByText("Summer Plank Challenge").closest("a")).toHaveAttribute("href", "/challenges/c1/upload");
     });
   });
 });
