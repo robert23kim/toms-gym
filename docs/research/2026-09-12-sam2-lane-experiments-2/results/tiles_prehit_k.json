@@ -1,0 +1,458 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 3.61,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     535,
+     957
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     521,
+     977
+    ],
+    [
+     535,
+     957
+    ],
+    [
+     385,
+     1128
+    ],
+    [
+     434,
+     1073
+    ],
+    [
+     476,
+     1028
+    ],
+    [
+     351,
+     1159
+    ],
+    [
+     374,
+     1139
+    ],
+    [
+     410,
+     1100
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     288,
+     921,
+     645,
+     1070
+    ],
+    [
+     154,
+     1004,
+     622,
+     1153
+    ],
+    [
+     42,
+     1088,
+     596,
+     1221
+    ]
+   ]
+  },
+  "board_mae": 1.13,
+  "board_max": 2.07,
+  "within_1": 39.0,
+  "within_2": 97.4,
+  "corner_err_px": {
+   "top_left": 0.5,
+   "top_right": 5.0,
+   "bottom_left": 14.8,
+   "bottom_right": 2.9
+  },
+  "corner_err_mean_px": 5.8,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 55.5,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 245.8,
+  "crops": [
+   [
+    288,
+    921,
+    645,
+    1070
+   ],
+   [
+    154,
+    1004,
+    622,
+    1153
+   ],
+   [
+    42,
+    1088,
+    596,
+    1221
+   ]
+  ],
+  "full_mae": 0.24,
+  "fit_resid_px": 3.85,
+  "rows": 273,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    516.5,
+    934
+   ],
+   "top_right": [
+    572.0,
+    934
+   ],
+   "bottom_left": [
+    162.3,
+    1210
+   ],
+   "bottom_right": [
+    408.1,
+    1210
+   ]
+  },
+  "method": "tiles_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft full frame, then SAM on three overlapping crops (top / middle / bottom of the lane), merged rows"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 3.67,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     369,
+     690
+    ],
+    [
+     382,
+     653
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     366,
+     699
+    ],
+    [
+     373,
+     681
+    ],
+    [
+     381,
+     659
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     285,
+     539,
+     490,
+     644
+    ],
+    [
+     214,
+     597,
+     494,
+     703
+    ],
+    [
+     155,
+     657,
+     496,
+     751
+    ]
+   ]
+  },
+  "board_mae": 0.45,
+  "board_max": 1.01,
+  "within_1": 96.9,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 3.4,
+   "top_right": 1.5,
+   "bottom_left": 8.2,
+   "bottom_right": 5.8
+  },
+  "corner_err_mean_px": 4.7,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 35.7,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 159.9,
+  "crops": [
+   [
+    285,
+    539,
+    490,
+    644
+   ],
+   [
+    214,
+    597,
+    494,
+    703
+   ],
+   [
+    155,
+    657,
+    496,
+    751
+   ]
+  ],
+  "full_mae": 0.88,
+  "fit_resid_px": 1.25,
+  "rows": 183,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    408.2,
+    548.0
+   ],
+   "top_right": [
+    443.9,
+    548.0
+   ],
+   "bottom_left": [
+    236.0,
+    743.3
+   ],
+   "bottom_right": [
+    395.9,
+    743.3
+   ]
+  },
+  "method": "tiles_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft full frame, then SAM on three overlapping crops (top / middle / bottom of the lane), merged rows"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 3.61,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     418,
+     826
+    ],
+    [
+     483,
+     745
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     305,
+     945
+    ],
+    [
+     374,
+     873
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     293,
+     964
+    ],
+    [
+     322,
+     935
+    ],
+    [
+     354,
+     899
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     188,
+     650,
+     673,
+     865
+    ],
+    [
+     0,
+     770,
+     684,
+     984
+    ],
+    [
+     0,
+     891,
+     687,
+     1082
+    ]
+   ]
+  },
+  "board_mae": 1.92,
+  "board_max": 3.6,
+  "within_1": 25.0,
+  "within_2": 51.4,
+  "corner_err_px": {
+   "top_left": 7.7,
+   "top_right": 5.1,
+   "bottom_left": 2.1,
+   "bottom_right": 17.0
+  },
+  "corner_err_mean_px": 8.0,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 64.5,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 397.9,
+  "crops": [
+   [
+    188,
+    650,
+    673,
+    865
+   ],
+   [
+    0,
+    770,
+    684,
+    984
+   ],
+   [
+    0,
+    891,
+    687,
+    1082
+   ]
+  ],
+  "full_mae": 2.29,
+  "fit_resid_px": 3.92,
+  "rows": 396,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    500.7,
+    668.7
+   ],
+   "top_right": [
+    565.2,
+    668.7
+   ],
+   "bottom_left": [
+    40.8,
+    1066.4
+   ],
+   "bottom_right": [
+    438.7,
+    1066.4
+   ]
+  },
+  "method": "tiles_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft full frame, then SAM on three overlapping crops (top / middle / bottom of the lane), merged rows"
+ }
+]

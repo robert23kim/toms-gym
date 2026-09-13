@@ -1,0 +1,200 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 1.09,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.72,
+  "board_max": 1.12,
+  "within_1": 97.4,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 0.5,
+   "top_right": 3.4,
+   "bottom_left": 15.5,
+   "bottom_right": 4.4
+  },
+  "corner_err_mean_px": 6.0,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 57.0,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 245.3,
+  "fit_resid_px": 3.81,
+  "row_coverage": 0.98,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    516.5,
+    934
+   ],
+   "top_right": [
+    573.6,
+    934
+   ],
+   "bottom_left": [
+    161.3,
+    1210
+   ],
+   "bottom_right": [
+    406.6,
+    1210
+   ]
+  },
+  "method": "even3_last_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "3 evenly spaced path points, binary mask, row-extreme edge fit (loop-1 baseline, same code path)"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 0.44,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.5,
+  "board_max": 1.14,
+  "within_1": 90.8,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.0,
+   "top_right": 2.0,
+   "bottom_left": 12.1,
+   "bottom_right": 6.3
+  },
+  "corner_err_mean_px": 6.1,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 35.0,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 163.9,
+  "fit_resid_px": 1.66,
+  "row_coverage": 0.95,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    401.0,
+    549.0
+   ],
+   "top_right": [
+    436.0,
+    549.0
+   ],
+   "bottom_left": [
+    220.8,
+    746.0
+   ],
+   "bottom_right": [
+    384.7,
+    746.0
+   ]
+  },
+  "method": "even3_last_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "3 evenly spaced path points, binary mask, row-extreme edge fit (loop-1 baseline, same code path)"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 0.46,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     497,
+     734
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.74,
+  "board_max": 1.61,
+  "within_1": 67.6,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.6,
+   "top_right": 2.0,
+   "bottom_left": 12.3,
+   "bottom_right": 19.5
+  },
+  "corner_err_mean_px": 9.6,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 64.9,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 407.8,
+  "fit_resid_px": 4.45,
+  "row_coverage": 0.93,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    501.6,
+    667.5
+   ],
+   "top_right": [
+    566.5,
+    667.5
+   ],
+   "bottom_left": [
+    35.1,
+    1069.2
+   ],
+   "bottom_right": [
+    442.9,
+    1069.2
+   ]
+  },
+  "method": "even3_last_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "3 evenly spaced path points, binary mask, row-extreme edge fit (loop-1 baseline, same code path)"
+ }
+]

@@ -1,0 +1,227 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 2.48,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.43,
+  "board_max": 1.15,
+  "within_1": 92.2,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.6,
+   "top_right": 0.5,
+   "bottom_left": 13.0,
+   "bottom_right": 5.1
+  },
+  "corner_err_mean_px": 5.3,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 58.9,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 241.3,
+  "trim": 0.3,
+  "sweep_mae_by_trim": {
+   "0.0": 0.22,
+   "0.1": 0.2,
+   "0.2": 0.21,
+   "0.3": 0.43,
+   "0.4": 0.58,
+   "0.5": 0.37
+  },
+  "fit_resid_px": 3.37,
+  "rows": 194,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    518.6,
+    934
+   ],
+   "top_right": [
+    577.5,
+    934
+   ],
+   "bottom_left": [
+    164.6,
+    1210
+   ],
+   "bottom_right": [
+    405.9,
+    1210
+   ]
+  },
+  "method": "trim_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft edges fitted only on rows below the top 30% of the lane (where a board is wide and the mask is clean), extrapolated to the pin end"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 0.91,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.87,
+  "board_max": 1.88,
+  "within_1": 61.5,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 3.1,
+   "top_right": 3.1,
+   "bottom_left": 10.6,
+   "bottom_right": 5.3
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 38.3,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 162.3,
+  "trim": 0.3,
+  "sweep_mae_by_trim": {
+   "0.0": 0.47,
+   "0.1": 0.51,
+   "0.2": 0.57,
+   "0.3": 0.87,
+   "0.4": 0.96,
+   "0.5": 0.96
+  },
+  "fit_resid_px": 1.38,
+  "rows": 131,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    400.1,
+    549.0
+   ],
+   "top_right": [
+    438.4,
+    549.0
+   ],
+   "bottom_left": [
+    223.4,
+    746.0
+   ],
+   "bottom_right": [
+    385.7,
+    746.0
+   ]
+  },
+  "method": "trim_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft edges fitted only on rows below the top 30% of the lane (where a board is wide and the mask is clean), extrapolated to the pin end"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 0.91,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     497,
+     734
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.44,
+  "board_max": 2.75,
+  "within_1": 39.2,
+  "within_2": 66.2,
+  "corner_err_px": {
+   "top_left": 4.4,
+   "top_right": 6.0,
+   "bottom_left": 11.1,
+   "bottom_right": 19.7
+  },
+  "corner_err_mean_px": 10.3,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 69.1,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.1,
+  "trim": 0.3,
+  "sweep_mae_by_trim": {
+   "0.0": 1.23,
+   "0.1": 1.23,
+   "0.2": 1.13,
+   "0.3": 1.44,
+   "0.4": 1.55,
+   "0.5": 1.63
+  },
+  "fit_resid_px": 5.43,
+  "rows": 277,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    501.4,
+    667.5
+   ],
+   "top_right": [
+    570.5,
+    667.5
+   ],
+   "bottom_left": [
+    36.2,
+    1069.2
+   ],
+   "bottom_right": [
+    442.4,
+    1069.2
+   ]
+  },
+  "method": "trim_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft edges fitted only on rows below the top 30% of the lane (where a board is wide and the mask is clean), extrapolated to the pin end"
+ }
+]

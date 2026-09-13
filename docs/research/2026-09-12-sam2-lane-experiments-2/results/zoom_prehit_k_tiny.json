@@ -1,0 +1,335 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 0.91,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     535,
+     957
+    ],
+    [
+     446,
+     1061
+    ],
+    [
+     509,
+     991
+    ],
+    [
+     535,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     238,
+     918,
+     655,
+     1100
+    ]
+   ]
+  },
+  "board_mae": 0.7,
+  "board_max": 1.08,
+  "within_1": 97.4,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 0.4,
+   "top_right": 2.5,
+   "bottom_left": 16.3,
+   "bottom_right": 2.6
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 58.9,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 247.9,
+  "crop": [
+   238,
+   918,
+   655,
+   1100
+  ],
+  "crop_prompts": [
+   [
+    446,
+    1061
+   ],
+   [
+    509,
+    991
+   ],
+   [
+    535,
+    957
+   ]
+  ],
+  "full_mae": 0.94,
+  "fit_resid_px": 3.17,
+  "rows": 275,
+  "zoom_scale": 2.46,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    515.6,
+    934
+   ],
+   "top_right": [
+    574.5,
+    934
+   ],
+   "bottom_left": [
+    160.4,
+    1210
+   ],
+   "bottom_right": [
+    408.4,
+    1210
+   ]
+  },
+  "method": "zoom_prehit_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "soft full frame, then a second SAM pass on a crop of the top 55% of the lane (pin end at 2-4x)"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 0.88,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     394,
+     633
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     404,
+     616
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     260,
+     537,
+     495,
+     666
+    ]
+   ]
+  },
+  "board_mae": 0.72,
+  "board_max": 1.68,
+  "within_1": 80.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.0,
+   "top_right": 1.9,
+   "bottom_left": 8.7,
+   "bottom_right": 6.4
+  },
+  "corner_err_mean_px": 5.3,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 36.0,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 160.1,
+  "crop": [
+   260,
+   537,
+   495,
+   666
+  ],
+  "crop_prompts": [
+   [
+    394,
+    633
+   ],
+   [
+    404,
+    616
+   ],
+   [
+    404,
+    616
+   ]
+  ],
+  "full_mae": 0.45,
+  "fit_resid_px": 1.64,
+  "rows": 180,
+  "zoom_scale": 4.36,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    408.7,
+    548.0
+   ],
+   "top_right": [
+    444.7,
+    548.0
+   ],
+   "bottom_left": [
+    235.2,
+    743.3
+   ],
+   "bottom_right": [
+    395.2,
+    743.3
+   ]
+  },
+  "method": "zoom_prehit_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "soft full frame, then a second SAM pass on a crop of the top 55% of the lane (pin end at 2-4x)"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 0.88,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     385,
+     861
+    ],
+    [
+     465,
+     765
+    ],
+    [
+     493,
+     730
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     123,
+     646,
+     688,
+     909
+    ]
+   ]
+  },
+  "board_mae": 1.84,
+  "board_max": 3.45,
+  "within_1": 26.4,
+  "within_2": 52.7,
+  "corner_err_px": {
+   "top_left": 6.8,
+   "top_right": 5.6,
+   "bottom_left": 3.3,
+   "bottom_right": 17.2
+  },
+  "corner_err_mean_px": 8.2,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 65.8,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 398.5,
+  "crop": [
+   123,
+   646,
+   688,
+   909
+  ],
+  "crop_prompts": [
+   [
+    385,
+    861
+   ],
+   [
+    465,
+    765
+   ],
+   [
+    493,
+    730
+   ]
+  ],
+  "full_mae": 2.04,
+  "fit_resid_px": 3.81,
+  "rows": 393,
+  "zoom_scale": 1.81,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    499.9,
+    668.7
+   ],
+   "top_right": [
+    565.7,
+    668.7
+   ],
+   "bottom_left": [
+    39.7,
+    1066.4
+   ],
+   "bottom_right": [
+    438.2,
+    1066.4
+   ]
+  },
+  "method": "zoom_prehit_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "soft full frame, then a second SAM pass on a crop of the top 55% of the lane (pin end at 2-4x)"
+ }
+]

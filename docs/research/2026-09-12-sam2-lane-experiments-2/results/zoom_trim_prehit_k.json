@@ -1,0 +1,311 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 1.77,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     535,
+     957
+    ],
+    [
+     441,
+     1066
+    ],
+    [
+     514,
+     983
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     243,
+     918,
+     654,
+     1100
+    ]
+   ]
+  },
+  "board_mae": 0.91,
+  "board_max": 1.6,
+  "within_1": 50.6,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 0.7,
+   "top_right": 3.6,
+   "bottom_left": 12.7,
+   "bottom_right": 3.7
+  },
+  "corner_err_mean_px": 5.2,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 58.0,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 242.3,
+  "crop": [
+   243,
+   918,
+   654,
+   1100
+  ],
+  "crop_prompts": [
+   [
+    441,
+    1066
+   ],
+   [
+    514,
+    983
+   ]
+  ],
+  "trim": 0.15,
+  "full_mae": 0.24,
+  "fit_resid_px": 2.87,
+  "rows": 233,
+  "zoom_scale": 2.49,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    515.3,
+    934
+   ],
+   "top_right": [
+    573.4,
+    934
+   ],
+   "bottom_left": [
+    165.0,
+    1210
+   ],
+   "bottom_right": [
+    407.3,
+    1210
+   ]
+  },
+  "method": "zoom_trim_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "zoom_lo, then the top 15% of lane rows (deck bleed) excluded from the line fit"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 1.77,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     390,
+     642
+    ],
+    [
+     404,
+     616
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     262,
+     537,
+     496,
+     666
+    ]
+   ]
+  },
+  "board_mae": 0.38,
+  "board_max": 0.84,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.8,
+   "top_right": 1.5,
+   "bottom_left": 7.7,
+   "bottom_right": 5.1
+  },
+  "corner_err_mean_px": 4.3,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 36.4,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 159.6,
+  "crop": [
+   262,
+   537,
+   496,
+   666
+  ],
+  "crop_prompts": [
+   [
+    390,
+    642
+   ],
+   [
+    404,
+    616
+   ]
+  ],
+  "trim": 0.15,
+  "full_mae": 0.88,
+  "fit_resid_px": 0.62,
+  "rows": 161,
+  "zoom_scale": 4.38,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    407.6,
+    548.0
+   ],
+   "top_right": [
+    444.0,
+    548.0
+   ],
+   "bottom_left": [
+    237.0,
+    743.3
+   ],
+   "bottom_right": [
+    396.6,
+    743.3
+   ]
+  },
+  "method": "zoom_trim_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "zoom_lo, then the top 15% of lane rows (deck bleed) excluded from the line fit"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 1.77,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     374,
+     873
+    ],
+    [
+     479,
+     752
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     125,
+     646,
+     688,
+     909
+    ]
+   ]
+  },
+  "board_mae": 1.86,
+  "board_max": 3.47,
+  "within_1": 23.6,
+  "within_2": 55.4,
+  "corner_err_px": {
+   "top_left": 7.9,
+   "top_right": 4.4,
+   "bottom_left": 0.4,
+   "bottom_right": 16.8
+  },
+  "corner_err_mean_px": 7.4,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 63.5,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 396.6,
+  "crop": [
+   125,
+   646,
+   688,
+   909
+  ],
+  "crop_prompts": [
+   [
+    374,
+    873
+   ],
+   [
+    479,
+    752
+   ]
+  ],
+  "trim": 0.15,
+  "full_mae": 2.29,
+  "fit_resid_px": 3.74,
+  "rows": 335,
+  "zoom_scale": 1.82,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    501.0,
+    668.7
+   ],
+   "top_right": [
+    564.5,
+    668.7
+   ],
+   "bottom_left": [
+    42.6,
+    1066.4
+   ],
+   "bottom_right": [
+    439.2,
+    1066.4
+   ]
+  },
+  "method": "zoom_trim_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "zoom_lo, then the top 15% of lane rows (deck bleed) excluded from the line fit"
+ }
+]

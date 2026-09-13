@@ -1,0 +1,299 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 0.81,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     512.3758600977781,
+     934.1791234712515,
+     564.384446611904,
+     938.6708333668613
+    ]
+   ]
+  },
+  "board_mae": 1.94,
+  "board_max": 3.53,
+  "within_1": 22.1,
+  "within_2": 50.6,
+  "corner_err_px": {
+   "top_left": 6.6,
+   "top_right": 5.6,
+   "bottom_left": 13.6,
+   "bottom_right": 3.1
+  },
+  "corner_err_mean_px": 7.2,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 62.0,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 244.1,
+  "pin_frame": 117,
+  "pin_window": [
+   508,
+   884,
+   600,
+   942
+  ],
+  "pin_cands": 2,
+  "pin_runs": 2,
+  "pin_band": [
+   912,
+   933
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": 2.5,
+  "pin_span_px": 51.0,
+  "pin_lane_width_px": 51.9,
+  "truth_top_width_px": 61,
+  "first_pass_mae": 0.7,
+  "pin_top_width_px": 52.0,
+  "pin_vs_truth_width": 0.853,
+  "pin_centre_px": 538.4,
+  "truth_centre_px": 546.5,
+  "pin_centre_err_px": -8.1,
+  "rows_used": 166,
+  "sam_width_at_pins_px": 63.5,
+  "fit_resid_px": 4.59,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    509.4,
+    934
+   ],
+   "top_right": [
+    571.4,
+    934
+   ],
+   "bottom_left": [
+    163.8,
+    1210
+   ],
+   "bottom_right": [
+    407.9,
+    1210
+   ]
+  },
+  "method": "pins_m_last_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "pin cluster sets the lane CENTRE at the pin deck, SAM's own width is kept there and both lines are refitted through it"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 0.72,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     400.967968155688,
+     547.0816550860027,
+     436.90352288547206,
+     551.6110680540216
+    ]
+   ]
+  },
+  "board_mae": 0.68,
+  "board_max": 1.47,
+  "within_1": 78.5,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 3.4,
+   "top_right": 2.6,
+   "bottom_left": 12.3,
+   "bottom_right": 6.3
+  },
+  "corner_err_mean_px": 6.1,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 37.3,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 164.1,
+  "pin_frame": 132,
+  "pin_window": [
+   397,
+   519,
+   454,
+   554
+  ],
+  "pin_cands": 4,
+  "pin_runs": 1,
+  "pin_band": [
+   535,
+   548
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": 0.3,
+  "pin_span_px": 35.0,
+  "pin_lane_width_px": 35.6,
+  "truth_top_width_px": 39.0,
+  "first_pass_mae": 0.45,
+  "pin_top_width_px": 35.9,
+  "pin_vs_truth_width": 0.921,
+  "pin_centre_px": 418.9,
+  "truth_centre_px": 416.5,
+  "pin_centre_err_px": 2.4,
+  "rows_used": 112,
+  "sam_width_at_pins_px": 37.3,
+  "fit_resid_px": 1.79,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    400.4,
+    549.0
+   ],
+   "top_right": [
+    437.6,
+    549.0
+   ],
+   "bottom_left": [
+    220.6,
+    746.0
+   ],
+   "bottom_right": [
+    384.7,
+    746.0
+   ]
+  },
+  "method": "pins_m_last_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "pin cluster sets the lane CENTRE at the pin deck, SAM's own width is kept there and both lines are refitted through it"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 0.89,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     497,
+     734
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     503.50664105098974,
+     661.0686953378757,
+     570.9427198005933,
+     664.7312777888889
+    ]
+   ]
+  },
+  "board_mae": 0.93,
+  "board_max": 1.82,
+  "within_1": 52.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.5,
+   "top_right": 5.5,
+   "bottom_left": 11.4,
+   "bottom_right": 19.8
+  },
+  "corner_err_mean_px": 9.6,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 72.0,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.2,
+  "pin_frame": 169,
+  "pin_window": [
+   477,
+   615,
+   582,
+   681
+  ],
+  "pin_cands": 1,
+  "pin_runs": 1,
+  "pin_band": [
+   640,
+   664
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": -4.5,
+  "pin_span_px": 66.0,
+  "pin_lane_width_px": 67.2,
+  "truth_top_width_px": 67.2,
+  "first_pass_mae": 0.8,
+  "pin_top_width_px": 67.4,
+  "pin_vs_truth_width": 1.004,
+  "pin_centre_px": 537.2,
+  "truth_centre_px": 530.9,
+  "pin_centre_err_px": 6.3,
+  "rows_used": 233,
+  "sam_width_at_pins_px": 68.4,
+  "fit_resid_px": 4.73,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    498.0,
+    667.5
+   ],
+   "top_right": [
+    570.0,
+    667.5
+   ],
+   "bottom_left": [
+    36.0,
+    1069.2
+   ],
+   "bottom_right": [
+    442.2,
+    1069.2
+   ]
+  },
+  "method": "pins_m_last_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "pin cluster sets the lane CENTRE at the pin deck, SAM's own width is kept there and both lines are refitted through it"
+ }
+]

@@ -1,0 +1,308 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 1.75,
+  "prompts": {
+   "points": [
+    [
+     213,
+     1236
+    ],
+    [
+     347,
+     1113
+    ],
+    [
+     481,
+     989
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     512.3758600977781,
+     934.1791234712515,
+     564.384446611904,
+     938.6708333668613
+    ]
+   ]
+  },
+  "board_mae": 1.82,
+  "board_max": 3.54,
+  "within_1": 22.1,
+  "within_2": 51.9,
+  "corner_err_px": {
+   "top_left": 1.8,
+   "top_right": 10.0,
+   "bottom_left": 16.4,
+   "bottom_right": 2.2
+  },
+  "corner_err_mean_px": 7.6,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 49.3,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 248.5,
+  "ballpath_mae": 0.7,
+  "near_source": "yolo_box_bottom",
+  "poses": 0,
+  "anchor_near": [
+   155.5,
+   1289.0
+  ],
+  "anchor_far": [
+   538.4,
+   936.4
+  ],
+  "sam_score": 0.497,
+  "landmarks_only_mae": 1.5,
+  "pin_frame": 117,
+  "pin_window": [
+   499,
+   878,
+   603,
+   943
+  ],
+  "pin_cands": 2,
+  "pin_runs": 3,
+  "pin_band": [
+   912,
+   935
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": 4.5,
+  "pin_span_px": 51.0,
+  "pin_lane_width_px": 51.9,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.8,
+    934
+   ],
+   "top_right": [
+    567.0,
+    934
+   ],
+   "bottom_left": [
+    160.3,
+    1210
+   ],
+   "bottom_right": [
+    408.8,
+    1210
+   ]
+  },
+  "method": "landmarks_pin_last_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "landmarks prompts, then the pin cluster anchors the top corners (methods 3 + 2 combined)"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 1.81,
+  "prompts": {
+   "points": [
+    [
+     276,
+     715
+    ],
+    [
+     335,
+     647
+    ],
+    [
+     394,
+     579
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     400.967968155688,
+     547.0816550860027,
+     436.90352288547206,
+     551.6110680540216
+    ]
+   ]
+  },
+  "board_mae": 0.6,
+  "board_max": 1.36,
+  "within_1": 81.5,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.0,
+   "top_right": 2.3,
+   "bottom_left": 12.5,
+   "bottom_right": 6.0
+  },
+  "corner_err_mean_px": 6.2,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 36.0,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 164.6,
+  "ballpath_mae": 0.45,
+  "near_source": "pose_foot_left",
+  "poses": 3,
+  "anchor_near": [
+   250.7,
+   744.1
+  ],
+  "anchor_far": [
+   418.9,
+   549.3
+  ],
+  "sam_score": 0.93,
+  "landmarks_only_mae": 0.48,
+  "pin_frame": 132,
+  "pin_window": [
+   396,
+   518,
+   454,
+   554
+  ],
+  "pin_cands": 4,
+  "pin_runs": 1,
+  "pin_band": [
+   535,
+   548
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": 0.3,
+  "pin_span_px": 35.0,
+  "pin_lane_width_px": 35.6,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    401.0,
+    549.0
+   ],
+   "top_right": [
+    437.1,
+    549.0
+   ],
+   "bottom_left": [
+    220.3,
+    746.0
+   ],
+   "bottom_right": [
+    385.0,
+    746.0
+   ]
+  },
+  "method": "landmarks_pin_last_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "landmarks prompts, then the pin cluster anchors the top corners (methods 3 + 2 combined)"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 1.71,
+  "prompts": {
+   "points": [
+    [
+     262,
+     906
+    ],
+    [
+     376,
+     806
+    ],
+    [
+     489,
+     706
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     503.50664105098974,
+     661.0686953378757,
+     570.9427198005933,
+     664.7312777888889
+    ]
+   ]
+  },
+  "board_mae": 0.88,
+  "board_max": 1.71,
+  "within_1": 53.4,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.8,
+   "top_right": 5.0,
+   "bottom_left": 11.6,
+   "bottom_right": 19.7
+  },
+  "corner_err_mean_px": 9.5,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 71.0,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.6,
+  "ballpath_mae": 0.8,
+  "near_source": "pose_wrist_right",
+  "poses": 2,
+  "anchor_near": [
+   213.9,
+   948.4
+  ],
+  "anchor_far": [
+   537.2,
+   662.9
+  ],
+  "sam_score": 0.895,
+  "landmarks_only_mae": 1.05,
+  "pin_frame": 169,
+  "pin_window": [
+   477,
+   615,
+   583,
+   681
+  ],
+  "pin_cands": 1,
+  "pin_runs": 1,
+  "pin_band": [
+   640,
+   664
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": -4.5,
+  "pin_span_px": 66.0,
+  "pin_lane_width_px": 67.2,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    498.4,
+    667.5
+   ],
+   "top_right": [
+    569.4,
+    667.5
+   ],
+   "bottom_left": [
+    35.8,
+    1069.2
+   ],
+   "bottom_right": [
+    442.4,
+    1069.2
+   ]
+  },
+  "method": "landmarks_pin_last_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "landmarks prompts, then the pin cluster anchors the top corners (methods 3 + 2 combined)"
+ }
+]

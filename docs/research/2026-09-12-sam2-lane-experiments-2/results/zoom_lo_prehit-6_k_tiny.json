@@ -1,0 +1,311 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 113,
+  "kind": "prehit-6",
+  "latency_s": 0.9,
+  "prompts": {
+   "points": [
+    [
+     364,
+     1139
+    ],
+    [
+     458,
+     1035
+    ],
+    [
+     528,
+     957
+    ],
+    [
+     432,
+     1066
+    ],
+    [
+     506,
+     983
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     240,
+     918,
+     655,
+     1100
+    ]
+   ]
+  },
+  "board_mae": 0.43,
+  "board_max": 0.71,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 0.5,
+   "top_right": 2.4,
+   "bottom_left": 14.8,
+   "bottom_right": 3.1
+  },
+  "corner_err_mean_px": 5.2,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 58.1,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 245.7,
+  "crop": [
+   240,
+   918,
+   655,
+   1100
+  ],
+  "crop_prompts": [
+   [
+    432,
+    1066
+   ],
+   [
+    506,
+    983
+   ]
+  ],
+  "trim": 0.0,
+  "full_mae": 0.72,
+  "fit_resid_px": 6.73,
+  "rows": 271,
+  "zoom_scale": 2.47,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    516.5,
+    934
+   ],
+   "top_right": [
+    574.6,
+    934
+   ],
+   "bottom_left": [
+    162.3,
+    1210
+   ],
+   "bottom_right": [
+    407.9,
+    1210
+   ]
+  },
+  "method": "zoom_lo_prehit-6_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "zoom with the crop's prompts kept in the lower half of the crop path (10-55%), away from the pin deck"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 128,
+  "kind": "prehit-6",
+  "latency_s": 0.88,
+  "prompts": {
+   "points": [
+    [
+     374,
+     681
+    ],
+    [
+     399,
+     625
+    ],
+    [
+     405,
+     617
+    ],
+    [
+     390,
+     642
+    ],
+    [
+     405,
+     617
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     260,
+     537,
+     496,
+     666
+    ]
+   ]
+  },
+  "board_mae": 0.49,
+  "board_max": 1.13,
+  "within_1": 92.3,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.5,
+   "top_right": 1.8,
+   "bottom_left": 9.5,
+   "bottom_right": 6.7
+  },
+  "corner_err_mean_px": 5.1,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 37.0,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 160.1,
+  "crop": [
+   260,
+   537,
+   496,
+   666
+  ],
+  "crop_prompts": [
+   [
+    390,
+    642
+   ],
+   [
+    405,
+    617
+   ]
+  ],
+  "trim": 0.0,
+  "full_mae": 0.71,
+  "fit_resid_px": 2.11,
+  "rows": 183,
+  "zoom_scale": 4.34,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    408.4,
+    548.3
+   ],
+   "top_right": [
+    445.4,
+    548.3
+   ],
+   "bottom_left": [
+    235.1,
+    743.7
+   ],
+   "bottom_right": [
+    395.2,
+    743.7
+   ]
+  },
+  "method": "zoom_lo_prehit-6_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "zoom with the crop's prompts kept in the lower half of the crop path (10-55%), away from the pin deck"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 165,
+  "kind": "prehit-6",
+  "latency_s": 0.88,
+  "prompts": {
+   "points": [
+    [
+     333,
+     923
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     374,
+     872
+    ],
+    [
+     479,
+     751
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     123,
+     646,
+     688,
+     908
+    ]
+   ]
+  },
+  "board_mae": 1.6,
+  "board_max": 3.05,
+  "within_1": 33.1,
+  "within_2": 63.5,
+  "corner_err_px": {
+   "top_left": 6.1,
+   "top_right": 5.0,
+   "bottom_left": 3.6,
+   "bottom_right": 17.7
+  },
+  "corner_err_mean_px": 8.1,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 66.0,
+  "bottom_width_true_px": 402.1,
+  "bottom_width_pred_px": 398.0,
+  "crop": [
+   123,
+   646,
+   688,
+   908
+  ],
+  "crop_prompts": [
+   [
+    374,
+    872
+   ],
+   [
+    479,
+    751
+   ]
+  ],
+  "trim": 0.0,
+  "full_mae": 1.95,
+  "fit_resid_px": 3.48,
+  "rows": 394,
+  "zoom_scale": 1.81,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    499.0,
+    668.1
+   ],
+   "top_right": [
+    564.9,
+    668.1
+   ],
+   "bottom_left": [
+    39.3,
+    1066.1
+   ],
+   "bottom_right": [
+    437.4,
+    1066.1
+   ]
+  },
+  "method": "zoom_lo_prehit-6_k_tiny",
+  "weights": "sam2.1_t.pt",
+  "desc": "zoom with the crop's prompts kept in the lower half of the crop path (10-55%), away from the pin deck"
+ }
+]

@@ -1,0 +1,206 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 0.91,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.4,
+  "board_max": 0.52,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.2,
+   "top_right": 2.0,
+   "bottom_left": 17.1,
+   "bottom_right": 4.4
+  },
+  "corner_err_mean_px": 6.2,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 57.8,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 247.2,
+  "snap_rows_left": 267,
+  "snap_rows_right": 277,
+  "polarity": 1,
+  "before_snap_mae": 0.22,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.2,
+    934
+   ],
+   "top_right": [
+    575.0,
+    934
+   ],
+   "bottom_left": [
+    159.4,
+    1210
+   ],
+   "bottom_right": [
+    406.6,
+    1210
+   ]
+  },
+  "method": "snap2_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft, then polarity-aware sub-pixel gradient snap within +-6 px (weak rows dropped)"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 0.92,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.76,
+  "board_max": 1.64,
+  "within_1": 73.8,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 3.2,
+   "top_right": 2.8,
+   "bottom_left": 12.4,
+   "bottom_right": 5.0
+  },
+  "corner_err_mean_px": 5.8,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 37.8,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 165.5,
+  "snap_rows_left": 186,
+  "snap_rows_right": 184,
+  "polarity": 1,
+  "before_snap_mae": 0.47,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    400.2,
+    549.0
+   ],
+   "top_right": [
+    438.0,
+    549.0
+   ],
+   "bottom_left": [
+    220.5,
+    746.0
+   ],
+   "bottom_right": [
+    386.0,
+    746.0
+   ]
+  },
+  "method": "snap2_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft, then polarity-aware sub-pixel gradient snap within +-6 px (weak rows dropped)"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 0.91,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     497,
+     734
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.51,
+  "board_max": 2.91,
+  "within_1": 39.9,
+  "within_2": 60.8,
+  "corner_err_px": {
+   "top_left": 1.6,
+   "top_right": 9.1,
+   "bottom_left": 18.7,
+   "bottom_right": 19.7
+  },
+  "corner_err_mean_px": 12.3,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 75.5,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 413.9,
+  "snap_rows_left": 394,
+  "snap_rows_right": 365,
+  "polarity": 1,
+  "before_snap_mae": 1.23,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    498.1,
+    667.5
+   ],
+   "top_right": [
+    573.6,
+    667.5
+   ],
+   "bottom_left": [
+    28.7,
+    1069.2
+   ],
+   "bottom_right": [
+    442.6,
+    1069.2
+   ]
+  },
+  "method": "snap2_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "soft, then polarity-aware sub-pixel gradient snap within +-6 px (weak rows dropped)"
+ }
+]

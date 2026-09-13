@@ -1,0 +1,203 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 2.47,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     535,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.24,
+  "board_max": 0.5,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.7,
+   "top_right": 2.2,
+   "bottom_left": 13.5,
+   "bottom_right": 3.6
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 56.1,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 243.5,
+  "fit_resid_px": 4.31,
+  "rows": 264,
+  "sam_score": 0.928,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    518.7,
+    934
+   ],
+   "top_right": [
+    574.8,
+    934
+   ],
+   "bottom_left": [
+    163.9,
+    1210
+   ],
+   "bottom_right": [
+    407.4,
+    1210
+   ]
+  },
+  "method": "softk_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even_points_keep prompts (3 kept), sub-pixel soft edges - baseline for the anchor methods"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 0.89,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.88,
+  "board_max": 2.14,
+  "within_1": 64.6,
+  "within_2": 89.2,
+  "corner_err_px": {
+   "top_left": 5.0,
+   "top_right": 2.0,
+   "bottom_left": 8.2,
+   "bottom_right": 5.1
+  },
+  "corner_err_mean_px": 5.1,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 35.1,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 160.5,
+  "fit_resid_px": 1.32,
+  "rows": 173,
+  "sam_score": 0.855,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    409.7,
+    548.0
+   ],
+   "top_right": [
+    444.8,
+    548.0
+   ],
+   "bottom_left": [
+    236.1,
+    743.3
+   ],
+   "bottom_right": [
+    396.6,
+    743.3
+   ]
+  },
+  "method": "softk_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even_points_keep prompts (3 kept), sub-pixel soft edges - baseline for the anchor methods"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 0.89,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.29,
+  "board_max": 4.23,
+  "within_1": 18.9,
+  "within_2": 42.6,
+  "corner_err_px": {
+   "top_left": 8.8,
+   "top_right": 6.0,
+   "bottom_left": 0.6,
+   "bottom_right": 16.9
+  },
+  "corner_err_mean_px": 8.1,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 64.3,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 396.5,
+  "fit_resid_px": 3.43,
+  "rows": 392,
+  "sam_score": 0.937,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    501.9,
+    668.7
+   ],
+   "top_right": [
+    566.1,
+    668.7
+   ],
+   "bottom_left": [
+    42.3,
+    1066.4
+   ],
+   "bottom_right": [
+    438.8,
+    1066.4
+   ]
+  },
+  "method": "softk_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even_points_keep prompts (3 kept), sub-pixel soft edges - baseline for the anchor methods"
+ }
+]

@@ -1,0 +1,185 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 0.96,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.55,
+  "board_max": 1.09,
+  "within_1": 97.4,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.7,
+   "top_right": 3.2,
+   "bottom_left": 13.0,
+   "bottom_right": 4.0
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 56.1,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 242.4,
+  "fit_resid_px": 3.74,
+  "row_coverage": 0.91,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.7,
+    934
+   ],
+   "top_right": [
+    573.8,
+    934
+   ],
+   "bottom_left": [
+    164.6,
+    1210
+   ],
+   "bottom_right": [
+    407.0,
+    1210
+   ]
+  },
+  "method": "even3_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "3 evenly spaced path points, binary mask, row-extreme edge fit (loop-1 baseline, same code path)"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 0.94,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.72,
+  "board_max": 1.91,
+  "within_1": 81.5,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 5.5,
+   "top_right": 1.6,
+   "bottom_left": 7.8,
+   "bottom_right": 5.6
+  },
+  "corner_err_mean_px": 5.1,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 33.9,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 159.4,
+  "fit_resid_px": 1.26,
+  "row_coverage": 0.88,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    410.2,
+    548.0
+   ],
+   "top_right": [
+    444.2,
+    548.0
+   ],
+   "bottom_left": [
+    236.7,
+    743.3
+   ],
+   "bottom_right": [
+    396.1,
+    743.3
+   ]
+  },
+  "method": "even3_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "3 evenly spaced path points, binary mask, row-extreme edge fit (loop-1 baseline, same code path)"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 0.95,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.34,
+  "board_max": 4.48,
+  "within_1": 18.9,
+  "within_2": 42.6,
+  "corner_err_px": {
+   "top_left": 10.1,
+   "top_right": 5.2,
+   "bottom_left": 0.2,
+   "bottom_right": 17.2
+  },
+  "corner_err_mean_px": 8.1,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 62.2,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 395.4,
+  "fit_resid_px": 3.5,
+  "row_coverage": 0.98,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    503.2,
+    668.7
+   ],
+   "top_right": [
+    565.3,
+    668.7
+   ],
+   "bottom_left": [
+    42.8,
+    1066.4
+   ],
+   "bottom_right": [
+    438.2,
+    1066.4
+   ]
+  },
+  "method": "even3_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "3 evenly spaced path points, binary mask, row-extreme edge fit (loop-1 baseline, same code path)"
+ }
+]

@@ -1,0 +1,188 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 0.95,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.52,
+  "board_max": 1.0,
+  "within_1": 98.7,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.2,
+   "top_right": 2.9,
+   "bottom_left": 13.4,
+   "bottom_right": 3.4
+  },
+  "corner_err_mean_px": 5.2,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 56.9,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 243.6,
+  "fit_resid_px": 3.71,
+  "rows": 252,
+  "sam_score": 0.932,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.2,
+    934
+   ],
+   "top_right": [
+    574.1,
+    934
+   ],
+   "bottom_left": [
+    164.0,
+    1210
+   ],
+   "bottom_right": [
+    407.6,
+    1210
+   ]
+  },
+  "method": "soft_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even3 prompts, sub-pixel edges from the logit zero crossings"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 0.92,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.84,
+  "board_max": 2.06,
+  "within_1": 67.7,
+  "within_2": 95.4,
+  "corner_err_px": {
+   "top_left": 4.9,
+   "top_right": 1.9,
+   "bottom_left": 8.1,
+   "bottom_right": 5.1
+  },
+  "corner_err_mean_px": 5.0,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 35.1,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 160.4,
+  "fit_resid_px": 1.2,
+  "rows": 173,
+  "sam_score": 0.887,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    409.7,
+    548.0
+   ],
+   "top_right": [
+    444.7,
+    548.0
+   ],
+   "bottom_left": [
+    236.2,
+    743.3
+   ],
+   "bottom_right": [
+    396.6,
+    743.3
+   ]
+  },
+  "method": "soft_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even3 prompts, sub-pixel edges from the logit zero crossings"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 0.93,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.35,
+  "board_max": 4.4,
+  "within_1": 18.9,
+  "within_2": 42.6,
+  "corner_err_px": {
+   "top_left": 9.5,
+   "top_right": 5.7,
+   "bottom_left": 0.6,
+   "bottom_right": 17.0
+  },
+  "corner_err_mean_px": 8.2,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 63.2,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 396.4,
+  "fit_resid_px": 3.46,
+  "rows": 391,
+  "sam_score": 0.919,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    502.6,
+    668.7
+   ],
+   "top_right": [
+    565.8,
+    668.7
+   ],
+   "bottom_left": [
+    42.3,
+    1066.4
+   ],
+   "bottom_right": [
+    438.7,
+    1066.4
+   ]
+  },
+  "method": "soft_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even3 prompts, sub-pixel edges from the logit zero crossings"
+ }
+]

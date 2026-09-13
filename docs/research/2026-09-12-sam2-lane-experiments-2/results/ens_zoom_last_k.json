@@ -1,0 +1,245 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 2.24,
+  "prompts": {
+   "points": [
+    [
+     363,
+     1141
+    ],
+    [
+     456,
+     1038
+    ],
+    [
+     532,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     245,
+     918,
+     652,
+     1100
+    ]
+   ]
+  },
+  "board_mae": 0.67,
+  "board_max": 1.32,
+  "within_1": 87.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.2,
+   "top_right": 4.4,
+   "bottom_left": 12.7,
+   "bottom_right": 3.9
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 55.5,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 242.0,
+  "crop": [
+   245,
+   918,
+   652,
+   1100
+  ],
+  "full_mae": 0.2,
+  "fit_resid_px": 2.81,
+  "rows": 271,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.2,
+    934
+   ],
+   "top_right": [
+    572.6,
+    934
+   ],
+   "bottom_left": [
+    165.1,
+    1210
+   ],
+   "bottom_right": [
+    407.1,
+    1210
+   ]
+  },
+  "method": "ens_zoom_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "ens on the full frame, then ens on the top-55% crop; merged rows"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 2.52,
+  "prompts": {
+   "points": [
+    [
+     363,
+     683
+    ],
+    [
+     389,
+     626
+    ],
+    [
+     418,
+     571
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     250,
+     538,
+     489,
+     668
+    ]
+   ]
+  },
+  "board_mae": 0.34,
+  "board_max": 0.73,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.8,
+   "top_right": 2.1,
+   "bottom_left": 10.4,
+   "bottom_right": 5.0
+  },
+  "corner_err_mean_px": 5.1,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 36.8,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 162.2,
+  "crop": [
+   250,
+   538,
+   489,
+   668
+  ],
+  "full_mae": 0.52,
+  "fit_resid_px": 1.03,
+  "rows": 185,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    399.8,
+    549.0
+   ],
+   "top_right": [
+    436.7,
+    549.0
+   ],
+   "bottom_left": [
+    223.8,
+    746.0
+   ],
+   "bottom_right": [
+    386.0,
+    746.0
+   ]
+  },
+  "method": "ens_zoom_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "ens on the full frame, then ens on the top-55% crop; merged rows"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 2.63,
+  "prompts": {
+   "points": [
+    [
+     337,
+     925
+    ],
+    [
+     442,
+     796
+    ],
+    [
+     497,
+     734
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     118,
+     645,
+     688,
+     910
+    ]
+   ]
+  },
+  "board_mae": 0.68,
+  "board_max": 1.36,
+  "within_1": 66.2,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.4,
+   "top_right": 4.2,
+   "bottom_left": 10.9,
+   "bottom_right": 19.6
+  },
+  "corner_err_mean_px": 9.0,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 71.1,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 406.1,
+  "crop": [
+   118,
+   645,
+   688,
+   910
+  ],
+  "full_mae": 1.31,
+  "fit_resid_px": 5.56,
+  "rows": 381,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    497.7,
+    667.5
+   ],
+   "top_right": [
+    568.7,
+    667.5
+   ],
+   "bottom_left": [
+    36.5,
+    1069.2
+   ],
+   "bottom_right": [
+    442.7,
+    1069.2
+   ]
+  },
+  "method": "ens_zoom_last_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "ens on the full frame, then ens on the top-55% crop; merged rows"
+ }
+]

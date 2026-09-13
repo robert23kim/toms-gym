@@ -1,0 +1,307 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 0.96,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     535,
+     957
+    ],
+    [
+     71,
+     1139
+    ],
+    [
+     272,
+     1035
+    ],
+    [
+     423,
+     957
+    ],
+    [
+     676,
+     1139
+    ],
+    [
+     659,
+     1035
+    ],
+    [
+     646,
+     957
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.26,
+  "board_max": 0.6,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.8,
+   "top_right": 2.5,
+   "bottom_left": 13.6,
+   "bottom_right": 3.2
+  },
+  "corner_err_mean_px": 5.5,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 55.7,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 244.0,
+  "vp": [
+   623.9,
+   852.3
+  ],
+  "vp_own_lines_only": [
+   624.9,
+   851.4
+  ],
+  "neighbours_used": [
+   1
+  ],
+  "lines_used": 4,
+  "fit_resid_px": 3.77,
+  "unconstrained_mae": 0.24,
+  "own_vp_mae": 0.21,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    518.8,
+    934
+   ],
+   "top_right": [
+    574.5,
+    934
+   ],
+   "bottom_left": [
+    163.8,
+    1210
+   ],
+   "bottom_right": [
+    407.8,
+    1210
+   ]
+  },
+  "method": "vp_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "vanishing point from the lane and its two neighbours (SAM prompted on the path mirrored by one lane pitch); each edge refitted through the VP on the lower 70% of rows"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 0.93,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     186,
+     681
+    ],
+    [
+     267,
+     624
+    ],
+    [
+     281,
+     616
+    ],
+    [
+     559,
+     681
+    ],
+    [
+     528,
+     624
+    ],
+    [
+     526,
+     616
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.99,
+  "board_max": 2.33,
+  "within_1": 53.8,
+  "within_2": 87.7,
+  "corner_err_px": {
+   "top_left": 4.9,
+   "top_right": 2.2,
+   "bottom_left": 8.2,
+   "bottom_right": 5.2
+  },
+  "corner_err_mean_px": 5.1,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 35.5,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 160.5,
+  "vp": [
+   458.9,
+   492.6
+  ],
+  "vp_own_lines_only": [
+   458.3,
+   493.3
+  ],
+  "neighbours_used": [
+   1
+  ],
+  "lines_used": 4,
+  "fit_resid_px": 0.84,
+  "unconstrained_mae": 0.88,
+  "own_vp_mae": 0.88,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    409.7,
+    548.0
+   ],
+   "top_right": [
+    445.1,
+    548.0
+   ],
+   "bottom_left": [
+    236.0,
+    743.3
+   ],
+   "bottom_right": [
+    396.5,
+    743.3
+   ]
+  },
+  "method": "vp_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "vanishing point from the lane and its two neighbours (SAM prompted on the path mirrored by one lane pitch); each edge refitted through the VP on the lower 70% of rows"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 0.92,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     172,
+     796
+    ],
+    [
+     313,
+     730
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.3,
+  "board_max": 4.23,
+  "within_1": 18.9,
+  "within_2": 42.6,
+  "corner_err_px": {
+   "top_left": 8.8,
+   "top_right": 6.0,
+   "bottom_left": 0.6,
+   "bottom_right": 16.9
+  },
+  "corner_err_mean_px": 8.1,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 64.3,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 396.5,
+  "vp": [
+   590.8,
+   591.8
+  ],
+  "vp_own_lines_only": [
+   590.8,
+   591.8
+  ],
+  "neighbours_used": [],
+  "lines_used": 2,
+  "fit_resid_px": 4.4,
+  "unconstrained_mae": 2.29,
+  "own_vp_mae": 2.3,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    501.9,
+    668.7
+   ],
+   "top_right": [
+    566.1,
+    668.7
+   ],
+   "bottom_left": [
+    42.4,
+    1066.4
+   ],
+   "bottom_right": [
+    438.8,
+    1066.4
+   ]
+  },
+  "method": "vp_prehit_k",
+  "weights": "sam2.1_b.pt",
+  "desc": "vanishing point from the lane and its two neighbours (SAM prompted on the path mirrored by one lane pitch); each edge refitted through the VP on the lower 70% of rows"
+ }
+]

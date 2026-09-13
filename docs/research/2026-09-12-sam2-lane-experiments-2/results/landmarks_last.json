@@ -1,0 +1,341 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 128,
+  "kind": "last",
+  "latency_s": 1.03,
+  "prompts": {
+   "points": [
+    [
+     213,
+     1236
+    ],
+    [
+     347,
+     1112
+    ],
+    [
+     481,
+     988
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     512.394801789821,
+     932.1756441064181,
+     564.4033883039469,
+     936.6673540020279
+    ]
+   ]
+  },
+  "board_mae": 0.37,
+  "board_max": 0.64,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 1.1,
+   "top_right": 2.5,
+   "bottom_left": 13.9,
+   "bottom_right": 4.1
+  },
+  "corner_err_mean_px": 5.4,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 57.4,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 243.5,
+  "ballpath_mae": 0.22,
+  "pin_frame": 117,
+  "pin_window": [
+   512,
+   887,
+   598,
+   941
+  ],
+  "pin_cands": 3,
+  "pin_runs": 2,
+  "pin_band": [
+   912,
+   931
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": 0.5,
+  "pin_span_px": 51.0,
+  "pin_lane_width_px": 51.9,
+  "release_frame": 40,
+  "poses": 0,
+  "near_source": "yolo_box_bottom",
+  "near_dist_to_ball_px": 1e+18,
+  "near_raw": [
+   175.0,
+   1288.0
+  ],
+  "anchor_near": [
+   155.5,
+   1289.0
+  ],
+  "anchor_far": [
+   538.4,
+   934.4
+  ],
+  "sam_score": 0.759,
+  "fit_resid_px": 2.92,
+  "rows": 265,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    517.1,
+    934
+   ],
+   "top_right": [
+    574.5,
+    934
+   ],
+   "bottom_left": [
+    163.4,
+    1210
+   ],
+   "bottom_right": [
+    406.9,
+    1210
+   ]
+  },
+  "method": "landmarks_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "no ball path: prompts on the segment from the bowler's ball-side wrist at release to the pin cluster centre"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 170,
+  "kind": "last",
+  "latency_s": 0.96,
+  "prompts": {
+   "points": [
+    [
+     276,
+     715
+    ],
+    [
+     335,
+     646
+    ],
+    [
+     394,
+     578
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     402.0004770863279,
+     546.0880767861742,
+     436.9093016809753,
+     550.6023636693926
+    ]
+   ]
+  },
+  "board_mae": 0.41,
+  "board_max": 1.1,
+  "within_1": 92.3,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 4.6,
+   "top_right": 2.0,
+   "bottom_left": 10.7,
+   "bottom_right": 5.0
+  },
+  "corner_err_mean_px": 5.6,
+  "top_width_true_px": 39.0,
+  "top_width_pred_px": 34.8,
+  "bottom_width_true_px": 162.0,
+  "bottom_width_pred_px": 162.7,
+  "ballpath_mae": 0.47,
+  "pin_frame": 132,
+  "pin_window": [
+   399,
+   519,
+   454,
+   554
+  ],
+  "pin_cands": 4,
+  "pin_runs": 1,
+  "pin_band": [
+   535,
+   547
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": -0.7,
+  "pin_span_px": 34.0,
+  "pin_lane_width_px": 34.6,
+  "release_frame": 62,
+  "poses": 3,
+  "pose_keypoint_vis": {
+   "wrist_left": 0.065,
+   "wrist_right": 0.017,
+   "foot_left": 0.836,
+   "foot_right": 0.791
+  },
+  "near_source": "pose_foot_left",
+  "near_dist_to_ball_px": 94.6,
+  "near_raw": [
+   282.5,
+   734.5
+  ],
+  "anchor_near": [
+   250.7,
+   744.1
+  ],
+  "anchor_far": [
+   419.5,
+   548.3
+  ],
+  "sam_score": 0.899,
+  "fit_resid_px": 1.64,
+  "rows": 185,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    401.6,
+    549.0
+   ],
+   "top_right": [
+    436.4,
+    549.0
+   ],
+   "bottom_left": [
+    223.3,
+    746.0
+   ],
+   "bottom_right": [
+    386.0,
+    746.0
+   ]
+  },
+  "method": "landmarks_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "no ball path: prompts on the segment from the bowler's ball-side wrist at release to the pin cluster centre"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 171,
+  "kind": "last",
+  "latency_s": 0.96,
+  "prompts": {
+   "points": [
+    [
+     262,
+     906
+    ],
+    [
+     376,
+     806
+    ],
+    [
+     489,
+     706
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1
+   ],
+   "bboxes": [
+    [
+     503.50664105098974,
+     661.0686953378757,
+     570.9427198005933,
+     664.7312777888889
+    ]
+   ]
+  },
+  "board_mae": 1.44,
+  "board_max": 2.79,
+  "within_1": 39.2,
+  "within_2": 66.2,
+  "corner_err_px": {
+   "top_left": 4.8,
+   "top_right": 5.7,
+   "bottom_left": 12.5,
+   "bottom_right": 19.5
+  },
+  "corner_err_mean_px": 10.6,
+  "top_width_true_px": 67.2,
+  "top_width_pred_px": 68.4,
+  "bottom_width_true_px": 403.4,
+  "bottom_width_pred_px": 408.2,
+  "ballpath_mae": 1.23,
+  "pin_frame": 169,
+  "pin_window": [
+   478,
+   615,
+   583,
+   681
+  ],
+  "pin_cands": 1,
+  "pin_runs": 1,
+  "pin_band": [
+   640,
+   664
+  ],
+  "pin_cols_on": 2,
+  "pin_base_dy": -4.5,
+  "pin_span_px": 66.0,
+  "pin_lane_width_px": 67.2,
+  "release_frame": 20,
+  "poses": 2,
+  "pose_keypoint_vis": {
+   "wrist_left": 0.035,
+   "wrist_right": 0.234,
+   "foot_left": 0.336,
+   "foot_right": 0.666
+  },
+  "near_source": "pose_wrist_right",
+  "near_dist_to_ball_px": 73.4,
+  "near_raw": [
+   209.3,
+   946.3
+  ],
+  "anchor_near": [
+   213.9,
+   948.4
+  ],
+  "anchor_far": [
+   537.2,
+   662.9
+  ],
+  "sam_score": 0.882,
+  "fit_resid_px": 5.06,
+  "rows": 381,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    501.8,
+    667.5
+   ],
+   "top_right": [
+    570.2,
+    667.5
+   ],
+   "bottom_left": [
+    34.8,
+    1069.2
+   ],
+   "bottom_right": [
+    443.0,
+    1069.2
+   ]
+  },
+  "method": "landmarks_last",
+  "weights": "sam2.1_b.pt",
+  "desc": "no ball path: prompts on the segment from the bowler's ball-side wrist at release to the pin cluster centre"
+ }
+]

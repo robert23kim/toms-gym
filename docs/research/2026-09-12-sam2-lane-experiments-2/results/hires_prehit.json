@@ -1,0 +1,188 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 4.73,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.65,
+  "board_max": 1.06,
+  "within_1": 97.4,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 0.0,
+   "top_right": 2.6,
+   "bottom_left": 16.8,
+   "bottom_right": 1.8
+  },
+  "corner_err_mean_px": 5.3,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 58.4,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 249.4,
+  "fit_resid_px": 5.31,
+  "rows": 270,
+  "sam_score": 0.597,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    516.0,
+    934
+   ],
+   "top_right": [
+    574.4,
+    934
+   ],
+   "bottom_left": [
+    159.8,
+    1210
+   ],
+   "bottom_right": [
+    409.2,
+    1210
+   ]
+  },
+  "method": "hires_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even3 prompts with the encoder run at imgsz 2048 instead of 1024 (soft edges)"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 4.8,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.77,
+  "board_max": 1.61,
+  "within_1": 67.7,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.3,
+   "top_right": 2.5,
+   "bottom_left": 8.9,
+   "bottom_right": 4.8
+  },
+  "corner_err_mean_px": 4.6,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 38.4,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 161.9,
+  "fit_resid_px": 1.89,
+  "rows": 184,
+  "sam_score": 0.825,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    407.1,
+    548.0
+   ],
+   "top_right": [
+    445.5,
+    548.0
+   ],
+   "bottom_left": [
+    235.0,
+    743.3
+   ],
+   "bottom_right": [
+    396.9,
+    743.3
+   ]
+  },
+  "method": "hires_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even3 prompts with the encoder run at imgsz 2048 instead of 1024 (soft edges)"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 4.78,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ]
+   ],
+   "labels": [
+    1,
+    1
+   ]
+  },
+  "board_mae": 1.57,
+  "board_max": 2.93,
+  "within_1": 33.1,
+  "within_2": 64.2,
+  "corner_err_px": {
+   "top_left": 5.6,
+   "top_right": 5.0,
+   "bottom_left": 2.4,
+   "bottom_right": 17.5
+  },
+  "corner_err_mean_px": 7.7,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 66.5,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 396.8,
+  "fit_resid_px": 4.69,
+  "rows": 386,
+  "sam_score": 0.612,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    498.7,
+    668.7
+   ],
+   "top_right": [
+    565.2,
+    668.7
+   ],
+   "bottom_left": [
+    40.5,
+    1066.4
+   ],
+   "bottom_right": [
+    437.3,
+    1066.4
+   ]
+  },
+  "method": "hires_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "even3 prompts with the encoder run at imgsz 2048 instead of 1024 (soft edges)"
+ }
+]

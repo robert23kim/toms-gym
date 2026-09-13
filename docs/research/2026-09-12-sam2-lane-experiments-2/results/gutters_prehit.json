@@ -1,0 +1,317 @@
+[
+ {
+  "stem": "sample_input",
+  "frame": 117,
+  "kind": "prehit",
+  "latency_s": 0.96,
+  "prompts": {
+   "points": [
+    [
+     374,
+     1139
+    ],
+    [
+     466,
+     1035
+    ],
+    [
+     535,
+     957
+    ],
+    [
+     380,
+     1031
+    ],
+    [
+     286,
+     1100
+    ],
+    [
+     191,
+     1169
+    ],
+    [
+     531,
+     1031
+    ],
+    [
+     495,
+     1100
+    ],
+    [
+     458,
+     1169
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.2,
+  "board_max": 0.41,
+  "within_1": 100.0,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 2.5,
+   "top_right": 1.9,
+   "bottom_left": 14.0,
+   "bottom_right": 3.2
+  },
+  "corner_err_mean_px": 5.4,
+  "top_width_true_px": 61,
+  "top_width_pred_px": 56.6,
+  "bottom_width_true_px": 237,
+  "bottom_width_pred_px": 244.6,
+  "first_pass_mae": 0.24,
+  "vs_rows": 262,
+  "rows_possible": 277,
+  "sam_scores": [
+   0.928,
+   0.85,
+   0.922
+  ],
+  "fit_resid_px": 1.08,
+  "rows": 262,
+  "gutter_left_px": 15320,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    518.5,
+    934
+   ],
+   "top_right": [
+    575.1,
+    934
+   ],
+   "bottom_left": [
+    163.3,
+    1210
+   ],
+   "bottom_right": [
+    407.8,
+    1210
+   ]
+  },
+  "method": "gutters_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "lane + left gutter + right gutter as three objects in one SAM decode; edge = where lane_logit - gutter_logit crosses zero"
+ },
+ {
+  "stem": "20260112_121117",
+  "frame": 132,
+  "kind": "prehit",
+  "latency_s": 0.94,
+  "prompts": {
+   "points": [
+    [
+     373,
+     681
+    ],
+    [
+     398,
+     624
+    ],
+    [
+     404,
+     616
+    ],
+    [
+     339,
+     616
+    ],
+    [
+     292,
+     665
+    ],
+    [
+     245,
+     714
+    ],
+    [
+     437,
+     616
+    ],
+    [
+     429,
+     665
+    ],
+    [
+     421,
+     714
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 0.76,
+  "board_max": 1.94,
+  "within_1": 73.8,
+  "within_2": 100.0,
+  "corner_err_px": {
+   "top_left": 5.1,
+   "top_right": 1.7,
+   "bottom_left": 7.7,
+   "bottom_right": 5.3
+  },
+  "corner_err_mean_px": 5.0,
+  "top_width_true_px": 38.7,
+  "top_width_pred_px": 34.6,
+  "bottom_width_true_px": 160.7,
+  "bottom_width_pred_px": 159.4,
+  "first_pass_mae": 0.88,
+  "vs_rows": 183,
+  "rows_possible": 196,
+  "sam_scores": [
+   0.855,
+   0.843,
+   0.911
+  ],
+  "fit_resid_px": 0.81,
+  "rows": 183,
+  "gutter_left_px": 8976,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    409.8,
+    548.0
+   ],
+   "top_right": [
+    444.4,
+    548.0
+   ],
+   "bottom_left": [
+    237.0,
+    743.3
+   ],
+   "bottom_right": [
+    396.4,
+    743.3
+   ]
+  },
+  "method": "gutters_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "lane + left gutter + right gutter as three objects in one SAM decode; edge = where lane_logit - gutter_logit crosses zero"
+ },
+ {
+  "stem": "tom_old",
+  "frame": 169,
+  "kind": "prehit",
+  "latency_s": 0.95,
+  "prompts": {
+   "points": [
+    [
+     333,
+     924
+    ],
+    [
+     437,
+     796
+    ],
+    [
+     493,
+     730
+    ],
+    [
+     319,
+     808
+    ],
+    [
+     194,
+     907
+    ],
+    [
+     70,
+     1007
+    ],
+    [
+     543,
+     808
+    ],
+    [
+     521,
+     907
+    ],
+    [
+     500,
+     1007
+    ]
+   ],
+   "labels": [
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1
+   ]
+  },
+  "board_mae": 2.3,
+  "board_max": 4.14,
+  "within_1": 20.3,
+  "within_2": 42.6,
+  "corner_err_px": {
+   "top_left": 7.7,
+   "top_right": 7.0,
+   "bottom_left": 2.4,
+   "bottom_right": 16.5
+  },
+  "corner_err_mean_px": 8.4,
+  "top_width_true_px": 67.0,
+  "top_width_pred_px": 66.3,
+  "bottom_width_true_px": 402.0,
+  "bottom_width_pred_px": 399.5,
+  "first_pass_mae": 2.29,
+  "vs_rows": 399,
+  "rows_possible": 398,
+  "sam_scores": [
+   0.937,
+   0.948,
+   0.874
+  ],
+  "fit_resid_px": 0.68,
+  "rows": 399,
+  "gutter_left_px": 36798,
+  "ok": true,
+  "corners": {
+   "top_left": [
+    500.8,
+    668.7
+   ],
+   "top_right": [
+    567.1,
+    668.7
+   ],
+   "bottom_left": [
+    40.6,
+    1066.4
+   ],
+   "bottom_right": [
+    440.1,
+    1066.4
+   ]
+  },
+  "method": "gutters_prehit",
+  "weights": "sam2.1_b.pt",
+  "desc": "lane + left gutter + right gutter as three objects in one SAM decode; edge = where lane_logit - gutter_logit crosses zero"
+ }
+]
