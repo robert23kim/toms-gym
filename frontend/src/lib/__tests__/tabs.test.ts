@@ -7,7 +7,7 @@ describe("activeTab", () => {
     ["/lift/upload", "lift"],
     ["/upload", "lift"],
     ["/challenges/abc", "lift"],
-    ["/champions", "lift"],
+    ["/champions", "champions"],
     ["/bowl", "bowl"],
     ["/bowling/scoresheet/1", "bowl"],
     ["/golf/snap", "golf"],

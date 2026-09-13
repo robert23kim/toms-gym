@@ -14,10 +14,10 @@ const renderAt = (path: string) =>
 describe("BottomTabBar", () => {
   afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
 
-  it("renders the five tabs with an anonymous Me target", () => {
+  it("renders the six tabs with an anonymous Me target", () => {
     renderAt("/terms");
     const hrefs = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
-    expect(hrefs).toEqual(["/", "/lift", "/bowl", "/golf", "/find-profile"]);
+    expect(hrefs).toEqual(["/", "/lift", "/bowl", "/golf", "/champions", "/find-profile"]);
     expect(screen.queryByRole("link", { current: "page" })).toBeNull();
   });
 
@@ -26,6 +26,13 @@ describe("BottomTabBar", () => {
     const current = screen.getAllByRole("link", { current: "page" });
     expect(current).toHaveLength(1);
     expect(current[0]).toHaveTextContent("Bowl");
+  });
+
+  it("marks Champions current in the hall, not Lift", () => {
+    renderAt("/champions");
+    const current = screen.getAllByRole("link", { current: "page" });
+    expect(current).toHaveLength(1);
+    expect(current[0]).toHaveTextContent("Champions");
   });
 
   it("points Me at the saved profile", () => {

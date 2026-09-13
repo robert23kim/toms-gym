@@ -1,7 +1,8 @@
-export type TabKey = "home" | "lift" | "bowl" | "golf" | "me";
+export type TabKey = "home" | "lift" | "bowl" | "golf" | "champions" | "me";
 
 const PREFIXES: [TabKey, string[]][] = [
-  ["lift", ["/lift", "/upload", "/challenges", "/champions", "/video-player"]],
+  ["lift", ["/lift", "/upload", "/challenges", "/video-player"]],
+  ["champions", ["/champions"]],
   ["bowl", ["/bowl", "/bowling"]],
   ["golf", ["/golf"]],
   ["me", ["/profile", "/find-profile", "/signin", "/auth"]],
