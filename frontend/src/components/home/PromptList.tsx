@@ -16,7 +16,7 @@ interface Props {
 }
 
 const iconFor = (prompt: Prompt): React.ReactNode => {
-  if (prompt.id === "bowl-snap") return <CircleDot className="w-5 h-5" />;
+  if (prompt.id === "bowl-snap" || prompt.id === "game-snap") return <CircleDot className="w-5 h-5" />;
   if (prompt.id === "golf-snap") return <Flag className="w-5 h-5" />;
   if (prompt.id === "lift-upload") return <Dumbbell className="w-5 h-5" />;
   return <Trophy className="w-5 h-5" />;
@@ -99,7 +99,7 @@ const BowlSnapRow: React.FC<{ prompt: Extract<Prompt, { kind: "camera" }>; userI
     setError(null);
     try {
       const sheet = await uploadBowlingSheet(
-        buildSheetForm(file, { sheetType: "night", playedOn: todayLocal(), userId }),
+        buildSheetForm(file, { sheetType: prompt.sheetType, playedOn: todayLocal(), userId }),
       );
       navigate(`/bowling/scoresheet/${sheet.sheet_id}`);
     } catch (err) {
@@ -110,6 +110,8 @@ const BowlSnapRow: React.FC<{ prompt: Extract<Prompt, { kind: "camera" }>; userI
     }
   };
 
+  const idBase = prompt.sheetType === "night" ? "home-bowl" : "home-game";
+  const what = prompt.sheetType === "night" ? "the night recap screen" : "the game screen";
   return (
     <ActionRow
       icon={iconFor(prompt)}
@@ -119,8 +121,8 @@ const BowlSnapRow: React.FC<{ prompt: Extract<Prompt, { kind: "camera" }>; userI
       busy={busy}
       onFile={onFile}
       inputs={[
-        { id: "home-bowl-camera", label: "Take a photo of the score screen", icon: <Camera className="w-5 h-5" />, accept: "image/*", capture: "environment", primary: true },
-        { id: "home-bowl-library", label: "Upload a photo of the score screen", icon: <FolderOpen className="w-5 h-5" />, accept: "image/*", primary: false },
+        { id: `${idBase}-camera`, label: `Take a photo of ${what}`, icon: <Camera className="w-5 h-5" />, accept: "image/*", capture: "environment", primary: true },
+        { id: `${idBase}-library`, label: `Upload a photo of ${what}`, icon: <FolderOpen className="w-5 h-5" />, accept: "image/*", primary: false },
       ]}
     />
   );

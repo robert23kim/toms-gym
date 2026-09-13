@@ -16,22 +16,30 @@ describe("quickLiftType", () => {
 });
 
 describe("buildPrompts", () => {
-  it("leads with the bowling camera row and ends with golf and lift", () => {
+  it("leads with the recap and single-game camera rows and ends with golf and lift", () => {
     const prompts = buildPrompts([]);
-    expect(prompts.map((p) => p.id)).toEqual(["bowl-snap", "golf-snap", "lift-upload"]);
+    expect(prompts.map((p) => p.id)).toEqual(["bowl-snap", "game-snap", "golf-snap", "lift-upload"]);
     expect(prompts[0]).toEqual({
       id: "bowl-snap",
       kind: "camera",
-      title: "Snap tonight's scores",
+      title: "Snap tonight's bowling recap",
+      sheetType: "night",
       fallbackTo: "/bowling/snap",
     });
-    expect(prompts[1]).toMatchObject({ kind: "link", to: "/golf/snap" });
-    expect(prompts[2]).toMatchObject({ kind: "link", to: "/lift/upload" });
+    expect(prompts[1]).toEqual({
+      id: "game-snap",
+      kind: "camera",
+      title: "Snap a bowling game",
+      sheetType: "game",
+      fallbackTo: "/bowling/snap",
+    });
+    expect(prompts[2]).toMatchObject({ kind: "link", to: "/golf/snap" });
+    expect(prompts[3]).toMatchObject({ kind: "link", to: "/lift/upload" });
   });
 
   it("makes a bodyweight challenge a video row with its lift type preset", () => {
     const prompts = buildPrompts([{ id: "c1", title: "Situp challenge", categories: ["Situp"] }]);
-    expect(prompts[1]).toEqual({
+    expect(prompts[2]).toEqual({
       id: "challenge:c1",
       kind: "video",
       title: "Situp challenge",
@@ -44,7 +52,7 @@ describe("buildPrompts", () => {
 
   it("links weighted challenges to the challenge page, never the bare upload form", () => {
     const prompts = buildPrompts([{ id: "c2", title: "Squat-off", categories: ["Squat"] }]);
-    expect(prompts[1]).toEqual({ id: "challenge:c2", kind: "link", title: "Squat-off", to: "/challenges/c2", pill: "Squat" });
-    expect(prompts).toHaveLength(4);
+    expect(prompts[2]).toEqual({ id: "challenge:c2", kind: "link", title: "Squat-off", to: "/challenges/c2", pill: "Squat" });
+    expect(prompts).toHaveLength(5);
   });
 });

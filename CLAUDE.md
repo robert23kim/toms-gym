@@ -675,10 +675,11 @@ from opening the app. Spec: `docs/superpowers/specs/2026-09-13-finch-shell-desig
   `/profile|/find-profile|/signin|/auth` → Me); `meTarget(userId)` is `/profile/<id>` or
   `/find-profile`. `Navbar` lost its hamburger + phone menu; Feedback/Store are footer/desktop only.
 - **`components/home/PromptList.tsx`** renders `lib/prompts.ts::buildPrompts(openChallenges)`:
-  "Snap tonight's scores" → one row per ongoing challenge → "Snap a scorecard" `/golf/snap` → "Log a
-  lift" `/lift/upload`. With a saved `userId` the bowling row has two pickers, camera
-  (`home-bowl-camera`, `capture="environment"`) and library (`home-bowl-library`), both uploading the
-  photo immediately as **night results dated today** via `lib/bowlingSheetForm.ts::buildSheetForm`
+  "Snap tonight's bowling recap" (night sheet) → "Snap a bowling game" (game sheet) → one row per
+  ongoing challenge → "Snap a scorecard" `/golf/snap` → "Log a lift" `/lift/upload`. With a saved
+  `userId` each bowling row has two pickers, camera (`home-bowl-camera` / `home-game-camera`,
+  `capture="environment"`) and library (`home-bowl-library` / `home-game-library`), both uploading the
+  photo immediately with that row's `sheetType`, **dated today**, via `lib/bowlingSheetForm.ts::buildSheetForm`
   (shared with `BowlingSheetUpload`) and navigating to the review page. A challenge whose only
   category is a bodyweight lift (`quickLiftType`: Plank/Pushup/Situp) becomes a **video row** with
   record (`home-challenge-<id>-record`) and upload (`-upload`) pickers that call
@@ -691,7 +692,7 @@ from opening the app. Spec: `docs/superpowers/specs/2026-09-13-finch-shell-desig
   spotlight are gone; `ChampionSpotlight.tsx` is retained but unused, like `TopLifts`); first-timers
   keep pitch/demo/tiles with the to-do below.
 - Tests: `lib/__tests__/tabs|prompts|bowlingSheetForm`, `components/__tests__/BottomTabBar|PromptList`,
-  `Index.test.tsx` rewritten. Suite at ship: 92 suites / 632 tests. No eslint config in `frontend/`
+  `Index.test.tsx` rewritten. Suite at ship: 92 suites / 634 tests. No eslint config in `frontend/`
   — tsc + jest are the gates.
 
 ## Android App (Capacitor, shipped 2026-09-13)

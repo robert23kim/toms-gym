@@ -1,7 +1,8 @@
+import { BowlingSheetType } from "./api";
 import { Competition } from "./types";
 
 export type Prompt =
-  | { id: "bowl-snap"; kind: "camera"; title: string; fallbackTo: string }
+  | { id: "bowl-snap" | "game-snap"; kind: "camera"; title: string; sheetType: BowlingSheetType; fallbackTo: string }
   | {
       id: string;
       kind: "video";
@@ -25,7 +26,8 @@ export const quickLiftType = (categories: string[] | undefined): string | null =
 };
 
 export const buildPrompts = (openChallenges: OpenChallenge[]): Prompt[] => [
-  { id: "bowl-snap", kind: "camera", title: "Snap tonight's scores", fallbackTo: "/bowling/snap" },
+  { id: "bowl-snap", kind: "camera", title: "Snap tonight's bowling recap", sheetType: "night", fallbackTo: "/bowling/snap" },
+  { id: "game-snap", kind: "camera", title: "Snap a bowling game", sheetType: "game", fallbackTo: "/bowling/snap" },
   ...openChallenges.map<Prompt>((c) => {
     const liftType = quickLiftType(c.categories);
     const pill = c.categories?.[0];

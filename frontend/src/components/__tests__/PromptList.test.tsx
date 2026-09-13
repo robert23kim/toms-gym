@@ -44,37 +44,44 @@ describe("PromptList", () => {
 
   it("sends anonymous visitors to the pages instead of the pickers", () => {
     renderList(null);
-    expect(screen.getByText("Snap tonight's scores").closest("a")).toHaveAttribute("href", "/bowling/snap");
+    expect(screen.getByText("Snap tonight's bowling recap").closest("a")).toHaveAttribute("href", "/bowling/snap");
+    expect(screen.getByText("Snap a bowling game").closest("a")).toHaveAttribute("href", "/bowling/snap");
     expect(screen.queryByTestId("home-bowl-camera")).toBeNull();
+    expect(screen.queryByTestId("home-game-camera")).toBeNull();
     expect(screen.getByText("Situp challenge").closest("a")).toHaveAttribute("href", "/challenges/c1");
     expect(screen.getByText("Squat-off").closest("a")).toHaveAttribute("href", "/challenges/c2");
     expect(screen.getByText("Snap a scorecard").closest("a")).toHaveAttribute("href", "/golf/snap");
     expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");
   });
 
-  it("offers camera and library pickers on the bowling row", () => {
+  it("offers camera and library pickers on both bowling rows", () => {
     renderList("u1");
-    expect(screen.getByTestId("home-bowl-camera")).toHaveAttribute("capture", "environment");
-    expect(screen.getByTestId("home-bowl-library")).not.toHaveAttribute("capture");
-    expect(screen.getByTestId("home-bowl-library")).toHaveAttribute("accept", "image/*");
+    for (const base of ["home-bowl", "home-game"]) {
+      expect(screen.getByTestId(`${base}-camera`)).toHaveAttribute("capture", "environment");
+      expect(screen.getByTestId(`${base}-library`)).not.toHaveAttribute("capture");
+      expect(screen.getByTestId(`${base}-library`)).toHaveAttribute("accept", "image/*");
+    }
   });
 
-  it.each(["home-bowl-camera", "home-bowl-library"])(
-    "%s uploads the photo as tonight's night results and opens the review page",
-    async (inputId) => {
-      (api.uploadBowlingSheet as jest.Mock).mockResolvedValue({ sheet_id: "s1" });
-      renderList("u1");
-      expect(screen.getByText("Snap tonight's scores").closest("a")).toBeNull();
-      fireEvent.change(screen.getByTestId(inputId), { target: { files: [photo] } });
-      await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/bowling/scoresheet/s1"));
-      expect(api.uploadBowlingSheet).toHaveBeenCalledTimes(1);
-      const form = (api.uploadBowlingSheet as jest.Mock).mock.calls[0][0] as FormData;
-      expect(form.get("image")).toBe(photo);
-      expect(form.get("sheet_type")).toBe("night");
-      expect(form.get("played_on")).toBe(todayLocal());
-      expect(form.get("user_id")).toBe("u1");
-    },
-  );
+  it.each([
+    ["home-bowl-camera", "night"],
+    ["home-bowl-library", "night"],
+    ["home-game-camera", "game"],
+    ["home-game-library", "game"],
+  ])("%s uploads the photo as a %s sheet dated today and opens the review page", async (inputId, sheetType) => {
+    (api.uploadBowlingSheet as jest.Mock).mockResolvedValue({ sheet_id: "s1" });
+    renderList("u1");
+    expect(screen.getByText("Snap tonight's bowling recap").closest("a")).toBeNull();
+    expect(screen.getByText("Snap a bowling game").closest("a")).toBeNull();
+    fireEvent.change(screen.getByTestId(inputId), { target: { files: [photo] } });
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith("/bowling/scoresheet/s1"));
+    expect(api.uploadBowlingSheet).toHaveBeenCalledTimes(1);
+    const form = (api.uploadBowlingSheet as jest.Mock).mock.calls[0][0] as FormData;
+    expect(form.get("image")).toBe(photo);
+    expect(form.get("sheet_type")).toBe(sheetType);
+    expect(form.get("played_on")).toBe(todayLocal());
+    expect(form.get("user_id")).toBe("u1");
+  });
 
   it("shows the upload error on the row and stays put", async () => {
     (api.uploadBowlingSheet as jest.Mock).mockRejectedValue({
@@ -85,7 +92,7 @@ describe("PromptList", () => {
     fireEvent.change(screen.getByTestId("home-bowl-camera"), { target: { files: [photo] } });
     await waitFor(() => expect(screen.getByText(/too blurry/)).toBeInTheDocument());
     expect(mockNavigate).not.toHaveBeenCalled();
-    expect(screen.getByText("Snap tonight's scores")).toBeInTheDocument();
+    expect(screen.getByText("Snap tonight's bowling recap")).toBeInTheDocument();
   });
 
   it("gives a bodyweight challenge record and upload pickers, and keeps weighted ones as links", () => {
