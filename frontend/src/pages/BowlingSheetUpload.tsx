@@ -6,6 +6,8 @@ import { ArrowLeft, Camera, ImageIcon } from "lucide-react";
 import Layout from "../components/Layout";
 import { useMediaUpload } from "../hooks/useMediaUpload";
 import { uploadBowlingSheet, BowlingSheetType } from "../lib/api";
+import { buildSheetForm } from "../lib/bowlingSheetForm";
+import { todayLocal } from "../lib/dates";
 
 const MAX_BYTES = 20 * 1024 * 1024;
 
@@ -13,13 +15,6 @@ const SHEET_TYPES: { value: BowlingSheetType; label: string; hint: string }[] = 
   { value: "night", label: "Night results", hint: "The end-of-night totals screen." },
   { value: "game", label: "Single game", hint: "One game's frame-by-frame lane screen." },
 ];
-
-const todayLocal = (): string => {
-  const now = new Date();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-  return `${now.getFullYear()}-${month}-${day}`;
-};
 
 const uploadErrorMessage = (err: unknown): string => {
   if (axios.isAxiosError(err)) {
@@ -35,7 +30,7 @@ const BowlingSheetUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = f
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [email, setEmail] = useState("");
   const [sheetType, setSheetType] = useState<BowlingSheetType>("night");
-  const [playedOn, setPlayedOn] = useState(todayLocal);
+  const [playedOn, setPlayedOn] = useState(() => todayLocal());
   const [isUploading, setIsUploading] = useState(false);
   const storedUserId = localStorage.getItem("userId");
 
@@ -72,14 +67,9 @@ const BowlingSheetUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = f
     setIsUploading(true);
     setError(null);
     try {
-      const form = new FormData();
-      form.append("image", selectedFile);
-      form.append("sheet_type", sheetType);
-      form.append("played_on", playedOn);
-      if (userId) form.append("user_id", userId);
-      else form.append("email", email);
-
-      const sheet = await uploadBowlingSheet(form);
+      const sheet = await uploadBowlingSheet(
+        buildSheetForm(selectedFile, { sheetType, playedOn, userId, email }),
+      );
       navigate(`/bowling/scoresheet/${sheet.sheet_id}`);
     } catch (err) {
       setError(uploadErrorMessage(err));

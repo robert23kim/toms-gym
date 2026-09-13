@@ -6,3 +6,10 @@ export const formatDay = (iso: string | null | undefined, now: Date = new Date()
   const sameYear = d.getFullYear() === now.getFullYear();
   return d.toLocaleDateString(undefined, { month: "short", day: "numeric", ...(sameYear ? {} : { year: "numeric" }) });
 };
+
+/** Local calendar date as YYYY-MM-DD (never UTC, which flips the day after ~7pm US time). */
+export const todayLocal = (now: Date = new Date()): string => {
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${now.getFullYear()}-${month}-${day}`;
+};
