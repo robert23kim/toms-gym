@@ -1,0 +1,7096 @@
+{
+ "stem": "sample_input",
+ "method": "pose640_lovo_sample_input_c001",
+ "task": "pose",
+ "imgsz": 640,
+ "device": "cpu",
+ "weights": "/private/tmp/claude-502/-Users-toka-code-toms-gym/d71975f3-301e-4fe0-bb28-8bbc7bdffcb2/scratchpad/runs/pose640_lovo_sample_input/weights/best.pt",
+ "frames_total": 180,
+ "frames_ok": 180,
+ "latency_ms_mean": 30.4,
+ "latency_ms_median": 30.0,
+ "per_frame": [
+  {
+   "frame": 0,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.58,
+   "board_max": 12.03,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 11.3,
+    "top_right": 20.1,
+    "bottom_left": 36.4,
+    "bottom_right": 66.9
+   },
+   "corner_err_mean_px": 33.7,
+   "top_width_true_px": 60,
+   "top_width_pred_px": 51.3,
+   "bottom_width_true_px": 234,
+   "bottom_width_pred_px": 266.3,
+   "kpts": {
+    "top_left": [
+     528.6,
+     917.7
+    ],
+    "top_right": [
+     574.6,
+     913.5
+    ],
+    "bottom_left": [
+     217.7,
+     1207.4
+    ],
+    "bottom_right": [
+     484.6,
+     1225.3
+    ]
+   }
+  },
+  {
+   "frame": 1,
+   "conf": 0.858,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.95,
+   "board_max": 13.36,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 13.9,
+    "top_right": 20.7,
+    "bottom_left": 36.5,
+    "bottom_right": 63.7
+   },
+   "corner_err_mean_px": 33.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 51.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.5,
+   "kpts": {
+    "top_left": [
+     527.8,
+     916.9
+    ],
+    "top_right": [
+     573.9,
+     913.0
+    ],
+    "bottom_left": [
+     217.2,
+     1207.6
+    ],
+    "bottom_right": [
+     484.1,
+     1224.9
+    ]
+   }
+  },
+  {
+   "frame": 2,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.81,
+   "board_max": 12.92,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 12.6,
+    "top_right": 20.5,
+    "bottom_left": 36.3,
+    "bottom_right": 63.6
+   },
+   "corner_err_mean_px": 33.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.7,
+   "kpts": {
+    "top_left": [
+     528.3,
+     917.7
+    ],
+    "top_right": [
+     574.0,
+     913.8
+    ],
+    "bottom_left": [
+     217.4,
+     1207.2
+    ],
+    "bottom_right": [
+     483.9,
+     1225.1
+    ]
+   }
+  },
+  {
+   "frame": 3,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.63,
+   "board_max": 12.37,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 11.9,
+    "top_right": 19.7,
+    "bottom_left": 36.8,
+    "bottom_right": 64.2
+   },
+   "corner_err_mean_px": 33.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.8,
+   "kpts": {
+    "top_left": [
+     528.8,
+     917.9
+    ],
+    "top_right": [
+     574.7,
+     913.9
+    ],
+    "bottom_left": [
+     217.5,
+     1207.5
+    ],
+    "bottom_right": [
+     484.4,
+     1225.4
+    ]
+   }
+  },
+  {
+   "frame": 4,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.68,
+   "board_max": 12.54,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 12.4,
+    "top_right": 19.9,
+    "bottom_left": 37.0,
+    "bottom_right": 64.1
+   },
+   "corner_err_mean_px": 33.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.5,
+   "kpts": {
+    "top_left": [
+     528.3,
+     917.8
+    ],
+    "top_right": [
+     574.5,
+     913.9
+    ],
+    "bottom_left": [
+     217.3,
+     1207.9
+    ],
+    "bottom_right": [
+     484.4,
+     1225.2
+    ]
+   }
+  },
+  {
+   "frame": 5,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.65,
+   "board_max": 12.43,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 12.4,
+    "top_right": 19.8,
+    "bottom_left": 37.3,
+    "bottom_right": 64.6
+   },
+   "corner_err_mean_px": 33.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.7,
+   "kpts": {
+    "top_left": [
+     528.4,
+     917.7
+    ],
+    "top_right": [
+     574.7,
+     913.6
+    ],
+    "bottom_left": [
+     217.4,
+     1208.2
+    ],
+    "bottom_right": [
+     485.0,
+     1225.0
+    ]
+   }
+  },
+  {
+   "frame": 6,
+   "conf": 0.869,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.64,
+   "board_max": 12.41,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 12.3,
+    "top_right": 19.7,
+    "bottom_left": 37.4,
+    "bottom_right": 64.9
+   },
+   "corner_err_mean_px": 33.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.9,
+   "kpts": {
+    "top_left": [
+     528.2,
+     917.9
+    ],
+    "top_right": [
+     574.7,
+     913.9
+    ],
+    "bottom_left": [
+     217.7,
+     1207.9
+    ],
+    "bottom_right": [
+     485.2,
+     1225.1
+    ]
+   }
+  },
+  {
+   "frame": 7,
+   "conf": 0.868,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.62,
+   "board_max": 12.36,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 12.6,
+    "top_right": 19.6,
+    "bottom_left": 37.4,
+    "bottom_right": 65.1
+   },
+   "corner_err_mean_px": 33.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 51.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 268.0,
+   "kpts": {
+    "top_left": [
+     528.4,
+     917.5
+    ],
+    "top_right": [
+     574.9,
+     913.6
+    ],
+    "bottom_left": [
+     217.6,
+     1208.0
+    ],
+    "bottom_right": [
+     485.5,
+     1224.9
+    ]
+   }
+  },
+  {
+   "frame": 8,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.31,
+   "board_max": 14.31,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 15.4,
+    "top_right": 22.4,
+    "bottom_left": 36.7,
+    "bottom_right": 62.6
+   },
+   "corner_err_mean_px": 34.3,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 51.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.3,
+   "kpts": {
+    "top_left": [
+     525.1,
+     918.0
+    ],
+    "top_right": [
+     571.6,
+     915.1
+    ],
+    "bottom_left": [
+     216.7,
+     1208.2
+    ],
+    "bottom_right": [
+     482.9,
+     1225.4
+    ]
+   }
+  },
+  {
+   "frame": 9,
+   "conf": 0.865,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.83,
+   "board_max": 15.64,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 16.4,
+    "top_right": 24.4,
+    "bottom_left": 35.4,
+    "bottom_right": 61.5
+   },
+   "corner_err_mean_px": 34.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.5,
+   "kpts": {
+    "top_left": [
+     523.3,
+     918.6
+    ],
+    "top_right": [
+     569.4,
+     915.8
+    ],
+    "bottom_left": [
+     215.4,
+     1208.2
+    ],
+    "bottom_right": [
+     481.7,
+     1226.1
+    ]
+   }
+  },
+  {
+   "frame": 10,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.41,
+   "board_max": 12.92,
+   "within_1": 11.7,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 26.3,
+    "top_right": 17.7,
+    "bottom_left": 18.9,
+    "bottom_right": 51.7
+   },
+   "corner_err_mean_px": 28.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 66.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 276.0,
+   "kpts": {
+    "top_left": [
+     523.4,
+     909.8
+    ],
+    "top_right": [
+     577.2,
+     914.2
+    ],
+    "bottom_left": [
+     206.2,
+     1198.9
+    ],
+    "bottom_right": [
+     472.1,
+     1221.4
+    ]
+   }
+  },
+  {
+   "frame": 11,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.01,
+   "board_max": 12.01,
+   "within_1": 11.7,
+   "within_2": 22.1,
+   "corner_err_px": {
+    "top_left": 24.7,
+    "top_right": 16.1,
+    "bottom_left": 19.5,
+    "bottom_right": 53.9
+   },
+   "corner_err_mean_px": 28.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 66.9,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 277.3,
+   "kpts": {
+    "top_left": [
+     524.5,
+     910.3
+    ],
+    "top_right": [
+     578.8,
+     914.7
+    ],
+    "bottom_left": [
+     207.7,
+     1198.2
+    ],
+    "bottom_right": [
+     474.3,
+     1221.3
+    ]
+   }
+  },
+  {
+   "frame": 12,
+   "conf": 0.865,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.44,
+   "board_max": 14.61,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 15.3,
+    "top_right": 23.3,
+    "bottom_left": 36.4,
+    "bottom_right": 62.0
+   },
+   "corner_err_mean_px": 34.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.0,
+   "kpts": {
+    "top_left": [
+     523.2,
+     919.9
+    ],
+    "top_right": [
+     570.0,
+     917.6
+    ],
+    "bottom_left": [
+     215.1,
+     1209.5
+    ],
+    "bottom_right": [
+     481.7,
+     1227.5
+    ]
+   }
+  },
+  {
+   "frame": 13,
+   "conf": 0.87,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.35,
+   "board_max": 14.38,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 15.5,
+    "top_right": 22.9,
+    "bottom_left": 36.8,
+    "bottom_right": 63.2
+   },
+   "corner_err_mean_px": 34.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.8,
+   "kpts": {
+    "top_left": [
+     523.1,
+     919.8
+    ],
+    "top_right": [
+     570.3,
+     918.0
+    ],
+    "bottom_left": [
+     215.7,
+     1209.3
+    ],
+    "bottom_right": [
+     482.9,
+     1227.8
+    ]
+   }
+  },
+  {
+   "frame": 14,
+   "conf": 0.87,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.46,
+   "board_max": 14.64,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 15.5,
+    "top_right": 23.3,
+    "bottom_left": 36.8,
+    "bottom_right": 62.8
+   },
+   "corner_err_mean_px": 34.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.4,
+   "kpts": {
+    "top_left": [
+     522.5,
+     920.3
+    ],
+    "top_right": [
+     569.7,
+     918.8
+    ],
+    "bottom_left": [
+     215.5,
+     1209.5
+    ],
+    "bottom_right": [
+     482.6,
+     1227.8
+    ]
+   }
+  },
+  {
+   "frame": 15,
+   "conf": 0.868,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.32,
+   "board_max": 14.31,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 15.4,
+    "top_right": 22.8,
+    "bottom_left": 36.7,
+    "bottom_right": 63.6
+   },
+   "corner_err_mean_px": 34.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.2,
+   "kpts": {
+    "top_left": [
+     522.3,
+     920.5
+    ],
+    "top_right": [
+     570.1,
+     919.0
+    ],
+    "bottom_left": [
+     215.5,
+     1209.4
+    ],
+    "bottom_right": [
+     483.4,
+     1227.6
+    ]
+   }
+  },
+  {
+   "frame": 16,
+   "conf": 0.868,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.3,
+   "board_max": 14.23,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 14.9,
+    "top_right": 22.8,
+    "bottom_left": 36.3,
+    "bottom_right": 63.6
+   },
+   "corner_err_mean_px": 34.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.7,
+   "kpts": {
+    "top_left": [
+     522.0,
+     921.3
+    ],
+    "top_right": [
+     569.9,
+     919.5
+    ],
+    "bottom_left": [
+     215.7,
+     1208.7
+    ],
+    "bottom_right": [
+     483.3,
+     1227.8
+    ]
+   }
+  },
+  {
+   "frame": 17,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.43,
+   "board_max": 14.55,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 14.8,
+    "top_right": 23.6,
+    "bottom_left": 36.2,
+    "bottom_right": 62.4
+   },
+   "corner_err_mean_px": 34.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 49.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.7,
+   "kpts": {
+    "top_left": [
+     521.8,
+     921.6
+    ],
+    "top_right": [
+     569.1,
+     919.5
+    ],
+    "bottom_left": [
+     215.2,
+     1209.1
+    ],
+    "bottom_right": [
+     482.0,
+     1228.2
+    ]
+   }
+  },
+  {
+   "frame": 18,
+   "conf": 0.868,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.25,
+   "board_max": 14.1,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 14.5,
+    "top_right": 22.9,
+    "bottom_left": 35.6,
+    "bottom_right": 62.5
+   },
+   "corner_err_mean_px": 33.9,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 49.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.3,
+   "kpts": {
+    "top_left": [
+     522.7,
+     921.0
+    ],
+    "top_right": [
+     570.0,
+     919.0
+    ],
+    "bottom_left": [
+     215.5,
+     1208.3
+    ],
+    "bottom_right": [
+     482.0,
+     1228.2
+    ]
+   }
+  },
+  {
+   "frame": 19,
+   "conf": 0.874,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.17,
+   "board_max": 12.45,
+   "within_1": 10.4,
+   "within_2": 22.1,
+   "corner_err_px": {
+    "top_left": 26.7,
+    "top_right": 16.6,
+    "bottom_left": 18.4,
+    "bottom_right": 55.3
+   },
+   "corner_err_mean_px": 29.3,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 68.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 280.2,
+   "kpts": {
+    "top_left": [
+     523.3,
+     909.5
+    ],
+    "top_right": [
+     577.8,
+     915.6
+    ],
+    "bottom_left": [
+     206.9,
+     1197.5
+    ],
+    "bottom_right": [
+     476.3,
+     1219.8
+    ]
+   }
+  },
+  {
+   "frame": 20,
+   "conf": 0.868,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.36,
+   "board_max": 12.77,
+   "within_1": 11.7,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 25.9,
+    "top_right": 17.8,
+    "bottom_left": 18.6,
+    "bottom_right": 52.1
+   },
+   "corner_err_mean_px": 28.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 66.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 276.8,
+   "kpts": {
+    "top_left": [
+     523.1,
+     910.4
+    ],
+    "top_right": [
+     576.7,
+     915.3
+    ],
+    "bottom_left": [
+     205.8,
+     1198.8
+    ],
+    "bottom_right": [
+     472.5,
+     1221.4
+    ]
+   }
+  },
+  {
+   "frame": 21,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.53,
+   "board_max": 14.77,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 13.4,
+    "top_right": 24.2,
+    "bottom_left": 33.5,
+    "bottom_right": 59.7
+   },
+   "corner_err_mean_px": 32.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 47.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.9,
+   "kpts": {
+    "top_left": [
+     521.8,
+     923.0
+    ],
+    "top_right": [
+     568.2,
+     920.5
+    ],
+    "bottom_left": [
+     213.2,
+     1208.1
+    ],
+    "bottom_right": [
+     478.8,
+     1229.2
+    ]
+   }
+  },
+  {
+   "frame": 22,
+   "conf": 0.858,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.45,
+   "board_max": 14.56,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 13.1,
+    "top_right": 24.2,
+    "bottom_left": 32.9,
+    "bottom_right": 60.1
+   },
+   "corner_err_mean_px": 32.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 47.1,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.9,
+   "kpts": {
+    "top_left": [
+     522.7,
+     922.5
+    ],
+    "top_right": [
+     569.1,
+     917.6
+    ],
+    "bottom_left": [
+     211.3,
+     1209.3
+    ],
+    "bottom_right": [
+     479.8,
+     1227.3
+    ]
+   }
+  },
+  {
+   "frame": 23,
+   "conf": 0.87,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.34,
+   "board_max": 14.38,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 14.9,
+    "top_right": 23.6,
+    "bottom_left": 33.1,
+    "bottom_right": 61.6
+   },
+   "corner_err_mean_px": 33.3,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 49.5,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 269.2,
+   "kpts": {
+    "top_left": [
+     522.5,
+     920.9
+    ],
+    "top_right": [
+     569.6,
+     917.7
+    ],
+    "bottom_left": [
+     211.8,
+     1209.1
+    ],
+    "bottom_right": [
+     481.5,
+     1227.0
+    ]
+   }
+  },
+  {
+   "frame": 24,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.38,
+   "board_max": 14.38,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 14.3,
+    "top_right": 23.8,
+    "bottom_left": 34.7,
+    "bottom_right": 61.8
+   },
+   "corner_err_mean_px": 33.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 48.7,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.6,
+   "kpts": {
+    "top_left": [
+     522.2,
+     921.7
+    ],
+    "top_right": [
+     569.4,
+     917.9
+    ],
+    "bottom_left": [
+     211.8,
+     1210.7
+    ],
+    "bottom_right": [
+     481.6,
+     1227.1
+    ]
+   }
+  },
+  {
+   "frame": 25,
+   "conf": 0.871,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.24,
+   "board_max": 14.09,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 15.8,
+    "top_right": 23.1,
+    "bottom_left": 35.1,
+    "bottom_right": 62.4
+   },
+   "corner_err_mean_px": 34.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.9,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.8,
+   "kpts": {
+    "top_left": [
+     523.0,
+     919.6
+    ],
+    "top_right": [
+     570.5,
+     916.6
+    ],
+    "bottom_left": [
+     212.5,
+     1210.5
+    ],
+    "bottom_right": [
+     482.3,
+     1227.0
+    ]
+   }
+  },
+  {
+   "frame": 26,
+   "conf": 0.877,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.53,
+   "board_max": 13.18,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 26.3,
+    "top_right": 18.6,
+    "bottom_left": 17.4,
+    "bottom_right": 52.7
+   },
+   "corner_err_mean_px": 28.8,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 65.9,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 279.1,
+   "kpts": {
+    "top_left": [
+     523.5,
+     909.8
+    ],
+    "top_right": [
+     575.8,
+     915.6
+    ],
+    "bottom_left": [
+     206.2,
+     1197.0
+    ],
+    "bottom_right": [
+     473.5,
+     1220.4
+    ]
+   }
+  },
+  {
+   "frame": 27,
+   "conf": 0.873,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.0,
+   "board_max": 13.6,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 16.7,
+    "top_right": 22.0,
+    "bottom_left": 33.3,
+    "bottom_right": 63.1
+   },
+   "corner_err_mean_px": 33.8,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 52.9,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 270.4,
+   "kpts": {
+    "top_left": [
+     522.4,
+     919.3
+    ],
+    "top_right": [
+     571.1,
+     918.2
+    ],
+    "bottom_left": [
+     211.2,
+     1209.9
+    ],
+    "bottom_right": [
+     482.7,
+     1228.0
+    ]
+   }
+  },
+  {
+   "frame": 28,
+   "conf": 0.876,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.15,
+   "board_max": 14.04,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 20.3,
+    "top_right": 22.1,
+    "bottom_left": 35.8,
+    "bottom_right": 64.2
+   },
+   "corner_err_mean_px": 35.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 268.8,
+   "kpts": {
+    "top_left": [
+     521.0,
+     917.1
+    ],
+    "top_right": [
+     570.9,
+     918.8
+    ],
+    "bottom_left": [
+     213.8,
+     1210.3
+    ],
+    "bottom_right": [
+     483.8,
+     1228.1
+    ]
+   }
+  },
+  {
+   "frame": 29,
+   "conf": 0.878,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.18,
+   "board_max": 14.11,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 22.1,
+    "top_right": 22.0,
+    "bottom_left": 37.3,
+    "bottom_right": 63.7
+   },
+   "corner_err_mean_px": 36.3,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 266.7,
+   "kpts": {
+    "top_left": [
+     520.9,
+     915.4
+    ],
+    "top_right": [
+     570.8,
+     919.2
+    ],
+    "bottom_left": [
+     215.8,
+     1209.8
+    ],
+    "bottom_right": [
+     483.2,
+     1228.6
+    ]
+   }
+  },
+  {
+   "frame": 30,
+   "conf": 0.875,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.48,
+   "board_max": 14.8,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 23.1,
+    "top_right": 23.2,
+    "bottom_left": 38.6,
+    "bottom_right": 61.9
+   },
+   "corner_err_mean_px": 36.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.1,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 263.5,
+   "kpts": {
+    "top_left": [
+     519.3,
+     915.9
+    ],
+    "top_right": [
+     568.9,
+     921.9
+    ],
+    "bottom_left": [
+     218.7,
+     1208.5
+    ],
+    "bottom_right": [
+     480.7,
+     1230.5
+    ]
+   }
+  },
+  {
+   "frame": 31,
+   "conf": 0.873,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.5,
+   "board_max": 12.01,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 16.3,
+    "top_right": 20.2,
+    "bottom_left": 38.7,
+    "bottom_right": 63.1
+   },
+   "corner_err_mean_px": 34.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 57.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.7,
+   "kpts": {
+    "top_left": [
+     521.7,
+     917.4
+    ],
+    "top_right": [
+     570.9,
+     919.9
+    ],
+    "bottom_left": [
+     217.7,
+     1209.5
+    ],
+    "bottom_right": [
+     482.4,
+     1229.1
+    ]
+   }
+  },
+  {
+   "frame": 32,
+   "conf": 0.861,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.29,
+   "board_max": 11.26,
+   "within_1": 7.8,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 14.0,
+    "top_right": 19.4,
+    "bottom_left": 40.2,
+    "bottom_right": 61.0
+   },
+   "corner_err_mean_px": 33.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.6,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 261.0,
+   "kpts": {
+    "top_left": [
+     521.8,
+     919.6
+    ],
+    "top_right": [
+     570.7,
+     923.3
+    ],
+    "bottom_left": [
+     217.6,
+     1211.0
+    ],
+    "bottom_right": [
+     479.0,
+     1232.4
+    ]
+   }
+  },
+  {
+   "frame": 33,
+   "conf": 0.859,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.61,
+   "board_max": 11.65,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 16.3,
+    "top_right": 19.7,
+    "bottom_left": 48.7,
+    "bottom_right": 71.5
+   },
+   "corner_err_mean_px": 39.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 57.6,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 262.5,
+   "kpts": {
+    "top_left": [
+     515.2,
+     923.5
+    ],
+    "top_right": [
+     568.0,
+     932.2
+    ],
+    "bottom_left": [
+     232.2,
+     1205.7
+    ],
+    "bottom_right": [
+     489.8,
+     1235.4
+    ]
+   }
+  },
+  {
+   "frame": 34,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.72,
+   "board_max": 9.41,
+   "within_1": 9.1,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 9.8,
+    "top_right": 15.2,
+    "bottom_left": 47.2,
+    "bottom_right": 72.2
+   },
+   "corner_err_mean_px": 36.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.6,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.8,
+   "kpts": {
+    "top_left": [
+     519.9,
+     925.3
+    ],
+    "top_right": [
+     573.1,
+     929.7
+    ],
+    "bottom_left": [
+     229.7,
+     1206.5
+    ],
+    "bottom_right": [
+     490.5,
+     1234.0
+    ]
+   }
+  },
+  {
+   "frame": 35,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.2,
+   "board_max": 10.58,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 8.4,
+    "top_right": 19.7,
+    "bottom_left": 39.9,
+    "bottom_right": 60.6
+   },
+   "corner_err_mean_px": 32.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 49.7,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 260.9,
+   "kpts": {
+    "top_left": [
+     524.0,
+     922.8
+    ],
+    "top_right": [
+     571.6,
+     919.4
+    ],
+    "bottom_left": [
+     218.3,
+     1209.8
+    ],
+    "bottom_right": [
+     479.3,
+     1229.8
+    ]
+   }
+  },
+  {
+   "frame": 36,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.37,
+   "board_max": 10.98,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 10.1,
+    "top_right": 19.8,
+    "bottom_left": 43.0,
+    "bottom_right": 62.7
+   },
+   "corner_err_mean_px": 33.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 51.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 259.7,
+   "kpts": {
+    "top_left": [
+     523.4,
+     921.7
+    ],
+    "top_right": [
+     571.5,
+     918.9
+    ],
+    "bottom_left": [
+     222.5,
+     1209.1
+    ],
+    "bottom_right": [
+     482.1,
+     1228.5
+    ]
+   }
+  },
+  {
+   "frame": 37,
+   "conf": 0.835,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.36,
+   "board_max": 10.79,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 8.5,
+    "top_right": 19.9,
+    "bottom_left": 44.3,
+    "bottom_right": 60.7
+   },
+   "corner_err_mean_px": 33.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 49.6,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 256.3,
+   "kpts": {
+    "top_left": [
+     524.5,
+     922.2
+    ],
+    "top_right": [
+     572.1,
+     916.9
+    ],
+    "bottom_left": [
+     223.0,
+     1210.0
+    ],
+    "bottom_right": [
+     480.4,
+     1226.6
+    ]
+   }
+  },
+  {
+   "frame": 38,
+   "conf": 0.82,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.51,
+   "board_max": 10.98,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 7.7,
+    "top_right": 20.4,
+    "bottom_left": 47.8,
+    "bottom_right": 60.3
+   },
+   "corner_err_mean_px": 34.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 48.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 252.3,
+   "kpts": {
+    "top_left": [
+     523.6,
+     923.8
+    ],
+    "top_right": [
+     571.5,
+     917.3
+    ],
+    "bottom_left": [
+     227.6,
+     1209.2
+    ],
+    "bottom_right": [
+     480.5,
+     1225.2
+    ]
+   }
+  },
+  {
+   "frame": 39,
+   "conf": 0.835,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.22,
+   "board_max": 10.14,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 8.9,
+    "top_right": 18.6,
+    "bottom_left": 48.5,
+    "bottom_right": 62.9
+   },
+   "corner_err_mean_px": 34.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 51.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 254.2,
+   "kpts": {
+    "top_left": [
+     523.2,
+     923.0
+    ],
+    "top_right": [
+     572.6,
+     919.5
+    ],
+    "bottom_left": [
+     229.0,
+     1208.5
+    ],
+    "bottom_right": [
+     482.8,
+     1226.1
+    ]
+   }
+  },
+  {
+   "frame": 40,
+   "conf": 0.837,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.52,
+   "board_max": 11.38,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 11.1,
+    "top_right": 20.4,
+    "bottom_left": 45.4,
+    "bottom_right": 61.4
+   },
+   "corner_err_mean_px": 34.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 51.7,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 255.9,
+   "kpts": {
+    "top_left": [
+     521.7,
+     922.4
+    ],
+    "top_right": [
+     570.7,
+     919.6
+    ],
+    "bottom_left": [
+     224.6,
+     1209.7
+    ],
+    "bottom_right": [
+     480.6,
+     1228.7
+    ]
+   }
+  },
+  {
+   "frame": 41,
+   "conf": 0.848,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.51,
+   "board_max": 10.81,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 7.9,
+    "top_right": 20.4,
+    "bottom_left": 49.5,
+    "bottom_right": 63.1
+   },
+   "corner_err_mean_px": 35.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 48.6,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 253.3,
+   "kpts": {
+    "top_left": [
+     521.4,
+     925.7
+    ],
+    "top_right": [
+     570.0,
+     922.2
+    ],
+    "bottom_left": [
+     231.0,
+     1207.5
+    ],
+    "bottom_right": [
+     482.9,
+     1227.1
+    ]
+   }
+  },
+  {
+   "frame": 42,
+   "conf": 0.836,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.08,
+   "board_max": 10.2,
+   "within_1": 9.1,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 6.8,
+    "top_right": 19.5,
+    "bottom_left": 39.6,
+    "bottom_right": 60.1
+   },
+   "corner_err_mean_px": 31.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 48.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 260.7,
+   "kpts": {
+    "top_left": [
+     524.3,
+     924.1
+    ],
+    "top_right": [
+     571.6,
+     920.1
+    ],
+    "bottom_left": [
+     217.5,
+     1210.3
+    ],
+    "bottom_right": [
+     478.1,
+     1232.1
+    ]
+   }
+  },
+  {
+   "frame": 43,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.21,
+   "board_max": 10.3,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 6.4,
+    "top_right": 20.0,
+    "bottom_left": 42.0,
+    "bottom_right": 63.3
+   },
+   "corner_err_mean_px": 32.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 47.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 261.4,
+   "kpts": {
+    "top_left": [
+     522.4,
+     926.3
+    ],
+    "top_right": [
+     570.1,
+     923.1
+    ],
+    "bottom_left": [
+     220.1,
+     1210.3
+    ],
+    "bottom_right": [
+     481.8,
+     1231.9
+    ]
+   }
+  },
+  {
+   "frame": 44,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.06,
+   "board_max": 10.16,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 4.5,
+    "top_right": 20.0,
+    "bottom_left": 39.6,
+    "bottom_right": 61.8
+   },
+   "corner_err_mean_px": 31.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 45.5,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 262.4,
+   "kpts": {
+    "top_left": [
+     523.8,
+     926.7
+    ],
+    "top_right": [
+     570.4,
+     922.2
+    ],
+    "bottom_left": [
+     216.2,
+     1211.5
+    ],
+    "bottom_right": [
+     480.1,
+     1231.9
+    ]
+   }
+  },
+  {
+   "frame": 45,
+   "conf": 0.846,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.3,
+   "board_max": 9.24,
+   "within_1": 10.4,
+   "within_2": 23.4,
+   "corner_err_px": {
+    "top_left": 6.4,
+    "top_right": 13.2,
+    "bottom_left": 46.0,
+    "bottom_right": 70.2
+   },
+   "corner_err_mean_px": 33.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 54.3,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.1,
+   "kpts": {
+    "top_left": [
+     519.5,
+     929.1
+    ],
+    "top_right": [
+     575.0,
+     930.0
+    ],
+    "bottom_left": [
+     222.8,
+     1211.8
+    ],
+    "bottom_right": [
+     487.7,
+     1235.1
+    ]
+   }
+  },
+  {
+   "frame": 46,
+   "conf": 0.852,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.08,
+   "board_max": 10.48,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 4.5,
+    "top_right": 20.4,
+    "bottom_left": 36.5,
+    "bottom_right": 60.5
+   },
+   "corner_err_mean_px": 30.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 45.1,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.4,
+   "kpts": {
+    "top_left": [
+     524.5,
+     926.0
+    ],
+    "top_right": [
+     570.3,
+     921.2
+    ],
+    "bottom_left": [
+     214.2,
+     1210.1
+    ],
+    "bottom_right": [
+     479.3,
+     1229.9
+    ]
+   }
+  },
+  {
+   "frame": 47,
+   "conf": 0.85,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.24,
+   "board_max": 8.76,
+   "within_1": 11.7,
+   "within_2": 23.4,
+   "corner_err_px": {
+    "top_left": 6.4,
+    "top_right": 13.8,
+    "bottom_left": 42.2,
+    "bottom_right": 68.1
+   },
+   "corner_err_mean_px": 32.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.7,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 265.9,
+   "kpts": {
+    "top_left": [
+     519.6,
+     928.9
+    ],
+    "top_right": [
+     574.3,
+     930.4
+    ],
+    "bottom_left": [
+     220.6,
+     1210.0
+    ],
+    "bottom_right": [
+     486.1,
+     1233.1
+    ]
+   }
+  },
+  {
+   "frame": 48,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.09,
+   "board_max": 10.78,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 4.6,
+    "top_right": 20.9,
+    "bottom_left": 32.5,
+    "bottom_right": 59.5
+   },
+   "corner_err_mean_px": 29.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 44.7,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 267.7,
+   "kpts": {
+    "top_left": [
+     523.1,
+     927.3
+    ],
+    "top_right": [
+     569.2,
+     923.5
+    ],
+    "bottom_left": [
+     209.2,
+     1210.6
+    ],
+    "bottom_right": [
+     478.0,
+     1230.9
+    ]
+   }
+  },
+  {
+   "frame": 49,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.26,
+   "board_max": 9.97,
+   "within_1": 13.0,
+   "within_2": 24.7,
+   "corner_err_px": {
+    "top_left": 18.3,
+    "top_right": 15.2,
+    "bottom_left": 17.2,
+    "bottom_right": 50.9
+   },
+   "corner_err_mean_px": 25.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 64.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 277.7,
+   "kpts": {
+    "top_left": [
+     523.8,
+     914.5
+    ],
+    "top_right": [
+     577.5,
+     916.4
+    ],
+    "bottom_left": [
+     202.0,
+     1200.4
+    ],
+    "bottom_right": [
+     470.7,
+     1222.9
+    ]
+   }
+  },
+  {
+   "frame": 50,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.62,
+   "board_max": 10.76,
+   "within_1": 11.7,
+   "within_2": 24.7,
+   "corner_err_px": {
+    "top_left": 17.6,
+    "top_right": 17.2,
+    "bottom_left": 16.6,
+    "bottom_right": 48.2
+   },
+   "corner_err_mean_px": 24.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 61.4,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 275.8,
+   "kpts": {
+    "top_left": [
+     522.7,
+     916.0
+    ],
+    "top_right": [
+     575.1,
+     917.5
+    ],
+    "bottom_left": [
+     201.4,
+     1200.2
+    ],
+    "bottom_right": [
+     468.0,
+     1222.6
+    ]
+   }
+  },
+  {
+   "frame": 51,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.28,
+   "board_max": 9.99,
+   "within_1": 13.0,
+   "within_2": 24.7,
+   "corner_err_px": {
+    "top_left": 18.2,
+    "top_right": 15.5,
+    "bottom_left": 17.5,
+    "bottom_right": 50.7
+   },
+   "corner_err_mean_px": 25.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 63.7,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 277.0,
+   "kpts": {
+    "top_left": [
+     523.9,
+     914.5
+    ],
+    "top_right": [
+     577.2,
+     916.5
+    ],
+    "bottom_left": [
+     201.4,
+     1201.3
+    ],
+    "bottom_right": [
+     470.4,
+     1222.8
+    ]
+   }
+  },
+  {
+   "frame": 52,
+   "conf": 0.869,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.08,
+   "board_max": 10.52,
+   "within_1": 9.1,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 13.3,
+    "top_right": 18.5,
+    "bottom_left": 40.6,
+    "bottom_right": 64.6
+   },
+   "corner_err_mean_px": 34.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.1,
+   "kpts": {
+    "top_left": [
+     515.5,
+     926.2
+    ],
+    "top_right": [
+     569.7,
+     929.9
+    ],
+    "bottom_left": [
+     218.9,
+     1210.1
+    ],
+    "bottom_right": [
+     482.6,
+     1233.1
+    ]
+   }
+  },
+  {
+   "frame": 53,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.18,
+   "board_max": 10.81,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 12.4,
+    "top_right": 19.6,
+    "bottom_left": 38.9,
+    "bottom_right": 62.6
+   },
+   "corner_err_mean_px": 33.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.0,
+   "kpts": {
+    "top_left": [
+     513.6,
+     928.9
+    ],
+    "top_right": [
+     567.8,
+     932.7
+    ],
+    "bottom_left": [
+     217.7,
+     1209.6
+    ],
+    "bottom_right": [
+     480.8,
+     1232.4
+    ]
+   }
+  },
+  {
+   "frame": 54,
+   "conf": 0.861,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.35,
+   "board_max": 11.54,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 13.6,
+    "top_right": 20.6,
+    "bottom_left": 36.2,
+    "bottom_right": 59.8
+   },
+   "corner_err_mean_px": 32.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 54.0,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 264.0,
+   "kpts": {
+    "top_left": [
+     512.2,
+     929.1
+    ],
+    "top_right": [
+     566.8,
+     932.5
+    ],
+    "bottom_left": [
+     215.2,
+     1209.1
+    ],
+    "bottom_right": [
+     478.0,
+     1231.7
+    ]
+   }
+  },
+  {
+   "frame": 55,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.32,
+   "board_max": 14.06,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 16.3,
+    "top_right": 24.5,
+    "bottom_left": 37.0,
+    "bottom_right": 57.3
+   },
+   "corner_err_mean_px": 33.8,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 52.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 260.7,
+   "kpts": {
+    "top_left": [
+     509.4,
+     929.2
+    ],
+    "top_right": [
+     563.1,
+     931.9
+    ],
+    "bottom_left": [
+     215.7,
+     1209.6
+    ],
+    "bottom_right": [
+     475.9,
+     1230.9
+    ]
+   }
+  },
+  {
+   "frame": 56,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.79,
+   "board_max": 15.28,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 19.1,
+    "top_right": 26.3,
+    "bottom_left": 36.4,
+    "bottom_right": 55.6
+   },
+   "corner_err_mean_px": 34.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.8,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 259.6,
+   "kpts": {
+    "top_left": [
+     507.1,
+     928.7
+    ],
+    "top_right": [
+     561.6,
+     930.7
+    ],
+    "bottom_left": [
+     214.8,
+     1209.9
+    ],
+    "bottom_right": [
+     474.3,
+     1230.6
+    ]
+   }
+  },
+  {
+   "frame": 57,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.99,
+   "board_max": 18.23,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 15.4,
+    "top_right": 31.3,
+    "bottom_left": 28.2,
+    "bottom_right": 52.0
+   },
+   "corner_err_mean_px": 31.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 45.1,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 265.0,
+   "kpts": {
+    "top_left": [
+     515.2,
+     924.6
+    ],
+    "top_right": [
+     560.0,
+     919.0
+    ],
+    "bottom_left": [
+     201.5,
+     1213.5
+    ],
+    "bottom_right": [
+     470.8,
+     1230.9
+    ]
+   }
+  },
+  {
+   "frame": 58,
+   "conf": 0.856,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.07,
+   "board_max": 15.96,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 21.4,
+    "top_right": 27.2,
+    "bottom_left": 36.0,
+    "bottom_right": 54.1
+   },
+   "corner_err_mean_px": 34.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.2,
+   "bottom_width_true_px": 238,
+   "bottom_width_pred_px": 258.6,
+   "kpts": {
+    "top_left": [
+     504.8,
+     928.8
+    ],
+    "top_right": [
+     560.8,
+     930.2
+    ],
+    "bottom_left": [
+     213.4,
+     1210.8
+    ],
+    "bottom_right": [
+     472.8,
+     1230.6
+    ]
+   }
+  },
+  {
+   "frame": 59,
+   "conf": 0.852,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.84,
+   "board_max": 15.88,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 22.3,
+    "top_right": 23.5,
+    "bottom_left": 36.2,
+    "bottom_right": 57.4
+   },
+   "corner_err_mean_px": 34.9,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.8,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.9,
+   "kpts": {
+    "top_left": [
+     504.5,
+     929.2
+    ],
+    "top_right": [
+     560.1,
+     931.4
+    ],
+    "bottom_left": [
+     213.8,
+     1211.5
+    ],
+    "bottom_right": [
+     472.3,
+     1231.6
+    ]
+   }
+  },
+  {
+   "frame": 60,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.32,
+   "board_max": 17.01,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 24.4,
+    "top_right": 25.3,
+    "bottom_left": 36.6,
+    "bottom_right": 56.9
+   },
+   "corner_err_mean_px": 35.8,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 57.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.9,
+   "kpts": {
+    "top_left": [
+     503.6,
+     928.1
+    ],
+    "top_right": [
+     558.4,
+     931.0
+    ],
+    "bottom_left": [
+     214.5,
+     1211.3
+    ],
+    "bottom_right": [
+     471.8,
+     1232.0
+    ]
+   }
+  },
+  {
+   "frame": 61,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.34,
+   "board_max": 17.14,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 25.9,
+    "top_right": 25.1,
+    "bottom_left": 33.9,
+    "bottom_right": 55.5
+   },
+   "corner_err_mean_px": 35.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.9,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 259.4,
+   "kpts": {
+    "top_left": [
+     503.6,
+     926.6
+    ],
+    "top_right": [
+     559.4,
+     928.3
+    ],
+    "bottom_left": [
+     211.6,
+     1211.3
+    ],
+    "bottom_right": [
+     470.6,
+     1231.0
+    ]
+   }
+  },
+  {
+   "frame": 62,
+   "conf": 0.844,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.24,
+   "board_max": 16.81,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 23.5,
+    "top_right": 25.1,
+    "bottom_left": 36.8,
+    "bottom_right": 56.7
+   },
+   "corner_err_mean_px": 35.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.4,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.5,
+   "kpts": {
+    "top_left": [
+     504.8,
+     927.8
+    ],
+    "top_right": [
+     558.7,
+     930.8
+    ],
+    "bottom_left": [
+     214.6,
+     1211.4
+    ],
+    "bottom_right": [
+     471.3,
+     1233.0
+    ]
+   }
+  },
+  {
+   "frame": 63,
+   "conf": 0.836,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.53,
+   "board_max": 17.51,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 24.8,
+    "top_right": 26.2,
+    "bottom_left": 36.0,
+    "bottom_right": 56.0
+   },
+   "corner_err_mean_px": 35.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.6,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.8,
+   "kpts": {
+    "top_left": [
+     504.2,
+     927.1
+    ],
+    "top_right": [
+     557.8,
+     930.1
+    ],
+    "bottom_left": [
+     213.8,
+     1211.3
+    ],
+    "bottom_right": [
+     471.1,
+     1231.5
+    ]
+   }
+  },
+  {
+   "frame": 64,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.54,
+   "board_max": 17.56,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 27.1,
+    "top_right": 25.9,
+    "bottom_left": 36.3,
+    "bottom_right": 56.6
+   },
+   "corner_err_mean_px": 36.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 59.2,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.0,
+   "kpts": {
+    "top_left": [
+     505.3,
+     923.7
+    ],
+    "top_right": [
+     558.7,
+     928.1
+    ],
+    "bottom_left": [
+     214.1,
+     1211.4
+    ],
+    "bottom_right": [
+     472.3,
+     1229.6
+    ]
+   }
+  },
+  {
+   "frame": 65,
+   "conf": 0.837,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.05,
+   "board_max": 16.4,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 25.7,
+    "top_right": 24.6,
+    "bottom_left": 35.4,
+    "bottom_right": 56.8
+   },
+   "corner_err_mean_px": 35.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 59.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 259.1,
+   "kpts": {
+    "top_left": [
+     505.8,
+     924.6
+    ],
+    "top_right": [
+     559.8,
+     928.6
+    ],
+    "bottom_left": [
+     213.1,
+     1211.4
+    ],
+    "bottom_right": [
+     472.0,
+     1230.7
+    ]
+   }
+  },
+  {
+   "frame": 66,
+   "conf": 0.836,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.06,
+   "board_max": 13.92,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 21.8,
+    "top_right": 21.0,
+    "bottom_left": 37.6,
+    "bottom_right": 59.9
+   },
+   "corner_err_mean_px": 35.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.8,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 260.0,
+   "kpts": {
+    "top_left": [
+     508.7,
+     925.6
+    ],
+    "top_right": [
+     562.5,
+     931.7
+    ],
+    "bottom_left": [
+     214.0,
+     1212.7
+    ],
+    "bottom_right": [
+     474.3,
+     1233.4
+    ]
+   }
+  },
+  {
+   "frame": 67,
+   "conf": 0.848,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.65,
+   "board_max": 15.48,
+   "within_1": 9.1,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 25.0,
+    "top_right": 23.0,
+    "bottom_left": 35.0,
+    "bottom_right": 57.5
+   },
+   "corner_err_mean_px": 35.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 60.0,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 260.3,
+   "kpts": {
+    "top_left": [
+     506.2,
+     924.9
+    ],
+    "top_right": [
+     560.7,
+     930.9
+    ],
+    "bottom_left": [
+     210.6,
+     1213.3
+    ],
+    "bottom_right": [
+     472.1,
+     1232.4
+    ]
+   }
+  },
+  {
+   "frame": 68,
+   "conf": 0.834,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.77,
+   "board_max": 15.72,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 17.4,
+    "top_right": 24.5,
+    "bottom_left": 28.6,
+    "bottom_right": 55.0
+   },
+   "corner_err_mean_px": 31.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.9,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 264.7,
+   "kpts": {
+    "top_left": [
+     516.3,
+     922.9
+    ],
+    "top_right": [
+     562.9,
+     918.7
+    ],
+    "bottom_left": [
+     201.5,
+     1215.0
+    ],
+    "bottom_right": [
+     469.8,
+     1231.4
+    ]
+   }
+  },
+  {
+   "frame": 69,
+   "conf": 0.829,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.72,
+   "board_max": 13.02,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 21.0,
+    "top_right": 19.8,
+    "bottom_left": 37.1,
+    "bottom_right": 61.7
+   },
+   "corner_err_mean_px": 34.9,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 59.2,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 262.2,
+   "kpts": {
+    "top_left": [
+     508.5,
+     926.5
+    ],
+    "top_right": [
+     564.0,
+     930.7
+    ],
+    "bottom_left": [
+     211.9,
+     1214.2
+    ],
+    "bottom_right": [
+     476.5,
+     1232.1
+    ]
+   }
+  },
+  {
+   "frame": 70,
+   "conf": 0.855,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.02,
+   "board_max": 13.59,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 19.7,
+    "top_right": 20.9,
+    "bottom_left": 40.9,
+    "bottom_right": 62.3
+   },
+   "corner_err_mean_px": 35.9,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.8,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.8,
+   "kpts": {
+    "top_left": [
+     507.7,
+     928.6
+    ],
+    "top_right": [
+     562.8,
+     931.1
+    ],
+    "bottom_left": [
+     214.9,
+     1215.3
+    ],
+    "bottom_right": [
+     476.5,
+     1235.1
+    ]
+   }
+  },
+  {
+   "frame": 71,
+   "conf": 0.845,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.96,
+   "board_max": 13.37,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 19.4,
+    "top_right": 20.7,
+    "bottom_left": 42.2,
+    "bottom_right": 62.5
+   },
+   "corner_err_mean_px": 36.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.7,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.7,
+   "kpts": {
+    "top_left": [
+     507.9,
+     928.8
+    ],
+    "top_right": [
+     562.9,
+     931.3
+    ],
+    "bottom_left": [
+     216.4,
+     1215.1
+    ],
+    "bottom_right": [
+     476.7,
+     1234.8
+    ]
+   }
+  },
+  {
+   "frame": 72,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.74,
+   "board_max": 12.72,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 16.8,
+    "top_right": 20.2,
+    "bottom_left": 40.7,
+    "bottom_right": 60.3
+   },
+   "corner_err_mean_px": 34.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 54.6,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.2,
+   "kpts": {
+    "top_left": [
+     508.7,
+     930.5
+    ],
+    "top_right": [
+     563.5,
+     930.9
+    ],
+    "bottom_left": [
+     214.1,
+     1215.7
+    ],
+    "bottom_right": [
+     474.4,
+     1234.6
+    ]
+   }
+  },
+  {
+   "frame": 73,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.7,
+   "board_max": 12.63,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 17.5,
+    "top_right": 19.4,
+    "bottom_left": 42.3,
+    "bottom_right": 63.0
+   },
+   "corner_err_mean_px": 35.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.2,
+   "kpts": {
+    "top_left": [
+     508.3,
+     930.2
+    ],
+    "top_right": [
+     564.3,
+     931.3
+    ],
+    "bottom_left": [
+     215.9,
+     1215.7
+    ],
+    "bottom_right": [
+     477.4,
+     1234.2
+    ]
+   }
+  },
+  {
+   "frame": 74,
+   "conf": 0.853,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.53,
+   "board_max": 11.97,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 16.1,
+    "top_right": 18.6,
+    "bottom_left": 44.5,
+    "bottom_right": 64.8
+   },
+   "corner_err_mean_px": 36.0,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 55.5,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.7,
+   "kpts": {
+    "top_left": [
+     509.3,
+     930.6
+    ],
+    "top_right": [
+     565.2,
+     931.0
+    ],
+    "bottom_left": [
+     218.7,
+     1215.2
+    ],
+    "bottom_right": [
+     479.1,
+     1234.6
+    ]
+   }
+  },
+  {
+   "frame": 75,
+   "conf": 0.858,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.21,
+   "board_max": 10.92,
+   "within_1": 9.1,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 15.9,
+    "top_right": 17.4,
+    "bottom_left": 45.5,
+    "bottom_right": 66.1
+   },
+   "corner_err_mean_px": 36.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.5,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.0,
+   "kpts": {
+    "top_left": [
+     510.0,
+     930.1
+    ],
+    "top_right": [
+     566.4,
+     930.8
+    ],
+    "bottom_left": [
+     217.7,
+     1217.2
+    ],
+    "bottom_right": [
+     479.9,
+     1236.4
+    ]
+   }
+  },
+  {
+   "frame": 76,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.7,
+   "board_max": 12.59,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 19.5,
+    "top_right": 19.3,
+    "bottom_left": 45.0,
+    "bottom_right": 65.4
+   },
+   "corner_err_mean_px": 37.3,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.2,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 257.7,
+   "kpts": {
+    "top_left": [
+     508.8,
+     927.7
+    ],
+    "top_right": [
+     564.9,
+     929.3
+    ],
+    "bottom_left": [
+     221.2,
+     1213.4
+    ],
+    "bottom_right": [
+     480.0,
+     1233.9
+    ]
+   }
+  },
+  {
+   "frame": 77,
+   "conf": 0.855,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.21,
+   "board_max": 13.92,
+   "within_1": 9.1,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 20.0,
+    "top_right": 21.9,
+    "bottom_left": 43.9,
+    "bottom_right": 62.9
+   },
+   "corner_err_mean_px": 37.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 256.5,
+   "kpts": {
+    "top_left": [
+     507.3,
+     928.8
+    ],
+    "top_right": [
+     562.5,
+     928.7
+    ],
+    "bottom_left": [
+     221.1,
+     1212.3
+    ],
+    "bottom_right": [
+     477.9,
+     1232.8
+    ]
+   }
+  },
+  {
+   "frame": 78,
+   "conf": 0.859,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.42,
+   "board_max": 12.09,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 19.9,
+    "top_right": 18.3,
+    "bottom_left": 41.0,
+    "bottom_right": 62.2
+   },
+   "corner_err_mean_px": 35.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 59.6,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.7,
+   "kpts": {
+    "top_left": [
+     509.6,
+     926.6
+    ],
+    "top_right": [
+     566.7,
+     926.4
+    ],
+    "bottom_left": [
+     215.3,
+     1215.0
+    ],
+    "bottom_right": [
+     476.4,
+     1233.9
+    ]
+   }
+  },
+  {
+   "frame": 79,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.02,
+   "board_max": 13.66,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 21.0,
+    "top_right": 21.5,
+    "bottom_left": 39.3,
+    "bottom_right": 59.8
+   },
+   "corner_err_mean_px": 35.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 57.4,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.1,
+   "kpts": {
+    "top_left": [
+     507.1,
+     928.0
+    ],
+    "top_right": [
+     563.1,
+     927.7
+    ],
+    "bottom_left": [
+     214.8,
+     1213.7
+    ],
+    "bottom_right": [
+     474.7,
+     1232.0
+    ]
+   }
+  },
+  {
+   "frame": 80,
+   "conf": 0.855,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.17,
+   "board_max": 14.12,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 22.0,
+    "top_right": 22.1,
+    "bottom_left": 38.0,
+    "bottom_right": 59.5
+   },
+   "corner_err_mean_px": 35.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 57.9,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 259.1,
+   "kpts": {
+    "top_left": [
+     505.2,
+     928.8
+    ],
+    "top_right": [
+     562.0,
+     929.9
+    ],
+    "bottom_left": [
+     213.2,
+     1213.9
+    ],
+    "bottom_right": [
+     474.4,
+     1231.9
+    ]
+   }
+  },
+  {
+   "frame": 81,
+   "conf": 0.849,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.37,
+   "board_max": 14.84,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 26.1,
+    "top_right": 22.7,
+    "bottom_left": 14.1,
+    "bottom_right": 41.5
+   },
+   "corner_err_mean_px": 26.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 61.4,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 268.7,
+   "kpts": {
+    "top_left": [
+     512.0,
+     919.0
+    ],
+    "top_right": [
+     565.2,
+     919.0
+    ],
+    "bottom_left": [
+     193.5,
+     1206.1
+    ],
+    "bottom_right": [
+     458.1,
+     1222.2
+    ]
+   }
+  },
+  {
+   "frame": 82,
+   "conf": 0.852,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.03,
+   "board_max": 14.1,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 23.5,
+    "top_right": 21.6,
+    "bottom_left": 14.7,
+    "bottom_right": 42.4
+   },
+   "corner_err_mean_px": 25.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 59.9,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 268.6,
+   "kpts": {
+    "top_left": [
+     512.6,
+     920.9
+    ],
+    "top_right": [
+     565.6,
+     920.9
+    ],
+    "bottom_left": [
+     194.3,
+     1206.2
+    ],
+    "bottom_right": [
+     458.7,
+     1222.9
+    ]
+   }
+  },
+  {
+   "frame": 83,
+   "conf": 0.825,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.91,
+   "board_max": 13.81,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 22.2,
+    "top_right": 21.4,
+    "bottom_left": 14.2,
+    "bottom_right": 42.3
+   },
+   "corner_err_mean_px": 25.0,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.9,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 269.3,
+   "kpts": {
+    "top_left": [
+     512.9,
+     921.9
+    ],
+    "top_right": [
+     565.5,
+     921.9
+    ],
+    "bottom_left": [
+     194.2,
+     1205.5
+    ],
+    "bottom_right": [
+     458.8,
+     1222.3
+    ]
+   }
+  },
+  {
+   "frame": 84,
+   "conf": 0.824,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.56,
+   "board_max": 15.18,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 25.7,
+    "top_right": 23.5,
+    "bottom_left": 13.2,
+    "bottom_right": 39.9
+   },
+   "corner_err_mean_px": 25.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 60.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 268.6,
+   "kpts": {
+    "top_left": [
+     511.6,
+     920.0
+    ],
+    "top_right": [
+     563.8,
+     920.6
+    ],
+    "bottom_left": [
+     191.8,
+     1206.3
+    ],
+    "bottom_right": [
+     456.5,
+     1221.9
+    ]
+   }
+  },
+  {
+   "frame": 85,
+   "conf": 0.806,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.0,
+   "board_max": 13.99,
+   "within_1": 9.1,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 23.4,
+    "top_right": 21.8,
+    "bottom_left": 13.9,
+    "bottom_right": 41.4
+   },
+   "corner_err_mean_px": 25.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 59.6,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 268.9,
+   "kpts": {
+    "top_left": [
+     513.0,
+     920.7
+    ],
+    "top_right": [
+     565.3,
+     921.4
+    ],
+    "bottom_left": [
+     193.2,
+     1206.1
+    ],
+    "bottom_right": [
+     457.6,
+     1223.0
+    ]
+   }
+  },
+  {
+   "frame": 86,
+   "conf": 0.807,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.22,
+   "board_max": 14.51,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 25.3,
+    "top_right": 22.3,
+    "bottom_left": 14.7,
+    "bottom_right": 43.4
+   },
+   "corner_err_mean_px": 26.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 61.0,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 269.6,
+   "kpts": {
+    "top_left": [
+     512.2,
+     919.6
+    ],
+    "top_right": [
+     564.3,
+     922.4
+    ],
+    "bottom_left": [
+     194.2,
+     1206.4
+    ],
+    "bottom_right": [
+     460.7,
+     1220.3
+    ]
+   }
+  },
+  {
+   "frame": 87,
+   "conf": 0.829,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.56,
+   "board_max": 15.19,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 23.8,
+    "top_right": 23.8,
+    "bottom_left": 15.3,
+    "bottom_right": 42.1
+   },
+   "corner_err_mean_px": 26.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 58.0,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 267.5,
+   "kpts": {
+    "top_left": [
+     510.1,
+     922.9
+    ],
+    "top_right": [
+     562.7,
+     923.0
+    ],
+    "bottom_left": [
+     195.5,
+     1205.9
+    ],
+    "bottom_right": [
+     459.7,
+     1219.5
+    ]
+   }
+  },
+  {
+   "frame": 88,
+   "conf": 0.815,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.27,
+   "board_max": 16.58,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 25.4,
+    "top_right": 26.7,
+    "bottom_left": 13.9,
+    "bottom_right": 39.0
+   },
+   "corner_err_mean_px": 26.2,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.7,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 266.5,
+   "kpts": {
+    "top_left": [
+     508.3,
+     923.1
+    ],
+    "top_right": [
+     560.3,
+     921.5
+    ],
+    "bottom_left": [
+     192.8,
+     1206.4
+    ],
+    "bottom_right": [
+     456.9,
+     1218.6
+    ]
+   }
+  },
+  {
+   "frame": 89,
+   "conf": 0.823,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.7,
+   "board_max": 15.32,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 23.0,
+    "top_right": 24.6,
+    "bottom_left": 14.0,
+    "bottom_right": 40.2
+   },
+   "corner_err_mean_px": 25.4,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 56.4,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 267.6,
+   "kpts": {
+    "top_left": [
+     510.7,
+     923.1
+    ],
+    "top_right": [
+     562.2,
+     921.9
+    ],
+    "bottom_left": [
+     192.4,
+     1206.9
+    ],
+    "bottom_right": [
+     457.4,
+     1220.7
+    ]
+   }
+  },
+  {
+   "frame": 90,
+   "conf": 0.804,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.7,
+   "board_max": 15.31,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 17.6,
+    "top_right": 25.1,
+    "bottom_left": 33.3,
+    "bottom_right": 55.1
+   },
+   "corner_err_mean_px": 32.8,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.6,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 259.7,
+   "kpts": {
+    "top_left": [
+     501.6,
+     936.4
+    ],
+    "top_right": [
+     557.4,
+     935.1
+    ],
+    "bottom_left": [
+     206.9,
+     1214.9
+    ],
+    "bottom_right": [
+     469.4,
+     1233.5
+    ]
+   }
+  },
+  {
+   "frame": 91,
+   "conf": 0.799,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 8.08,
+   "board_max": 18.81,
+   "within_1": 7.8,
+   "within_2": 14.3,
+   "corner_err_px": {
+    "top_left": 11.5,
+    "top_right": 30.4,
+    "bottom_left": 29.8,
+    "bottom_right": 51.8
+   },
+   "corner_err_mean_px": 30.9,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 39.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 260.1,
+   "kpts": {
+    "top_left": [
+     510.6,
+     933.5
+    ],
+    "top_right": [
+     554.9,
+     925.5
+    ],
+    "bottom_left": [
+     200.8,
+     1216.7
+    ],
+    "bottom_right": [
+     466.4,
+     1233.3
+    ]
+   }
+  },
+  {
+   "frame": 92,
+   "conf": 0.796,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 8.51,
+   "board_max": 19.86,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 12.2,
+    "top_right": 31.8,
+    "bottom_left": 28.9,
+    "bottom_right": 49.6
+   },
+   "corner_err_mean_px": 30.6,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 38.4,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.9,
+   "kpts": {
+    "top_left": [
+     509.0,
+     934.4
+    ],
+    "top_right": [
+     553.1,
+     927.0
+    ],
+    "bottom_left": [
+     200.2,
+     1216.3
+    ],
+    "bottom_right": [
+     464.0,
+     1233.3
+    ]
+   }
+  },
+  {
+   "frame": 93,
+   "conf": 0.809,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 8.55,
+   "board_max": 19.87,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 13.1,
+    "top_right": 32.0,
+    "bottom_left": 29.4,
+    "bottom_right": 49.9
+   },
+   "corner_err_mean_px": 31.1,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 39.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 258.7,
+   "kpts": {
+    "top_left": [
+     509.5,
+     933.1
+    ],
+    "top_right": [
+     553.2,
+     925.7
+    ],
+    "bottom_left": [
+     202.1,
+     1215.1
+    ],
+    "bottom_right": [
+     464.4,
+     1233.7
+    ]
+   }
+  },
+  {
+   "frame": 94,
+   "conf": 0.797,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.01,
+   "board_max": 15.43,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 17.8,
+    "top_right": 25.8,
+    "bottom_left": 25.6,
+    "bottom_right": 29.7
+   },
+   "corner_err_mean_px": 24.7,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 50.1,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 242.5,
+   "kpts": {
+    "top_left": [
+     519.1,
+     919.9
+    ],
+    "top_right": [
+     561.7,
+     921.0
+    ],
+    "bottom_left": [
+     224.1,
+     1191.1
+    ],
+    "bottom_right": [
+     447.7,
+     1217.0
+    ]
+   }
+  },
+  {
+   "frame": 95,
+   "conf": 0.828,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.58,
+   "board_max": 14.77,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 14.4,
+    "top_right": 26.0,
+    "bottom_left": 33.5,
+    "bottom_right": 51.9
+   },
+   "corner_err_mean_px": 31.5,
+   "top_width_true_px": 58,
+   "top_width_pred_px": 46.4,
+   "bottom_width_true_px": 236,
+   "bottom_width_pred_px": 256.3,
+   "kpts": {
+    "top_left": [
+     501.8,
+     939.2
+    ],
+    "top_right": [
+     555.9,
+     936.9
+    ],
+    "bottom_left": [
+     207.7,
+     1214.2
+    ],
+    "bottom_right": [
+     465.4,
+     1235.3
+    ]
+   }
+  },
+  {
+   "frame": 96,
+   "conf": 0.825,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.74,
+   "board_max": 15.25,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 10.9,
+    "top_right": 25.7,
+    "bottom_left": 26.5,
+    "bottom_right": 60.7
+   },
+   "corner_err_mean_px": 31.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 46.2,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 266.2,
+   "kpts": {
+    "top_left": [
+     510.4,
+     929.9
+    ],
+    "top_right": [
+     556.7,
+     923.8
+    ],
+    "bottom_left": [
+     200.6,
+     1215.2
+    ],
+    "bottom_right": [
+     467.6,
+     1235.1
+    ]
+   }
+  },
+  {
+   "frame": 97,
+   "conf": 0.823,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.24,
+   "board_max": 13.62,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 10.5,
+    "top_right": 23.6,
+    "bottom_left": 33.5,
+    "bottom_right": 60.0
+   },
+   "corner_err_mean_px": 31.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 48.0,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 257.5,
+   "kpts": {
+    "top_left": [
+     501.9,
+     938.3
+    ],
+    "top_right": [
+     555.1,
+     936.8
+    ],
+    "bottom_left": [
+     212.3,
+     1211.9
+    ],
+    "bottom_right": [
+     466.8,
+     1234.4
+    ]
+   }
+  },
+  {
+   "frame": 98,
+   "conf": 0.818,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.7,
+   "board_max": 14.86,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 11.4,
+    "top_right": 25.1,
+    "bottom_left": 32.8,
+    "bottom_right": 58.2
+   },
+   "corner_err_mean_px": 31.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 47.3,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 256.5,
+   "kpts": {
+    "top_left": [
+     501.4,
+     937.8
+    ],
+    "top_right": [
+     554.4,
+     934.0
+    ],
+    "bottom_left": [
+     212.3,
+     1211.1
+    ],
+    "bottom_right": [
+     465.5,
+     1232.7
+    ]
+   }
+  },
+  {
+   "frame": 99,
+   "conf": 0.83,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.32,
+   "board_max": 13.73,
+   "within_1": 9.1,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 9.5,
+    "top_right": 24.0,
+    "bottom_left": 35.8,
+    "bottom_right": 61.3
+   },
+   "corner_err_mean_px": 32.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 46.6,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 256.3,
+   "kpts": {
+    "top_left": [
+     503.2,
+     938.0
+    ],
+    "top_right": [
+     555.6,
+     933.9
+    ],
+    "bottom_left": [
+     214.4,
+     1212.3
+    ],
+    "bottom_right": [
+     468.6,
+     1233.7
+    ]
+   }
+  },
+  {
+   "frame": 100,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.51,
+   "board_max": 14.55,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 15.4,
+    "top_right": 24.9,
+    "bottom_left": 30.4,
+    "bottom_right": 58.3
+   },
+   "corner_err_mean_px": 32.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 51.5,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 259.3,
+   "kpts": {
+    "top_left": [
+     500.5,
+     935.0
+    ],
+    "top_right": [
+     555.2,
+     932.0
+    ],
+    "bottom_left": [
+     207.1,
+     1213.5
+    ],
+    "bottom_right": [
+     465.9,
+     1231.6
+    ]
+   }
+  },
+  {
+   "frame": 101,
+   "conf": 0.829,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.02,
+   "board_max": 16.29,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 8.0,
+    "top_right": 27.3,
+    "bottom_left": 22.7,
+    "bottom_right": 58.4
+   },
+   "corner_err_mean_px": 29.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 41.8,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 268.6,
+   "kpts": {
+    "top_left": [
+     511.6,
+     931.4
+    ],
+    "top_right": [
+     555.8,
+     921.4
+    ],
+    "bottom_left": [
+     197.1,
+     1214.0
+    ],
+    "bottom_right": [
+     466.3,
+     1231.7
+    ]
+   }
+  },
+  {
+   "frame": 102,
+   "conf": 0.839,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.56,
+   "board_max": 17.66,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 9.3,
+    "top_right": 28.8,
+    "bottom_left": 21.5,
+    "bottom_right": 56.3
+   },
+   "corner_err_mean_px": 29.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 41.5,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 268.0,
+   "kpts": {
+    "top_left": [
+     511.2,
+     930.7
+    ],
+    "top_right": [
+     554.3,
+     921.5
+    ],
+    "bottom_left": [
+     193.3,
+     1216.0
+    ],
+    "bottom_right": [
+     463.8,
+     1233.0
+    ]
+   }
+  },
+  {
+   "frame": 103,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.13,
+   "board_max": 16.86,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 6.6,
+    "top_right": 27.6,
+    "bottom_left": 22.5,
+    "bottom_right": 57.0
+   },
+   "corner_err_mean_px": 28.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 40.1,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 267.4,
+   "kpts": {
+    "top_left": [
+     511.6,
+     932.7
+    ],
+    "top_right": [
+     554.7,
+     924.2
+    ],
+    "bottom_left": [
+     192.7,
+     1217.6
+    ],
+    "bottom_right": [
+     463.5,
+     1235.9
+    ]
+   }
+  },
+  {
+   "frame": 104,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.65,
+   "board_max": 15.64,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 5.7,
+    "top_right": 26.8,
+    "bottom_left": 21.5,
+    "bottom_right": 57.5
+   },
+   "corner_err_mean_px": 27.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 40.0,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 269.2,
+   "kpts": {
+    "top_left": [
+     511.5,
+     933.5
+    ],
+    "top_right": [
+     555.5,
+     924.3
+    ],
+    "bottom_left": [
+     191.7,
+     1217.4
+    ],
+    "bottom_right": [
+     464.2,
+     1235.2
+    ]
+   }
+  },
+  {
+   "frame": 105,
+   "conf": 0.831,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.63,
+   "board_max": 15.3,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 6.9,
+    "top_right": 26.5,
+    "bottom_left": 24.2,
+    "bottom_right": 58.8
+   },
+   "corner_err_mean_px": 29.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 41.5,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 267.0,
+   "kpts": {
+    "top_left": [
+     510.2,
+     933.7
+    ],
+    "top_right": [
+     555.5,
+     925.3
+    ],
+    "bottom_left": [
+     193.8,
+     1218.7
+    ],
+    "bottom_right": [
+     465.5,
+     1235.4
+    ]
+   }
+  },
+  {
+   "frame": 106,
+   "conf": 0.821,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.27,
+   "board_max": 16.98,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 8.8,
+    "top_right": 28.2,
+    "bottom_left": 22.6,
+    "bottom_right": 58.1
+   },
+   "corner_err_mean_px": 29.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 41.7,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 268.4,
+   "kpts": {
+    "top_left": [
+     509.5,
+     932.7
+    ],
+    "top_right": [
+     554.3,
+     923.3
+    ],
+    "bottom_left": [
+     194.4,
+     1216.3
+    ],
+    "bottom_right": [
+     465.6,
+     1233.3
+    ]
+   }
+  },
+  {
+   "frame": 107,
+   "conf": 0.815,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.38,
+   "board_max": 14.15,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 9.8,
+    "top_right": 27.4,
+    "bottom_left": 31.3,
+    "bottom_right": 60.4
+   },
+   "corner_err_mean_px": 32.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 43.5,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 260.4,
+   "kpts": {
+    "top_left": [
+     508.4,
+     932.8
+    ],
+    "top_right": [
+     555.1,
+     923.5
+    ],
+    "bottom_left": [
+     206.8,
+     1214.7
+    ],
+    "bottom_right": [
+     468.5,
+     1231.6
+    ]
+   }
+  },
+  {
+   "frame": 108,
+   "conf": 0.827,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.32,
+   "board_max": 16.42,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 9.8,
+    "top_right": 28.2,
+    "bottom_left": 35.3,
+    "bottom_right": 61.2
+   },
+   "corner_err_mean_px": 33.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 42.7,
+   "bottom_width_true_px": 228,
+   "bottom_width_pred_px": 256.8,
+   "kpts": {
+    "top_left": [
+     507.3,
+     933.8
+    ],
+    "top_right": [
+     554.0,
+     924.2
+    ],
+    "bottom_left": [
+     214.1,
+     1212.0
+    ],
+    "bottom_right": [
+     470.0,
+     1229.7
+    ]
+   }
+  },
+  {
+   "frame": 109,
+   "conf": 0.835,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.63,
+   "board_max": 14.28,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 10.1,
+    "top_right": 25.0,
+    "bottom_left": 47.0,
+    "bottom_right": 65.3
+   },
+   "corner_err_mean_px": 36.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 46.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 256.2,
+   "kpts": {
+    "top_left": [
+     508.0,
+     931.9
+    ],
+    "top_right": [
+     554.8,
+     923.7
+    ],
+    "bottom_left": [
+     218.8,
+     1211.3
+    ],
+    "bottom_right": [
+     470.6,
+     1230.8
+    ]
+   }
+  },
+  {
+   "frame": 110,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.37,
+   "board_max": 13.76,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 10.9,
+    "top_right": 24.2,
+    "bottom_left": 43.8,
+    "bottom_right": 65.1
+   },
+   "corner_err_mean_px": 36.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 47.7,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 259.2,
+   "kpts": {
+    "top_left": [
+     508.1,
+     931.1
+    ],
+    "top_right": [
+     555.5,
+     924.1
+    ],
+    "bottom_left": [
+     214.6,
+     1212.2
+    ],
+    "bottom_right": [
+     469.4,
+     1234.1
+    ]
+   }
+  },
+  {
+   "frame": 111,
+   "conf": 0.827,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.64,
+   "board_max": 14.71,
+   "within_1": 9.1,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 12.4,
+    "top_right": 25.3,
+    "bottom_left": 39.9,
+    "bottom_right": 64.0
+   },
+   "corner_err_mean_px": 35.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 48.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 262.1,
+   "kpts": {
+    "top_left": [
+     506.5,
+     931.2
+    ],
+    "top_right": [
+     554.2,
+     924.8
+    ],
+    "bottom_left": [
+     211.9,
+     1210.9
+    ],
+    "bottom_right": [
+     468.7,
+     1232.5
+    ]
+   }
+  },
+  {
+   "frame": 112,
+   "conf": 0.826,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.27,
+   "board_max": 13.76,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 11.3,
+    "top_right": 24.3,
+    "bottom_left": 37.8,
+    "bottom_right": 62.9
+   },
+   "corner_err_mean_px": 34.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 48.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.2,
+   "kpts": {
+    "top_left": [
+     508.3,
+     930.6
+    ],
+    "top_right": [
+     555.3,
+     924.9
+    ],
+    "bottom_left": [
+     207.3,
+     1213.3
+    ],
+    "bottom_right": [
+     466.9,
+     1234.6
+    ]
+   }
+  },
+  {
+   "frame": 113,
+   "conf": 0.82,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.5,
+   "board_max": 14.32,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 14.9,
+    "top_right": 26.3,
+    "bottom_left": 40.1,
+    "bottom_right": 62.8
+   },
+   "corner_err_mean_px": 36.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 49.5,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 260.7,
+   "kpts": {
+    "top_left": [
+     506.0,
+     929.4
+    ],
+    "top_right": [
+     553.3,
+     924.5
+    ],
+    "bottom_left": [
+     210.6,
+     1212.4
+    ],
+    "bottom_right": [
+     467.5,
+     1232.7
+    ]
+   }
+  },
+  {
+   "frame": 114,
+   "conf": 0.813,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.67,
+   "board_max": 15.0,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 14.1,
+    "top_right": 26.0,
+    "bottom_left": 35.6,
+    "bottom_right": 60.7
+   },
+   "corner_err_mean_px": 34.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 49.0,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.3,
+   "kpts": {
+    "top_left": [
+     507.1,
+     929.1
+    ],
+    "top_right": [
+     553.9,
+     923.7
+    ],
+    "bottom_left": [
+     201.7,
+     1216.3
+    ],
+    "bottom_right": [
+     464.5,
+     1234.8
+    ]
+   }
+  },
+  {
+   "frame": 115,
+   "conf": 0.827,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.19,
+   "board_max": 16.43,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 14.4,
+    "top_right": 27.9,
+    "bottom_left": 31.5,
+    "bottom_right": 59.7
+   },
+   "corner_err_mean_px": 33.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 47.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 266.4,
+   "kpts": {
+    "top_left": [
+     506.7,
+     929.4
+    ],
+    "top_right": [
+     552.3,
+     922.6
+    ],
+    "bottom_left": [
+     196.9,
+     1216.8
+    ],
+    "bottom_right": [
+     463.6,
+     1234.8
+    ]
+   }
+  },
+  {
+   "frame": 116,
+   "conf": 0.837,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.33,
+   "board_max": 16.83,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 14.0,
+    "top_right": 28.6,
+    "bottom_left": 28.7,
+    "bottom_right": 59.6
+   },
+   "corner_err_mean_px": 32.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 46.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.3,
+   "kpts": {
+    "top_left": [
+     505.0,
+     931.2
+    ],
+    "top_right": [
+     551.1,
+     924.4
+    ],
+    "bottom_left": [
+     192.6,
+     1217.9
+    ],
+    "bottom_right": [
+     463.9,
+     1233.5
+    ]
+   }
+  },
+  {
+   "frame": 117,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.47,
+   "board_max": 17.12,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 12.9,
+    "top_right": 28.9,
+    "bottom_left": 31.1,
+    "bottom_right": 60.4
+   },
+   "corner_err_mean_px": 33.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 45.0,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.6,
+   "kpts": {
+    "top_left": [
+     505.2,
+     932.1
+    ],
+    "top_right": [
+     551.1,
+     923.3
+    ],
+    "bottom_left": [
+     197.5,
+     1215.8
+    ],
+    "bottom_right": [
+     465.2,
+     1232.5
+    ]
+   }
+  },
+  {
+   "frame": 118,
+   "conf": 0.839,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.3,
+   "board_max": 16.76,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 9.7,
+    "top_right": 28.4,
+    "bottom_left": 31.8,
+    "bottom_right": 61.2
+   },
+   "corner_err_mean_px": 32.8,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 42.3,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.6,
+   "kpts": {
+    "top_left": [
+     506.5,
+     933.8
+    ],
+    "top_right": [
+     551.4,
+     923.9
+    ],
+    "bottom_left": [
+     197.2,
+     1216.7
+    ],
+    "bottom_right": [
+     465.6,
+     1233.6
+    ]
+   }
+  },
+  {
+   "frame": 119,
+   "conf": 0.853,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.87,
+   "board_max": 16.05,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 6.3,
+    "top_right": 27.6,
+    "bottom_left": 30.3,
+    "bottom_right": 63.2
+   },
+   "corner_err_mean_px": 31.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 39.8,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 271.3,
+   "kpts": {
+    "top_left": [
+     508.7,
+     934.9
+    ],
+    "top_right": [
+     552.6,
+     922.6
+    ],
+    "bottom_left": [
+     195.1,
+     1217.0
+    ],
+    "bottom_right": [
+     467.6,
+     1234.5
+    ]
+   }
+  },
+  {
+   "frame": 120,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.23,
+   "board_max": 16.34,
+   "within_1": 7.8,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 30.1,
+    "top_right": 26.7,
+    "bottom_left": 18.1,
+    "bottom_right": 42.6
+   },
+   "corner_err_mean_px": 29.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 64.3,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.9,
+   "kpts": {
+    "top_left": [
+     502.4,
+     918.6
+    ],
+    "top_right": [
+     555.2,
+     919.8
+    ],
+    "bottom_left": [
+     187.0,
+     1212.6
+    ],
+    "bottom_right": [
+     448.4,
+     1224.9
+    ]
+   }
+  },
+  {
+   "frame": 121,
+   "conf": 0.871,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.14,
+   "board_max": 16.19,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 28.9,
+    "top_right": 26.4,
+    "bottom_left": 18.4,
+    "bottom_right": 43.0
+   },
+   "corner_err_mean_px": 29.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 63.5,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.9,
+   "kpts": {
+    "top_left": [
+     502.3,
+     919.8
+    ],
+    "top_right": [
+     554.5,
+     922.8
+    ],
+    "bottom_left": [
+     188.5,
+     1211.4
+    ],
+    "bottom_right": [
+     448.8,
+     1224.9
+    ]
+   }
+  },
+  {
+   "frame": 122,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.5,
+   "board_max": 16.87,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 32.2,
+    "top_right": 27.5,
+    "bottom_left": 16.7,
+    "bottom_right": 41.0
+   },
+   "corner_err_mean_px": 29.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 65.7,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.9,
+   "kpts": {
+    "top_left": [
+     500.6,
+     918.3
+    ],
+    "top_right": [
+     553.0,
+     924.0
+    ],
+    "bottom_left": [
+     186.4,
+     1211.6
+    ],
+    "bottom_right": [
+     447.3,
+     1223.4
+    ]
+   }
+  },
+  {
+   "frame": 123,
+   "conf": 0.88,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.66,
+   "board_max": 15.29,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 35.4,
+    "top_right": 23.8,
+    "bottom_left": 17.1,
+    "bottom_right": 44.3
+   },
+   "corner_err_mean_px": 30.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 72.6,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 266.8,
+   "kpts": {
+    "top_left": [
+     501.7,
+     914.0
+    ],
+    "top_right": [
+     556.8,
+     923.9
+    ],
+    "bottom_left": [
+     186.8,
+     1211.6
+    ],
+    "bottom_right": [
+     450.2,
+     1224.3
+    ]
+   }
+  },
+  {
+   "frame": 124,
+   "conf": 0.879,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.3,
+   "board_max": 14.51,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 34.1,
+    "top_right": 23.2,
+    "bottom_left": 16.4,
+    "bottom_right": 44.0
+   },
+   "corner_err_mean_px": 29.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 71.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.3,
+   "kpts": {
+    "top_left": [
+     502.8,
+     914.4
+    ],
+    "top_right": [
+     558.1,
+     922.1
+    ],
+    "bottom_left": [
+     185.0,
+     1212.5
+    ],
+    "bottom_right": [
+     450.1,
+     1223.8
+    ]
+   }
+  },
+  {
+   "frame": 125,
+   "conf": 0.888,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.42,
+   "board_max": 14.98,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 29.6,
+    "top_right": 21.7,
+    "bottom_left": 16.5,
+    "bottom_right": 46.6
+   },
+   "corner_err_mean_px": 28.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 68.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.8,
+   "kpts": {
+    "top_left": [
+     504.5,
+     917.2
+    ],
+    "top_right": [
+     559.3,
+     922.5
+    ],
+    "bottom_left": [
+     185.1,
+     1212.5
+    ],
+    "bottom_right": [
+     452.3,
+     1225.1
+    ]
+   }
+  },
+  {
+   "frame": 126,
+   "conf": 0.881,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.17,
+   "board_max": 14.22,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 29.8,
+    "top_right": 23.0,
+    "bottom_left": 15.8,
+    "bottom_right": 44.6
+   },
+   "corner_err_mean_px": 28.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 268.7,
+   "kpts": {
+    "top_left": [
+     502.9,
+     918.6
+    ],
+    "top_right": [
+     557.5,
+     924.3
+    ],
+    "bottom_left": [
+     185.2,
+     1211.6
+    ],
+    "bottom_right": [
+     451.0,
+     1222.9
+    ]
+   }
+  },
+  {
+   "frame": 127,
+   "conf": 0.885,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.66,
+   "board_max": 13.26,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 29.8,
+    "top_right": 20.3,
+    "bottom_left": 17.2,
+    "bottom_right": 48.8
+   },
+   "corner_err_mean_px": 29.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 70.6,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 271.1,
+   "kpts": {
+    "top_left": [
+     504.9,
+     916.6
+    ],
+    "top_right": [
+     560.2,
+     924.0
+    ],
+    "bottom_left": [
+     187.2,
+     1211.4
+    ],
+    "bottom_right": [
+     455.1,
+     1223.5
+    ]
+   }
+  },
+  {
+   "frame": 128,
+   "conf": 0.883,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.82,
+   "board_max": 13.58,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 32.1,
+    "top_right": 21.2,
+    "bottom_left": 18.4,
+    "bottom_right": 49.3
+   },
+   "corner_err_mean_px": 30.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 71.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 270.2,
+   "kpts": {
+    "top_left": [
+     502.1,
+     916.9
+    ],
+    "top_right": [
+     558.9,
+     925.2
+    ],
+    "bottom_left": [
+     187.5,
+     1212.4
+    ],
+    "bottom_right": [
+     456.1,
+     1222.2
+    ]
+   }
+  },
+  {
+   "frame": 129,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.84,
+   "board_max": 13.66,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 32.3,
+    "top_right": 21.2,
+    "bottom_left": 18.6,
+    "bottom_right": 49.9
+   },
+   "corner_err_mean_px": 30.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 72.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 270.6,
+   "kpts": {
+    "top_left": [
+     502.7,
+     916.1
+    ],
+    "top_right": [
+     559.4,
+     923.6
+    ],
+    "bottom_left": [
+     185.6,
+     1214.4
+    ],
+    "bottom_right": [
+     455.7,
+     1224.9
+    ]
+   }
+  },
+  {
+   "frame": 130,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.14,
+   "board_max": 14.24,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 33.3,
+    "top_right": 22.6,
+    "bottom_left": 18.6,
+    "bottom_right": 48.9
+   },
+   "corner_err_mean_px": 30.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 71.7,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.7,
+   "kpts": {
+    "top_left": [
+     502.8,
+     915.0
+    ],
+    "top_right": [
+     558.6,
+     921.9
+    ],
+    "bottom_left": [
+     185.9,
+     1214.1
+    ],
+    "bottom_right": [
+     454.5,
+     1226.0
+    ]
+   }
+  },
+  {
+   "frame": 131,
+   "conf": 0.89,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.52,
+   "board_max": 14.92,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 31.8,
+    "top_right": 24.5,
+    "bottom_left": 18.2,
+    "bottom_right": 46.7
+   },
+   "corner_err_mean_px": 30.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 68.2,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.9,
+   "kpts": {
+    "top_left": [
+     501.3,
+     918.0
+    ],
+    "top_right": [
+     556.2,
+     923.2
+    ],
+    "bottom_left": [
+     187.0,
+     1212.7
+    ],
+    "bottom_right": [
+     452.4,
+     1225.3
+    ]
+   }
+  },
+  {
+   "frame": 132,
+   "conf": 0.88,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.25,
+   "board_max": 14.35,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 30.2,
+    "top_right": 24.1,
+    "bottom_left": 17.3,
+    "bottom_right": 45.4
+   },
+   "corner_err_mean_px": 29.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.7,
+   "kpts": {
+    "top_left": [
+     502.1,
+     918.9
+    ],
+    "top_right": [
+     557.0,
+     922.5
+    ],
+    "bottom_left": [
+     184.7,
+     1213.8
+    ],
+    "bottom_right": [
+     451.1,
+     1225.1
+    ]
+   }
+  },
+  {
+   "frame": 133,
+   "conf": 0.881,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.86,
+   "board_max": 13.53,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 29.8,
+    "top_right": 22.4,
+    "bottom_left": 18.1,
+    "bottom_right": 46.1
+   },
+   "corner_err_mean_px": 29.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 68.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.4,
+   "kpts": {
+    "top_left": [
+     503.7,
+     917.7
+    ],
+    "top_right": [
+     558.8,
+     922.0
+    ],
+    "bottom_left": [
+     186.7,
+     1212.8
+    ],
+    "bottom_right": [
+     451.7,
+     1225.4
+    ]
+   }
+  },
+  {
+   "frame": 134,
+   "conf": 0.878,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.47,
+   "board_max": 12.67,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 27.1,
+    "top_right": 21.1,
+    "bottom_left": 18.6,
+    "bottom_right": 46.8
+   },
+   "corner_err_mean_px": 28.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.0,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.6,
+   "kpts": {
+    "top_left": [
+     505.3,
+     918.9
+    ],
+    "top_right": [
+     560.0,
+     922.6
+    ],
+    "bottom_left": [
+     186.5,
+     1213.4
+    ],
+    "bottom_right": [
+     452.2,
+     1225.8
+    ]
+   }
+  },
+  {
+   "frame": 135,
+   "conf": 0.876,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.3,
+   "board_max": 12.35,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 27.6,
+    "top_right": 20.1,
+    "bottom_left": 19.0,
+    "bottom_right": 48.1
+   },
+   "corner_err_mean_px": 28.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 68.5,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 268.3,
+   "kpts": {
+    "top_left": [
+     504.7,
+     918.9
+    ],
+    "top_right": [
+     560.2,
+     924.7
+    ],
+    "bottom_left": [
+     187.3,
+     1213.2
+    ],
+    "bottom_right": [
+     453.4,
+     1225.9
+    ]
+   }
+  },
+  {
+   "frame": 136,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.36,
+   "board_max": 12.41,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 29.8,
+    "top_right": 21.6,
+    "bottom_left": 17.5,
+    "bottom_right": 46.1
+   },
+   "corner_err_mean_px": 28.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 69.2,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 268.1,
+   "kpts": {
+    "top_left": [
+     503.5,
+     917.9
+    ],
+    "top_right": [
+     558.9,
+     924.3
+    ],
+    "bottom_left": [
+     186.5,
+     1212.4
+    ],
+    "bottom_right": [
+     452.1,
+     1224.2
+    ]
+   }
+  },
+  {
+   "frame": 137,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.62,
+   "board_max": 13.01,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 27.4,
+    "top_right": 21.5,
+    "bottom_left": 18.7,
+    "bottom_right": 46.1
+   },
+   "corner_err_mean_px": 28.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 66.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 266.7,
+   "kpts": {
+    "top_left": [
+     503.9,
+     919.8
+    ],
+    "top_right": [
+     558.5,
+     925.4
+    ],
+    "bottom_left": [
+     186.1,
+     1214.0
+    ],
+    "bottom_right": [
+     451.3,
+     1226.1
+    ]
+   }
+  },
+  {
+   "frame": 138,
+   "conf": 0.873,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.23,
+   "board_max": 12.11,
+   "within_1": 11.7,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 27.1,
+    "top_right": 20.8,
+    "bottom_left": 19.2,
+    "bottom_right": 47.3
+   },
+   "corner_err_mean_px": 28.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.3,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.4,
+   "kpts": {
+    "top_left": [
+     504.0,
+     920.0
+    ],
+    "top_right": [
+     558.8,
+     926.5
+    ],
+    "bottom_left": [
+     187.2,
+     1213.4
+    ],
+    "bottom_right": [
+     452.5,
+     1226.6
+    ]
+   }
+  },
+  {
+   "frame": 139,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.4,
+   "board_max": 12.45,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 27.5,
+    "top_right": 21.4,
+    "bottom_left": 18.9,
+    "bottom_right": 45.3
+   },
+   "corner_err_mean_px": 28.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 265.6,
+   "kpts": {
+    "top_left": [
+     503.2,
+     920.4
+    ],
+    "top_right": [
+     558.3,
+     926.5
+    ],
+    "bottom_left": [
+     185.7,
+     1214.6
+    ],
+    "bottom_right": [
+     450.6,
+     1225.7
+    ]
+   }
+  },
+  {
+   "frame": 140,
+   "conf": 0.848,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.03,
+   "board_max": 11.21,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 19.8,
+    "top_right": 21.0,
+    "bottom_left": 29.5,
+    "bottom_right": 59.4
+   },
+   "corner_err_mean_px": 32.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 59.8,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 268.3,
+   "kpts": {
+    "top_left": [
+     495.1,
+     935.0
+    ],
+    "top_right": [
+     555.8,
+     934.5
+    ],
+    "bottom_left": [
+     196.2,
+     1215.6
+    ],
+    "bottom_right": [
+     462.7,
+     1234.7
+    ]
+   }
+  },
+  {
+   "frame": 141,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.71,
+   "board_max": 13.11,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 27.2,
+    "top_right": 22.3,
+    "bottom_left": 17.7,
+    "bottom_right": 44.2
+   },
+   "corner_err_mean_px": 27.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 65.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 265.9,
+   "kpts": {
+    "top_left": [
+     502.4,
+     921.4
+    ],
+    "top_right": [
+     557.0,
+     927.7
+    ],
+    "bottom_left": [
+     186.6,
+     1212.5
+    ],
+    "bottom_right": [
+     449.6,
+     1225.5
+    ]
+   }
+  },
+  {
+   "frame": 142,
+   "conf": 0.872,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.81,
+   "board_max": 13.3,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 28.0,
+    "top_right": 22.9,
+    "bottom_left": 18.9,
+    "bottom_right": 44.6
+   },
+   "corner_err_mean_px": 28.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 66.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 264.9,
+   "kpts": {
+    "top_left": [
+     502.1,
+     920.9
+    ],
+    "top_right": [
+     556.2,
+     928.1
+    ],
+    "bottom_left": [
+     187.5,
+     1212.9
+    ],
+    "bottom_right": [
+     449.9,
+     1225.8
+    ]
+   }
+  },
+  {
+   "frame": 143,
+   "conf": 0.865,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.71,
+   "board_max": 13.07,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 27.4,
+    "top_right": 22.5,
+    "bottom_left": 19.7,
+    "bottom_right": 44.5
+   },
+   "corner_err_mean_px": 28.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 65.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.9,
+   "kpts": {
+    "top_left": [
+     502.6,
+     920.9
+    ],
+    "top_right": [
+     556.6,
+     928.1
+    ],
+    "bottom_left": [
+     187.5,
+     1213.8
+    ],
+    "bottom_right": [
+     449.6,
+     1226.3
+    ]
+   }
+  },
+  {
+   "frame": 144,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.46,
+   "board_max": 12.58,
+   "within_1": 11.7,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 28.4,
+    "top_right": 21.3,
+    "bottom_left": 19.1,
+    "bottom_right": 44.9
+   },
+   "corner_err_mean_px": 28.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 68.0,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 265.0,
+   "kpts": {
+    "top_left": [
+     503.2,
+     919.5
+    ],
+    "top_right": [
+     558.0,
+     927.6
+    ],
+    "bottom_left": [
+     186.3,
+     1214.2
+    ],
+    "bottom_right": [
+     450.3,
+     1225.5
+    ]
+   }
+  },
+  {
+   "frame": 145,
+   "conf": 0.861,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.55,
+   "board_max": 12.75,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 28.7,
+    "top_right": 21.8,
+    "bottom_left": 20.4,
+    "bottom_right": 45.4
+   },
+   "corner_err_mean_px": 29.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 264.1,
+   "kpts": {
+    "top_left": [
+     501.9,
+     920.4
+    ],
+    "top_right": [
+     557.0,
+     928.9
+    ],
+    "bottom_left": [
+     189.0,
+     1213.1
+    ],
+    "bottom_right": [
+     450.4,
+     1226.8
+    ]
+   }
+  },
+  {
+   "frame": 146,
+   "conf": 0.87,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.69,
+   "board_max": 13.06,
+   "within_1": 9.1,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 28.4,
+    "top_right": 22.3,
+    "bottom_left": 20.7,
+    "bottom_right": 45.4
+   },
+   "corner_err_mean_px": 29.2,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 67.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 263.7,
+   "kpts": {
+    "top_left": [
+     501.1,
+     921.4
+    ],
+    "top_right": [
+     556.4,
+     929.3
+    ],
+    "bottom_left": [
+     187.7,
+     1214.7
+    ],
+    "bottom_right": [
+     450.1,
+     1227.6
+    ]
+   }
+  },
+  {
+   "frame": 147,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.58,
+   "board_max": 14.79,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 30.2,
+    "top_right": 26.2,
+    "bottom_left": 18.7,
+    "bottom_right": 40.8
+   },
+   "corner_err_mean_px": 29.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 65.0,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 261.4,
+   "kpts": {
+    "top_left": [
+     497.8,
+     922.8
+    ],
+    "top_right": [
+     552.2,
+     930.1
+    ],
+    "bottom_left": [
+     185.4,
+     1214.7
+    ],
+    "bottom_right": [
+     445.8,
+     1226.9
+    ]
+   }
+  },
+  {
+   "frame": 148,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.54,
+   "board_max": 14.75,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 31.4,
+    "top_right": 25.5,
+    "bottom_left": 18.1,
+    "bottom_right": 41.3
+   },
+   "corner_err_mean_px": 29.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 66.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 262.6,
+   "kpts": {
+    "top_left": [
+     498.2,
+     921.3
+    ],
+    "top_right": [
+     553.3,
+     929.1
+    ],
+    "bottom_left": [
+     184.4,
+     1214.9
+    ],
+    "bottom_right": [
+     446.6,
+     1225.9
+    ]
+   }
+  },
+  {
+   "frame": 149,
+   "conf": 0.87,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.4,
+   "board_max": 14.52,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 29.7,
+    "top_right": 24.8,
+    "bottom_left": 19.3,
+    "bottom_right": 42.8
+   },
+   "corner_err_mean_px": 29.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 65.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 262.7,
+   "kpts": {
+    "top_left": [
+     498.4,
+     922.6
+    ],
+    "top_right": [
+     553.7,
+     929.9
+    ],
+    "bottom_left": [
+     186.7,
+     1214.1
+    ],
+    "bottom_right": [
+     447.8,
+     1226.8
+    ]
+   }
+  },
+  {
+   "frame": 150,
+   "conf": 0.869,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.34,
+   "board_max": 14.33,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 28.3,
+    "top_right": 24.8,
+    "bottom_left": 18.8,
+    "bottom_right": 41.6
+   },
+   "corner_err_mean_px": 28.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 64.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 262.0,
+   "kpts": {
+    "top_left": [
+     499.8,
+     922.7
+    ],
+    "top_right": [
+     554.2,
+     928.5
+    ],
+    "bottom_left": [
+     185.6,
+     1214.6
+    ],
+    "bottom_right": [
+     446.4,
+     1227.0
+    ]
+   }
+  },
+  {
+   "frame": 151,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.9,
+   "board_max": 13.42,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 26.7,
+    "top_right": 23.4,
+    "bottom_left": 19.5,
+    "bottom_right": 42.3
+   },
+   "corner_err_mean_px": 28.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 64.3,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 262.1,
+   "kpts": {
+    "top_left": [
+     500.5,
+     923.6
+    ],
+    "top_right": [
+     555.7,
+     928.3
+    ],
+    "bottom_left": [
+     185.2,
+     1215.6
+    ],
+    "bottom_right": [
+     446.9,
+     1227.7
+    ]
+   }
+  },
+  {
+   "frame": 152,
+   "conf": 0.874,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.03,
+   "board_max": 13.64,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 25.0,
+    "top_right": 24.8,
+    "bottom_left": 18.8,
+    "bottom_right": 42.1
+   },
+   "corner_err_mean_px": 27.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 61.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 262.7,
+   "kpts": {
+    "top_left": [
+     500.5,
+     925.3
+    ],
+    "top_right": [
+     554.2,
+     928.4
+    ],
+    "bottom_left": [
+     187.3,
+     1212.9
+    ],
+    "bottom_right": [
+     446.6,
+     1228.2
+    ]
+   }
+  },
+  {
+   "frame": 153,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.15,
+   "board_max": 13.84,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 21.2,
+    "top_right": 25.6,
+    "bottom_left": 31.9,
+    "bottom_right": 54.9
+   },
+   "corner_err_mean_px": 33.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 56.6,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 261.3,
+   "kpts": {
+    "top_left": [
+     490.6,
+     937.9
+    ],
+    "top_right": [
+     550.8,
+     936.1
+    ],
+    "bottom_left": [
+     198.1,
+     1216.2
+    ],
+    "bottom_right": [
+     457.5,
+     1237.0
+    ]
+   }
+  },
+  {
+   "frame": 154,
+   "conf": 0.859,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.47,
+   "board_max": 14.61,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 20.5,
+    "top_right": 26.0,
+    "bottom_left": 31.4,
+    "bottom_right": 53.8
+   },
+   "corner_err_mean_px": 32.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.5,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 260.7,
+   "kpts": {
+    "top_left": [
+     490.4,
+     938.9
+    ],
+    "top_right": [
+     550.1,
+     936.8
+    ],
+    "bottom_left": [
+     198.3,
+     1215.5
+    ],
+    "bottom_right": [
+     456.4,
+     1236.9
+    ]
+   }
+  },
+  {
+   "frame": 155,
+   "conf": 0.853,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.89,
+   "board_max": 15.47,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 20.1,
+    "top_right": 28.5,
+    "bottom_left": 31.5,
+    "bottom_right": 51.0
+   },
+   "corner_err_mean_px": 32.8,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 52.6,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 257.9,
+   "kpts": {
+    "top_left": [
+     489.2,
+     940.3
+    ],
+    "top_right": [
+     547.3,
+     937.9
+    ],
+    "bottom_left": [
+     197.9,
+     1215.9
+    ],
+    "bottom_right": [
+     453.4,
+     1237.6
+    ]
+   }
+  },
+  {
+   "frame": 156,
+   "conf": 0.829,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.06,
+   "board_max": 13.46,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 19.2,
+    "top_right": 26.8,
+    "bottom_left": 29.5,
+    "bottom_right": 50.3
+   },
+   "corner_err_mean_px": 31.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 259.2,
+   "kpts": {
+    "top_left": [
+     491.0,
+     939.5
+    ],
+    "top_right": [
+     549.7,
+     935.5
+    ],
+    "bottom_left": [
+     194.5,
+     1217.1
+    ],
+    "bottom_right": [
+     453.0,
+     1235.9
+    ]
+   }
+  },
+  {
+   "frame": 157,
+   "conf": 0.822,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.04,
+   "board_max": 13.4,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 18.5,
+    "top_right": 26.9,
+    "bottom_left": 28.5,
+    "bottom_right": 49.2
+   },
+   "corner_err_mean_px": 30.8,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 52.7,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 259.2,
+   "kpts": {
+    "top_left": [
+     490.6,
+     940.4
+    ],
+    "top_right": [
+     549.4,
+     936.2
+    ],
+    "bottom_left": [
+     194.7,
+     1215.8
+    ],
+    "bottom_right": [
+     451.8,
+     1235.6
+    ]
+   }
+  },
+  {
+   "frame": 158,
+   "conf": 0.807,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.71,
+   "board_max": 15.1,
+   "within_1": 7.8,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 19.0,
+    "top_right": 27.6,
+    "bottom_left": 28.5,
+    "bottom_right": 49.3
+   },
+   "corner_err_mean_px": 31.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 52.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 259.3,
+   "kpts": {
+    "top_left": [
+     490.3,
+     940.2
+    ],
+    "top_right": [
+     548.6,
+     936.3
+    ],
+    "bottom_left": [
+     193.8,
+     1216.7
+    ],
+    "bottom_right": [
+     451.8,
+     1236.3
+    ]
+   }
+  },
+  {
+   "frame": 159,
+   "conf": 0.837,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.97,
+   "board_max": 15.68,
+   "within_1": 9.1,
+   "within_2": 16.9,
+   "corner_err_px": {
+    "top_left": 23.4,
+    "top_right": 28.6,
+    "bottom_left": 31.4,
+    "bottom_right": 50.5
+   },
+   "corner_err_mean_px": 33.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.8,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 257.4,
+   "kpts": {
+    "top_left": [
+     489.2,
+     937.3
+    ],
+    "top_right": [
+     547.6,
+     936.4
+    ],
+    "bottom_left": [
+     195.9,
+     1217.9
+    ],
+    "bottom_right": [
+     453.0,
+     1236.8
+    ]
+   }
+  },
+  {
+   "frame": 160,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.21,
+   "board_max": 16.26,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 25.5,
+    "top_right": 29.6,
+    "bottom_left": 28.8,
+    "bottom_right": 49.4
+   },
+   "corner_err_mean_px": 33.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 56.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 259.0,
+   "kpts": {
+    "top_left": [
+     488.3,
+     936.1
+    ],
+    "top_right": [
+     547.0,
+     935.3
+    ],
+    "bottom_left": [
+     192.7,
+     1218.3
+    ],
+    "bottom_right": [
+     452.3,
+     1235.7
+    ]
+   }
+  },
+  {
+   "frame": 161,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 7.69,
+   "board_max": 17.32,
+   "within_1": 7.8,
+   "within_2": 15.6,
+   "corner_err_px": {
+    "top_left": 26.4,
+    "top_right": 30.6,
+    "bottom_left": 28.6,
+    "bottom_right": 48.5
+   },
+   "corner_err_mean_px": 33.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 56.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 258.4,
+   "kpts": {
+    "top_left": [
+     487.4,
+     936.0
+    ],
+    "top_right": [
+     545.4,
+     937.3
+    ],
+    "bottom_left": [
+     195.4,
+     1215.5
+    ],
+    "bottom_right": [
+     451.2,
+     1236.4
+    ]
+   }
+  },
+  {
+   "frame": 162,
+   "conf": 0.825,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 8.85,
+   "board_max": 19.74,
+   "within_1": 7.8,
+   "within_2": 13.0,
+   "corner_err_px": {
+    "top_left": 29.5,
+    "top_right": 34.6,
+    "bottom_left": 28.8,
+    "bottom_right": 45.6
+   },
+   "corner_err_mean_px": 34.6,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 55.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 255.2,
+   "kpts": {
+    "top_left": [
+     485.7,
+     934.8
+    ],
+    "top_right": [
+     541.2,
+     937.7
+    ],
+    "bottom_left": [
+     196.4,
+     1214.8
+    ],
+    "bottom_right": [
+     448.7,
+     1235.1
+    ]
+   }
+  },
+  {
+   "frame": 163,
+   "conf": 0.811,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.8,
+   "board_max": 10.7,
+   "within_1": 9.1,
+   "within_2": 22.1,
+   "corner_err_px": {
+    "top_left": 3.2,
+    "top_right": 23.0,
+    "bottom_left": 24.8,
+    "bottom_right": 54.6
+   },
+   "corner_err_mean_px": 26.4,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 41.2,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 268.6,
+   "kpts": {
+    "top_left": [
+     508.2,
+     938.0
+    ],
+    "top_right": [
+     555.6,
+     929.0
+    ],
+    "bottom_left": [
+     187.8,
+     1218.1
+    ],
+    "bottom_right": [
+     459.3,
+     1230.0
+    ]
+   }
+  },
+  {
+   "frame": 164,
+   "conf": 0.823,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.88,
+   "board_max": 10.66,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 4.6,
+    "top_right": 23.1,
+    "bottom_left": 26.0,
+    "bottom_right": 57.1
+   },
+   "corner_err_mean_px": 27.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 42.4,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.7,
+   "kpts": {
+    "top_left": [
+     510.3,
+     935.0
+    ],
+    "top_right": [
+     556.2,
+     926.4
+    ],
+    "bottom_left": [
+     187.4,
+     1219.6
+    ],
+    "bottom_right": [
+     460.5,
+     1234.4
+    ]
+   }
+  },
+  {
+   "frame": 165,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.35,
+   "board_max": 12.21,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 5.5,
+    "top_right": 25.4,
+    "bottom_left": 23.7,
+    "bottom_right": 57.4
+   },
+   "corner_err_mean_px": 28.0,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 41.2,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 272.5,
+   "kpts": {
+    "top_left": [
+     507.5,
+     936.6
+    ],
+    "top_right": [
+     553.2,
+     929.0
+    ],
+    "bottom_left": [
+     185.6,
+     1219.1
+    ],
+    "bottom_right": [
+     461.2,
+     1233.8
+    ]
+   }
+  },
+  {
+   "frame": 166,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 4.73,
+   "board_max": 10.26,
+   "within_1": 10.4,
+   "within_2": 20.8,
+   "corner_err_px": {
+    "top_left": 3.8,
+    "top_right": 22.7,
+    "bottom_left": 26.4,
+    "bottom_right": 58.6
+   },
+   "corner_err_mean_px": 27.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 42.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 270.8,
+   "kpts": {
+    "top_left": [
+     509.5,
+     936.3
+    ],
+    "top_right": [
+     556.1,
+     928.1
+    ],
+    "bottom_left": [
+     186.6,
+     1220.8
+    ],
+    "bottom_right": [
+     461.8,
+     1235.3
+    ]
+   }
+  },
+  {
+   "frame": 167,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.71,
+   "board_max": 13.18,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 6.0,
+    "top_right": 26.6,
+    "bottom_left": 23.9,
+    "bottom_right": 56.1
+   },
+   "corner_err_mean_px": 28.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 40.3,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 271.0,
+   "kpts": {
+    "top_left": [
+     506.7,
+     936.9
+    ],
+    "top_right": [
+     552.4,
+     927.3
+    ],
+    "bottom_left": [
+     186.9,
+     1218.1
+    ],
+    "bottom_right": [
+     460.8,
+     1231.2
+    ]
+   }
+  },
+  {
+   "frame": 168,
+   "conf": 0.836,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.19,
+   "board_max": 14.52,
+   "within_1": 10.4,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 6.6,
+    "top_right": 28.0,
+    "bottom_left": 24.2,
+    "bottom_right": 55.3
+   },
+   "corner_err_mean_px": 28.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 39.6,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.8,
+   "kpts": {
+    "top_left": [
+     506.2,
+     936.8
+    ],
+    "top_right": [
+     551.0,
+     927.2
+    ],
+    "bottom_left": [
+     186.8,
+     1218.5
+    ],
+    "bottom_right": [
+     459.7,
+     1232.3
+    ]
+   }
+  },
+  {
+   "frame": 169,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 8.86,
+   "board_max": 19.78,
+   "within_1": 7.8,
+   "within_2": 13.0,
+   "corner_err_px": {
+    "top_left": 25.8,
+    "top_right": 34.1,
+    "bottom_left": 27.1,
+    "bottom_right": 44.6
+   },
+   "corner_err_mean_px": 32.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 52.6,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 256.0,
+   "kpts": {
+    "top_left": [
+     485.2,
+     938.8
+    ],
+    "top_right": [
+     542.1,
+     936.5
+    ],
+    "bottom_left": [
+     192.0,
+     1217.2
+    ],
+    "bottom_right": [
+     447.6,
+     1235.2
+    ]
+   }
+  },
+  {
+   "frame": 170,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 8.48,
+   "board_max": 18.95,
+   "within_1": 6.5,
+   "within_2": 14.3,
+   "corner_err_px": {
+    "top_left": 25.1,
+    "top_right": 33.1,
+    "bottom_left": 27.9,
+    "bottom_right": 46.2
+   },
+   "corner_err_mean_px": 33.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.0,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 256.8,
+   "kpts": {
+    "top_left": [
+     486.1,
+     938.6
+    ],
+    "top_right": [
+     543.1,
+     936.6
+    ],
+    "bottom_left": [
+     192.9,
+     1217.1
+    ],
+    "bottom_right": [
+     449.1,
+     1235.8
+    ]
+   }
+  },
+  {
+   "frame": 171,
+   "conf": 0.836,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.53,
+   "board_max": 15.65,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 5.9,
+    "top_right": 29.5,
+    "bottom_left": 23.5,
+    "bottom_right": 54.2
+   },
+   "corner_err_mean_px": 28.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 37.3,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.6,
+   "kpts": {
+    "top_left": [
+     505.7,
+     937.9
+    ],
+    "top_right": [
+     549.1,
+     928.4
+    ],
+    "bottom_left": [
+     186.3,
+     1218.2
+    ],
+    "bottom_right": [
+     457.9,
+     1234.6
+    ]
+   }
+  },
+  {
+   "frame": 172,
+   "conf": 0.835,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.89,
+   "board_max": 13.89,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 6.4,
+    "top_right": 29.2,
+    "bottom_left": 23.9,
+    "bottom_right": 54.4
+   },
+   "corner_err_mean_px": 28.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 38.1,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.2,
+   "kpts": {
+    "top_left": [
+     506.3,
+     937.0
+    ],
+    "top_right": [
+     549.7,
+     927.5
+    ],
+    "bottom_left": [
+     186.5,
+     1218.6
+    ],
+    "bottom_right": [
+     458.0,
+     1234.8
+    ]
+   }
+  },
+  {
+   "frame": 173,
+   "conf": 0.841,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.11,
+   "board_max": 14.31,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 7.2,
+    "top_right": 29.3,
+    "bottom_left": 24.2,
+    "bottom_right": 54.9
+   },
+   "corner_err_mean_px": 28.9,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 38.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 269.4,
+   "kpts": {
+    "top_left": [
+     506.0,
+     936.5
+    ],
+    "top_right": [
+     549.7,
+     927.4
+    ],
+    "bottom_left": [
+     186.4,
+     1218.9
+    ],
+    "bottom_right": [
+     458.7,
+     1234.1
+    ]
+   }
+  },
+  {
+   "frame": 174,
+   "conf": 0.837,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.07,
+   "board_max": 14.17,
+   "within_1": 9.1,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 7.9,
+    "top_right": 28.4,
+    "bottom_left": 22.1,
+    "bottom_right": 53.9
+   },
+   "corner_err_mean_px": 28.1,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 40.5,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 270.8,
+   "kpts": {
+    "top_left": [
+     506.0,
+     935.9
+    ],
+    "top_right": [
+     550.6,
+     927.3
+    ],
+    "bottom_left": [
+     184.7,
+     1218.3
+    ],
+    "bottom_right": [
+     458.1,
+     1232.5
+    ]
+   }
+  },
+  {
+   "frame": 175,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 5.83,
+   "board_max": 13.67,
+   "within_1": 10.4,
+   "within_2": 19.5,
+   "corner_err_px": {
+    "top_left": 6.7,
+    "top_right": 27.8,
+    "bottom_left": 22.1,
+    "bottom_right": 53.9
+   },
+   "corner_err_mean_px": 27.7,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 39.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 270.7,
+   "kpts": {
+    "top_left": [
+     505.9,
+     936.9
+    ],
+    "top_right": [
+     550.7,
+     929.1
+    ],
+    "bottom_left": [
+     185.3,
+     1217.8
+    ],
+    "bottom_right": [
+     457.8,
+     1233.2
+    ]
+   }
+  },
+  {
+   "frame": 176,
+   "conf": 0.834,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.95,
+   "board_max": 16.69,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 7.1,
+    "top_right": 30.8,
+    "bottom_left": 22.5,
+    "bottom_right": 50.7
+   },
+   "corner_err_mean_px": 27.8,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 37.2,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.1,
+   "kpts": {
+    "top_left": [
+     504.0,
+     938.3
+    ],
+    "top_right": [
+     547.1,
+     930.9
+    ],
+    "bottom_left": [
+     186.4,
+     1217.1
+    ],
+    "bottom_right": [
+     454.5,
+     1233.4
+    ]
+   }
+  },
+  {
+   "frame": 177,
+   "conf": 0.83,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 6.72,
+   "board_max": 16.16,
+   "within_1": 9.1,
+   "within_2": 18.2,
+   "corner_err_px": {
+    "top_left": 7.0,
+    "top_right": 30.8,
+    "bottom_left": 21.7,
+    "bottom_right": 50.4
+   },
+   "corner_err_mean_px": 27.5,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 37.2,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 267.7,
+   "kpts": {
+    "top_left": [
+     504.2,
+     938.2
+    ],
+    "top_right": [
+     547.3,
+     930.4
+    ],
+    "bottom_left": [
+     186.5,
+     1216.4
+    ],
+    "bottom_right": [
+     454.7,
+     1231.9
+    ]
+   }
+  },
+  {
+   "frame": 178,
+   "conf": 0.822,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 9.81,
+   "board_max": 21.68,
+   "within_1": 6.5,
+   "within_2": 14.3,
+   "corner_err_px": {
+    "top_left": 29.7,
+    "top_right": 36.8,
+    "bottom_left": 25.3,
+    "bottom_right": 41.3
+   },
+   "corner_err_mean_px": 33.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 254.7,
+   "kpts": {
+    "top_left": [
+     482.7,
+     937.4
+    ],
+    "top_right": [
+     539.1,
+     937.5
+    ],
+    "bottom_left": [
+     193.5,
+     1213.9
+    ],
+    "bottom_right": [
+     445.4,
+     1231.6
+    ]
+   }
+  },
+  {
+   "frame": 179,
+   "conf": 0.819,
+   "ok": true,
+   "fit_resid_px": 0.0,
+   "board_mae": 10.04,
+   "board_max": 22.14,
+   "within_1": 6.5,
+   "within_2": 13.0,
+   "corner_err_px": {
+    "top_left": 30.3,
+    "top_right": 37.4,
+    "bottom_left": 24.9,
+    "bottom_right": 40.6
+   },
+   "corner_err_mean_px": 33.3,
+   "top_width_true_px": 61,
+   "top_width_pred_px": 53.9,
+   "bottom_width_true_px": 237,
+   "bottom_width_pred_px": 254.3,
+   "kpts": {
+    "top_left": [
+     482.5,
+     937.0
+    ],
+    "top_right": [
+     538.7,
+     936.8
+    ],
+    "bottom_left": [
+     193.6,
+     1213.5
+    ],
+    "bottom_right": [
+     444.9,
+     1231.0
+    ]
+   }
+  }
+ ],
+ "throw": {
+  "n": 82,
+  "ok": 82,
+  "mean": 6.33,
+  "median": 6.44,
+  "max": 8.55,
+  "within_2": 0.0
+ },
+ "clean": {
+  "n": 74,
+  "ok": 74,
+  "mean": 6.46,
+  "median": 6.57,
+  "max": 8.55,
+  "within_2": 0.0
+ },
+ "occluded": {
+  "n": 46,
+  "ok": 46,
+  "mean": 5.76,
+  "median": 5.63,
+  "max": 6.83,
+  "within_2": 0.0
+ },
+ "all_frames": {
+  "n": 180,
+  "ok": 180,
+  "mean": 6.24,
+  "median": 6.21,
+  "max": 10.04,
+  "within_2": 0.0
+ },
+ "last": {
+  "frame": 128,
+  "board_mae": 5.82,
+  "corner_err_mean_px": 30.3
+ },
+ "prehit": {
+  "frame": 117,
+  "board_mae": 7.47,
+  "corner_err_mean_px": 33.3
+ },
+ "board_mae": 5.82,
+ "board_max": 13.58,
+ "within_1": 10.4,
+ "within_2": 19.5,
+ "corner_err_px": {
+  "top_left": 32.1,
+  "top_right": 21.2,
+  "bottom_left": 18.4,
+  "bottom_right": 49.3
+ },
+ "corner_err_mean_px": 30.3,
+ "top_width_true_px": 61,
+ "top_width_pred_px": 71.9,
+ "bottom_width_true_px": 237,
+ "bottom_width_pred_px": 270.2,
+ "frame": 128,
+ "ok": true,
+ "perframe_mae_mean": 6.33,
+ "perframe_mae_median": 6.44,
+ "perframe_within_2": 0.0
+}

@@ -1,0 +1,2517 @@
+{
+ "stem": "bowling_video",
+ "method": "seg640_all3",
+ "task": "segment",
+ "imgsz": 640,
+ "device": "cpu",
+ "select": "anchor",
+ "weights": "/private/tmp/claude-502/-Users-toka-code-toms-gym/d71975f3-301e-4fe0-bb28-8bbc7bdffcb2/scratchpad/runs/seg640_all3/weights/best.pt",
+ "frames_total": 417,
+ "frames_ok": 417,
+ "latency_ms_mean": 32.4,
+ "latency_ms_median": 31.1,
+ "per_frame": [
+  {
+   "frame": 0,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.89
+  },
+  {
+   "frame": 1,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.95
+  },
+  {
+   "frame": 2,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 2.01
+  },
+  {
+   "frame": 3,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 2.17
+  },
+  {
+   "frame": 4,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 2.04
+  },
+  {
+   "frame": 5,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 2.08
+  },
+  {
+   "frame": 6,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 7,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.91
+  },
+  {
+   "frame": 8,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 9,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.88
+  },
+  {
+   "frame": 10,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.92
+  },
+  {
+   "frame": 11,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 12,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.98
+  },
+  {
+   "frame": 13,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.92
+  },
+  {
+   "frame": 14,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.88
+  },
+  {
+   "frame": 15,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.84
+  },
+  {
+   "frame": 16,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.12
+  },
+  {
+   "frame": 17,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.84
+  },
+  {
+   "frame": 18,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.91
+  },
+  {
+   "frame": 19,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.17
+  },
+  {
+   "frame": 20,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.17
+  },
+  {
+   "frame": 21,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.18
+  },
+  {
+   "frame": 22,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.02
+  },
+  {
+   "frame": 23,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.23
+  },
+  {
+   "frame": 24,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.36
+  },
+  {
+   "frame": 25,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.07
+  },
+  {
+   "frame": 26,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.06
+  },
+  {
+   "frame": 27,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.23
+  },
+  {
+   "frame": 28,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.09
+  },
+  {
+   "frame": 29,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.11
+  },
+  {
+   "frame": 30,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.09
+  },
+  {
+   "frame": 31,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.09
+  },
+  {
+   "frame": 32,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.24
+  },
+  {
+   "frame": 33,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.18
+  },
+  {
+   "frame": 34,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.06
+  },
+  {
+   "frame": 35,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 2.04
+  },
+  {
+   "frame": 36,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.2
+  },
+  {
+   "frame": 37,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.16
+  },
+  {
+   "frame": 38,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.1
+  },
+  {
+   "frame": 39,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 2.02
+  },
+  {
+   "frame": 40,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.95
+  },
+  {
+   "frame": 41,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.94
+  },
+  {
+   "frame": 42,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.9
+  },
+  {
+   "frame": 43,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.94
+  },
+  {
+   "frame": 44,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.92
+  },
+  {
+   "frame": 45,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.97
+  },
+  {
+   "frame": 46,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.89
+  },
+  {
+   "frame": 47,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 48,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.42
+  },
+  {
+   "frame": 49,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.51
+  },
+  {
+   "frame": 50,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.43
+  },
+  {
+   "frame": 51,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.36
+  },
+  {
+   "frame": 52,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 53,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.39
+  },
+  {
+   "frame": 54,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.56
+  },
+  {
+   "frame": 55,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.39
+  },
+  {
+   "frame": 56,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 57,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 58,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 59,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 60,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.45
+  },
+  {
+   "frame": 61,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 62,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 63,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 64,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.35
+  },
+  {
+   "frame": 65,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.43
+  },
+  {
+   "frame": 66,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 67,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 68,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.43
+  },
+  {
+   "frame": 69,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.64
+  },
+  {
+   "frame": 70,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 71,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.73
+  },
+  {
+   "frame": 72,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.78
+  },
+  {
+   "frame": 73,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.61
+  },
+  {
+   "frame": 74,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.65
+  },
+  {
+   "frame": 75,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.65
+  },
+  {
+   "frame": 76,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 77,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 78,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 79,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 80,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 81,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.51
+  },
+  {
+   "frame": 82,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.54
+  },
+  {
+   "frame": 83,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 84,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.79
+  },
+  {
+   "frame": 85,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 86,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.55
+  },
+  {
+   "frame": 87,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 88,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.65
+  },
+  {
+   "frame": 89,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 90,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.85
+  },
+  {
+   "frame": 91,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.78
+  },
+  {
+   "frame": 92,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.76
+  },
+  {
+   "frame": 93,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.8
+  },
+  {
+   "frame": 94,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.76
+  },
+  {
+   "frame": 95,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.74
+  },
+  {
+   "frame": 96,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.75
+  },
+  {
+   "frame": 97,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.73
+  },
+  {
+   "frame": 98,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.74
+  },
+  {
+   "frame": 99,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 100,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 2.02
+  },
+  {
+   "frame": 101,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.85
+  },
+  {
+   "frame": 102,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.77
+  },
+  {
+   "frame": 103,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.86
+  },
+  {
+   "frame": 104,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.92
+  },
+  {
+   "frame": 105,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 106,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.65
+  },
+  {
+   "frame": 107,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.69
+  },
+  {
+   "frame": 108,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 109,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 110,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 111,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.63
+  },
+  {
+   "frame": 112,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.58
+  },
+  {
+   "frame": 113,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.58
+  },
+  {
+   "frame": 114,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 115,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 116,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 117,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 118,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.41
+  },
+  {
+   "frame": 119,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.35
+  },
+  {
+   "frame": 120,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 121,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.28
+  },
+  {
+   "frame": 122,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.29
+  },
+  {
+   "frame": 123,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.38
+  },
+  {
+   "frame": 124,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.42
+  },
+  {
+   "frame": 125,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.45
+  },
+  {
+   "frame": 126,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 127,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.54
+  },
+  {
+   "frame": 128,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 129,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 130,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.51
+  },
+  {
+   "frame": 131,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.29
+  },
+  {
+   "frame": 132,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.29
+  },
+  {
+   "frame": 133,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 134,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 135,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 136,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.37
+  },
+  {
+   "frame": 137,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.34
+  },
+  {
+   "frame": 138,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.34
+  },
+  {
+   "frame": 139,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.39
+  },
+  {
+   "frame": 140,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.35
+  },
+  {
+   "frame": 141,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.25
+  },
+  {
+   "frame": 142,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.3
+  },
+  {
+   "frame": 143,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.28
+  },
+  {
+   "frame": 144,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 145,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.55
+  },
+  {
+   "frame": 146,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 147,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 148,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.21
+  },
+  {
+   "frame": 149,
+   "conf": 0.965,
+   "ok": true,
+   "fit_resid_px": 1.33
+  },
+  {
+   "frame": 150,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.37
+  },
+  {
+   "frame": 151,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.33
+  },
+  {
+   "frame": 152,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.37
+  },
+  {
+   "frame": 153,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.14
+  },
+  {
+   "frame": 154,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.29
+  },
+  {
+   "frame": 155,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.34
+  },
+  {
+   "frame": 156,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.3
+  },
+  {
+   "frame": 157,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.34
+  },
+  {
+   "frame": 158,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.34
+  },
+  {
+   "frame": 159,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.36
+  },
+  {
+   "frame": 160,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.13
+  },
+  {
+   "frame": 161,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.11
+  },
+  {
+   "frame": 162,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.13
+  },
+  {
+   "frame": 163,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.36
+  },
+  {
+   "frame": 164,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.22
+  },
+  {
+   "frame": 165,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.31
+  },
+  {
+   "frame": 166,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 167,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 168,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.61
+  },
+  {
+   "frame": 169,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.63
+  },
+  {
+   "frame": 170,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.42
+  },
+  {
+   "frame": 171,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.61
+  },
+  {
+   "frame": 172,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.56
+  },
+  {
+   "frame": 173,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.72
+  },
+  {
+   "frame": 174,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 175,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.45
+  },
+  {
+   "frame": 176,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.39
+  },
+  {
+   "frame": 177,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.42
+  },
+  {
+   "frame": 178,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 179,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.56
+  },
+  {
+   "frame": 180,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.58
+  },
+  {
+   "frame": 181,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 182,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 183,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 184,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 185,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.51
+  },
+  {
+   "frame": 186,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.3
+  },
+  {
+   "frame": 187,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 188,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.54
+  },
+  {
+   "frame": 189,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 190,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.72
+  },
+  {
+   "frame": 191,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 192,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 193,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 194,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 195,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.44
+  },
+  {
+   "frame": 196,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.31
+  },
+  {
+   "frame": 197,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 198,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.36
+  },
+  {
+   "frame": 199,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 200,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 201,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 202,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 203,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 204,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.6
+  },
+  {
+   "frame": 205,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 206,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.9
+  },
+  {
+   "frame": 207,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.68
+  },
+  {
+   "frame": 208,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.82
+  },
+  {
+   "frame": 209,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.82
+  },
+  {
+   "frame": 210,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.94
+  },
+  {
+   "frame": 211,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.84
+  },
+  {
+   "frame": 212,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.79
+  },
+  {
+   "frame": 213,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.71
+  },
+  {
+   "frame": 214,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.81
+  },
+  {
+   "frame": 215,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.75
+  },
+  {
+   "frame": 216,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.63
+  },
+  {
+   "frame": 217,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.64
+  },
+  {
+   "frame": 218,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 219,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.56
+  },
+  {
+   "frame": 220,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 221,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.85
+  },
+  {
+   "frame": 222,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.61
+  },
+  {
+   "frame": 223,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.87
+  },
+  {
+   "frame": 224,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 225,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.63
+  },
+  {
+   "frame": 226,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 227,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.68
+  },
+  {
+   "frame": 228,
+   "conf": 0.973,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 229,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 230,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.71
+  },
+  {
+   "frame": 231,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.71
+  },
+  {
+   "frame": 232,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.68
+  },
+  {
+   "frame": 233,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.64
+  },
+  {
+   "frame": 234,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.71
+  },
+  {
+   "frame": 235,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.71
+  },
+  {
+   "frame": 236,
+   "conf": 0.972,
+   "ok": true,
+   "fit_resid_px": 1.63
+  },
+  {
+   "frame": 237,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.64
+  },
+  {
+   "frame": 238,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.65
+  },
+  {
+   "frame": 239,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.63
+  },
+  {
+   "frame": 240,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 241,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.64
+  },
+  {
+   "frame": 242,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 243,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.58
+  },
+  {
+   "frame": 244,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.55
+  },
+  {
+   "frame": 245,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.33
+  },
+  {
+   "frame": 246,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.55
+  },
+  {
+   "frame": 247,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 248,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 249,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.54
+  },
+  {
+   "frame": 250,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 251,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 252,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.51
+  },
+  {
+   "frame": 253,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.51
+  },
+  {
+   "frame": 254,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 255,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 256,
+   "conf": 0.971,
+   "ok": true,
+   "fit_resid_px": 1.34
+  },
+  {
+   "frame": 257,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.26
+  },
+  {
+   "frame": 258,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.33
+  },
+  {
+   "frame": 259,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.4
+  },
+  {
+   "frame": 260,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.24
+  },
+  {
+   "frame": 261,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.1
+  },
+  {
+   "frame": 262,
+   "conf": 0.97,
+   "ok": true,
+   "fit_resid_px": 1.01
+  },
+  {
+   "frame": 263,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.12
+  },
+  {
+   "frame": 264,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.0
+  },
+  {
+   "frame": 265,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.05
+  },
+  {
+   "frame": 266,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.07
+  },
+  {
+   "frame": 267,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 1.04
+  },
+  {
+   "frame": 268,
+   "conf": 0.969,
+   "ok": true,
+   "fit_resid_px": 0.93
+  },
+  {
+   "frame": 269,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 0.85
+  },
+  {
+   "frame": 270,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 0.79
+  },
+  {
+   "frame": 271,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 0.83
+  },
+  {
+   "frame": 272,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 0.96
+  },
+  {
+   "frame": 273,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 0.77
+  },
+  {
+   "frame": 274,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.2
+  },
+  {
+   "frame": 275,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.55
+  },
+  {
+   "frame": 276,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.16
+  },
+  {
+   "frame": 277,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 278,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.08
+  },
+  {
+   "frame": 279,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.12
+  },
+  {
+   "frame": 280,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.35
+  },
+  {
+   "frame": 281,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.2
+  },
+  {
+   "frame": 282,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.12
+  },
+  {
+   "frame": 283,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.46
+  },
+  {
+   "frame": 284,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.4
+  },
+  {
+   "frame": 285,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 286,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.28
+  },
+  {
+   "frame": 287,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.23
+  },
+  {
+   "frame": 288,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.48
+  },
+  {
+   "frame": 289,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.45
+  },
+  {
+   "frame": 290,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.38
+  },
+  {
+   "frame": 291,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.4
+  },
+  {
+   "frame": 292,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.33
+  },
+  {
+   "frame": 293,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.21
+  },
+  {
+   "frame": 294,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.26
+  },
+  {
+   "frame": 295,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.35
+  },
+  {
+   "frame": 296,
+   "conf": 0.968,
+   "ok": true,
+   "fit_resid_px": 1.19
+  },
+  {
+   "frame": 297,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 298,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.32
+  },
+  {
+   "frame": 299,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.54
+  },
+  {
+   "frame": 300,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.52
+  },
+  {
+   "frame": 301,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.41
+  },
+  {
+   "frame": 302,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.45
+  },
+  {
+   "frame": 303,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.3
+  },
+  {
+   "frame": 304,
+   "conf": 0.967,
+   "ok": true,
+   "fit_resid_px": 1.5
+  },
+  {
+   "frame": 305,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.53
+  },
+  {
+   "frame": 306,
+   "conf": 0.966,
+   "ok": true,
+   "fit_resid_px": 1.38
+  },
+  {
+   "frame": 307,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.43
+  },
+  {
+   "frame": 308,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.18
+  },
+  {
+   "frame": 309,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.37
+  },
+  {
+   "frame": 310,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.17
+  },
+  {
+   "frame": 311,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.59
+  },
+  {
+   "frame": 312,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 2.14
+  },
+  {
+   "frame": 313,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 2.4
+  },
+  {
+   "frame": 314,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.79
+  },
+  {
+   "frame": 315,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 316,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 317,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.55
+  },
+  {
+   "frame": 318,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.57
+  },
+  {
+   "frame": 319,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.77
+  },
+  {
+   "frame": 320,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.47
+  },
+  {
+   "frame": 321,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.72
+  },
+  {
+   "frame": 322,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 2.15
+  },
+  {
+   "frame": 323,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.83
+  },
+  {
+   "frame": 324,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.99
+  },
+  {
+   "frame": 325,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 2.41
+  },
+  {
+   "frame": 326,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 2.23
+  },
+  {
+   "frame": 327,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.93
+  },
+  {
+   "frame": 328,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.72
+  },
+  {
+   "frame": 329,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 330,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.86
+  },
+  {
+   "frame": 331,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 332,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.91
+  },
+  {
+   "frame": 333,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 334,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.34
+  },
+  {
+   "frame": 335,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 1.85
+  },
+  {
+   "frame": 336,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.65
+  },
+  {
+   "frame": 337,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.75
+  },
+  {
+   "frame": 338,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.51
+  },
+  {
+   "frame": 339,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.29
+  },
+  {
+   "frame": 340,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 1.93
+  },
+  {
+   "frame": 341,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.06
+  },
+  {
+   "frame": 342,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 2.03
+  },
+  {
+   "frame": 343,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.91
+  },
+  {
+   "frame": 344,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 2.11
+  },
+  {
+   "frame": 345,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 2.21
+  },
+  {
+   "frame": 346,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.78
+  },
+  {
+   "frame": 347,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.54
+  },
+  {
+   "frame": 348,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.37
+  },
+  {
+   "frame": 349,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 0.81
+  },
+  {
+   "frame": 350,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.88
+  },
+  {
+   "frame": 351,
+   "conf": 0.964,
+   "ok": true,
+   "fit_resid_px": 1.72
+  },
+  {
+   "frame": 352,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.24
+  },
+  {
+   "frame": 353,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.18
+  },
+  {
+   "frame": 354,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.22
+  },
+  {
+   "frame": 355,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.32
+  },
+  {
+   "frame": 356,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.6
+  },
+  {
+   "frame": 357,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 358,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.7
+  },
+  {
+   "frame": 359,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 360,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.67
+  },
+  {
+   "frame": 361,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 362,
+   "conf": 0.963,
+   "ok": true,
+   "fit_resid_px": 1.77
+  },
+  {
+   "frame": 363,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.7
+  },
+  {
+   "frame": 364,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.76
+  },
+  {
+   "frame": 365,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.56
+  },
+  {
+   "frame": 366,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.49
+  },
+  {
+   "frame": 367,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.62
+  },
+  {
+   "frame": 368,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 369,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.66
+  },
+  {
+   "frame": 370,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.78
+  },
+  {
+   "frame": 371,
+   "conf": 0.962,
+   "ok": true,
+   "fit_resid_px": 1.82
+  },
+  {
+   "frame": 372,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.72
+  },
+  {
+   "frame": 373,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.71
+  },
+  {
+   "frame": 374,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.81
+  },
+  {
+   "frame": 375,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.82
+  },
+  {
+   "frame": 376,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.86
+  },
+  {
+   "frame": 377,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.84
+  },
+  {
+   "frame": 378,
+   "conf": 0.961,
+   "ok": true,
+   "fit_resid_px": 1.87
+  },
+  {
+   "frame": 379,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.04
+  },
+  {
+   "frame": 380,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 1.96
+  },
+  {
+   "frame": 381,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.17
+  },
+  {
+   "frame": 382,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.1
+  },
+  {
+   "frame": 383,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.15
+  },
+  {
+   "frame": 384,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.37
+  },
+  {
+   "frame": 385,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.36
+  },
+  {
+   "frame": 386,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.19
+  },
+  {
+   "frame": 387,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.19
+  },
+  {
+   "frame": 388,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.16
+  },
+  {
+   "frame": 389,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.18
+  },
+  {
+   "frame": 390,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.23
+  },
+  {
+   "frame": 391,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.24
+  },
+  {
+   "frame": 392,
+   "conf": 0.96,
+   "ok": true,
+   "fit_resid_px": 2.17
+  },
+  {
+   "frame": 393,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.34
+  },
+  {
+   "frame": 394,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.31
+  },
+  {
+   "frame": 395,
+   "conf": 0.957,
+   "ok": true,
+   "fit_resid_px": 2.25
+  },
+  {
+   "frame": 396,
+   "conf": 0.957,
+   "ok": true,
+   "fit_resid_px": 2.23
+  },
+  {
+   "frame": 397,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.5
+  },
+  {
+   "frame": 398,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.54
+  },
+  {
+   "frame": 399,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.38
+  },
+  {
+   "frame": 400,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.39
+  },
+  {
+   "frame": 401,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.15
+  },
+  {
+   "frame": 402,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.07
+  },
+  {
+   "frame": 403,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.24
+  },
+  {
+   "frame": 404,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.09
+  },
+  {
+   "frame": 405,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.05
+  },
+  {
+   "frame": 406,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.28
+  },
+  {
+   "frame": 407,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.26
+  },
+  {
+   "frame": 408,
+   "conf": 0.959,
+   "ok": true,
+   "fit_resid_px": 2.14
+  },
+  {
+   "frame": 409,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.21
+  },
+  {
+   "frame": 410,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.23
+  },
+  {
+   "frame": 411,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 2.03
+  },
+  {
+   "frame": 412,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 1.88
+  },
+  {
+   "frame": 413,
+   "conf": 0.957,
+   "ok": true,
+   "fit_resid_px": 2.11
+  },
+  {
+   "frame": 414,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 1.94
+  },
+  {
+   "frame": 415,
+   "conf": 0.957,
+   "ok": true,
+   "fit_resid_px": 1.98
+  },
+  {
+   "frame": 416,
+   "conf": 0.958,
+   "ok": true,
+   "fit_resid_px": 1.76
+  }
+ ]
+}

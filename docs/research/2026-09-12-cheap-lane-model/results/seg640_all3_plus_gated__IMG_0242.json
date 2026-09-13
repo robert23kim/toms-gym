@@ -1,0 +1,7449 @@
+{
+ "stem": "IMG_0242",
+ "method": "seg640_all3_plus_gated",
+ "task": "segment",
+ "imgsz": 640,
+ "device": "cpu",
+ "select": "anchor",
+ "weights": "/private/tmp/claude-502/-Users-toka-code-toms-gym/d71975f3-301e-4fe0-bb28-8bbc7bdffcb2/scratchpad/runs/seg640_all3_plus/weights/best.pt",
+ "frames_total": 929,
+ "frames_ok": 929,
+ "latency_ms_mean": 31.2,
+ "latency_ms_median": 30.1,
+ "per_frame": [
+  {
+   "frame": 0,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 1,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 2,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 3,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 4,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 5,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 6,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 7,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 8,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 9,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 10,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 11,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 12,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 13,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 14,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 15,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 16,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 17,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 18,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 19,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 20,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 21,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 22,
+   "conf": 0.222,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 23,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 24,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.62,
+   "carried": true
+  },
+  {
+   "frame": 25,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 26,
+   "conf": 0.124,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 27,
+   "conf": 0.568,
+   "ok": true,
+   "fit_resid_px": 1.59,
+   "inlier_frac": 0.56,
+   "carried": false
+  },
+  {
+   "frame": 28,
+   "conf": 0.74,
+   "ok": true,
+   "fit_resid_px": 1.47,
+   "inlier_frac": 0.52,
+   "carried": false
+  },
+  {
+   "frame": 29,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.48,
+   "carried": false
+  },
+  {
+   "frame": 30,
+   "conf": 0.779,
+   "ok": true,
+   "fit_resid_px": 1.46,
+   "inlier_frac": 0.39,
+   "carried": false
+  },
+  {
+   "frame": 31,
+   "conf": 0.785,
+   "ok": true,
+   "fit_resid_px": 1.56,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 32,
+   "conf": 0.848,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 33,
+   "conf": 0.882,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.42,
+   "carried": false
+  },
+  {
+   "frame": 34,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 35,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 36,
+   "conf": 0.869,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.37,
+   "carried": false
+  },
+  {
+   "frame": 37,
+   "conf": 0.811,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.38,
+   "carried": false
+  },
+  {
+   "frame": 38,
+   "conf": 0.809,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.39,
+   "carried": false
+  },
+  {
+   "frame": 39,
+   "conf": 0.834,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.44,
+   "carried": false
+  },
+  {
+   "frame": 40,
+   "conf": 0.827,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 41,
+   "conf": 0.82,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 42,
+   "conf": 0.834,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 43,
+   "conf": 0.825,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 44,
+   "conf": 0.827,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.4,
+   "carried": false
+  },
+  {
+   "frame": 45,
+   "conf": 0.831,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.39,
+   "carried": false
+  },
+  {
+   "frame": 46,
+   "conf": 0.811,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 47,
+   "conf": 0.787,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.42,
+   "carried": false
+  },
+  {
+   "frame": 48,
+   "conf": 0.759,
+   "ok": true,
+   "fit_resid_px": 1.38,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 49,
+   "conf": 0.735,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 50,
+   "conf": 0.663,
+   "ok": true,
+   "fit_resid_px": 1.45,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 51,
+   "conf": 0.598,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 52,
+   "conf": 0.491,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 53,
+   "conf": 0.495,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.37,
+   "carried": false
+  },
+  {
+   "frame": 54,
+   "conf": 0.506,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.37,
+   "carried": false
+  },
+  {
+   "frame": 55,
+   "conf": 0.431,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.38,
+   "carried": false
+  },
+  {
+   "frame": 56,
+   "conf": 0.522,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.36,
+   "carried": false
+  },
+  {
+   "frame": 57,
+   "conf": 0.468,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.37,
+   "carried": false
+  },
+  {
+   "frame": 58,
+   "conf": 0.496,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.38,
+   "carried": false
+  },
+  {
+   "frame": 59,
+   "conf": 0.501,
+   "ok": true,
+   "fit_resid_px": 1.08,
+   "inlier_frac": 0.39,
+   "carried": false
+  },
+  {
+   "frame": 60,
+   "conf": 0.42,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.44,
+   "carried": false
+  },
+  {
+   "frame": 61,
+   "conf": 0.473,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.44,
+   "carried": false
+  },
+  {
+   "frame": 62,
+   "conf": 0.471,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.45,
+   "carried": false
+  },
+  {
+   "frame": 63,
+   "conf": 0.559,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 64,
+   "conf": 0.511,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 65,
+   "conf": 0.523,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 66,
+   "conf": 0.444,
+   "ok": true,
+   "fit_resid_px": 1.08,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 67,
+   "conf": 0.451,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.39,
+   "carried": false
+  },
+  {
+   "frame": 68,
+   "conf": 0.363,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.39,
+   "carried": false
+  },
+  {
+   "frame": 69,
+   "conf": 0.233,
+   "ok": true,
+   "fit_resid_px": 1.08,
+   "inlier_frac": 0.42,
+   "carried": false
+  },
+  {
+   "frame": 70,
+   "conf": 0.162,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 71,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 72,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 73,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 74,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 75,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 76,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 77,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 78,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 79,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 80,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 81,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 82,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 83,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": true
+  },
+  {
+   "frame": 84,
+   "conf": 0.144,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 85,
+   "conf": 0.25,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 86,
+   "conf": 0.267,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.41,
+   "carried": false
+  },
+  {
+   "frame": 87,
+   "conf": 0.335,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.43,
+   "carried": false
+  },
+  {
+   "frame": 88,
+   "conf": 0.352,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.4,
+   "carried": false
+  },
+  {
+   "frame": 89,
+   "conf": 0.335,
+   "ok": true,
+   "fit_resid_px": 1.38,
+   "inlier_frac": 0.56,
+   "carried": false
+  },
+  {
+   "frame": 90,
+   "conf": 0.349,
+   "ok": true,
+   "fit_resid_px": 1.41,
+   "inlier_frac": 0.53,
+   "carried": false
+  },
+  {
+   "frame": 91,
+   "conf": 0.309,
+   "ok": true,
+   "fit_resid_px": 1.38,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 92,
+   "conf": 0.35,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 93,
+   "conf": 0.326,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.52,
+   "carried": false
+  },
+  {
+   "frame": 94,
+   "conf": 0.318,
+   "ok": true,
+   "fit_resid_px": 1.01,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 95,
+   "conf": 0.27,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.48,
+   "carried": false
+  },
+  {
+   "frame": 96,
+   "conf": 0.239,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 97,
+   "conf": 0.251,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.49,
+   "carried": false
+  },
+  {
+   "frame": 98,
+   "conf": 0.261,
+   "ok": true,
+   "fit_resid_px": 1.03,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 99,
+   "conf": 0.316,
+   "ok": true,
+   "fit_resid_px": 1.0,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 100,
+   "conf": 0.288,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 101,
+   "conf": 0.267,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 102,
+   "conf": 0.243,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.48,
+   "carried": false
+  },
+  {
+   "frame": 103,
+   "conf": 0.24,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 104,
+   "conf": 0.303,
+   "ok": true,
+   "fit_resid_px": 1.56,
+   "inlier_frac": 0.44,
+   "carried": false
+  },
+  {
+   "frame": 105,
+   "conf": 0.435,
+   "ok": true,
+   "fit_resid_px": 1.47,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 106,
+   "conf": 0.42,
+   "ok": true,
+   "fit_resid_px": 1.65,
+   "inlier_frac": 0.45,
+   "carried": false
+  },
+  {
+   "frame": 107,
+   "conf": 0.362,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 108,
+   "conf": 0.423,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.44,
+   "carried": false
+  },
+  {
+   "frame": 109,
+   "conf": 0.406,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 110,
+   "conf": 0.386,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 111,
+   "conf": 0.338,
+   "ok": true,
+   "fit_resid_px": 1.22,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 112,
+   "conf": 0.303,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.48,
+   "carried": false
+  },
+  {
+   "frame": 113,
+   "conf": 0.393,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.55,
+   "carried": false
+  },
+  {
+   "frame": 114,
+   "conf": 0.475,
+   "ok": true,
+   "fit_resid_px": 1.39,
+   "inlier_frac": 0.53,
+   "carried": false
+  },
+  {
+   "frame": 115,
+   "conf": 0.448,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.51,
+   "carried": false
+  },
+  {
+   "frame": 116,
+   "conf": 0.399,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 117,
+   "conf": 0.404,
+   "ok": true,
+   "fit_resid_px": 1.44,
+   "inlier_frac": 0.48,
+   "carried": false
+  },
+  {
+   "frame": 118,
+   "conf": 0.365,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.47,
+   "carried": false
+  },
+  {
+   "frame": 119,
+   "conf": 0.361,
+   "ok": true,
+   "fit_resid_px": 1.45,
+   "inlier_frac": 0.52,
+   "carried": false
+  },
+  {
+   "frame": 120,
+   "conf": 0.277,
+   "ok": true,
+   "fit_resid_px": 1.3,
+   "inlier_frac": 0.53,
+   "carried": false
+  },
+  {
+   "frame": 121,
+   "conf": 0.334,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.52,
+   "carried": false
+  },
+  {
+   "frame": 122,
+   "conf": 0.357,
+   "ok": true,
+   "fit_resid_px": 1.36,
+   "inlier_frac": 0.53,
+   "carried": false
+  },
+  {
+   "frame": 123,
+   "conf": 0.313,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.55,
+   "carried": false
+  },
+  {
+   "frame": 124,
+   "conf": 0.217,
+   "ok": true,
+   "fit_resid_px": 1.37,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 125,
+   "conf": 0.269,
+   "ok": true,
+   "fit_resid_px": 1.47,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 126,
+   "conf": 0.213,
+   "ok": true,
+   "fit_resid_px": 1.5,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 127,
+   "conf": 0.206,
+   "ok": true,
+   "fit_resid_px": 1.37,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 128,
+   "conf": 0.249,
+   "ok": true,
+   "fit_resid_px": 1.51,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 129,
+   "conf": 0.252,
+   "ok": true,
+   "fit_resid_px": 1.39,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 130,
+   "conf": 0.214,
+   "ok": true,
+   "fit_resid_px": 1.41,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 131,
+   "conf": 0.209,
+   "ok": true,
+   "fit_resid_px": 1.39,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 132,
+   "conf": 0.275,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 133,
+   "conf": 0.255,
+   "ok": true,
+   "fit_resid_px": 1.41,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 134,
+   "conf": 0.226,
+   "ok": true,
+   "fit_resid_px": 1.49,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 135,
+   "conf": 0.398,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 136,
+   "conf": 0.539,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 137,
+   "conf": 0.477,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 138,
+   "conf": 0.418,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.67,
+   "carried": false
+  },
+  {
+   "frame": 139,
+   "conf": 0.428,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 140,
+   "conf": 0.407,
+   "ok": true,
+   "fit_resid_px": 1.08,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 141,
+   "conf": 0.452,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.7,
+   "carried": false
+  },
+  {
+   "frame": 142,
+   "conf": 0.482,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 143,
+   "conf": 0.463,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 144,
+   "conf": 0.467,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 145,
+   "conf": 0.462,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 146,
+   "conf": 0.52,
+   "ok": true,
+   "fit_resid_px": 0.74,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 147,
+   "conf": 0.653,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 148,
+   "conf": 0.648,
+   "ok": true,
+   "fit_resid_px": 0.64,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 149,
+   "conf": 0.661,
+   "ok": true,
+   "fit_resid_px": 0.75,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 150,
+   "conf": 0.663,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 151,
+   "conf": 0.635,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 152,
+   "conf": 0.703,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 153,
+   "conf": 0.703,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 154,
+   "conf": 0.712,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.84,
+   "carried": false
+  },
+  {
+   "frame": 155,
+   "conf": 0.705,
+   "ok": true,
+   "fit_resid_px": 1.17,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 156,
+   "conf": 0.687,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.78,
+   "carried": false
+  },
+  {
+   "frame": 157,
+   "conf": 0.671,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.76,
+   "carried": false
+  },
+  {
+   "frame": 158,
+   "conf": 0.651,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 159,
+   "conf": 0.637,
+   "ok": true,
+   "fit_resid_px": 1.2,
+   "inlier_frac": 0.66,
+   "carried": false
+  },
+  {
+   "frame": 160,
+   "conf": 0.68,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 161,
+   "conf": 0.714,
+   "ok": true,
+   "fit_resid_px": 0.85,
+   "inlier_frac": 0.57,
+   "carried": false
+  },
+  {
+   "frame": 162,
+   "conf": 0.725,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 163,
+   "conf": 0.738,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.74,
+   "carried": false
+  },
+  {
+   "frame": 164,
+   "conf": 0.729,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 165,
+   "conf": 0.729,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 166,
+   "conf": 0.721,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 167,
+   "conf": 0.688,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.83,
+   "carried": false
+  },
+  {
+   "frame": 168,
+   "conf": 0.691,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 169,
+   "conf": 0.692,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 170,
+   "conf": 0.681,
+   "ok": true,
+   "fit_resid_px": 1.27,
+   "inlier_frac": 0.76,
+   "carried": false
+  },
+  {
+   "frame": 171,
+   "conf": 0.694,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 172,
+   "conf": 0.707,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.66,
+   "carried": false
+  },
+  {
+   "frame": 173,
+   "conf": 0.72,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 174,
+   "conf": 0.698,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.85,
+   "carried": false
+  },
+  {
+   "frame": 175,
+   "conf": 0.713,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 176,
+   "conf": 0.697,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.87,
+   "carried": false
+  },
+  {
+   "frame": 177,
+   "conf": 0.697,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.88,
+   "carried": false
+  },
+  {
+   "frame": 178,
+   "conf": 0.663,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.83,
+   "carried": false
+  },
+  {
+   "frame": 179,
+   "conf": 0.7,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.81,
+   "carried": false
+  },
+  {
+   "frame": 180,
+   "conf": 0.691,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.86,
+   "carried": false
+  },
+  {
+   "frame": 181,
+   "conf": 0.702,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.84,
+   "carried": false
+  },
+  {
+   "frame": 182,
+   "conf": 0.726,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.82,
+   "carried": false
+  },
+  {
+   "frame": 183,
+   "conf": 0.708,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.88,
+   "carried": false
+  },
+  {
+   "frame": 184,
+   "conf": 0.707,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.87,
+   "carried": false
+  },
+  {
+   "frame": 185,
+   "conf": 0.706,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.85,
+   "carried": false
+  },
+  {
+   "frame": 186,
+   "conf": 0.704,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.82,
+   "carried": false
+  },
+  {
+   "frame": 187,
+   "conf": 0.695,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 188,
+   "conf": 0.717,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 189,
+   "conf": 0.678,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.74,
+   "carried": false
+  },
+  {
+   "frame": 190,
+   "conf": 0.653,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 191,
+   "conf": 0.647,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.67,
+   "carried": false
+  },
+  {
+   "frame": 192,
+   "conf": 0.651,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.7,
+   "carried": false
+  },
+  {
+   "frame": 193,
+   "conf": 0.628,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.7,
+   "carried": false
+  },
+  {
+   "frame": 194,
+   "conf": 0.538,
+   "ok": true,
+   "fit_resid_px": 1.39,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 195,
+   "conf": 0.509,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.66,
+   "carried": false
+  },
+  {
+   "frame": 196,
+   "conf": 0.484,
+   "ok": true,
+   "fit_resid_px": 1.36,
+   "inlier_frac": 0.74,
+   "carried": false
+  },
+  {
+   "frame": 197,
+   "conf": 0.444,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 198,
+   "conf": 0.377,
+   "ok": true,
+   "fit_resid_px": 1.2,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 199,
+   "conf": 0.35,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 200,
+   "conf": 0.365,
+   "ok": true,
+   "fit_resid_px": 1.01,
+   "inlier_frac": 0.57,
+   "carried": false
+  },
+  {
+   "frame": 201,
+   "conf": 0.351,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 202,
+   "conf": 0.325,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 203,
+   "conf": 0.402,
+   "ok": true,
+   "fit_resid_px": 1.17,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 204,
+   "conf": 0.349,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 205,
+   "conf": 0.289,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 206,
+   "conf": 0.293,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 207,
+   "conf": 0.344,
+   "ok": true,
+   "fit_resid_px": 1.0,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 208,
+   "conf": 0.383,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.57,
+   "carried": false
+  },
+  {
+   "frame": 209,
+   "conf": 0.38,
+   "ok": true,
+   "fit_resid_px": 1.02,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 210,
+   "conf": 0.275,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.56,
+   "carried": false
+  },
+  {
+   "frame": 211,
+   "conf": 0.257,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 212,
+   "conf": 0.274,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.65,
+   "carried": false
+  },
+  {
+   "frame": 213,
+   "conf": 0.344,
+   "ok": true,
+   "fit_resid_px": 1.3,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 214,
+   "conf": 0.293,
+   "ok": true,
+   "fit_resid_px": 1.27,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 215,
+   "conf": 0.292,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 216,
+   "conf": 0.286,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 217,
+   "conf": 0.215,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 218,
+   "conf": 0.156,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 219,
+   "conf": 0.113,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.7,
+   "carried": false
+  },
+  {
+   "frame": 220,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.7,
+   "carried": true
+  },
+  {
+   "frame": 221,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.7,
+   "carried": true
+  },
+  {
+   "frame": 222,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.7,
+   "carried": true
+  },
+  {
+   "frame": 223,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.66,
+   "carried": true
+  },
+  {
+   "frame": 224,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.66,
+   "carried": true
+  },
+  {
+   "frame": 225,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.66,
+   "carried": true
+  },
+  {
+   "frame": 226,
+   "conf": 0.11,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.66,
+   "carried": false
+  },
+  {
+   "frame": 227,
+   "conf": 0.114,
+   "ok": true,
+   "fit_resid_px": 1.22,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 228,
+   "conf": 0.128,
+   "ok": true,
+   "fit_resid_px": 1.25,
+   "inlier_frac": 0.55,
+   "carried": false
+  },
+  {
+   "frame": 229,
+   "conf": 0.183,
+   "ok": true,
+   "fit_resid_px": 1.46,
+   "inlier_frac": 0.57,
+   "carried": false
+  },
+  {
+   "frame": 230,
+   "conf": 0.247,
+   "ok": true,
+   "fit_resid_px": 1.25,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 231,
+   "conf": 0.278,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 232,
+   "conf": 0.337,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 233,
+   "conf": 0.308,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.65,
+   "carried": false
+  },
+  {
+   "frame": 234,
+   "conf": 0.281,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 235,
+   "conf": 0.284,
+   "ok": true,
+   "fit_resid_px": 1.16,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 236,
+   "conf": 0.326,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 237,
+   "conf": 0.324,
+   "ok": true,
+   "fit_resid_px": 1.3,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 238,
+   "conf": 0.365,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 239,
+   "conf": 0.359,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 240,
+   "conf": 0.244,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 241,
+   "conf": 0.264,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 242,
+   "conf": 0.308,
+   "ok": true,
+   "fit_resid_px": 1.08,
+   "inlier_frac": 0.65,
+   "carried": false
+  },
+  {
+   "frame": 243,
+   "conf": 0.322,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 0.67,
+   "carried": false
+  },
+  {
+   "frame": 244,
+   "conf": 0.323,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 245,
+   "conf": 0.318,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 246,
+   "conf": 0.244,
+   "ok": true,
+   "fit_resid_px": 1.08,
+   "inlier_frac": 0.67,
+   "carried": false
+  },
+  {
+   "frame": 247,
+   "conf": 0.199,
+   "ok": true,
+   "fit_resid_px": 1.16,
+   "inlier_frac": 0.65,
+   "carried": false
+  },
+  {
+   "frame": 248,
+   "conf": 0.197,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 249,
+   "conf": 0.299,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 250,
+   "conf": 0.28,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 251,
+   "conf": 0.252,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.69,
+   "carried": false
+  },
+  {
+   "frame": 252,
+   "conf": 0.174,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 253,
+   "conf": 0.206,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 254,
+   "conf": 0.216,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.73,
+   "carried": false
+  },
+  {
+   "frame": 255,
+   "conf": 0.196,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.7,
+   "carried": false
+  },
+  {
+   "frame": 256,
+   "conf": 0.163,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.65,
+   "carried": false
+  },
+  {
+   "frame": 257,
+   "conf": 0.236,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.66,
+   "carried": false
+  },
+  {
+   "frame": 258,
+   "conf": 0.207,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 259,
+   "conf": 0.215,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.65,
+   "carried": false
+  },
+  {
+   "frame": 260,
+   "conf": 0.193,
+   "ok": true,
+   "fit_resid_px": 1.17,
+   "inlier_frac": 0.66,
+   "carried": false
+  },
+  {
+   "frame": 261,
+   "conf": 0.232,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 262,
+   "conf": 0.252,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.56,
+   "carried": false
+  },
+  {
+   "frame": 263,
+   "conf": 0.225,
+   "ok": true,
+   "fit_resid_px": 0.95,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 264,
+   "conf": 0.152,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.68,
+   "carried": false
+  },
+  {
+   "frame": 265,
+   "conf": 0.161,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.67,
+   "carried": false
+  },
+  {
+   "frame": 266,
+   "conf": 0.204,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 267,
+   "conf": 0.174,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.64,
+   "carried": false
+  },
+  {
+   "frame": 268,
+   "conf": 0.194,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 269,
+   "conf": 0.178,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 270,
+   "conf": 0.217,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 271,
+   "conf": 0.362,
+   "ok": true,
+   "fit_resid_px": 1.02,
+   "inlier_frac": 0.56,
+   "carried": false
+  },
+  {
+   "frame": 272,
+   "conf": 0.401,
+   "ok": true,
+   "fit_resid_px": 1.01,
+   "inlier_frac": 0.46,
+   "carried": false
+  },
+  {
+   "frame": 273,
+   "conf": 0.379,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.51,
+   "carried": false
+  },
+  {
+   "frame": 274,
+   "conf": 0.326,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.45,
+   "carried": false
+  },
+  {
+   "frame": 275,
+   "conf": 0.268,
+   "ok": true,
+   "fit_resid_px": 1.17,
+   "inlier_frac": 0.57,
+   "carried": false
+  },
+  {
+   "frame": 276,
+   "conf": 0.279,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.54,
+   "carried": false
+  },
+  {
+   "frame": 277,
+   "conf": 0.261,
+   "ok": true,
+   "fit_resid_px": 1.16,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 278,
+   "conf": 0.236,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 279,
+   "conf": 0.252,
+   "ok": true,
+   "fit_resid_px": 1.16,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 280,
+   "conf": 0.271,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 281,
+   "conf": 0.257,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.8,
+   "carried": false
+  },
+  {
+   "frame": 282,
+   "conf": 0.268,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.7,
+   "carried": false
+  },
+  {
+   "frame": 283,
+   "conf": 0.287,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 284,
+   "conf": 0.212,
+   "ok": true,
+   "fit_resid_px": 1.22,
+   "inlier_frac": 0.57,
+   "carried": false
+  },
+  {
+   "frame": 285,
+   "conf": 0.228,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.52,
+   "carried": false
+  },
+  {
+   "frame": 286,
+   "conf": 0.13,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 287,
+   "conf": 0.106,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 288,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 289,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 290,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 291,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 292,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 293,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 294,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 295,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 296,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 297,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 298,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 299,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 300,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 301,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 302,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 303,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 304,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 305,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 306,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 307,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 308,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 309,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 310,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 311,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 312,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 313,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 314,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 315,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 316,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 317,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 318,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 319,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 320,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 321,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 322,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 323,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 324,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 325,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 326,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 327,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 328,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 329,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 330,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 331,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 332,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 333,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 334,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 335,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 336,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 337,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 338,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 339,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 340,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 341,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 342,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 343,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 344,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 345,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 346,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 347,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 348,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 349,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 350,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 351,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 352,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 353,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 354,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 355,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.63,
+   "carried": true
+  },
+  {
+   "frame": 356,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 357,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 358,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 359,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 360,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 361,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 362,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 363,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 364,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 365,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 366,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 367,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 368,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 369,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 370,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 371,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 372,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 373,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 374,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 375,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 376,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 377,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 378,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 379,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 380,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 381,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 382,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 383,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 384,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 385,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 386,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 387,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 388,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 389,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 390,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 391,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 392,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 393,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 394,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 395,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 396,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 397,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 398,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 399,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 400,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 401,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 402,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 403,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 404,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 405,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 406,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 407,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 408,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 409,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 410,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 411,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 412,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 413,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 414,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 415,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 416,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 417,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 418,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 419,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 420,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 421,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 422,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": true
+  },
+  {
+   "frame": 423,
+   "conf": 0.34,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.61,
+   "carried": false
+  },
+  {
+   "frame": 424,
+   "conf": 0.576,
+   "ok": true,
+   "fit_resid_px": 1.46,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 425,
+   "conf": 0.689,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.6,
+   "carried": false
+  },
+  {
+   "frame": 426,
+   "conf": 0.607,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.62,
+   "carried": false
+  },
+  {
+   "frame": 427,
+   "conf": 0.356,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.63,
+   "carried": false
+  },
+  {
+   "frame": 428,
+   "conf": 0.447,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.55,
+   "carried": false
+  },
+  {
+   "frame": 429,
+   "conf": 0.374,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 430,
+   "conf": 0.651,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.75,
+   "carried": false
+  },
+  {
+   "frame": 431,
+   "conf": 0.756,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 432,
+   "conf": 0.471,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.59,
+   "carried": false
+  },
+  {
+   "frame": 433,
+   "conf": 0.491,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.56,
+   "carried": false
+  },
+  {
+   "frame": 434,
+   "conf": 0.399,
+   "ok": true,
+   "fit_resid_px": 1.26,
+   "inlier_frac": 0.58,
+   "carried": false
+  },
+  {
+   "frame": 435,
+   "conf": 0.118,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": false
+  },
+  {
+   "frame": 436,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 437,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 438,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 439,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 440,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 441,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 442,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 443,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 444,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 445,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 446,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 447,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 448,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 449,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 450,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 451,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 452,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 453,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 454,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 455,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 456,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 457,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 458,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 459,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 460,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 461,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 462,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 463,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 464,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 465,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 466,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 467,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.5,
+   "carried": true
+  },
+  {
+   "frame": 468,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 469,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 470,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 471,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 472,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 473,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 474,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 475,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 476,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 477,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 478,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 479,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 480,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 481,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 482,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 483,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 484,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 485,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 486,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 487,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 488,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 489,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 490,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 491,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 492,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 493,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 494,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 495,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 496,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 497,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 498,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": true
+  },
+  {
+   "frame": 499,
+   "conf": 0.112,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 0.83,
+   "carried": false
+  },
+  {
+   "frame": 500,
+   "conf": 0.129,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.86,
+   "carried": false
+  },
+  {
+   "frame": 501,
+   "conf": 0.132,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.85,
+   "carried": false
+  },
+  {
+   "frame": 502,
+   "conf": 0.132,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.85,
+   "carried": false
+  },
+  {
+   "frame": 503,
+   "conf": 0.116,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.84,
+   "carried": false
+  },
+  {
+   "frame": 504,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 505,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 506,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 507,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 508,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 509,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 510,
+   "conf": 0.131,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": false
+  },
+  {
+   "frame": 511,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 512,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 513,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 514,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 515,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 516,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.84,
+   "carried": true
+  },
+  {
+   "frame": 517,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.55,
+   "inlier_frac": 0.71,
+   "carried": true
+  },
+  {
+   "frame": 518,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.55,
+   "inlier_frac": 0.71,
+   "carried": true
+  },
+  {
+   "frame": 519,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.55,
+   "inlier_frac": 0.71,
+   "carried": true
+  },
+  {
+   "frame": 520,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.55,
+   "inlier_frac": 0.71,
+   "carried": true
+  },
+  {
+   "frame": 521,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.55,
+   "inlier_frac": 0.71,
+   "carried": true
+  },
+  {
+   "frame": 522,
+   "conf": 0.131,
+   "ok": true,
+   "fit_resid_px": 1.55,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 523,
+   "conf": 0.18,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 524,
+   "conf": 0.139,
+   "ok": true,
+   "fit_resid_px": 1.25,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 525,
+   "conf": 0.212,
+   "ok": true,
+   "fit_resid_px": 1.39,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 526,
+   "conf": 0.255,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.87,
+   "carried": false
+  },
+  {
+   "frame": 527,
+   "conf": 0.47,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.89,
+   "carried": false
+  },
+  {
+   "frame": 528,
+   "conf": 0.219,
+   "ok": true,
+   "fit_resid_px": 1.5,
+   "inlier_frac": 0.81,
+   "carried": false
+  },
+  {
+   "frame": 529,
+   "conf": 0.308,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.73,
+   "carried": false
+  },
+  {
+   "frame": 530,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.73,
+   "carried": true
+  },
+  {
+   "frame": 531,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.73,
+   "carried": true
+  },
+  {
+   "frame": 532,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.73,
+   "carried": true
+  },
+  {
+   "frame": 533,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.42,
+   "inlier_frac": 0.73,
+   "carried": true
+  },
+  {
+   "frame": 534,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.98,
+   "carried": true
+  },
+  {
+   "frame": 535,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.98,
+   "carried": true
+  },
+  {
+   "frame": 536,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.98,
+   "carried": true
+  },
+  {
+   "frame": 537,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.98,
+   "carried": true
+  },
+  {
+   "frame": 538,
+   "conf": 0.12,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 539,
+   "conf": 0.329,
+   "ok": true,
+   "fit_resid_px": 1.27,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 540,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.27,
+   "inlier_frac": 0.98,
+   "carried": true
+  },
+  {
+   "frame": 541,
+   "conf": 0.181,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 542,
+   "conf": 0.21,
+   "ok": true,
+   "fit_resid_px": 1.44,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 543,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.44,
+   "inlier_frac": 0.92,
+   "carried": true
+  },
+  {
+   "frame": 544,
+   "conf": 0.116,
+   "ok": true,
+   "fit_resid_px": 1.47,
+   "inlier_frac": 0.89,
+   "carried": false
+  },
+  {
+   "frame": 545,
+   "conf": 0.14,
+   "ok": true,
+   "fit_resid_px": 1.46,
+   "inlier_frac": 0.89,
+   "carried": false
+  },
+  {
+   "frame": 546,
+   "conf": 0.105,
+   "ok": true,
+   "fit_resid_px": 1.45,
+   "inlier_frac": 0.85,
+   "carried": false
+  },
+  {
+   "frame": 547,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.45,
+   "inlier_frac": 0.85,
+   "carried": true
+  },
+  {
+   "frame": 548,
+   "conf": 0.0,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.91,
+   "carried": true
+  },
+  {
+   "frame": 549,
+   "conf": 0.266,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 550,
+   "conf": 0.427,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 551,
+   "conf": 0.706,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 552,
+   "conf": 0.776,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 553,
+   "conf": 0.79,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 554,
+   "conf": 0.83,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 555,
+   "conf": 0.786,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 556,
+   "conf": 0.763,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 557,
+   "conf": 0.783,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 558,
+   "conf": 0.841,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 559,
+   "conf": 0.845,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 560,
+   "conf": 0.827,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 561,
+   "conf": 0.886,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 562,
+   "conf": 0.909,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 563,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 564,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 565,
+   "conf": 0.822,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 566,
+   "conf": 0.703,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 567,
+   "conf": 0.767,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 568,
+   "conf": 0.826,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 569,
+   "conf": 0.798,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 570,
+   "conf": 0.801,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 571,
+   "conf": 0.89,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 572,
+   "conf": 0.887,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 573,
+   "conf": 0.883,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 574,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 575,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 576,
+   "conf": 0.923,
+   "ok": true,
+   "fit_resid_px": 0.74,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 577,
+   "conf": 0.921,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 578,
+   "conf": 0.923,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 579,
+   "conf": 0.92,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 580,
+   "conf": 0.921,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 581,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 582,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 0.67,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 583,
+   "conf": 0.892,
+   "ok": true,
+   "fit_resid_px": 0.69,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 584,
+   "conf": 0.9,
+   "ok": true,
+   "fit_resid_px": 0.68,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 585,
+   "conf": 0.907,
+   "ok": true,
+   "fit_resid_px": 0.7,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 586,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 587,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 588,
+   "conf": 0.875,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 589,
+   "conf": 0.882,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 590,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 591,
+   "conf": 0.853,
+   "ok": true,
+   "fit_resid_px": 0.64,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 592,
+   "conf": 0.839,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 593,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.66,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 594,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 595,
+   "conf": 0.848,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 596,
+   "conf": 0.89,
+   "ok": true,
+   "fit_resid_px": 0.75,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 597,
+   "conf": 0.884,
+   "ok": true,
+   "fit_resid_px": 0.7,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 598,
+   "conf": 0.845,
+   "ok": true,
+   "fit_resid_px": 0.73,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 599,
+   "conf": 0.816,
+   "ok": true,
+   "fit_resid_px": 0.69,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 600,
+   "conf": 0.87,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 601,
+   "conf": 0.874,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 602,
+   "conf": 0.874,
+   "ok": true,
+   "fit_resid_px": 0.69,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 603,
+   "conf": 0.873,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 604,
+   "conf": 0.879,
+   "ok": true,
+   "fit_resid_px": 0.62,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 605,
+   "conf": 0.833,
+   "ok": true,
+   "fit_resid_px": 0.59,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 606,
+   "conf": 0.83,
+   "ok": true,
+   "fit_resid_px": 0.54,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 607,
+   "conf": 0.834,
+   "ok": true,
+   "fit_resid_px": 0.66,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 608,
+   "conf": 0.855,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 609,
+   "conf": 0.771,
+   "ok": true,
+   "fit_resid_px": 0.68,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 610,
+   "conf": 0.79,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 611,
+   "conf": 0.756,
+   "ok": true,
+   "fit_resid_px": 0.6,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 612,
+   "conf": 0.747,
+   "ok": true,
+   "fit_resid_px": 0.64,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 613,
+   "conf": 0.682,
+   "ok": true,
+   "fit_resid_px": 0.66,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 614,
+   "conf": 0.735,
+   "ok": true,
+   "fit_resid_px": 0.62,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 615,
+   "conf": 0.816,
+   "ok": true,
+   "fit_resid_px": 0.66,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 616,
+   "conf": 0.776,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 617,
+   "conf": 0.776,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 618,
+   "conf": 0.737,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 619,
+   "conf": 0.693,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 620,
+   "conf": 0.573,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 621,
+   "conf": 0.35,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 622,
+   "conf": 0.252,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 623,
+   "conf": 0.312,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.83,
+   "carried": false
+  },
+  {
+   "frame": 624,
+   "conf": 0.406,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.72,
+   "carried": false
+  },
+  {
+   "frame": 625,
+   "conf": 0.467,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 0.71,
+   "carried": false
+  },
+  {
+   "frame": 626,
+   "conf": 0.615,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.73,
+   "carried": false
+  },
+  {
+   "frame": 627,
+   "conf": 0.638,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 628,
+   "conf": 0.584,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.75,
+   "carried": false
+  },
+  {
+   "frame": 629,
+   "conf": 0.678,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 630,
+   "conf": 0.706,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 631,
+   "conf": 0.808,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.78,
+   "carried": false
+  },
+  {
+   "frame": 632,
+   "conf": 0.794,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.78,
+   "carried": false
+  },
+  {
+   "frame": 633,
+   "conf": 0.758,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 634,
+   "conf": 0.724,
+   "ok": true,
+   "fit_resid_px": 0.87,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 635,
+   "conf": 0.618,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.77,
+   "carried": false
+  },
+  {
+   "frame": 636,
+   "conf": 0.327,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 0.78,
+   "carried": false
+  },
+  {
+   "frame": 637,
+   "conf": 0.266,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.79,
+   "carried": false
+  },
+  {
+   "frame": 638,
+   "conf": 0.349,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.82,
+   "carried": false
+  },
+  {
+   "frame": 639,
+   "conf": 0.608,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.82,
+   "carried": false
+  },
+  {
+   "frame": 640,
+   "conf": 0.653,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.88,
+   "carried": false
+  },
+  {
+   "frame": 641,
+   "conf": 0.666,
+   "ok": true,
+   "fit_resid_px": 1.0,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 642,
+   "conf": 0.662,
+   "ok": true,
+   "fit_resid_px": 1.0,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 643,
+   "conf": 0.686,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 644,
+   "conf": 0.739,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 645,
+   "conf": 0.753,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 646,
+   "conf": 0.773,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 647,
+   "conf": 0.778,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 648,
+   "conf": 0.765,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 649,
+   "conf": 0.74,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 650,
+   "conf": 0.829,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 651,
+   "conf": 0.864,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 652,
+   "conf": 0.86,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 653,
+   "conf": 0.849,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 654,
+   "conf": 0.889,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 655,
+   "conf": 0.88,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 656,
+   "conf": 0.883,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 657,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 658,
+   "conf": 0.883,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 659,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 660,
+   "conf": 0.841,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 661,
+   "conf": 0.808,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 662,
+   "conf": 0.85,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 663,
+   "conf": 0.824,
+   "ok": true,
+   "fit_resid_px": 0.87,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 664,
+   "conf": 0.854,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 665,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 666,
+   "conf": 0.873,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 667,
+   "conf": 0.881,
+   "ok": true,
+   "fit_resid_px": 1.09,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 668,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 669,
+   "conf": 0.904,
+   "ok": true,
+   "fit_resid_px": 1.01,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 670,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.95,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 671,
+   "conf": 0.907,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 672,
+   "conf": 0.919,
+   "ok": true,
+   "fit_resid_px": 0.85,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 673,
+   "conf": 0.919,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 674,
+   "conf": 0.92,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 675,
+   "conf": 0.923,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 676,
+   "conf": 0.925,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 677,
+   "conf": 0.92,
+   "ok": true,
+   "fit_resid_px": 0.68,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 678,
+   "conf": 0.919,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 679,
+   "conf": 0.914,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 680,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 681,
+   "conf": 0.914,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 682,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 683,
+   "conf": 0.907,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 684,
+   "conf": 0.907,
+   "ok": true,
+   "fit_resid_px": 0.75,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 685,
+   "conf": 0.902,
+   "ok": true,
+   "fit_resid_px": 0.7,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 686,
+   "conf": 0.904,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 687,
+   "conf": 0.904,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 688,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 0.6,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 689,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.59,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 690,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 0.52,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 691,
+   "conf": 0.913,
+   "ok": true,
+   "fit_resid_px": 0.52,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 692,
+   "conf": 0.909,
+   "ok": true,
+   "fit_resid_px": 0.53,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 693,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 0.5,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 694,
+   "conf": 0.915,
+   "ok": true,
+   "fit_resid_px": 0.52,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 695,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 0.56,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 696,
+   "conf": 0.917,
+   "ok": true,
+   "fit_resid_px": 0.56,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 697,
+   "conf": 0.915,
+   "ok": true,
+   "fit_resid_px": 0.57,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 698,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 0.56,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 699,
+   "conf": 0.905,
+   "ok": true,
+   "fit_resid_px": 0.55,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 700,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 0.61,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 701,
+   "conf": 0.884,
+   "ok": true,
+   "fit_resid_px": 0.57,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 702,
+   "conf": 0.892,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 703,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 704,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 705,
+   "conf": 0.919,
+   "ok": true,
+   "fit_resid_px": 0.62,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 706,
+   "conf": 0.92,
+   "ok": true,
+   "fit_resid_px": 0.66,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 707,
+   "conf": 0.924,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 708,
+   "conf": 0.925,
+   "ok": true,
+   "fit_resid_px": 0.7,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 709,
+   "conf": 0.927,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 710,
+   "conf": 0.93,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 711,
+   "conf": 0.931,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 712,
+   "conf": 0.933,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 713,
+   "conf": 0.928,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 714,
+   "conf": 0.931,
+   "ok": true,
+   "fit_resid_px": 0.87,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 715,
+   "conf": 0.93,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 716,
+   "conf": 0.921,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 717,
+   "conf": 0.913,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 718,
+   "conf": 0.909,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 719,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 720,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 721,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 722,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 723,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 724,
+   "conf": 0.902,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 725,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 726,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 727,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.85,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 728,
+   "conf": 0.897,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 729,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 730,
+   "conf": 0.888,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 731,
+   "conf": 0.886,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 732,
+   "conf": 0.89,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 733,
+   "conf": 0.887,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 734,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 0.7,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 735,
+   "conf": 0.879,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 736,
+   "conf": 0.883,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 737,
+   "conf": 0.874,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 738,
+   "conf": 0.873,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 739,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 740,
+   "conf": 0.881,
+   "ok": true,
+   "fit_resid_px": 0.68,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 741,
+   "conf": 0.885,
+   "ok": true,
+   "fit_resid_px": 0.69,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 742,
+   "conf": 0.884,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 743,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 744,
+   "conf": 0.898,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 745,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.74,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 746,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 747,
+   "conf": 0.914,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 748,
+   "conf": 0.918,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 749,
+   "conf": 0.915,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 750,
+   "conf": 0.915,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 751,
+   "conf": 0.914,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 752,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 753,
+   "conf": 0.918,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 754,
+   "conf": 0.917,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 755,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 756,
+   "conf": 0.905,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 757,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 758,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 0.95,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 759,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 760,
+   "conf": 0.907,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 761,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 762,
+   "conf": 0.909,
+   "ok": true,
+   "fit_resid_px": 0.89,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 763,
+   "conf": 0.911,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 764,
+   "conf": 0.915,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 765,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 766,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 0.73,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 767,
+   "conf": 0.892,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 768,
+   "conf": 0.902,
+   "ok": true,
+   "fit_resid_px": 0.75,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 769,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.74,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 770,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 771,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 772,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 0.74,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 773,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 774,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 775,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 0.73,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 776,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 0.72,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 777,
+   "conf": 0.909,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 778,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 779,
+   "conf": 0.903,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 780,
+   "conf": 0.9,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 781,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 782,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 783,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 784,
+   "conf": 0.897,
+   "ok": true,
+   "fit_resid_px": 0.74,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 785,
+   "conf": 0.892,
+   "ok": true,
+   "fit_resid_px": 0.81,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 786,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 787,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.83,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 788,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.85,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 789,
+   "conf": 0.9,
+   "ok": true,
+   "fit_resid_px": 0.85,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 790,
+   "conf": 0.907,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 791,
+   "conf": 0.904,
+   "ok": true,
+   "fit_resid_px": 0.82,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 792,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 0.85,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 793,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 794,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 0.87,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 795,
+   "conf": 0.898,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 796,
+   "conf": 0.898,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 797,
+   "conf": 0.888,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 798,
+   "conf": 0.89,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 799,
+   "conf": 0.891,
+   "ok": true,
+   "fit_resid_px": 0.94,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 800,
+   "conf": 0.892,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 801,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 802,
+   "conf": 0.896,
+   "ok": true,
+   "fit_resid_px": 1.0,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 803,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 804,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 805,
+   "conf": 0.897,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 806,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 807,
+   "conf": 0.898,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 808,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 809,
+   "conf": 0.894,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 810,
+   "conf": 0.899,
+   "ok": true,
+   "fit_resid_px": 1.07,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 811,
+   "conf": 0.898,
+   "ok": true,
+   "fit_resid_px": 1.16,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 812,
+   "conf": 0.897,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 813,
+   "conf": 0.898,
+   "ok": true,
+   "fit_resid_px": 1.2,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 814,
+   "conf": 0.897,
+   "ok": true,
+   "fit_resid_px": 1.3,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 815,
+   "conf": 0.895,
+   "ok": true,
+   "fit_resid_px": 1.3,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 816,
+   "conf": 0.902,
+   "ok": true,
+   "fit_resid_px": 1.3,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 817,
+   "conf": 0.904,
+   "ok": true,
+   "fit_resid_px": 1.31,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 818,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 819,
+   "conf": 0.902,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 820,
+   "conf": 0.901,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 821,
+   "conf": 0.908,
+   "ok": true,
+   "fit_resid_px": 1.21,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 822,
+   "conf": 0.91,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 823,
+   "conf": 0.911,
+   "ok": true,
+   "fit_resid_px": 1.29,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 824,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 825,
+   "conf": 0.912,
+   "ok": true,
+   "fit_resid_px": 1.16,
+   "inlier_frac": 0.87,
+   "carried": false
+  },
+  {
+   "frame": 826,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 1.2,
+   "inlier_frac": 0.87,
+   "carried": false
+  },
+  {
+   "frame": 827,
+   "conf": 0.914,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 828,
+   "conf": 0.915,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 829,
+   "conf": 0.918,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.9,
+   "carried": false
+  },
+  {
+   "frame": 830,
+   "conf": 0.918,
+   "ok": true,
+   "fit_resid_px": 1.15,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 831,
+   "conf": 0.92,
+   "ok": true,
+   "fit_resid_px": 1.14,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 832,
+   "conf": 0.927,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.85,
+   "carried": false
+  },
+  {
+   "frame": 833,
+   "conf": 0.928,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 0.86,
+   "carried": false
+  },
+  {
+   "frame": 834,
+   "conf": 0.926,
+   "ok": true,
+   "fit_resid_px": 1.2,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 835,
+   "conf": 0.928,
+   "ok": true,
+   "fit_resid_px": 1.24,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 836,
+   "conf": 0.929,
+   "ok": true,
+   "fit_resid_px": 1.27,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 837,
+   "conf": 0.928,
+   "ok": true,
+   "fit_resid_px": 1.17,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 838,
+   "conf": 0.932,
+   "ok": true,
+   "fit_resid_px": 0.97,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 839,
+   "conf": 0.93,
+   "ok": true,
+   "fit_resid_px": 1.05,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 840,
+   "conf": 0.932,
+   "ok": true,
+   "fit_resid_px": 0.98,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 841,
+   "conf": 0.93,
+   "ok": true,
+   "fit_resid_px": 1.13,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 842,
+   "conf": 0.93,
+   "ok": true,
+   "fit_resid_px": 1.23,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 843,
+   "conf": 0.931,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 844,
+   "conf": 0.93,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 845,
+   "conf": 0.925,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 846,
+   "conf": 0.922,
+   "ok": true,
+   "fit_resid_px": 1.38,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 847,
+   "conf": 0.916,
+   "ok": true,
+   "fit_resid_px": 1.36,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 848,
+   "conf": 0.919,
+   "ok": true,
+   "fit_resid_px": 1.36,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 849,
+   "conf": 0.917,
+   "ok": true,
+   "fit_resid_px": 1.4,
+   "inlier_frac": 0.89,
+   "carried": false
+  },
+  {
+   "frame": 850,
+   "conf": 0.924,
+   "ok": true,
+   "fit_resid_px": 1.39,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 851,
+   "conf": 0.92,
+   "ok": true,
+   "fit_resid_px": 1.37,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 852,
+   "conf": 0.925,
+   "ok": true,
+   "fit_resid_px": 1.32,
+   "inlier_frac": 0.89,
+   "carried": false
+  },
+  {
+   "frame": 853,
+   "conf": 0.921,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 854,
+   "conf": 0.925,
+   "ok": true,
+   "fit_resid_px": 1.38,
+   "inlier_frac": 0.92,
+   "carried": false
+  },
+  {
+   "frame": 855,
+   "conf": 0.919,
+   "ok": true,
+   "fit_resid_px": 1.35,
+   "inlier_frac": 0.89,
+   "carried": false
+  },
+  {
+   "frame": 856,
+   "conf": 0.917,
+   "ok": true,
+   "fit_resid_px": 1.33,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 857,
+   "conf": 0.909,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.9,
+   "carried": false
+  },
+  {
+   "frame": 858,
+   "conf": 0.906,
+   "ok": true,
+   "fit_resid_px": 1.34,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 859,
+   "conf": 0.902,
+   "ok": true,
+   "fit_resid_px": 1.28,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 860,
+   "conf": 0.897,
+   "ok": true,
+   "fit_resid_px": 1.36,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 861,
+   "conf": 0.881,
+   "ok": true,
+   "fit_resid_px": 1.19,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 862,
+   "conf": 0.869,
+   "ok": true,
+   "fit_resid_px": 1.18,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 863,
+   "conf": 0.866,
+   "ok": true,
+   "fit_resid_px": 1.12,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 864,
+   "conf": 0.865,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 865,
+   "conf": 0.844,
+   "ok": true,
+   "fit_resid_px": 1.1,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 866,
+   "conf": 0.829,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 867,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 1.11,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 868,
+   "conf": 0.832,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 869,
+   "conf": 0.844,
+   "ok": true,
+   "fit_resid_px": 1.01,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 870,
+   "conf": 0.859,
+   "ok": true,
+   "fit_resid_px": 0.89,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 871,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 872,
+   "conf": 0.847,
+   "ok": true,
+   "fit_resid_px": 0.77,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 873,
+   "conf": 0.84,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 874,
+   "conf": 0.826,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 875,
+   "conf": 0.828,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 876,
+   "conf": 0.792,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 877,
+   "conf": 0.793,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 878,
+   "conf": 0.757,
+   "ok": true,
+   "fit_resid_px": 0.89,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 879,
+   "conf": 0.69,
+   "ok": true,
+   "fit_resid_px": 0.99,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 880,
+   "conf": 0.735,
+   "ok": true,
+   "fit_resid_px": 1.04,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 881,
+   "conf": 0.779,
+   "ok": true,
+   "fit_resid_px": 0.95,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 882,
+   "conf": 0.802,
+   "ok": true,
+   "fit_resid_px": 1.06,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 883,
+   "conf": 0.801,
+   "ok": true,
+   "fit_resid_px": 1.01,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 884,
+   "conf": 0.831,
+   "ok": true,
+   "fit_resid_px": 0.88,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 885,
+   "conf": 0.841,
+   "ok": true,
+   "fit_resid_px": 0.8,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 886,
+   "conf": 0.865,
+   "ok": true,
+   "fit_resid_px": 0.87,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 887,
+   "conf": 0.857,
+   "ok": true,
+   "fit_resid_px": 0.91,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 888,
+   "conf": 0.847,
+   "ok": true,
+   "fit_resid_px": 0.92,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 889,
+   "conf": 0.856,
+   "ok": true,
+   "fit_resid_px": 0.96,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 890,
+   "conf": 0.847,
+   "ok": true,
+   "fit_resid_px": 0.86,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 891,
+   "conf": 0.861,
+   "ok": true,
+   "fit_resid_px": 0.87,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 892,
+   "conf": 0.821,
+   "ok": true,
+   "fit_resid_px": 0.84,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 893,
+   "conf": 0.856,
+   "ok": true,
+   "fit_resid_px": 0.9,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 894,
+   "conf": 0.851,
+   "ok": true,
+   "fit_resid_px": 0.93,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 895,
+   "conf": 0.849,
+   "ok": true,
+   "fit_resid_px": 0.78,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 896,
+   "conf": 0.85,
+   "ok": true,
+   "fit_resid_px": 0.69,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 897,
+   "conf": 0.85,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 898,
+   "conf": 0.862,
+   "ok": true,
+   "fit_resid_px": 0.61,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 899,
+   "conf": 0.867,
+   "ok": true,
+   "fit_resid_px": 0.59,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 900,
+   "conf": 0.847,
+   "ok": true,
+   "fit_resid_px": 0.76,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 901,
+   "conf": 0.828,
+   "ok": true,
+   "fit_resid_px": 0.57,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 902,
+   "conf": 0.811,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 903,
+   "conf": 0.79,
+   "ok": true,
+   "fit_resid_px": 0.6,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 904,
+   "conf": 0.795,
+   "ok": true,
+   "fit_resid_px": 0.61,
+   "inlier_frac": 0.97,
+   "carried": false
+  },
+  {
+   "frame": 905,
+   "conf": 0.79,
+   "ok": true,
+   "fit_resid_px": 0.64,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 906,
+   "conf": 0.807,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 907,
+   "conf": 0.796,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.91,
+   "carried": false
+  },
+  {
+   "frame": 908,
+   "conf": 0.815,
+   "ok": true,
+   "fit_resid_px": 0.63,
+   "inlier_frac": 0.88,
+   "carried": false
+  },
+  {
+   "frame": 909,
+   "conf": 0.801,
+   "ok": true,
+   "fit_resid_px": 0.54,
+   "inlier_frac": 0.88,
+   "carried": false
+  },
+  {
+   "frame": 910,
+   "conf": 0.863,
+   "ok": true,
+   "fit_resid_px": 0.61,
+   "inlier_frac": 0.93,
+   "carried": false
+  },
+  {
+   "frame": 911,
+   "conf": 0.86,
+   "ok": true,
+   "fit_resid_px": 0.64,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 912,
+   "conf": 0.836,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 0.96,
+   "carried": false
+  },
+  {
+   "frame": 913,
+   "conf": 0.795,
+   "ok": true,
+   "fit_resid_px": 0.59,
+   "inlier_frac": 0.95,
+   "carried": false
+  },
+  {
+   "frame": 914,
+   "conf": 0.79,
+   "ok": true,
+   "fit_resid_px": 0.79,
+   "inlier_frac": 0.94,
+   "carried": false
+  },
+  {
+   "frame": 915,
+   "conf": 0.799,
+   "ok": true,
+   "fit_resid_px": 0.71,
+   "inlier_frac": 0.98,
+   "carried": false
+  },
+  {
+   "frame": 916,
+   "conf": 0.813,
+   "ok": true,
+   "fit_resid_px": 0.64,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 917,
+   "conf": 0.799,
+   "ok": true,
+   "fit_resid_px": 0.55,
+   "inlier_frac": 0.99,
+   "carried": false
+  },
+  {
+   "frame": 918,
+   "conf": 0.828,
+   "ok": true,
+   "fit_resid_px": 0.58,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 919,
+   "conf": 0.837,
+   "ok": true,
+   "fit_resid_px": 0.65,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 920,
+   "conf": 0.839,
+   "ok": true,
+   "fit_resid_px": 0.55,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 921,
+   "conf": 0.828,
+   "ok": true,
+   "fit_resid_px": 0.55,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 922,
+   "conf": 0.817,
+   "ok": true,
+   "fit_resid_px": 0.57,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 923,
+   "conf": 0.813,
+   "ok": true,
+   "fit_resid_px": 0.69,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 924,
+   "conf": 0.768,
+   "ok": true,
+   "fit_resid_px": 0.67,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 925,
+   "conf": 0.725,
+   "ok": true,
+   "fit_resid_px": 0.57,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 926,
+   "conf": 0.739,
+   "ok": true,
+   "fit_resid_px": 0.6,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 927,
+   "conf": 0.655,
+   "ok": true,
+   "fit_resid_px": 0.58,
+   "inlier_frac": 1.0,
+   "carried": false
+  },
+  {
+   "frame": 928,
+   "conf": 0.635,
+   "ok": true,
+   "fit_resid_px": 0.57,
+   "inlier_frac": 0.99,
+   "carried": false
+  }
+ ],
+ "postproc": "gated",
+ "gate_rate": 0.5775075987841946
+}

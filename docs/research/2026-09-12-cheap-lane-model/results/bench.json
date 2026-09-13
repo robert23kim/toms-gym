@@ -1,0 +1,50 @@
+[
+ {
+  "run": "pose640_lovo_tom_old",
+  "task": "pose",
+  "imgsz": 640,
+  "threads": 4,
+  "n": 30,
+  "ms_median": 41.2,
+  "ms_mean": 42.2,
+  "ms_p90": 57.9,
+  "params_M": 2.65,
+  "size_MB": 5.6
+ },
+ {
+  "run": "sam2.1_t (3 point prompts)",
+  "task": "sam",
+  "imgsz": 1024,
+  "threads": 4,
+  "n": 8,
+  "ms_median": 836.4,
+  "ms_mean": 896.8,
+  "ms_p90": 1067.3,
+  "params_M": 38.9,
+  "size_MB": 78.1
+ },
+ {
+  "run": "seg640_lovo_sample_input",
+  "task": "segment",
+  "imgsz": 640,
+  "threads": 4,
+  "n": 30,
+  "ms_median": 30.0,
+  "ms_mean": 30.2,
+  "ms_p90": 31.2,
+  "params_M": 2.83,
+  "size_MB": 6.0
+ },
+ {
+  "run": "seg1024_lovo_tom_old",
+  "task": "segment",
+  "imgsz": 1024,
+  "threads": 4,
+  "n": 20,
+  "ms_median": 58.5,
+  "ms_mean": 58.5,
+  "ms_p90": 60.5,
+  "params_M": 2.83,
+  "size_MB": 6.0
+ }
+]
