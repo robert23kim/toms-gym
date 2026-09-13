@@ -52,7 +52,7 @@ export const LIFT_METRIC_KEYS: Record<CoachingLiftType, string[]> = {
   pushup: ["rom", "control", "elbow_stability", "shoulder_swing", "tempo"],
   // Older situp reports also carry the arm metrics; they describe nothing, so
   // only the trunk metrics are rendered.
-  situp: ["rom", "control", "hips_planted", "neck_pull", "tempo"],
+  situp: ["rom", "control", "hips_planted", "feet_planted", "tempo"],
 };
 
 interface MetricCoaching {
@@ -168,8 +168,8 @@ const COACHING: LiftCoachingMap = {
     hips_planted: {
       fail: "Your hips are lifting or rocking — keep your lower back and hips on the floor and let your abs do the lifting.",
     },
-    neck_pull: {
-      fail: "You're pulling on your head — lead with your chest and keep a fist of space between your chin and chest.",
+    feet_planted: {
+      fail: "Your feet are lifting — keep your heels down and push them into the floor instead of kicking your legs to swing up, or anchor your feet under something.",
     },
     tempo: TEMPO_COACHING,
   },
@@ -263,10 +263,10 @@ const METRIC_COPY_OVERRIDES: Partial<
       description:
         "How still your hips stayed on the floor through each rep. Higher is better — above 70% means they stayed put.",
     },
-    neck_pull: {
-      label: "Neck Pull",
+    feet_planted: {
+      label: "Feet Planted",
       description:
-        "How far your head curled forward past your torso at the top of the rep. Lower is better — under 20° means you weren't pulling on your neck.",
+        "How still your feet stayed on the floor through each rep. Higher is better — above 70% means they stayed put.",
     },
     tempo: {
       description:

@@ -181,12 +181,13 @@ describe("situp copy never uses barbell/arm language", () => {
       "rom",
       "control",
       "hips_planted",
-      "neck_pull",
+      "feet_planted",
       "tempo",
     ]);
     expect(metricAppliesToLift("situp", "hips_planted")).toBe(true);
-    expect(metricAppliesToLift("situp", "neck_pull")).toBe(true);
-    expect(metricAppliesToLift("pushup", "neck_pull")).toBe(false);
+    expect(metricAppliesToLift("situp", "feet_planted")).toBe(true);
+    expect(metricAppliesToLift("situp", "neck_pull")).toBe(false);
+    expect(metricAppliesToLift("pushup", "feet_planted")).toBe(false);
     expect(normalizeCoachingLiftType("Situp")).toBe("situp");
     expect(metricAppliesToLift("situp", "elbow_stability")).toBe(false);
     expect(metricAppliesToLift("situp", "shoulder_swing")).toBe(false);
@@ -203,14 +204,14 @@ describe("situp copy never uses barbell/arm language", () => {
 
   it("labels and explains the trunk metrics", () => {
     expect(getMetricLabel("situp", "hips_planted", "hips_planted")).toBe("Hips Planted");
-    expect(getMetricLabel("situp", "neck_pull", "neck_pull")).toBe("Neck Pull");
-    expect(getMetricDescription("situp", "neck_pull", undefined)).toMatch(/lower is better/i);
+    expect(getMetricLabel("situp", "feet_planted", "feet_planted")).toBe("Feet Planted");
+    expect(getMetricDescription("situp", "feet_planted", undefined)).toMatch(/higher is better/i);
     expect(getMetricDescription("situp", "hips_planted", undefined)).toMatch(/higher is better/i);
   });
 
   it("coaches the trunk metrics only when they fail", () => {
-    expect(getMetricCoaching("situp", "neck_pull", "fail", 42)).toMatch(/chin/);
+    expect(getMetricCoaching("situp", "feet_planted", "fail", 20)).toMatch(/heels/);
     expect(getMetricCoaching("situp", "hips_planted", "fail", 20)).toMatch(/hips/);
-    expect(getMetricCoaching("situp", "neck_pull", "warn", 30)).toBeNull();
+    expect(getMetricCoaching("situp", "feet_planted", "warn", 50)).toBeNull();
   });
 });
