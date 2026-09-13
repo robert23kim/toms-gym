@@ -625,6 +625,31 @@ Custom agent personas are defined in `.claude/agents/`. When spawning a team, re
 | `frontend/.../AuthContext.tsx` | Handles passwordless user state |
 | `frontend/.../routes/index.tsx` | Added `/profile/:id` route |
 
+## Finch-style Shell (shipped 2026-09-13)
+
+Bottom tab bar + Home to-do list, modelled on Finch, so the bowling-night score photo is two taps
+from opening the app. Spec: `docs/superpowers/specs/2026-09-13-finch-shell-design.md`; plan:
+`docs/superpowers/plans/2026-09-13-finch-shell.md`. Frontend only, split by **width** (`md` =
+768px), never by platform: phone browsers and the APK get the same shell, desktop keeps the top nav.
+
+- **`components/BottomTabBar.tsx`** (`md:hidden`, safe-area padded, mounted in `Layout`, which pads
+  `<main>` `pb-24 md:pb-6`): Home · Lift · Bowl · Golf · Me. Active tab by route prefix in the pure
+  `lib/tabs.ts::activeTab` (`/bowling/*` → Bowl, `/challenges|/champions|/upload` → Lift,
+  `/profile|/find-profile|/signin|/auth` → Me); `meTarget(userId)` is `/profile/<id>` or
+  `/find-profile`. `Navbar` lost its hamburger + phone menu; Feedback/Store are footer/desktop only.
+- **`components/home/PromptList.tsx`** renders `lib/prompts.ts::buildPrompts(openChallenges)`:
+  "Snap tonight's scores" (camera) → one row per ongoing challenge → `/challenges/<id>/upload` →
+  "Snap a scorecard" `/golf/snap` → "Log a lift" `/lift/upload`. With a saved `userId` the camera row
+  is a hidden `capture="environment"` input (`data-testid="home-bowl-camera"`) that uploads the
+  photo immediately as **night results dated today** via `lib/bowlingSheetForm.ts::buildSheetForm`
+  (shared with `BowlingSheetUpload`) and navigates to the review page; anonymous visitors get a link
+  to `/bowling/snap` (needs an email). `lib/dates.ts::todayLocal` is the date source.
+- `Index.tsx`: returning users see streak → to-do → champion spotlight (vertical tiles and the
+  open-challenges strip are gone for them); first-timers keep pitch/demo/tiles with the to-do below.
+- Tests: `lib/__tests__/tabs|prompts|bowlingSheetForm`, `components/__tests__/BottomTabBar|PromptList`,
+  `Index.test.tsx` rewritten. Suite at ship: 92 suites / 621 tests. No eslint config in `frontend/`
+  — tsc + jest are the gates.
+
 ## Android App (Capacitor, shipped 2026-09-13)
 
 Native Android wrapper around the same frontend + production backend, for on-phone testing. `frontend/android/` is a committed Capacitor 7 project (`appId com.tomsgym.app`, AGP 8.7.2, Gradle 8.11.1, Java 21, targetSdk 35); its own `.gitignore` keeps build output and the synced web assets out, and root `.gitignore` ignores `frontend/*.apk`.
