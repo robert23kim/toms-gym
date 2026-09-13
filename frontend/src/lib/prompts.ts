@@ -15,16 +15,13 @@ export type Prompt =
 
 type OpenChallenge = Pick<Competition, "id" | "title" | "categories">;
 
-const BODYWEIGHT_FORM_IDS: Record<string, string> = {
-  Plank: "Plank",
-  Pushup: "Pushup",
-  Situp: "Situp",
-};
+const LIFT_CATEGORIES = new Set(["Squat", "Bench Press", "Deadlift", "Bicep Curl", "Plank", "Pushup", "Situp"]);
+const BODYWEIGHT = new Set(["Plank", "Pushup", "Situp"]);
 
-/** Lift type the home row can upload with no questions: one bodyweight category, nothing to weigh. */
+/** Lift type the home row can upload with no questions: the challenge's only lift is bodyweight. */
 export const quickLiftType = (categories: string[] | undefined): string | null => {
-  const ids = (categories ?? []).map((c) => BODYWEIGHT_FORM_IDS[c]).filter(Boolean);
-  return ids.length === 1 && (categories ?? []).length === 1 ? ids[0] : null;
+  const lifts = (categories ?? []).filter((c) => LIFT_CATEGORIES.has(c));
+  return lifts.length === 1 && BODYWEIGHT.has(lifts[0]) ? lifts[0] : null;
 };
 
 export const buildPrompts = (openChallenges: OpenChallenge[]): Prompt[] => [

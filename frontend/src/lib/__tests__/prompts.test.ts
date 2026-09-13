@@ -1,13 +1,15 @@
 import { buildPrompts, quickLiftType } from "../prompts";
 
 describe("quickLiftType", () => {
-  it("accepts a single bodyweight category", () => {
+  it("accepts a single bodyweight lift alongside gender and weight-class categories", () => {
     expect(quickLiftType(["Situp"])).toBe("Situp");
-    expect(quickLiftType(["Plank"])).toBe("Plank");
+    expect(quickLiftType(["Situp", "Men", "Women"])).toBe("Situp");
+    expect(quickLiftType(["Plank", "Open", "Men"])).toBe("Plank");
   });
   it("refuses weighted, multi-category or empty challenges", () => {
     expect(quickLiftType(["Squat"])).toBeNull();
-    expect(quickLiftType(["Situp", "Pushup"])).toBeNull();
+    expect(quickLiftType(["Squat", "Men", "Women"])).toBeNull();
+    expect(quickLiftType(["Situp", "Pushup", "Men"])).toBeNull();
     expect(quickLiftType([])).toBeNull();
     expect(quickLiftType(undefined)).toBeNull();
   });

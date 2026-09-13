@@ -54,7 +54,7 @@ const ActionRow: React.FC<ActionRowProps> = ({ icon, title, pill, status, error,
   <div className={rowClass}>
     <span className={chipClass}>{icon}</span>
     <span className="flex-1 min-w-0">
-      <span className="block font-medium truncate">{status ?? title}</span>
+      <span className="block font-medium leading-tight">{status ?? title}</span>
       {pill && !status && (
         <span className="inline-block text-[11px] font-semibold px-2 py-0.5 mt-0.5 rounded-full bg-accent/10 text-accent">
           {pill}
