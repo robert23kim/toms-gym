@@ -1,0 +1,4 @@
+<!-- Moved verbatim from CLAUDE.md on 2026-09-19; CLAUDE.md keeps a pointer. -->
+# Activity Streak (shipped 2026-08-28)
+
+Home-page "Your streak" card (Strava-style): flame with consecutive-week count + Mon–Sun strip of this week's active days. `GET /users/<id>/activity?days=` (`user_routes.py`) unions lift/bowl `Attempt.created_at` (video present; kind = bowl when a `BowlingResult` exists) with golf `Round.played_on` (noon-stamped). Streak math is client-side in `lib/streak.ts` (`computeStreak`, local time, Mon-start weeks; an empty current week does not break the streak, an empty previous week does). `components/StreakCard.tsx` reads localStorage `userId`, hides itself for anonymous visitors or on fetch failure; Share reuses `lib/share.ts` pointing at the profile. Gotcha: pg8000 binds ints as ints, so date arithmetic needs `make_interval(days => :days)`, not `CURRENT_DATE - :days`. Tests: `lib/__tests__/streak.test.ts`, `components/__tests__/StreakCard.test.tsx`.
