@@ -1,0 +1,224 @@
+{
+ "stem": "20260915_192636_7c7fbfb0",
+ "video": "/Users/toka/Downloads/20260915_192636_7c7fbfb0.mp4",
+ "codec": "hevc",
+ "size": [
+  1376,
+  1824
+ ],
+ "frames": 523,
+ "fps": 30.0,
+ "handedness": "right (assumed; the ball hooks right-to-left into the rack from the right side)",
+ "board_convention": "1-39 counted from the RIGHT gutter (right-hander's convention), read at the last on-lane frame before pin contact",
+ "camera": "Meta glasses, first person: looks down during the approach, head comes up after release; camera drifts ~2-3 px/frame left while the ball rolls",
+ "release_frame": 391,
+ "release_uncertain": "+-2: ball blurred at the frame bottom with the hand on it at 391, hand still visible on the ball at 393, free and rolling by 396",
+ "pin_hit_frame": 457,
+ "pin_hit_uncertain": "+-2: ball at the rack front 453-456 (overlapping the pin bases from 456), among the pins at 458, pins disturbed by 460",
+ "ball_invisible": [],
+ "lane": {
+  "description": "The lane in the left-centre of the frame after the head comes up (ball lane pin rack at x~280-350, y~735-760 at frame 453). Its left edge leaves the frame below y~1545 at frame 453.",
+  "lane_number_guess": null,
+  "ref_frames": {
+   "453": {
+    "pin_end_row": {
+     "y": 760,
+     "left_x": 271.7,
+     "right_x": 360.4
+    },
+    "mid_row": {
+     "y": 1100,
+     "left_x": 154.0,
+     "right_x": 459.4
+    },
+    "bottom_row": {
+     "y": 1540,
+     "left_x": 1.6,
+     "right_x": 587.5
+    },
+    "edge_lines": {
+     "left": [
+      -0.3463,
+      534.9238
+     ],
+     "right": [
+      0.2912,
+      139.0853
+     ],
+     "note": "x = a*y + b, fitted to per-row wood/gutter steps over the near lane, pin end extrapolated"
+    },
+    "uncertain": true
+   }
+  }
+ },
+ "lane_quads": {
+  "453": {
+   "fl_l": [
+    1.6,
+    1540
+   ],
+   "fl_r": [
+    587.5,
+    1540
+   ],
+   "pd_l": [
+    271.7,
+    760
+   ],
+   "pd_r": [
+    360.4,
+    760
+   ],
+   "fl_is_foul_line": false
+  },
+  "401": {
+   "fl_l": [
+    63.1,
+    1700
+   ],
+   "fl_r": [
+    1372.3,
+    1700
+   ],
+   "pd_l": [
+    358.2,
+    75
+   ],
+   "pd_r": [
+    468.6,
+    75
+   ],
+   "fl_is_foul_line": false
+  },
+  "421": {
+   "fl_l": [
+    89.7,
+    1823
+   ],
+   "fl_r": [
+    993.6,
+    1823
+   ],
+   "pd_l": [
+    407.5,
+    620
+   ],
+   "pd_r": [
+    502.3,
+    620
+   ],
+   "fl_is_foul_line": false
+  }
+ },
+ "foul_line_visible": false,
+ "board": 12.5,
+ "board_uncertainty": 0.5,
+ "board_reads": {
+  "edge_profile_f456": 12.2,
+  "pin_ruler_f456": 12.32,
+  "note": "edges at the ball row from the frame-456 edge lines (263.3, 355.3); pin ruler 7-column spread 62 px = 36 in; at the pin row the lane is 89.7 px by edges vs 71.5 px by the pin ruler; uncertainty is max(half the spread, 0.5 for the ball-centre reading)"
+ },
+ "ball": {
+  "393": [
+   702,
+   1088,
+   128
+  ],
+  "396": [
+   598.5,
+   689.8,
+   81
+  ],
+  "400": [
+   571.5,
+   541.2,
+   46
+  ],
+  "404": [
+   577.5,
+   541,
+   36
+  ],
+  "408": [
+   572.5,
+   581.9,
+   27
+  ],
+  "412": [
+   560.5,
+   632,
+   23.5
+  ],
+  "416": [
+   540.5,
+   685.9,
+   20
+  ],
+  "420": [
+   518.5,
+   729.7,
+   15
+  ],
+  "426": [
+   479,
+   778.2,
+   13
+  ],
+  "432": [
+   442.5,
+   802.8,
+   12
+  ],
+  "438": [
+   408.5,
+   802.4,
+   9.5
+  ],
+  "444": [
+   376,
+   789.5,
+   10
+  ],
+  "450": [
+   350.5,
+   777,
+   9
+  ],
+  "453": [
+   339,
+   771,
+   9
+  ],
+  "454": [
+   336,
+   769,
+   9
+  ],
+  "455": [
+   331.5,
+   766.5,
+   8.5
+  ],
+  "456": [
+   326.5,
+   763.6,
+   7.5
+  ],
+  "457": [
+   323,
+   763.5,
+   7.5
+  ]
+ },
+ "ball_uncertain_points": {
+  "393": "bottom of the ball cut by the frame edge and the hand may still touch it; centre y and r +-15",
+  "400": "motion blur, r +-4"
+ },
+ "last_on_lane_frames": [
+  454,
+  455,
+  456
+ ],
+ "truth_method": "Ball centres/radii read by eye on 3x gridded crops (20 px grid) of the source video, each confirmed against a purple/dark blob fit drawn as a circle on the crop (YOLO conf 0.1 and an HSV chain as seeds); lane edges from per-row wood-to-gutter steps fitted as straight lines and checked as overlays; pin rows from the pin silhouettes (pin top + one pin height, reflection excluded); board from the edge profile and the 7-column pin ruler at the last on-lane frame.",
+ "made_by": "holdout truth agent 4, 2026-10-10"
+}

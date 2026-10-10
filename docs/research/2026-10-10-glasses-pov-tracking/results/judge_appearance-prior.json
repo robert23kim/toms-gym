@@ -1,0 +1,24 @@
+{
+ "experiment": "appearance-prior",
+ "approach": "fixed purple-hue round-blob start + hue blobs with perspective size prior + camera-compensated motion peak at the far end + engine SAM lane pass prompted with cuts.json pin_hit_frame",
+ "judged": "2026-10-10",
+ "ran_fresh": true,
+ "code_changes": "none (no path fix needed); run.py ran the YOLO+ORB cache scan itself for each holdout stem",
+ "machine_loaded": "yes: other agents' run.py jobs (cam-diff, detector-tiling, sam2-video) running at the start, load average 4-9 on 12 cores during the runs",
+ "holdout": [
+  {"stem": "20260915_191253_6cf2480f", "recall_pct": 98.1, "n_matched": 52, "n_truth_points": 53, "median_px_err": 3.7, "board_err": 1.5, "lane_err_boards": 2.78, "window_err": [1, 9], "final_board": 5.0, "pass": true, "strong": true, "wall_s": 51.6},
+  {"stem": "20260915_191820_0196b564", "recall_pct": 100.0, "n_matched": 24, "n_truth_points": 24, "median_px_err": 3.9, "board_err": 1.5, "lane_err_boards": 6.62, "window_err": [2, 1], "final_board": 1.0, "final_board_raw": -3.7, "pass": true, "strong": true, "wall_s": 71.0, "note": "right gutter ball; board clamped to 1.0 from raw -3.7; lane centre 3-4.6 boards off"},
+  {"stem": "20260915_191913_907c358b", "recall_pct": 95.7, "n_matched": 22, "n_truth_points": 23, "median_px_err": 4.8, "board_err": 6.0, "lane_err_boards": 7.25, "window_err": [0, 17], "final_board": 1.0, "pass": false, "strong": false, "wall_s": 142.2, "failure": "track is on the ball to the rack; SAM quad's far edge stops ~40-50 px short of the pin deck and SAM's last_lane_frame (492) is 17 frames before the pin hit, so the board is read against the quad's right edge (raw 0.52) instead of at the rack"},
+  {"stem": "20260915_192142_eeb210f6", "recall_pct": 100.0, "n_matched": 17, "n_truth_points": 17, "median_px_err": 4.7, "board_err": 4.0, "lane_err_boards": 2.64, "window_err": [1, 11], "final_board": 6.0, "pass": false, "strong": false, "wall_s": 51.3},
+  {"stem": "20260915_192636_7c7fbfb0", "recall_pct": 100.0, "n_matched": 18, "n_truth_points": 18, "median_px_err": 3.5, "board_err": null, "lane_err_boards": null, "window_err": [0, 0], "final_board": null, "pass": false, "strong": false, "wall_s": 133.8, "failure": "SAM lane pass refused ('no calibration', 121 s); window_err [0,0] is the cuts.json value echoed back, not a tracker output"}
+ ],
+ "holdout_mean_recall": 98.8,
+ "holdout_mean_board_err_4_with_board": 3.25,
+ "holdout_board_err_le3": "2 of 5 (191253 1.5, 191820 1.5); 192142 4.0, 191913 6.0, 192636 null",
+ "holdout_recall_ge60": "5 of 5",
+ "holdout_mean_wall_s": 90.0,
+ "dev_repro": {"stem": "20260915_185331_19de9ec7", "claimed": {"recall_pct": 93.3, "median_px_err": 3.2, "board_err": 0.5}, "fresh": {"recall_pct": 93.3, "median_px_err": 3.2, "board_err": 0.5, "lane_err_boards": 0.21, "wall_s": 61.5}, "reproduced": true, "note": "fresh track identical to the experiment's (same frames, lane, final_board); original file restored afterwards"},
+ "inputs_note": "run.py reads cuts.json pin_hit_frame (hand-labelled visual frame) as the SAM prompt and the cut bounds encode release; declared by the experiment, applies equally to holdout cuts",
+ "verdict": "partial",
+ "verdict_rule": "works needs mean recall >= 60 AND board_err <= 3 on >= 3 of 5: recall 98.8 holds but only 2 of 5 boards are within 3. partial = recall >= 40 on >= 3: 5 of 5."
+}

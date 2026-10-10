@@ -1,0 +1,1212 @@
+{
+ "run_name": "baseline",
+ "engine_dir": "/Users/toka/code/bowling-app/pov-engine",
+ "engine_sha": "ad2c96e87d6845f72fc529b1dc6a43c2aa599eb6",
+ "extra_flags": "",
+ "jobs": 2,
+ "timeout_s": 600,
+ "input": "cuts (work/cuts/<stem>.mp4, H.264)",
+ "wall_note": "wall_s measured with 2 engine processes in parallel on a shared machine; not a service timing",
+ "thresholds": {
+  "pass": {
+   "recall_pct": 60.0,
+   "board_err": 3.0
+  },
+  "strong": {
+   "recall_pct": 80.0,
+   "board_err": 2.0
+  },
+  "match_px": "max(2*truth_r, 20.0)",
+  "track_gap_interp_max": 6,
+  "lane_nearest_frames": 3,
+  "recall_denominator": "truth ball keys in [release, pin_hit] minus ball_invisible (truth not interpolated)"
+ },
+ "configs": {
+  "service": "--simple-detect",
+  "yolo": "--simple-detect --yolo",
+  "yolo_chain": "--simple-detect --yolo-chain",
+  "yolo_chain_sam": "--simple-detect --yolo-chain --sam-lane"
+ },
+ "stems_without_cut": [
+  "20260915_191900_106ea7ca"
+ ],
+ "stems_missing_truth": [],
+ "rows": [
+  {
+   "config": "service",
+   "stem": "20260915_185121_23d80f05",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 16.5,
+   "processed": true,
+   "n_track_points": 63,
+   "final_board": null,
+   "lane_sources": {
+    "static": 90
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 183.15,
+   "window_err": [
+    17,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_185331_19de9ec7",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 19.6,
+   "processed": true,
+   "n_track_points": 30,
+   "final_board": null,
+   "lane_sources": {
+    "static": 91
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 60,
+   "board_err": null,
+   "lane_err_boards": 89.41,
+   "window_err": [
+    42,
+    11
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_185645_9fde3c16",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 17.3,
+   "processed": true,
+   "n_track_points": 54,
+   "final_board": null,
+   "lane_sources": {
+    "static": 93
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 3.2,
+   "median_px_err": 135.3,
+   "n_truth_points": 62,
+   "board_err": null,
+   "lane_err_boards": 188.07,
+   "window_err": [
+    6,
+    9
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_185454_f240c883",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 21.7,
+   "processed": true,
+   "n_track_points": 76,
+   "final_board": null,
+   "lane_sources": {
+    "static": 82
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 38.5,
+   "median_px_err": 2.8,
+   "n_truth_points": 52,
+   "board_err": null,
+   "lane_err_boards": 237.5,
+   "window_err": [
+    4,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_190115_a7cf2c70",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 19.6,
+   "processed": true,
+   "n_track_points": 0,
+   "final_board": null,
+   "lane_sources": {
+    "static": 85
+   },
+   "window_source": null,
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 55,
+   "board_err": null,
+   "lane_err_boards": 119.62,
+   "window_err": [
+    null,
+    null
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_191253_6cf2480f",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 23.2,
+   "processed": true,
+   "n_track_points": 33,
+   "final_board": null,
+   "lane_sources": {
+    "static": 91
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 53,
+   "board_err": null,
+   "lane_err_boards": 265.73,
+   "window_err": [
+    48,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_191820_0196b564",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 29.6,
+   "processed": true,
+   "n_track_points": 77,
+   "final_board": 9.0,
+   "lane_sources": {
+    "static": 83
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 8.3,
+   "median_px_err": 20.9,
+   "n_truth_points": 24,
+   "board_err": 6.5,
+   "lane_err_boards": 230.5,
+   "window_err": [
+    5,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 28.5,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_191913_907c358b",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 25.6,
+   "processed": true,
+   "n_track_points": 78,
+   "final_board": null,
+   "lane_sources": {
+    "static": 99
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 8.7,
+   "median_px_err": 100.7,
+   "n_truth_points": 23,
+   "board_err": null,
+   "lane_err_boards": 298.58,
+   "window_err": [
+    4,
+    11
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_192142_eeb210f6",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 24.8,
+   "processed": true,
+   "n_track_points": 60,
+   "final_board": null,
+   "lane_sources": {
+    "static": 96
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 17,
+   "board_err": null,
+   "lane_err_boards": 98.76,
+   "window_err": [
+    5,
+    2
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_192636_7c7fbfb0",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 25.0,
+   "processed": true,
+   "n_track_points": 68,
+   "final_board": null,
+   "lane_sources": {
+    "static": 97
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 193.85,
+   "window_err": [
+    3,
+    2
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_185121_23d80f05",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 21.7,
+   "processed": true,
+   "n_track_points": 5,
+   "final_board": null,
+   "lane_sources": {
+    "static": 90
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 76.33,
+   "window_err": [
+    12,
+    43
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_185331_19de9ec7",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 25.6,
+   "processed": true,
+   "n_track_points": 30,
+   "final_board": null,
+   "lane_sources": {
+    "static": 91
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 60,
+   "board_err": null,
+   "lane_err_boards": 89.41,
+   "window_err": [
+    42,
+    11
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_185645_9fde3c16",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 22.8,
+   "processed": true,
+   "n_track_points": 35,
+   "final_board": null,
+   "lane_sources": {
+    "static": 93
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 62,
+   "board_err": null,
+   "lane_err_boards": 94.61,
+   "window_err": [
+    48,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_185454_f240c883",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 27.1,
+   "processed": true,
+   "n_track_points": 49,
+   "final_board": null,
+   "lane_sources": {
+    "static": 82
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 48.1,
+   "median_px_err": 5.4,
+   "n_truth_points": 52,
+   "board_err": null,
+   "lane_err_boards": 237.5,
+   "window_err": [
+    23,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_190115_a7cf2c70",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 24.6,
+   "processed": true,
+   "n_track_points": 25,
+   "final_board": null,
+   "lane_sources": {
+    "static": 85
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 55,
+   "board_err": null,
+   "lane_err_boards": 119.62,
+   "window_err": [
+    46,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_191253_6cf2480f",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 29.9,
+   "processed": true,
+   "n_track_points": 31,
+   "final_board": null,
+   "lane_sources": {
+    "static": 91
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 53,
+   "board_err": null,
+   "lane_err_boards": 265.73,
+   "window_err": [
+    50,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_191820_0196b564",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 29.0,
+   "processed": true,
+   "n_track_points": 37,
+   "final_board": 35.0,
+   "lane_sources": {
+    "static": 83
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 24,
+   "board_err": 32.5,
+   "lane_err_boards": 139.53,
+   "window_err": [
+    35,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 2.5,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_191913_907c358b",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 33.1,
+   "processed": true,
+   "n_track_points": 55,
+   "final_board": null,
+   "lane_sources": {
+    "static": 99
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 30.4,
+   "median_px_err": 3.2,
+   "n_truth_points": 23,
+   "board_err": null,
+   "lane_err_boards": 298.58,
+   "window_err": [
+    22,
+    9
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_192142_eeb210f6",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 31.0,
+   "processed": true,
+   "n_track_points": 46,
+   "final_board": null,
+   "lane_sources": {
+    "static": 96
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 17,
+   "board_err": null,
+   "lane_err_boards": 75.89,
+   "window_err": [
+    40,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_192636_7c7fbfb0",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 32.7,
+   "processed": true,
+   "n_track_points": 48,
+   "final_board": null,
+   "lane_sources": {
+    "static": 97
+   },
+   "window_source": "first/last trajectory frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 193.85,
+   "window_err": [
+    39,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_185121_23d80f05",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 25.6,
+   "processed": true,
+   "n_track_points": 44,
+   "final_board": null,
+   "lane_sources": {
+    "static": 90
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 88.9,
+   "median_px_err": 9.9,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 183.15,
+   "window_err": [
+    11,
+    9
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_185331_19de9ec7",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 29.8,
+   "processed": true,
+   "n_track_points": 34,
+   "final_board": null,
+   "lane_sources": {
+    "static": 91
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 56.7,
+   "median_px_err": 6.9,
+   "n_truth_points": 60,
+   "board_err": null,
+   "lane_err_boards": 89.41,
+   "window_err": [
+    10,
+    26
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_185645_9fde3c16",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 29.0,
+   "processed": true,
+   "n_track_points": 52,
+   "final_board": null,
+   "lane_sources": {
+    "static": 93
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 85.5,
+   "median_px_err": 5.8,
+   "n_truth_points": 62,
+   "board_err": null,
+   "lane_err_boards": 188.07,
+   "window_err": [
+    9,
+    17
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_185454_f240c883",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 30.6,
+   "processed": true,
+   "n_track_points": 30,
+   "final_board": null,
+   "lane_sources": {
+    "static": 82
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 59.6,
+   "median_px_err": 8.0,
+   "n_truth_points": 52,
+   "board_err": null,
+   "lane_err_boards": 237.5,
+   "window_err": [
+    8,
+    5
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_190115_a7cf2c70",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 28.2,
+   "processed": true,
+   "n_track_points": 36,
+   "final_board": null,
+   "lane_sources": {
+    "static": 85
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 69.1,
+   "median_px_err": 4.8,
+   "n_truth_points": 55,
+   "board_err": null,
+   "lane_err_boards": 119.62,
+   "window_err": [
+    9,
+    11
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_191253_6cf2480f",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 35.2,
+   "processed": true,
+   "n_track_points": 51,
+   "final_board": null,
+   "lane_sources": {
+    "static": 91
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 92.5,
+   "median_px_err": 5.0,
+   "n_truth_points": 53,
+   "board_err": null,
+   "lane_err_boards": 265.73,
+   "window_err": [
+    9,
+    23
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_191820_0196b564",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 36.8,
+   "processed": true,
+   "n_track_points": 24,
+   "final_board": 9.0,
+   "lane_sources": {
+    "static": 83
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 24,
+   "board_err": 6.5,
+   "lane_err_boards": 230.5,
+   "window_err": [
+    25,
+    4
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 28.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_191913_907c358b",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 37.0,
+   "processed": true,
+   "n_track_points": 24,
+   "final_board": null,
+   "lane_sources": {
+    "static": 99
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 30.4,
+   "median_px_err": 16.9,
+   "n_truth_points": 23,
+   "board_err": null,
+   "lane_err_boards": 298.58,
+   "window_err": [
+    9,
+    46
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_192142_eeb210f6",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 36.4,
+   "processed": true,
+   "n_track_points": 32,
+   "final_board": null,
+   "lane_sources": {
+    "static": 96
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 41.2,
+   "median_px_err": 7.8,
+   "n_truth_points": 17,
+   "board_err": null,
+   "lane_err_boards": 98.76,
+   "window_err": [
+    9,
+    28
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_192636_7c7fbfb0",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 37.6,
+   "processed": true,
+   "n_track_points": 41,
+   "final_board": null,
+   "lane_sources": {
+    "static": 97
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 55.6,
+   "median_px_err": 3.5,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 193.85,
+   "window_err": [
+    9,
+    27
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_185121_23d80f05",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 126.9,
+   "processed": true,
+   "n_track_points": 44,
+   "final_board": null,
+   "lane_sources": {
+    "static": 90
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 88.9,
+   "median_px_err": 9.9,
+   "n_truth_points": 18,
+   "board_err": null,
+   "lane_err_boards": 183.15,
+   "window_err": [
+    11,
+    9
+   ],
+   "pass": false,
+   "strong": false,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_185331_19de9ec7",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 66.1,
+   "processed": true,
+   "n_track_points": 34,
+   "final_board": 5.0,
+   "lane_sources": {
+    "static": 15,
+    "calibrated": 76
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 56.7,
+   "median_px_err": 6.9,
+   "n_truth_points": 60,
+   "board_err": 0.5,
+   "lane_err_boards": 0.88,
+   "window_err": [
+    10,
+    17
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 30.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_185645_9fde3c16",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 71.1,
+   "processed": true,
+   "n_track_points": 52,
+   "final_board": 9.0,
+   "lane_sources": {
+    "static": 15,
+    "calibrated": 78
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 85.5,
+   "median_px_err": 5.8,
+   "n_truth_points": 62,
+   "board_err": 3.5,
+   "lane_err_boards": 0.69,
+   "window_err": [
+    9,
+    9
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 25.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_185454_f240c883",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 69.2,
+   "processed": true,
+   "n_track_points": 30,
+   "final_board": 13.0,
+   "lane_sources": {
+    "static": 13,
+    "calibrated": 69
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 59.6,
+   "median_px_err": 8.0,
+   "n_truth_points": 52,
+   "board_err": 2.5,
+   "lane_err_boards": 2.14,
+   "window_err": [
+    8,
+    13
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 16.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_190115_a7cf2c70",
+   "split": "dev",
+   "rc": 0,
+   "error": null,
+   "wall_s": 92.3,
+   "processed": true,
+   "n_track_points": 36,
+   "final_board": 9.0,
+   "lane_sources": {
+    "static": 15,
+    "calibrated": 70
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 69.1,
+   "median_px_err": 4.8,
+   "n_truth_points": 55,
+   "board_err": 0.5,
+   "lane_err_boards": 1.15,
+   "window_err": [
+    9,
+    7
+   ],
+   "pass": true,
+   "strong": false,
+   "board_err_if_flipped": 22.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_191253_6cf2480f",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 83.8,
+   "processed": true,
+   "n_track_points": 51,
+   "final_board": 6.0,
+   "lane_sources": {
+    "static": 15,
+    "calibrated": 76
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 92.5,
+   "median_px_err": 5.0,
+   "n_truth_points": 53,
+   "board_err": 0.5,
+   "lane_err_boards": 2.84,
+   "window_err": [
+    9,
+    7
+   ],
+   "pass": true,
+   "strong": true,
+   "board_err_if_flipped": 27.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_191820_0196b564",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 93.8,
+   "processed": true,
+   "n_track_points": 24,
+   "final_board": 9.0,
+   "lane_sources": {
+    "static": 83
+   },
+   "window_source": "yolo_chain.throw",
+   "frames_outside_cut": 0,
+   "recall_pct": 0.0,
+   "median_px_err": null,
+   "n_truth_points": 24,
+   "board_err": 6.5,
+   "lane_err_boards": 230.5,
+   "window_err": [
+    25,
+    4
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 28.5,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_191913_907c358b",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 78.4,
+   "processed": true,
+   "n_track_points": 24,
+   "final_board": 9.0,
+   "lane_sources": {
+    "static": 33,
+    "calibrated": 66
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 30.4,
+   "median_px_err": 16.9,
+   "n_truth_points": 23,
+   "board_err": 2.0,
+   "lane_err_boards": 6.51,
+   "window_err": [
+    9,
+    33
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 24.0,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_192142_eeb210f6",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 88.4,
+   "processed": true,
+   "n_track_points": 32,
+   "final_board": 6.0,
+   "lane_sources": {
+    "static": 16,
+    "calibrated": 80
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 41.2,
+   "median_px_err": 7.8,
+   "n_truth_points": 17,
+   "board_err": 4.0,
+   "lane_err_boards": 2.44,
+   "window_err": [
+    9,
+    17
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 24.0,
+   "scored": true
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_192636_7c7fbfb0",
+   "split": "holdout",
+   "rc": 0,
+   "error": null,
+   "wall_s": 130.5,
+   "processed": true,
+   "n_track_points": 41,
+   "final_board": 7.0,
+   "lane_sources": {
+    "static": 16,
+    "calibrated": 81
+   },
+   "window_source": "yolo_chain.throw; pin=sam last_lane_frame",
+   "frames_outside_cut": 0,
+   "recall_pct": 55.6,
+   "median_px_err": 3.5,
+   "n_truth_points": 18,
+   "board_err": 5.5,
+   "lane_err_boards": 4.6,
+   "window_err": [
+    9,
+    14
+   ],
+   "pass": false,
+   "strong": false,
+   "board_err_if_flipped": 20.5,
+   "scored": true
+  },
+  {
+   "config": "service",
+   "stem": "20260915_191900_106ea7ca",
+   "split": "dev",
+   "rc": null,
+   "processed": false,
+   "scored": false,
+   "error": "no cut (no throw in clip)"
+  },
+  {
+   "config": "yolo",
+   "stem": "20260915_191900_106ea7ca",
+   "split": "dev",
+   "rc": null,
+   "processed": false,
+   "scored": false,
+   "error": "no cut (no throw in clip)"
+  },
+  {
+   "config": "yolo_chain",
+   "stem": "20260915_191900_106ea7ca",
+   "split": "dev",
+   "rc": null,
+   "processed": false,
+   "scored": false,
+   "error": "no cut (no throw in clip)"
+  },
+  {
+   "config": "yolo_chain_sam",
+   "stem": "20260915_191900_106ea7ca",
+   "split": "dev",
+   "rc": null,
+   "processed": false,
+   "scored": false,
+   "error": "no cut (no throw in clip)"
+  }
+ ]
+}

@@ -1,0 +1,32 @@
+{
+  "key": "sam2-video",
+  "judged": "2026-10-10",
+  "ran_fresh": true,
+  "device": "mps",
+  "machine_load": "load average 1.6-3.7 during the runs; no other torch process seen at start; one process at a time",
+  "holdout": [
+    {"stem": "20260915_191253_6cf2480f", "recall_pct": 100.0, "n_matched": 53, "n_truth": 53, "median_px_err": 1.9, "board_err": 0.5, "final_board": 6.0, "lane_err_boards": 2.44, "wall_s": 78.8, "pass": true, "strong": true},
+    {"stem": "20260915_191820_0196b564", "recall_pct": 95.8, "n_matched": 23, "n_truth": 24, "median_px_err": 4.2, "board_err": 1.5, "final_board": 1.0, "lane_err_boards": 6.25, "wall_s": 62.0, "pass": true, "strong": true},
+    {"stem": "20260915_191913_907c358b", "recall_pct": 56.5, "n_matched": 13, "n_truth": 23, "median_px_err": 2.8, "board_err": 0.0, "final_board": 7.0, "lane_err_boards": 4.88, "wall_s": 96.5, "pass": false, "strong": false},
+    {"stem": "20260915_192142_eeb210f6", "recall_pct": 100.0, "n_matched": 17, "n_truth": 17, "median_px_err": 2.7, "board_err": 5.0, "final_board": 5.0, "lane_err_boards": 2.74, "wall_s": 87.9, "pass": false, "strong": false},
+    {"stem": "20260915_192636_7c7fbfb0", "recall_pct": 100.0, "n_matched": 18, "n_truth": 18, "median_px_err": 7.7, "board_err": 5.5, "final_board": 7.0, "lane_err_boards": 2.67, "wall_s": 223.6, "pass": false, "strong": false}
+  ],
+  "holdout_mean_recall": 90.46,
+  "holdout_mean_board_err": 2.5,
+  "holdout_mean_lane_err_boards": 3.8,
+  "holdout_mean_wall_s": 109.8,
+  "holdout_board_err_le3": 3,
+  "holdout_recall_ge60": 4,
+  "holdout_per_stem_pass": 2,
+  "determinism": "fresh holdout tracks identical (max 0.0 px, same boards) to the tracks the experiment wrote earlier",
+  "dev_repro": {"stem": "20260915_185454_f240c883", "recall_pct": 100.0, "board_err": 0.5, "claimed_recall_pct": 100.0, "claimed_board_err": 0.5, "wall_s": 69.3, "claimed_wall_s": 77.6, "reproduced": true},
+  "verdict": "works",
+  "verdict_rule": "works = holdout mean recall >= 60 and board_err <= 3 on >= 3 of 5",
+  "caveats": [
+    "191913 board_err 0.0 is luck: from f493 the crop re-prompt pass sits on a dark object in the right gutter/kickback 26-41 px right of the ball (visible in the lane); the engine read the board at last_lane_frame 492, one frame before the drift",
+    "192142 and 192636 board_err 5.0/5.5 come from the engine lane quad (right edge inside the true lane edge on 192142), not from the ball track, which sits on the ball in every inspected frame; both read too far right",
+    "only 2 of 5 stems pass the per-stem scorer gate (recall>=60 and board<=3)",
+    "192636 wall 223.6 s (engine lane pass 181 s); 2 of 5 holdout stems over 90 s, 1 over 120 s"
+  ],
+  "notes": "results/judge_sam2-video_notes.md"
+}

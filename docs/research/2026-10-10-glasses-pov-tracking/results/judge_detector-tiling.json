@@ -1,0 +1,23 @@
+{
+ "key": "detector-tiling",
+ "judged": "2026-10-10",
+ "ran_fresh": true,
+ "run": "run.py <stem> (no --cache), sequential, engine venv python, no edits",
+ "machine_loaded": "yes: 2-3 other torch jobs (cam-diff, appearance-prior, sam2-video) running; load average 7-11 on 12 cores during the runs",
+ "holdout": [
+  {"stem": "20260915_191253_6cf2480f", "recall_pct": 96.2, "median_px_err": 5.2, "board_err": 0.5, "lane_err_boards": 3.55, "window_err": [4, 7], "pass": true, "final_board": 7.0, "wall_s": 65.4},
+  {"stem": "20260915_191820_0196b564", "recall_pct": 58.3, "median_px_err": 7.5, "board_err": null, "lane_err_boards": null, "window_err": [3, 13], "pass": false, "final_board": null, "lane": "refused (no calibration)", "wall_s": 73.7},
+  {"stem": "20260915_191913_907c358b", "recall_pct": 60.9, "median_px_err": 8.3, "board_err": 2.0, "lane_err_boards": 2.35, "window_err": [2, 20], "pass": true, "final_board": 9.0, "wall_s": 68.2},
+  {"stem": "20260915_192142_eeb210f6", "recall_pct": 94.1, "median_px_err": 6.1, "board_err": 1.0, "lane_err_boards": 2.19, "window_err": [4, 4], "pass": true, "final_board": 9.0, "wall_s": 76.6},
+  {"stem": "20260915_192636_7c7fbfb0", "recall_pct": 83.3, "median_px_err": 3.6, "board_err": 5.5, "lane_err_boards": 3.54, "window_err": [5, 15], "pass": false, "final_board": 7.0, "wall_s": 94.9}
+ ],
+ "holdout_mean_recall": 78.56,
+ "holdout_mean_board_err_over_4_with_board": 2.25,
+ "board_err_le_3_count": 3,
+ "recall_ge_60_count": 4,
+ "fresh_vs_experiment_holdout_tracks": "identical (max |dx|+|dy| 0.0 px on every frame, same final boards) on all 5",
+ "dev_repro": {"stem": "20260915_185645_9fde3c16", "claimed": {"recall_pct": 95.2, "board_err": 3.5}, "fresh": {"recall_pct": 95.2, "median_px_err": 6.4, "board_err": 3.5, "lane_err_boards": 0.36, "wall_s": 56.8}, "reproduced": true},
+ "overlay_check": "per-frame contact sheets (8 frames each) for 192636 and 191913: the circle is on the ball in all 16 frames, the lane quad is the lane the ball rolls on; 191913's chain stops at 498 with the ball still short of the pins (cutter pin hit 509); 192636 final board 7 reads low against the ball's position at the deck (visual ~8-12), consistent with board_err 5.5",
+ "verdict": "works",
+ "verdict_rule": "works = holdout mean recall >= 60 and board_err <= 3 on at least 3 of 5"
+}

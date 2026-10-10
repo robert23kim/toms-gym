@@ -1,0 +1,32 @@
+{
+ "stem": "20260915_191900_106ea7ca",
+ "method": "sam2-video",
+ "frames": [],
+ "lane": {},
+ "boards": {},
+ "final_board": null,
+ "release_frame": null,
+ "pin_hit_frame": null,
+ "meta": {
+  "note": "no cut: no throw in the clip",
+  "passes": [],
+  "device": "mps",
+  "wall_s": 0.0,
+  "fallback": {
+   "triggered": true,
+   "reasons": [
+    "0 points < 15",
+    "no final_board"
+   ],
+   "applied": false,
+   "not_applied_because": "no baseline track for this stem"
+  }
+ },
+ "lane_top_down": [],
+ "lane_top_down_model": {
+  "kind": "pin_only",
+  "a": 60.0,
+  "b": 0.0,
+  "reason": "0 samples"
+ }
+}

@@ -1,0 +1,98 @@
+{
+ "flags": [
+  "--no-sam",
+  "--model",
+  "fixed",
+  "--no-yolo",
+  "--tag",
+  "fixed_noyolo_motionpeak_nosam"
+ ],
+ "rows": [
+  {
+   "stem": "20260915_185121_23d80f05",
+   "method": "appearance-prior/fixed (no sam) [fixed_noyolo_motionpeak_nosam]",
+   "recall_pct": 94.4,
+   "n_matched": 17,
+   "n_truth_points": 18,
+   "median_px_err": 5.8,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    1,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 2.6
+  },
+  {
+   "stem": "20260915_185331_19de9ec7",
+   "method": "appearance-prior/fixed (no sam) [fixed_noyolo_motionpeak_nosam]",
+   "recall_pct": 93.3,
+   "n_matched": 56,
+   "n_truth_points": 60,
+   "median_px_err": 3.2,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 2.1
+  },
+  {
+   "stem": "20260915_185645_9fde3c16",
+   "method": "appearance-prior/fixed (no sam) [fixed_noyolo_motionpeak_nosam]",
+   "recall_pct": 100.0,
+   "n_matched": 62,
+   "n_truth_points": 62,
+   "median_px_err": 3.8,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 2.2
+  },
+  {
+   "stem": "20260915_185454_f240c883",
+   "method": "appearance-prior/fixed (no sam) [fixed_noyolo_motionpeak_nosam]",
+   "recall_pct": 100.0,
+   "n_matched": 52,
+   "n_truth_points": 52,
+   "median_px_err": 3.2,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 2.0
+  },
+  {
+   "stem": "20260915_190115_a7cf2c70",
+   "method": "appearance-prior/fixed (no sam) [fixed_noyolo_motionpeak_nosam]",
+   "recall_pct": 100.0,
+   "n_matched": 55,
+   "n_truth_points": 55,
+   "median_px_err": 3.2,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    20
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 2.0
+  }
+ ],
+ "mean_recall": 97.5
+}

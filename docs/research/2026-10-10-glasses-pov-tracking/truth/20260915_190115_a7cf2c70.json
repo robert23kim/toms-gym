@@ -1,0 +1,524 @@
+{
+ "stem": "20260915_190115_a7cf2c70",
+ "video": "/Users/toka/Downloads/20260915_190115_a7cf2c70.mp4",
+ "codec": "hevc",
+ "size": [
+  1296,
+  1728
+ ],
+ "frames": 540,
+ "fps": 30.005,
+ "handedness": "right (assumed, as the 09-19 truth)",
+ "board_convention": "1-39 counted from the RIGHT gutter (right-hander's convention), read at the last on-lane frames before pin contact",
+ "camera": "Meta glasses, first person: looks down at the ball through release, then the head comes up and the frame tilts up toward the pins",
+ "release_frame": 390,
+ "release_uncertain": "+-1: 389 ball in hand at the frame bottom (half out of frame); 390 ball on the lane, blurred, hand trailing (centre read by hand, +-15 px)",
+ "pin_hit_frame": 444,
+ "pin_hit_uncertain": "+-1: ball below the right-side pin bases at 441, touching them at 443, among the right-side pins 444-445; agrees with cuts.json",
+ "ball_invisible": [],
+ "lane": {
+  "description": "Same lane as 185454: pin deck immediately LEFT of the '40 41' masking label; ball finishes on the right side of the rack.",
+  "lane_number_guess": 40,
+  "ref_frames": {
+   "440": {
+    "pin_end_row": {
+     "y": 636,
+     "left_x": 385,
+     "right_x": 475
+    },
+    "mid_row": {
+     "y": 1100,
+     "left_x": 150,
+     "right_x": 542
+    },
+    "bottom_row": {
+     "y": 1727,
+     "left_x": null,
+     "right_x": 631,
+     "left_x_extrapolated": -169
+    },
+    "uncertain": true,
+    "note": "rack columns 405..464 (centre 436) sit asymmetrically inside the edges (left gap 20, right gap 11): left deck edge possibly ~9 px too far left, as in 185454."
+   }
+  }
+ },
+ "foul_line_visible": false,
+ "lane_quads": {
+  "440": {
+   "fl_l": [
+    2,
+    1390
+   ],
+   "fl_r": [
+    583,
+    1390
+   ],
+   "pd_l": [
+    385,
+    636
+   ],
+   "pd_r": [
+    475,
+    636
+   ],
+   "fl_is_foul_line": false,
+   "fl_row_note": "lowest row with both edges in frame (left edge leaves at y~1394); fit left=352.5-0.5075(y-700), right=541.5+0.143(y-1100)"
+  },
+  "400": {
+   "fl_l": [
+    2,
+    1470
+   ],
+   "fl_r": [
+    1272,
+    1470
+   ],
+   "pd_l": [
+    372,
+    88
+   ],
+   "pd_r": [
+    470,
+    88
+   ],
+   "fl_is_foul_line": false,
+   "uncertain_px": 15,
+   "fl_row_note": "motion-smeared; deck corners by eye at the pin-base row; bottom = lowest row with both edges in frame (left leaves at y~1475); edges bend near the top of frame (lens distortion), so the quad is not a straight-edge fit there"
+  },
+  "420": {
+   "fl_l": [
+    1,
+    1480
+   ],
+   "fl_r": [
+    747,
+    1480
+   ],
+   "pd_l": [
+    437,
+    496
+   ],
+   "pd_r": [
+    519,
+    496
+   ],
+   "fl_is_foul_line": false,
+   "fl_row_note": "lowest row with both edges in frame (left leaves at y~1482); fit left=213.5-0.443(y-1000), right=635.5+0.232(y-1000)"
+  }
+ },
+ "board": 8.5,
+ "board_uncertainty": 1.0,
+ "board_reads": {
+  "edge_profile_b_f430": 8.3,
+  "edge_profile_b_f435": 8.4,
+  "edge_profile_b_f438": 7.5,
+  "edge_profile_b_f440": 8.5,
+  "edge_profile_f442": 8.4,
+  "pin_ruler_f442": 9.4,
+  "pin_ruler_f443": 8.7,
+  "pin_ruler_persp_f442": 7.7
+ },
+ "board_note": "middle of all reads (7.5..9.4) rounded to 0.5; half-spread 0.95, floored at 1.0",
+ "ball": {
+  "390": {
+   "x": 595,
+   "y": 1236,
+   "r": 130,
+   "src": "manual"
+  },
+  "391": {
+   "x": 592.0,
+   "y": 964.0,
+   "r": 124.5,
+   "src": "eye-confirmed"
+  },
+  "392": {
+   "x": 558.5,
+   "y": 783.0,
+   "r": 104.2,
+   "src": "chain-refined"
+  },
+  "393": {
+   "x": 539.5,
+   "y": 664.0,
+   "r": 89.2,
+   "src": "eye-confirmed"
+  },
+  "394": {
+   "x": 531.0,
+   "y": 579.0,
+   "r": 77.5,
+   "src": "chain-refined"
+  },
+  "395": {
+   "x": 524.5,
+   "y": 530.0,
+   "r": 67.2,
+   "src": "chain-refined"
+  },
+  "396": {
+   "x": 520.5,
+   "y": 492.0,
+   "r": 60.2,
+   "src": "eye-confirmed"
+  },
+  "397": {
+   "x": 519.0,
+   "y": 464.5,
+   "r": 53.8,
+   "src": "chain-refined"
+  },
+  "398": {
+   "x": 521.5,
+   "y": 442.0,
+   "r": 47.8,
+   "src": "chain-refined"
+  },
+  "399": {
+   "x": 524.0,
+   "y": 427.5,
+   "r": 43.2,
+   "src": "chain-refined"
+  },
+  "400": {
+   "x": 522.0,
+   "y": 416.5,
+   "r": 40.2,
+   "src": "eye-confirmed"
+  },
+  "401": {
+   "x": 522.0,
+   "y": 404.5,
+   "r": 34.2,
+   "src": "chain-refined"
+  },
+  "402": {
+   "x": 522.5,
+   "y": 395.5,
+   "r": 28.5,
+   "src": "chain-refined"
+  },
+  "403": {
+   "x": 524.0,
+   "y": 402.5,
+   "r": 27.8,
+   "src": "chain-refined"
+  },
+  "404": {
+   "x": 523.0,
+   "y": 414.5,
+   "r": 28.2,
+   "src": "chain-refined"
+  },
+  "405": {
+   "x": 521.0,
+   "y": 427.0,
+   "r": 25.0,
+   "src": "eye-confirmed"
+  },
+  "406": {
+   "x": 522.0,
+   "y": 442.5,
+   "r": 23.2,
+   "src": "chain-refined"
+  },
+  "407": {
+   "x": 522.0,
+   "y": 458.5,
+   "r": 23.8,
+   "src": "chain-refined"
+  },
+  "408": {
+   "x": 521.5,
+   "y": 473.5,
+   "r": 23.0,
+   "src": "chain-refined"
+  },
+  "409": {
+   "x": 520.0,
+   "y": 486.5,
+   "r": 20.2,
+   "src": "chain-refined"
+  },
+  "410": {
+   "x": 518.0,
+   "y": 502.0,
+   "r": 20.0,
+   "src": "eye-confirmed"
+  },
+  "411": {
+   "x": 517.0,
+   "y": 515.0,
+   "r": 19.5,
+   "src": "chain-refined"
+  },
+  "412": {
+   "x": 516.0,
+   "y": 529.0,
+   "r": 19.0,
+   "src": "chain-refined"
+  },
+  "413": {
+   "x": 513.0,
+   "y": 539.5,
+   "r": 17.2,
+   "src": "chain-refined"
+  },
+  "414": {
+   "x": 512.0,
+   "y": 551.0,
+   "r": 16.5,
+   "src": "chain-refined"
+  },
+  "415": {
+   "x": 510.0,
+   "y": 562.0,
+   "r": 16.5,
+   "src": "eye-confirmed"
+  },
+  "416": {
+   "x": 509.0,
+   "y": 571.0,
+   "r": 16.0,
+   "src": "chain-refined"
+  },
+  "417": {
+   "x": 507.0,
+   "y": 577.5,
+   "r": 15.8,
+   "src": "chain-refined"
+  },
+  "418": {
+   "x": 504.0,
+   "y": 583.5,
+   "r": 14.8,
+   "src": "chain-refined"
+  },
+  "419": {
+   "x": 503.0,
+   "y": 590.5,
+   "r": 14.2,
+   "src": "chain-refined"
+  },
+  "420": {
+   "x": 502.0,
+   "y": 598.0,
+   "r": 14.0,
+   "src": "eye-confirmed"
+  },
+  "421": {
+   "x": 499.5,
+   "y": 604.0,
+   "r": 13.8,
+   "src": "chain-refined"
+  },
+  "422": {
+   "x": 496.0,
+   "y": 611.5,
+   "r": 13.2,
+   "src": "chain-refined"
+  },
+  "423": {
+   "x": 494.0,
+   "y": 619.0,
+   "r": 13.0,
+   "src": "chain-refined"
+  },
+  "424": {
+   "x": 492.5,
+   "y": 625.5,
+   "r": 13.0,
+   "src": "chain-refined"
+  },
+  "425": {
+   "x": 489.5,
+   "y": 631.5,
+   "r": 12.5,
+   "src": "eye-confirmed"
+  },
+  "426": {
+   "x": 486.0,
+   "y": 637.0,
+   "r": 12.0,
+   "src": "chain-refined"
+  },
+  "427": {
+   "x": 484.0,
+   "y": 642.0,
+   "r": 11.5,
+   "src": "chain-refined"
+  },
+  "428": {
+   "x": 482.0,
+   "y": 646.0,
+   "r": 11.5,
+   "src": "chain-refined"
+  },
+  "429": {
+   "x": 481.0,
+   "y": 649.0,
+   "r": 11.0,
+   "src": "chain-refined"
+  },
+  "430": {
+   "x": 478.0,
+   "y": 651.5,
+   "r": 11.2,
+   "src": "eye-confirmed"
+  },
+  "431": {
+   "x": 475.0,
+   "y": 652.5,
+   "r": 10.2,
+   "src": "chain-refined"
+  },
+  "432": {
+   "x": 473.0,
+   "y": 654.5,
+   "r": 10.8,
+   "src": "chain-refined"
+  },
+  "433": {
+   "x": 472.0,
+   "y": 655.0,
+   "r": 10.0,
+   "src": "chain-refined"
+  },
+  "434": {
+   "x": 469.0,
+   "y": 654.0,
+   "r": 10.5,
+   "src": "chain-refined"
+  },
+  "435": {
+   "x": 466.0,
+   "y": 652.5,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  },
+  "436": {
+   "x": 464.0,
+   "y": 653.0,
+   "r": 9.5,
+   "src": "chain-refined"
+  },
+  "437": {
+   "x": 463.0,
+   "y": 652.5,
+   "r": 9.2,
+   "src": "chain-refined"
+  },
+  "438": {
+   "x": 461.0,
+   "y": 651.0,
+   "r": 9.0,
+   "src": "eye-confirmed"
+  },
+  "439": {
+   "x": 457.5,
+   "y": 648.5,
+   "r": 9.0,
+   "src": "chain-refined"
+  },
+  "440": {
+   "x": 455.0,
+   "y": 647.0,
+   "r": 9.0,
+   "src": "eye-confirmed"
+  },
+  "441": {
+   "x": 452.5,
+   "y": 645.0,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  },
+  "442": {
+   "x": 450.0,
+   "y": 641.5,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  },
+  "443": {
+   "x": 448.0,
+   "y": 638.5,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  },
+  "444": {
+   "x": 444.0,
+   "y": 635.0,
+   "r": 9.0,
+   "src": "eye-confirmed"
+  }
+ },
+ "ball_every_5th": {
+  "390": {
+   "x": 595,
+   "y": 1236,
+   "r": 130,
+   "src": "manual"
+  },
+  "395": {
+   "x": 524.5,
+   "y": 530.0,
+   "r": 67.2,
+   "src": "chain-refined"
+  },
+  "400": {
+   "x": 522.0,
+   "y": 416.5,
+   "r": 40.2,
+   "src": "eye-confirmed"
+  },
+  "405": {
+   "x": 521.0,
+   "y": 427.0,
+   "r": 25.0,
+   "src": "eye-confirmed"
+  },
+  "410": {
+   "x": 518.0,
+   "y": 502.0,
+   "r": 20.0,
+   "src": "eye-confirmed"
+  },
+  "415": {
+   "x": 510.0,
+   "y": 562.0,
+   "r": 16.5,
+   "src": "eye-confirmed"
+  },
+  "420": {
+   "x": 502.0,
+   "y": 598.0,
+   "r": 14.0,
+   "src": "eye-confirmed"
+  },
+  "425": {
+   "x": 489.5,
+   "y": 631.5,
+   "r": 12.5,
+   "src": "eye-confirmed"
+  },
+  "430": {
+   "x": 478.0,
+   "y": 651.5,
+   "r": 11.2,
+   "src": "eye-confirmed"
+  },
+  "435": {
+   "x": 466.0,
+   "y": 652.5,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  },
+  "440": {
+   "x": 455.0,
+   "y": 647.0,
+   "r": 9.0,
+   "src": "eye-confirmed"
+  }
+ },
+ "truth_method": "Ball: purple HSV blob chain (work/truth/hsv_chain.py) seeded by eye, refined to a Lab b* mask bounding box (refine.py), cross-checked against yolo11n_bowling.pt boxes at conf 0.1 (yolo_cands.json), and eye-checked on 3x gridded crops (gc_<f>.jpg, montage_*.jpg) with the fitted circle drawn; frames with src 'eye-confirmed' were looked at, 'chain-refined' frames lie between them on the same smooth chain and were not individually inspected; 'manual' = read off the crop by hand. Centres +-5 px for r>20, +-2 px for r<15. Lane: edge scans (intensity and Lab b*) on rows of the source frame, straight-line fits where rows agree, visual reads on gridded crops for the motion-smeared release+10 frames. Board: edge profile at several late frames plus the 7-column pin ruler (7-pin to 10-pin = 36 in) with and without a perspective correction; board = middle of all reads rounded to 0.5, uncertainty = half their spread, floored at 1.0. 'ball' uses the {x,y,r,src} dict of the three 09-19 truth files, not [x,y,r], so one scorer reads all six.",
+ "camera_motion_note": "camera_motion_px_per_frame not computed for this video (09-19 motion.py not re-run)"
+}

@@ -1,0 +1,241 @@
+{
+ "stem": "20260915_191913_907c358b",
+ "video": "/Users/toka/Downloads/20260915_191913_907c358b.mp4",
+ "codec": "hevc",
+ "size": [
+  1376,
+  1824
+ ],
+ "frames": 618,
+ "fps": 30.005,
+ "handedness": "right (assumed, as the 09-19 truth)",
+ "board_convention": "1-39 counted from the RIGHT gutter (right-hander's convention), read at the last on-lane frames before the pins",
+ "camera": "Meta glasses, first person: looks down at the ball until release, then the head comes up and rolls; every frame moves",
+ "release_frame": 442,
+ "release_uncertain": "+-1: ball entering the frame bottom at 441, on the lane with the hand trailing over it at 442-443, free at 444 (cuts.json said 441)",
+ "pin_hit_frame": 509,
+ "pin_hit_uncertain": "+-2: ball in front of the right side of the rack (6/10 pin columns) 505-506, overlapping the pins 507-509, pins still upright at 511, scattered by 515",
+ "gutter_ball": false,
+ "ball_invisible": [],
+ "lane": {
+  "description": "Lane immediately RIGHT of the '38 39' masking label (lane 39 by the label reading). Pin-deck edges at 505 cross-checked against the 7 visible pin columns (6 in apart, head pin = board 20). Frame 452 is motion-blurred at the far end; its pin-deck row is +-8 px.",
+  "ref_frames": {
+   "505": {
+    "pin_end_row": {
+     "y": 872,
+     "left_x": 366,
+     "right_x": 442
+    },
+    "mid_row": {
+     "y": 1300,
+     "left_x": 283,
+     "right_x": 645
+    },
+    "bottom_row": {
+     "y": 1800,
+     "left_x": 194,
+     "right_x": 878
+    },
+    "uncertain": true
+   }
+  }
+ },
+ "lane_quads": {
+  "452": {
+   "fl_l": [
+    153,
+    1270
+   ],
+   "fl_r": [
+    1018,
+    1270
+   ],
+   "pd_l": [
+    455,
+    317
+   ],
+   "pd_r": [
+    548,
+    317
+   ],
+   "fl_is_foul_line": false
+  },
+  "472": {
+   "fl_l": [
+    218,
+    1800
+   ],
+   "fl_r": [
+    929,
+    1800
+   ],
+   "pd_l": [
+    532,
+    859
+   ],
+   "pd_r": [
+    613,
+    859
+   ],
+   "fl_is_foul_line": false
+  },
+  "505": {
+   "fl_l": [
+    194,
+    1800
+   ],
+   "fl_r": [
+    878,
+    1800
+   ],
+   "pd_l": [
+    366,
+    872
+   ],
+   "pd_r": [
+    442,
+    872
+   ],
+   "fl_is_foul_line": false
+  }
+ },
+ "foul_line_visible": false,
+ "board": 7.0,
+ "board_uncertainty": 0.5,
+ "board_reads": {
+  "edge_profile_f505": 6.7,
+  "pin_ruler_f505": 7.4,
+  "edge_profile_f503": 6.0,
+  "pin_ruler_f503": 6.5,
+  "note": "Pin ruler: the 7 pin columns of the rack are 6 in apart (10.1 px at 505), head pin column = lane centre = board 20. Truth = rounded middle of the two f505 reads (7.05); half-spread 0.35, floored to 0.5. The f503 reads sit ~0.8 lower."
+ },
+ "last_on_lane_frames": [
+  504,
+  505,
+  506
+ ],
+ "ball": {
+  "442": [
+   660,
+   1535,
+   108
+  ],
+  "444": [
+   603,
+   1061,
+   108
+  ],
+  "447": [
+   574,
+   755,
+   67
+  ],
+  "451": [
+   601,
+   662,
+   45
+  ],
+  "455": [
+   634,
+   711,
+   28
+  ],
+  "459": [
+   645,
+   777,
+   24
+  ],
+  "463": [
+   640,
+   839,
+   20
+  ],
+  "467": [
+   626,
+   899,
+   16
+  ],
+  "471": [
+   615,
+   931,
+   15
+  ],
+  "475": [
+   603,
+   948,
+   13
+  ],
+  "479": [
+   590,
+   947,
+   11
+  ],
+  "483": [
+   576,
+   936,
+   10
+  ],
+  "487": [
+   560,
+   923,
+   10
+  ],
+  "491": [
+   538,
+   909,
+   10
+  ],
+  "495": [
+   513,
+   897,
+   8.5
+  ],
+  "499": [
+   484,
+   885,
+   9
+  ],
+  "503": [
+   447,
+   871,
+   7.5
+  ],
+  "504": [
+   436,
+   870,
+   7
+  ],
+  "505": [
+   427,
+   867,
+   6.5
+  ],
+  "506": [
+   416,
+   864,
+   6.5
+  ],
+  "507": [
+   404,
+   861,
+   6.5
+  ],
+  "508": [
+   392,
+   858,
+   7
+  ],
+  "509": [
+   381,
+   854,
+   7
+  ]
+ },
+ "ball_uncertain": {
+  "442": "hand overlaps and motion blur; centre +-10 px, r +-10",
+  "507": "overlapping pins; +-2 px",
+  "508": "overlapping pins; +-2 px",
+  "509": "overlapping pins; +-2 px"
+ },
+ "truth_method": "Ball centres/radii read by eye on 3x gridded crops of the source frames (candidates from yolo11n_bowling.pt at conf 0.1 and a purple-HSV blob chain, each shown as a circle on the crop and corrected where it disagreed); lane edges read on gridded row strips at 1-6x; board read two ways at the last on-lane frames (edge profile at the ball row, plus a pin-column or ball-diameter ruler)."
+}

@@ -1,0 +1,21 @@
+{
+ "key": "lane-first",
+ "judged": "2026-10-10",
+ "ran_fresh": true,
+ "run_note": "run.py run fresh on all 5 holdout stems, sequentially, no code changes. Output identical to the experiment's pre-existing holdout tracks except meta.wall_s (deterministic). Machine loaded: load average ~9-10 on 12 cores from other agents' python jobs.",
+ "holdout": [
+  {"stem": "20260915_191253_6cf2480f", "recall_pct": 92.5, "matched": "49/53", "median_px_err": 1.4, "board_err": 0.3, "lane_err_boards": 1.48, "window_err": [0, 6], "pass": true, "strong": true, "final_board": 6.8, "wall_s": 1.5, "real_s": 1.67},
+  {"stem": "20260915_191820_0196b564", "recall_pct": 66.7, "matched": "16/24", "median_px_err": 3.1, "board_err": 1.4, "lane_err_boards": 7.21, "window_err": [1, 5], "pass": true, "strong": false, "final_board": 1.1, "wall_s": 1.3, "real_s": 1.43},
+  {"stem": "20260915_191913_907c358b", "recall_pct": 60.9, "matched": "14/23", "median_px_err": 6.2, "board_err": 0.7, "lane_err_boards": 5.1, "window_err": [1, 13], "pass": true, "strong": false, "final_board": 7.7, "wall_s": 1.7, "real_s": 1.88},
+  {"stem": "20260915_192142_eeb210f6", "recall_pct": 94.1, "matched": "16/17", "median_px_err": 7.1, "board_err": 3.4, "lane_err_boards": 0.93, "window_err": [0, 17], "pass": false, "strong": false, "final_board": 6.6, "wall_s": 1.7, "real_s": 1.81},
+  {"stem": "20260915_192636_7c7fbfb0", "recall_pct": 72.2, "matched": "13/18", "median_px_err": 1.6, "board_err": 5.2, "lane_err_boards": 1.72, "window_err": [0, 2], "pass": false, "strong": false, "final_board": 7.3, "wall_s": 1.6, "real_s": 1.73}
+ ],
+ "holdout_mean_recall": 77.3,
+ "holdout_mean_board_err": 2.2,
+ "holdout_mean_lane_err_boards": 3.29,
+ "board_err_le_3": "3/5",
+ "scorer_pass": "3/5 (strong 1/5)",
+ "dev_repro": {"stem": "20260915_185645_9fde3c16", "claimed": {"recall_pct": 90.3, "board_err": 2.9}, "fresh": {"recall_pct": 90.3, "board_err": 2.9, "median_px_err": 1.8, "lane_err_boards": 2.03}, "reproduced": true},
+ "verdict": "works",
+ "verdict_rule": "works = holdout mean recall >= 60 and board_err <= 3 on >= 3 of 5; met at the minimum (3 of 5)."
+}

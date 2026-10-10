@@ -1,0 +1,57 @@
+{
+ "stem": "20260915_185645_9fde3c16",
+ "method": "appearance-prior/yolo (no sam) [cmp_yolo]",
+ "frames": [
+  {
+   "f": 237,
+   "x": 699.3,
+   "y": 1164.1,
+   "r": 128.8,
+   "conf": 1.0,
+   "src": "start"
+  }
+ ],
+ "lane": {},
+ "boards": {},
+ "final_board": null,
+ "release_frame": 237,
+ "pin_hit_frame": 299,
+ "meta": {
+  "track": {
+   "model": "yolo",
+   "use_yolo": false,
+   "start": {
+    "k": 10,
+    "x": 699.3,
+    "y": 1164.1,
+    "r": 128.8
+   },
+   "stop": {
+    "k": 17,
+    "reason": "misses"
+   },
+   "positions": 1,
+   "frames": [
+    10,
+    10
+   ],
+   "sources": {
+    "start": 1,
+    "blob": 0,
+    "yolo": 0,
+    "motion": 0
+   }
+  },
+  "sam": {
+   "lane_method": "skipped"
+  },
+  "scan_s_cached": 9.7,
+  "wall_s": {
+   "load": 0.2,
+   "track": 0.6,
+   "sam": 0.0,
+   "total_excl_scan": 0.9,
+   "total_incl_scan": 10.6
+  }
+ }
+}

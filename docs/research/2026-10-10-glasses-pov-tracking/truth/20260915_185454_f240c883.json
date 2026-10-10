@@ -1,0 +1,505 @@
+{
+ "stem": "20260915_185454_f240c883",
+ "video": "/Users/toka/Downloads/20260915_185454_f240c883.mp4",
+ "codec": "hevc",
+ "size": [
+  1376,
+  1840
+ ],
+ "frames": 484,
+ "fps": 30.02,
+ "handedness": "right (assumed, as the 09-19 truth)",
+ "board_convention": "1-39 counted from the RIGHT gutter (right-hander's convention), read at the last on-lane frames before pin contact",
+ "camera": "Meta glasses, first person: looks down at the ball through release, then the head comes up and the frame tilts up toward the pins",
+ "release_frame": 326,
+ "release_uncertain": "+-1: 325 ball still in hand entering the frame bottom; 326 ball blurred on the lane with the hand trailing (centre read by hand, +-20 px)",
+ "pin_hit_frame": 377,
+ "pin_hit_uncertain": "+-1: ball below the front pin bases at 376, leading edge at the base row (y~890) at 377, overlapping the pin bases 378-380 (pins still upright to 380); agrees with cuts.json",
+ "ball_invisible": [],
+ "lane": {
+  "description": "Our lane is the one whose pin deck is immediately LEFT of the '40 41' masking label (same deck as 185121); the bowler's lane runs from the bottom-left of the frame to x~380 at the deck.",
+  "lane_number_guess": 40,
+  "ref_frames": {
+   "373": {
+    "pin_end_row": {
+     "y": 906,
+     "left_x": 331,
+     "right_x": 420
+    },
+    "mid_row": {
+     "y": 1200,
+     "left_x": 198,
+     "right_x": 482
+    },
+    "bottom_row": {
+     "y": 1839,
+     "left_x": null,
+     "right_x": 612,
+     "left_x_extrapolated": -90
+    },
+    "uncertain": true,
+    "note": "pin_end_row left_x from the edge scan; the 7-column rack (349..410, centre 380) is asymmetric inside it (left gap 18 px, right gap 10 px), so the left deck edge may be ~9 px too far left (rack-symmetric estimate 340)."
+   }
+  }
+ },
+ "foul_line_visible": false,
+ "lane_quads": {
+  "373": {
+   "fl_l": [
+    4,
+    1630
+   ],
+   "fl_r": [
+    572,
+    1630
+   ],
+   "pd_l": [
+    331,
+    906
+   ],
+   "pd_r": [
+    420,
+    906
+   ],
+   "fl_is_foul_line": false,
+   "fl_row_note": "lowest row with both edges in frame (left edge leaves the frame at y~1639); straight-line fit left=287.5-0.45(y-1000), right=439.5+0.21(y-1000)"
+  },
+  "336": {
+   "fl_l": [
+    136,
+    1740
+   ],
+   "fl_r": [
+    1373,
+    1740
+   ],
+   "pd_l": [
+    399,
+    400
+   ],
+   "pd_r": [
+    495,
+    400
+   ],
+   "fl_is_foul_line": false,
+   "uncertain_px": 15,
+   "fl_row_note": "frame rolled and motion-smeared; bottom row = lowest row with both edges in frame (right edge leaves at y~1744); deck corners read by eye on gc crop (pins 401..480)"
+  },
+  "356": {
+   "fl_l": [
+    7,
+    1800
+   ],
+   "fl_r": [
+    707,
+    1800
+   ],
+   "pd_l": [
+    333,
+    885
+   ],
+   "pd_r": [
+    424,
+    885
+   ],
+   "fl_is_foul_line": false,
+   "fl_row_note": "lowest row with both edges in frame (left edge leaves at y~1820); fit left=293.5-0.358(y-1000), right=458.5+0.31(y-1000)"
+  }
+ },
+ "board": 10.5,
+ "board_uncertainty": 1.05,
+ "board_reads": {
+  "edge_profile_f372": 10.2,
+  "edge_profile_b_f373": 10.9,
+  "edge_profile_f374": 11.5,
+  "edge_profile_f375": 10.6,
+  "edge_profile_f376": 10.2,
+  "pin_ruler_f376": 10.4,
+  "pin_ruler_persp_f376": 9.4
+ },
+ "board_note": "middle of all reads (9.4..11.5) rounded to 0.5; half-spread 1.05, floored at 1.0",
+ "ball": {
+  "326": {
+   "x": 740,
+   "y": 1470,
+   "r": 110,
+   "src": "manual"
+  },
+  "327": {
+   "x": 741.0,
+   "y": 1221.5,
+   "r": 115.8,
+   "src": "eye-confirmed"
+  },
+  "328": {
+   "x": 697.0,
+   "y": 1073.5,
+   "r": 107.2,
+   "src": "chain-refined"
+  },
+  "329": {
+   "x": 661.5,
+   "y": 956.5,
+   "r": 91.0,
+   "src": "chain-refined"
+  },
+  "330": {
+   "x": 645.5,
+   "y": 879.5,
+   "r": 79.5,
+   "src": "eye-confirmed"
+  },
+  "331": {
+   "x": 631.0,
+   "y": 827.5,
+   "r": 70.8,
+   "src": "chain-refined"
+  },
+  "332": {
+   "x": 618.0,
+   "y": 795.0,
+   "r": 63.0,
+   "src": "chain-refined"
+  },
+  "333": {
+   "x": 604.5,
+   "y": 771.5,
+   "r": 54.0,
+   "src": "eye-confirmed"
+  },
+  "334": {
+   "x": 591.0,
+   "y": 751.5,
+   "r": 45.2,
+   "src": "chain-refined"
+  },
+  "335": {
+   "x": 578.0,
+   "y": 743.0,
+   "r": 44.0,
+   "src": "chain-refined"
+  },
+  "336": {
+   "x": 561.0,
+   "y": 734.0,
+   "r": 40.5,
+   "src": "eye-confirmed"
+  },
+  "337": {
+   "x": 544.0,
+   "y": 726.0,
+   "r": 37.0,
+   "src": "chain-refined"
+  },
+  "338": {
+   "x": 529.0,
+   "y": 719.0,
+   "r": 30.5,
+   "src": "chain-refined"
+  },
+  "339": {
+   "x": 521.0,
+   "y": 720.0,
+   "r": 28.5,
+   "src": "chain-refined"
+  },
+  "340": {
+   "x": 511.0,
+   "y": 729.0,
+   "r": 28.0,
+   "src": "eye-confirmed"
+  },
+  "341": {
+   "x": 501.0,
+   "y": 740.0,
+   "r": 26.5,
+   "src": "chain-refined"
+  },
+  "342": {
+   "x": 488.0,
+   "y": 754.5,
+   "r": 22.8,
+   "src": "chain-refined"
+  },
+  "343": {
+   "x": 480.0,
+   "y": 775.5,
+   "r": 20.8,
+   "src": "chain-refined"
+  },
+  "344": {
+   "x": 474.0,
+   "y": 801.5,
+   "r": 21.8,
+   "src": "eye-confirmed"
+  },
+  "345": {
+   "x": 467.0,
+   "y": 824.5,
+   "r": 21.2,
+   "src": "chain-refined"
+  },
+  "346": {
+   "x": 460.0,
+   "y": 847.0,
+   "r": 20.5,
+   "src": "chain-refined"
+  },
+  "347": {
+   "x": 455.0,
+   "y": 866.0,
+   "r": 18.0,
+   "src": "chain-refined"
+  },
+  "348": {
+   "x": 448.0,
+   "y": 886.5,
+   "r": 18.2,
+   "src": "eye-confirmed"
+  },
+  "349": {
+   "x": 443.0,
+   "y": 904.5,
+   "r": 18.2,
+   "src": "chain-refined"
+  },
+  "350": {
+   "x": 437.0,
+   "y": 919.5,
+   "r": 17.8,
+   "src": "chain-refined"
+  },
+  "351": {
+   "x": 432.0,
+   "y": 934.5,
+   "r": 16.8,
+   "src": "chain-refined"
+  },
+  "352": {
+   "x": 427.0,
+   "y": 949.0,
+   "r": 16.5,
+   "src": "eye-confirmed"
+  },
+  "353": {
+   "x": 422.0,
+   "y": 959.5,
+   "r": 15.2,
+   "src": "chain-refined"
+  },
+  "354": {
+   "x": 416.0,
+   "y": 969.0,
+   "r": 15.5,
+   "src": "chain-refined"
+  },
+  "355": {
+   "x": 409.0,
+   "y": 976.5,
+   "r": 14.2,
+   "src": "chain-refined"
+  },
+  "356": {
+   "x": 404.0,
+   "y": 981.5,
+   "r": 12.2,
+   "src": "eye-confirmed"
+  },
+  "357": {
+   "x": 400.0,
+   "y": 988.0,
+   "r": 13.5,
+   "src": "chain-refined"
+  },
+  "358": {
+   "x": 397.0,
+   "y": 991.0,
+   "r": 13.0,
+   "src": "chain-refined"
+  },
+  "359": {
+   "x": 391.0,
+   "y": 992.0,
+   "r": 12.5,
+   "src": "chain-refined"
+  },
+  "360": {
+   "x": 387.0,
+   "y": 992.0,
+   "r": 11.0,
+   "src": "eye-confirmed"
+  },
+  "361": {
+   "x": 384.0,
+   "y": 993.5,
+   "r": 12.2,
+   "src": "chain-refined"
+  },
+  "362": {
+   "x": 383.0,
+   "y": 993.0,
+   "r": 13.0,
+   "src": "chain-refined"
+  },
+  "363": {
+   "x": 381.0,
+   "y": 991.5,
+   "r": 12.8,
+   "src": "chain-refined"
+  },
+  "364": {
+   "x": 381.0,
+   "y": 988.5,
+   "r": 12.2,
+   "src": "eye-confirmed"
+  },
+  "365": {
+   "x": 381.0,
+   "y": 984.5,
+   "r": 11.8,
+   "src": "chain-refined"
+  },
+  "366": {
+   "x": 380.5,
+   "y": 979.5,
+   "r": 11.0,
+   "src": "chain-refined"
+  },
+  "367": {
+   "x": 383.0,
+   "y": 972.5,
+   "r": 10.8,
+   "src": "chain-refined"
+  },
+  "368": {
+   "x": 383.0,
+   "y": 963.5,
+   "r": 10.8,
+   "src": "eye-confirmed"
+  },
+  "369": {
+   "x": 385.0,
+   "y": 954.0,
+   "r": 10.0,
+   "src": "chain-refined"
+  },
+  "370": {
+   "x": 387.0,
+   "y": 946.0,
+   "r": 10.0,
+   "src": "chain-refined"
+  },
+  "371": {
+   "x": 392.0,
+   "y": 938.0,
+   "r": 9.0,
+   "src": "chain-refined"
+  },
+  "372": {
+   "x": 394.0,
+   "y": 930.0,
+   "r": 10.0,
+   "src": "eye-confirmed"
+  },
+  "373": {
+   "x": 396.0,
+   "y": 922.0,
+   "r": 9.5,
+   "src": "chain-refined"
+  },
+  "374": {
+   "x": 398.5,
+   "y": 915.0,
+   "r": 8.8,
+   "src": "eye-confirmed"
+  },
+  "375": {
+   "x": 403.0,
+   "y": 909.0,
+   "r": 9.0,
+   "src": "eye-confirmed"
+  },
+  "376": {
+   "x": 407.0,
+   "y": 901.5,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  },
+  "377": {
+   "x": 409.0,
+   "y": 895.0,
+   "r": 9.0,
+   "src": "eye-confirmed"
+  }
+ },
+ "ball_every_5th": {
+  "326": {
+   "x": 740,
+   "y": 1470,
+   "r": 110,
+   "src": "manual"
+  },
+  "331": {
+   "x": 631.0,
+   "y": 827.5,
+   "r": 70.8,
+   "src": "chain-refined"
+  },
+  "336": {
+   "x": 561.0,
+   "y": 734.0,
+   "r": 40.5,
+   "src": "eye-confirmed"
+  },
+  "341": {
+   "x": 501.0,
+   "y": 740.0,
+   "r": 26.5,
+   "src": "chain-refined"
+  },
+  "346": {
+   "x": 460.0,
+   "y": 847.0,
+   "r": 20.5,
+   "src": "chain-refined"
+  },
+  "351": {
+   "x": 432.0,
+   "y": 934.5,
+   "r": 16.8,
+   "src": "chain-refined"
+  },
+  "356": {
+   "x": 404.0,
+   "y": 981.5,
+   "r": 12.2,
+   "src": "eye-confirmed"
+  },
+  "361": {
+   "x": 384.0,
+   "y": 993.5,
+   "r": 12.2,
+   "src": "chain-refined"
+  },
+  "366": {
+   "x": 380.5,
+   "y": 979.5,
+   "r": 11.0,
+   "src": "chain-refined"
+  },
+  "371": {
+   "x": 392.0,
+   "y": 938.0,
+   "r": 9.0,
+   "src": "chain-refined"
+  },
+  "376": {
+   "x": 407.0,
+   "y": 901.5,
+   "r": 9.2,
+   "src": "eye-confirmed"
+  }
+ },
+ "truth_method": "Ball: purple HSV blob chain (work/truth/hsv_chain.py) seeded by eye, refined to a Lab b* mask bounding box (refine.py), cross-checked against yolo11n_bowling.pt boxes at conf 0.1 (yolo_cands.json), and eye-checked on 3x gridded crops (gc_<f>.jpg, montage_*.jpg) with the fitted circle drawn; frames with src 'eye-confirmed' were looked at, 'chain-refined' frames lie between them on the same smooth chain and were not individually inspected; 'manual' = read off the crop by hand. Centres +-5 px for r>20, +-2 px for r<15. Lane: edge scans (intensity and Lab b*) on rows of the source frame, straight-line fits where rows agree, visual reads on gridded crops for the motion-smeared release+10 frames. Board: edge profile at several late frames plus the 7-column pin ruler (7-pin to 10-pin = 36 in) with and without a perspective correction; board = middle of all reads rounded to 0.5, uncertainty = half their spread, floored at 1.0. 'ball' uses the {x,y,r,src} dict of the three 09-19 truth files, not [x,y,r], so one scorer reads all six.",
+ "camera_motion_note": "camera_motion_px_per_frame not computed for this video (09-19 motion.py not re-run)"
+}

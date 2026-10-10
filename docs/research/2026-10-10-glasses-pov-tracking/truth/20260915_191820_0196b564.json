@@ -1,0 +1,250 @@
+{
+ "stem": "20260915_191820_0196b564",
+ "video": "/Users/toka/Downloads/20260915_191820_0196b564.mp4",
+ "codec": "hevc",
+ "size": [
+  1376,
+  1824
+ ],
+ "frames": 522,
+ "fps": 29.991,
+ "handedness": "right (assumed, as the 09-19 truth)",
+ "board_convention": "1-39 counted from the RIGHT gutter (right-hander's convention), read at the last on-lane frames before the pins",
+ "camera": "Meta glasses, first person: looks down at the ball until release, then the head comes up and rolls; every frame moves",
+ "release_frame": 412,
+ "release_uncertain": "+-1: ball low in frame with the hand over it at 411, fingers still crossing it at 412, free at 413 (cuts.json said 411)",
+ "pin_hit_frame": 463,
+ "pin_hit_uncertain": "+-2: RIGHT GUTTER BALL, no pin contact; ball reaches the pin-deck front in the right gutter at 462-464, camera whips/blurs from 464",
+ "gutter_ball": true,
+ "ball_invisible": [],
+ "lane": {
+  "description": "Centre lane of the frame after release (pins at x~740-805, y~990-1045 at frame 459); image is strongly rolled (~8 deg at the rack, more mid-roll) as the head turns right. Frame 422 is heavily motion-blurred, its quad is +-10 px.",
+  "ref_frames": {
+   "459": {
+    "pin_end_row": {
+     "y": 1043,
+     "left_x": 734,
+     "right_x": 812
+    },
+    "mid_row": {
+     "y": 1400,
+     "left_x": 610,
+     "right_x": 917
+    },
+    "bottom_row": {
+     "y": 1800,
+     "left_x": 460,
+     "right_x": 1030
+    },
+    "uncertain": true
+   }
+  }
+ },
+ "lane_quads": {
+  "422": {
+   "fl_l": [
+    193,
+    1000
+   ],
+   "fl_r": [
+    846,
+    1000
+   ],
+   "pd_l": [
+    425,
+    285
+   ],
+   "pd_r": [
+    560,
+    285
+   ],
+   "fl_is_foul_line": false
+  },
+  "442": {
+   "fl_l": [
+    273,
+    1800
+   ],
+   "fl_r": [
+    900,
+    1800
+   ],
+   "pd_l": [
+    727,
+    1001
+   ],
+   "pd_r": [
+    810,
+    1005
+   ],
+   "fl_is_foul_line": false
+  },
+  "459": {
+   "fl_l": [
+    460,
+    1800
+   ],
+   "fl_r": [
+    1030,
+    1800
+   ],
+   "pd_l": [
+    734,
+    1040
+   ],
+   "pd_r": [
+    812,
+    1046
+   ],
+   "fl_is_foul_line": false
+  }
+ },
+ "foul_line_visible": false,
+ "board": 2.5,
+ "board_uncertainty": 0.5,
+ "board_reads": {
+  "edge_profile_f437": 2.3,
+  "edge_profile_f440": 2.4,
+  "ball_diameter_ruler_f440": 2.7,
+  "note": "Pin-spacing ruler not usable: the ball leaves the lane ~25 m before the pins, so the rack's px/in does not apply at the ball row; the ball's own 8.5 in diameter was used as the second ruler. Uncertainty floored at 0.5 (half-spread 0.15).",
+  "board_in_gutter_at_pin_deck_f459_approx": -4.0
+ },
+ "last_on_lane_frames": [
+  438,
+  439,
+  440
+ ],
+ "ball": {
+  "412": [
+   690,
+   1080,
+   107
+  ],
+  "413": [
+   651,
+   911,
+   100
+  ],
+  "414": [
+   633,
+   792,
+   88
+  ],
+  "417": [
+   626,
+   641,
+   62
+  ],
+  "420": [
+   625,
+   605,
+   45
+  ],
+  "423": [
+   608,
+   642,
+   31
+  ],
+  "429": [
+   601,
+   810,
+   23
+  ],
+  "435": [
+   657,
+   968,
+   17
+  ],
+  "436": [
+   672,
+   992,
+   17
+  ],
+  "437": [
+   695,
+   1013,
+   16
+  ],
+  "438": [
+   720,
+   1037,
+   16
+  ],
+  "439": [
+   744,
+   1057,
+   16
+  ],
+  "440": [
+   773,
+   1072,
+   15.5
+  ],
+  "441": [
+   800,
+   1087,
+   15
+  ],
+  "442": [
+   822,
+   1098,
+   14
+  ],
+  "447": [
+   907,
+   1133,
+   14
+  ],
+  "450": [
+   924,
+   1135,
+   14
+  ],
+  "453": [
+   915,
+   1126,
+   12
+  ],
+  "456": [
+   885,
+   1100,
+   11
+  ],
+  "459": [
+   832,
+   1074,
+   12
+  ],
+  "460": [
+   805,
+   1067,
+   12
+  ],
+  "461": [
+   779,
+   1052,
+   11
+  ],
+  "462": [
+   748,
+   1031,
+   11
+  ],
+  "463": [
+   717,
+   1017,
+   10
+  ]
+ },
+ "ball_uncertain": {
+  "412": "hand/fingers overlap the ball; centre +-10 px",
+  "435": "ball at the gutter lip, partly darkened",
+  "459": "in the gutter, motion blur",
+  "460": "in the gutter, blur",
+  "461": "in the gutter, blur; centre +-4 px",
+  "462": "in the gutter, blur; centre +-4 px",
+  "463": "in the gutter, heavy blur; centre +-5 px"
+ },
+ "truth_method": "Ball centres/radii read by eye on 3x gridded crops of the source frames (candidates from yolo11n_bowling.pt at conf 0.1 and a purple-HSV blob chain, each shown as a circle on the crop and corrected where it disagreed); lane edges read on gridded row strips at 1-6x; board read two ways at the last on-lane frames (edge profile at the ball row, plus a pin-column or ball-diameter ruler).",
+ "gutter_entry": "ball hugs the right edge ~10 px inside from 437 to 440, centre crosses the edge 441-442, in the right gutter from 443"
+}

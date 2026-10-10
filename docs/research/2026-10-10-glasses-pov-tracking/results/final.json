@@ -1,0 +1,402 @@
+{
+ "method": "sam2-video",
+ "why": "fallback_stems is empty and two stems have no board: 185121 triggered the fallback (the engine SAM lane pass refuses this handheld 09-19 video) but kept its sam2-video track, because the yolo_chain_sam baseline track also has no final_board and fewer points (44 vs 55); 191900 has no throw, so it has an empty track, no cut, no baseline run and no final__ overlay. Choice: under the fixed rule, among the experiments with holdout verdict 'works' (cam-diff 73.0, lane-first 77.3, detector-tiling 78.6, sam2-video 90.5 holdout mean recall), sam2-video has the highest holdout mean recall (90.46 %, board_err <= 3 on 3/5, mean 2.5), so it is the one method for all 11 videos. appearance-prior (98.8 % holdout recall) is excluded by its 'partial' verdict (board <= 3 on only 2/5; 192636 got no board). No composition: no judge measured a lane stage on its own, and lane-first's holdout board misses (192142 3.4, 192636 5.2) are on the same two stems sam2-video misses (5.0, 5.5), so no holdout number justifies swapping the lane stage. Declared dependency: release_frame and pin_hit_frame come from work/cuts/cuts.json and set the SAM prompt window, the lane-pass segment and the reported window. For the dev stems those values were copied from the 09-19 labels, and for the holdout they are independent visual reads, so the dev numbers are not end-to-end and window_err is 0 by construction. track.py never opens a label file (static scan of all 57 imported local modules + an audit-hook run).",
+ "summary": {
+  "dev": {
+   "n": 5,
+   "mean_recall": 97.54,
+   "mean_board_err": 1.0,
+   "n_board": 4,
+   "board_le3": 4,
+   "pass": 4,
+   "strong": 4
+  },
+  "holdout": {
+   "n": 5,
+   "mean_recall": 90.46,
+   "mean_board_err": 2.5,
+   "n_board": 5,
+   "board_le3": 3,
+   "pass": 2,
+   "strong": 2
+  }
+ },
+ "rows": [
+  {
+   "stem": "20260915_185121_23d80f05",
+   "split": "dev",
+   "method_used": "sam2-video",
+   "n_points": 55,
+   "final_board": null,
+   "recall_pct": 94.4,
+   "n_truth_points": 18,
+   "median_px_err": 8.4,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 129.5,
+   "fallback": {
+    "triggered": true,
+    "reasons": [
+     "no final_board"
+    ],
+    "applied": false,
+    "not_applied_because": "baseline yolo_chain_sam has 44 points, final_board None: it does not fix what triggered"
+   },
+   "lane_top_down_points": 0,
+   "ft_model": {
+    "kind": "pin_only",
+    "a": 60.0,
+    "b": 0.0,
+    "reason": "0 samples"
+   }
+  },
+  {
+   "stem": "20260915_185331_19de9ec7",
+   "split": "dev",
+   "method_used": "sam2-video",
+   "n_points": 65,
+   "final_board": 5.0,
+   "recall_pct": 93.3,
+   "n_truth_points": 60,
+   "median_px_err": 5.0,
+   "board_err": 0.5,
+   "lane_err_boards": 0.89,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": true,
+   "strong": true,
+   "wall_s": 89.7,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 61,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 66.35,
+    "b": -6.35,
+    "v_ft_per_frame": 1.2377,
+    "n": 46,
+    "rmse_ft": 2.08,
+    "implied_pin_frame": 346.5
+   }
+  },
+  {
+   "stem": "20260915_185645_9fde3c16",
+   "split": "dev",
+   "method_used": "sam2-video",
+   "n_points": 67,
+   "final_board": 7.0,
+   "recall_pct": 100.0,
+   "n_truth_points": 62,
+   "median_px_err": 3.5,
+   "board_err": 1.5,
+   "lane_err_boards": 0.44,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": true,
+   "strong": true,
+   "wall_s": 78.2,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 63,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 68.758,
+    "b": -8.758,
+    "v_ft_per_frame": 1.0737,
+    "n": 55,
+    "rmse_ft": 0.69,
+    "implied_pin_frame": 292.9
+   }
+  },
+  {
+   "stem": "20260915_185454_f240c883",
+   "split": "dev",
+   "method_used": "sam2-video",
+   "n_points": 56,
+   "final_board": 11.0,
+   "recall_pct": 100.0,
+   "n_truth_points": 52,
+   "median_px_err": 2.1,
+   "board_err": 0.5,
+   "lane_err_boards": 1.88,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": true,
+   "strong": true,
+   "wall_s": 69.8,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 53,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 70.612,
+    "b": -10.612,
+    "v_ft_per_frame": 1.2178,
+    "n": 48,
+    "rmse_ft": 0.72,
+    "implied_pin_frame": 375.3
+   }
+  },
+  {
+   "stem": "20260915_190115_a7cf2c70",
+   "split": "dev",
+   "method_used": "sam2-video",
+   "n_points": 59,
+   "final_board": 10.0,
+   "recall_pct": 100.0,
+   "n_truth_points": 55,
+   "median_px_err": 2.0,
+   "board_err": 1.5,
+   "lane_err_boards": 1.25,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": true,
+   "strong": true,
+   "wall_s": 166.5,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 54,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 66.587,
+    "b": -6.587,
+    "v_ft_per_frame": 1.152,
+    "n": 49,
+    "rmse_ft": 2.43,
+    "implied_pin_frame": 442.1
+   }
+  },
+  {
+   "stem": "20260915_191900_106ea7ca",
+   "split": "dev",
+   "method_used": "sam2-video",
+   "n_points": 0,
+   "final_board": null,
+   "recall_pct": 0.0,
+   "n_truth_points": 0,
+   "median_px_err": null,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    null,
+    null
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 0.0,
+   "fallback": {
+    "triggered": true,
+    "reasons": [
+     "0 points < 15",
+     "no final_board"
+    ],
+    "applied": false,
+    "not_applied_because": "no baseline track for this stem"
+   },
+   "lane_top_down_points": 0,
+   "ft_model": {
+    "kind": "pin_only",
+    "a": 60.0,
+    "b": 0.0,
+    "reason": "0 samples"
+   }
+  },
+  {
+   "stem": "20260915_191253_6cf2480f",
+   "split": "holdout",
+   "method_used": "sam2-video",
+   "n_points": 64,
+   "final_board": 6.0,
+   "recall_pct": 100.0,
+   "n_truth_points": 53,
+   "median_px_err": 1.9,
+   "board_err": 0.5,
+   "lane_err_boards": 2.44,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": true,
+   "strong": true,
+   "wall_s": 78.6,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 61,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 69.956,
+    "b": -9.956,
+    "v_ft_per_frame": 1.1448,
+    "n": 52,
+    "rmse_ft": 0.34,
+    "implied_pin_frame": 429.4
+   }
+  },
+  {
+   "stem": "20260915_191820_0196b564",
+   "split": "holdout",
+   "method_used": "sam2-video",
+   "n_points": 56,
+   "final_board": 1.0,
+   "recall_pct": 95.8,
+   "n_truth_points": 24,
+   "median_px_err": 4.2,
+   "board_err": 1.5,
+   "lane_err_boards": 6.25,
+   "window_err": [
+    1,
+    0
+   ],
+   "pass": true,
+   "strong": true,
+   "wall_s": 62.2,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 53,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 73.157,
+    "b": -13.157,
+    "v_ft_per_frame": 0.9854,
+    "n": 31,
+    "rmse_ft": 0.86,
+    "implied_pin_frame": 471.9
+   }
+  },
+  {
+   "stem": "20260915_191913_907c358b",
+   "split": "holdout",
+   "method_used": "sam2-video",
+   "n_points": 73,
+   "final_board": 7.0,
+   "recall_pct": 56.5,
+   "n_truth_points": 23,
+   "median_px_err": 2.8,
+   "board_err": 0.0,
+   "lane_err_boards": 4.88,
+   "window_err": [
+    1,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 96.3,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 70,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 69.08,
+    "b": -9.08,
+    "v_ft_per_frame": 1.1447,
+    "n": 49,
+    "rmse_ft": 0.63,
+    "implied_pin_frame": 493.4
+   }
+  },
+  {
+   "stem": "20260915_192142_eeb210f6",
+   "split": "holdout",
+   "method_used": "sam2-video",
+   "n_points": 70,
+   "final_board": 5.0,
+   "recall_pct": 100.0,
+   "n_truth_points": 17,
+   "median_px_err": 2.7,
+   "board_err": 5.0,
+   "lane_err_boards": 2.74,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 88.1,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 67,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 69.678,
+    "b": -9.678,
+    "v_ft_per_frame": 1.0708,
+    "n": 55,
+    "rmse_ft": 0.39,
+    "implied_pin_frame": 471.0
+   }
+  },
+  {
+   "stem": "20260915_192636_7c7fbfb0",
+   "split": "holdout",
+   "method_used": "sam2-video",
+   "n_points": 71,
+   "final_board": 7.0,
+   "recall_pct": 100.0,
+   "n_truth_points": 18,
+   "median_px_err": 7.7,
+   "board_err": 5.5,
+   "lane_err_boards": 2.67,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 222.9,
+   "fallback": {
+    "triggered": false,
+    "reasons": [],
+    "applied": false
+   },
+   "lane_top_down_points": 66,
+   "ft_model": {
+    "kind": "cv_fit",
+    "a": 69.25,
+    "b": -9.25,
+    "v_ft_per_frame": 1.1323,
+    "n": 48,
+    "rmse_ft": 0.39,
+    "implied_pin_frame": 444.0
+   }
+  }
+ ],
+ "fallback_stems": []
+}

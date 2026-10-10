@@ -1,0 +1,101 @@
+{
+ "flags": [
+  "--no-sam",
+  "--model",
+  "learned",
+  "--bp-thresh",
+  "80",
+  "--out-dir",
+  "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/appearance-prior/variants/learned_bp80",
+  "--tag",
+  "cmp_learned_bp80"
+ ],
+ "rows": [
+  {
+   "stem": "20260915_185121_23d80f05",
+   "method": "appearance-prior/learned (no sam) [cmp_learned_bp80]",
+   "recall_pct": 0.0,
+   "n_matched": 0,
+   "n_truth_points": 18,
+   "median_px_err": null,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    1,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 1.0
+  },
+  {
+   "stem": "20260915_185331_19de9ec7",
+   "method": "appearance-prior/learned (no sam) [cmp_learned_bp80]",
+   "recall_pct": 0.0,
+   "n_matched": 0,
+   "n_truth_points": 60,
+   "median_px_err": null,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 1.1
+  },
+  {
+   "stem": "20260915_185645_9fde3c16",
+   "method": "appearance-prior/learned (no sam) [cmp_learned_bp80]",
+   "recall_pct": 0.0,
+   "n_matched": 0,
+   "n_truth_points": 62,
+   "median_px_err": null,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 1.1
+  },
+  {
+   "stem": "20260915_185454_f240c883",
+   "method": "appearance-prior/learned (no sam) [cmp_learned_bp80]",
+   "recall_pct": 1.9,
+   "n_matched": 1,
+   "n_truth_points": 52,
+   "median_px_err": 14.6,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 1.3
+  },
+  {
+   "stem": "20260915_190115_a7cf2c70",
+   "method": "appearance-prior/learned (no sam) [cmp_learned_bp80]",
+   "recall_pct": 3.6,
+   "n_matched": 2,
+   "n_truth_points": 55,
+   "median_px_err": 113.5,
+   "board_err": null,
+   "lane_err_boards": null,
+   "window_err": [
+    0,
+    0
+   ],
+   "pass": false,
+   "strong": false,
+   "wall_s": 1.2
+  }
+ ],
+ "mean_recall": 1.1
+}

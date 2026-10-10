@@ -1,0 +1,23 @@
+{
+ "key": "cam-diff",
+ "ran_fresh": true,
+ "run_cmd": "/Users/toka/code/bowling-app/analysis-engine/.venv/bin/python L/experiments/cam-diff/run.py <stem>  (no flags, final config: thr 22, far third 2x, SAM)",
+ "machine_load": "another agent's sam2-video run.py (torch) ran concurrently on every holdout and the dev run; load avg 2-3.7; my jobs ran one at a time",
+ "holdout": [
+  {"stem": "20260915_191253_6cf2480f", "recall_pct": 77.4, "n_matched": 41, "n_truth_points": 53, "median_px_err": 0.9, "board_err": 1.5, "lane_err_boards": 2.15, "window_err": [0, 16], "pass": true, "strong": false, "wall_s": 30.5},
+  {"stem": "20260915_191820_0196b564", "recall_pct": 100.0, "n_matched": 24, "n_truth_points": 24, "median_px_err": 4.3, "board_err": 1.5, "lane_err_boards": 6.23, "window_err": [0, 0], "pass": true, "strong": true, "wall_s": 26.3},
+  {"stem": "20260915_191913_907c358b", "recall_pct": 56.5, "n_matched": 13, "n_truth_points": 23, "median_px_err": 2.5, "board_err": 1.0, "lane_err_boards": 22.94, "window_err": [1, 21], "pass": false, "strong": false, "wall_s": 29.1},
+  {"stem": "20260915_192142_eeb210f6", "recall_pct": 58.8, "n_matched": 10, "n_truth_points": 17, "median_px_err": 3.7, "board_err": 4.0, "lane_err_boards": 4.27, "window_err": [0, 14], "pass": false, "strong": false, "wall_s": 33.9},
+  {"stem": "20260915_192636_7c7fbfb0", "recall_pct": 72.2, "n_matched": 13, "n_truth_points": 18, "median_px_err": 1.1, "board_err": 5.5, "lane_err_boards": 5.94, "window_err": [0, 14], "pass": false, "strong": false, "wall_s": 30.0}
+ ],
+ "holdout_mean_recall": 72.98,
+ "holdout_mean_board_err": 2.7,
+ "holdout_board_err_le_3": 3,
+ "holdout_scorer_pass": 2,
+ "baseline_yolo_chain_sam_holdout": {"mean_recall": 43.9, "board_err": [0.5, 6.5, 2.0, 4.0, 5.5], "pass": 1},
+ "fresh_equals_experiment_outputs": "frames, lane and final_board equal to the experiment's own holdout tracks on all 5 (only meta wall_s/track_s differ; deterministic)",
+ "dev_repro": {"stem": "20260915_185454_f240c883", "claimed": {"recall_pct": 100, "board_err": 0.5}, "fresh": {"recall_pct": 100.0, "median_px_err": 1.1, "board_err": 0.5, "lane_err_boards": 2.15, "wall_s": 66.7}, "reproduced": true},
+ "verdict": "works",
+ "verdict_rule": "works = holdout mean recall >= 60 and board_err <= 3 on >= 3 of 5: 72.98 and 3/5 (1.5, 1.5, 1.0). Borderline: the scorer's own per-stem pass (recall >= 60 AND board <= 3) holds on only 2 of 5.",
+ "notes_path": "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/results/judge_cam-diff_notes.md"
+}

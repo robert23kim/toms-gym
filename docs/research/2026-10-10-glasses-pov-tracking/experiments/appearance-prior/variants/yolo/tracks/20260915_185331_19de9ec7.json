@@ -1,0 +1,105 @@
+{
+ "stem": "20260915_185331_19de9ec7",
+ "method": "appearance-prior/yolo (no sam) [cmp_yolo]",
+ "frames": [
+  {
+   "f": 298,
+   "x": 672.8,
+   "y": 1039.3,
+   "r": 125.0,
+   "conf": 1.0,
+   "src": "start"
+  },
+  {
+   "f": 305,
+   "x": 1247.0,
+   "y": 969.0,
+   "r": 27.8,
+   "conf": 0.522,
+   "src": "motion"
+  },
+  {
+   "f": 306,
+   "x": 1247.0,
+   "y": 1012.0,
+   "r": 25.0,
+   "conf": 0.778,
+   "src": "motion"
+  },
+  {
+   "f": 307,
+   "x": 1247.0,
+   "y": 1048.0,
+   "r": 22.7,
+   "conf": 0.958,
+   "src": "motion"
+  },
+  {
+   "f": 308,
+   "x": 1247.0,
+   "y": 1081.0,
+   "r": 20.8,
+   "conf": 0.981,
+   "src": "motion"
+  },
+  {
+   "f": 309,
+   "x": 1247.0,
+   "y": 1109.0,
+   "r": 19.2,
+   "conf": 0.993,
+   "src": "motion"
+  },
+  {
+   "f": 310,
+   "x": 1247.0,
+   "y": 1133.0,
+   "r": 17.9,
+   "conf": 0.996,
+   "src": "motion"
+  }
+ ],
+ "lane": {},
+ "boards": {},
+ "final_board": null,
+ "release_frame": 298,
+ "pin_hit_frame": 358,
+ "meta": {
+  "track": {
+   "model": "yolo",
+   "use_yolo": false,
+   "start": {
+    "k": 10,
+    "x": 672.8,
+    "y": 1039.3,
+    "r": 125.0
+   },
+   "stop": {
+    "k": 29,
+    "reason": "misses"
+   },
+   "positions": 7,
+   "frames": [
+    10,
+    22
+   ],
+   "sources": {
+    "start": 1,
+    "blob": 0,
+    "yolo": 0,
+    "motion": 6
+   }
+  },
+  "sam": {
+   "lane_method": "skipped"
+  },
+  "scan_s_cached": 9.4,
+  "wall_s": {
+   "load": 0.3,
+   "track": 0.7,
+   "sam": 0.0,
+   "total_excl_scan": 1.0,
+   "total_incl_scan": 10.4
+  }
+ }
+}

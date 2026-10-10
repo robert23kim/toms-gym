@@ -1,0 +1,22 @@
+{
+ "experiment": "wildcard",
+ "approach": "NCC template relay from a single YOLO-chain seed + engine SAM lane pass",
+ "judged": "2026-10-10",
+ "ran_fresh": true,
+ "machine_loaded": "yes: 4 other agents' python/torch run.py jobs at ~100% CPU each, load average 7-13 on 12 cores throughout",
+ "holdout": [
+  {"stem": "20260915_191253_6cf2480f", "recall_pct": 98.1, "n_matched": 52, "n_truth_points": 53, "median_px_err": 3.4, "board_err": 0.5, "lane_err_boards": 2.63, "window_err": [10, 3], "final_board": 6.0, "pass": true, "strong": true, "wall_s": 62.2},
+  {"stem": "20260915_191820_0196b564", "recall_pct": 0.0, "n_matched": 0, "n_truth_points": 24, "median_px_err": null, "board_err": null, "lane_err_boards": null, "window_err": [25, 4], "final_board": null, "pass": false, "strong": false, "wall_s": 34.4, "failure": "YOLO-chain seed (frame 440, box conf 0.74) is a neighbour's ball on a lane to the left; the relay tracked that ball; SAM found no lane (all 5 candidates residual 25-32 px), final_board null"},
+  {"stem": "20260915_191913_907c358b", "recall_pct": 95.7, "n_matched": 22, "n_truth_points": 23, "median_px_err": 3.2, "board_err": 1.0, "lane_err_boards": 5.49, "window_err": [0, 14], "final_board": 8.0, "pass": true, "strong": true, "wall_s": 61.0},
+  {"stem": "20260915_192142_eeb210f6", "recall_pct": 100.0, "n_matched": 17, "n_truth_points": 17, "median_px_err": 6.5, "board_err": 4.0, "lane_err_boards": 2.64, "window_err": [1, 3], "final_board": 6.0, "pass": false, "strong": false, "wall_s": 63.3},
+  {"stem": "20260915_192636_7c7fbfb0", "recall_pct": 88.9, "n_matched": 16, "n_truth_points": 18, "median_px_err": 9.6, "board_err": 5.5, "lane_err_boards": 4.55, "window_err": [2, 2], "final_board": 7.0, "pass": false, "strong": false, "wall_s": 157.4}
+ ],
+ "holdout_mean_recall": 76.5,
+ "holdout_mean_board_err_4_with_board": 2.75,
+ "holdout_board_err_le3": "2 of 5 (191253, 191913); 192142 4.0, 192636 5.5, 191820 null",
+ "holdout_recall_ge60": "4 of 5",
+ "holdout_mean_wall_s": 75.7,
+ "dev_repro": {"stem": "20260915_185331_19de9ec7", "claimed": {"recall_pct": 91.7, "board_err": 0.5}, "fresh": {"recall_pct": 91.7, "median_px_err": 6.4, "board_err": 0.5, "lane_err_boards": 0.74, "wall_s": 58.9}, "reproduced": true, "note": "identical score to the experiment's own track (backed up before the re-run)"},
+ "verdict": "partial",
+ "verdict_rule": "works needs mean recall >= 60 AND board_err <= 3 on >= 3 of 5: recall 76.5 holds but only 2 of 5 boards are within 3. partial = recall >= 40 on >= 3: 4 of 5."
+}
