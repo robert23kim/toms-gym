@@ -9,6 +9,9 @@ import { transformCompetitionData } from "../lib/api";
 import axios from "axios";
 import { API_URL, COMPETITIONS_API_URL } from "../config";
 
+const challengePill = (c: Challenge): string | undefined =>
+  c.mode === "consistency" ? "Consistency" : c.categories?.[0];
+
 const Challenges = () => {
   const [activeFilter, setActiveFilter] = useState<'upcoming' | 'ongoing' | 'completed' | 'all'>("all");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
@@ -45,7 +48,9 @@ const Challenges = () => {
       console.log(`Transforming ${dbChallenges.length} challenges`);
       
       // Transform the database challenges to match our frontend type
-      const transformedChallenges = dbChallenges.map((challenge: any) => ({
+      const transformedChallenges = dbChallenges.map((challenge: any) => {
+        const parsed = transformCompetitionData(challenge);
+        return {
         id: challenge.id,
         title: challenge.name,
         date: challenge.start_date,
@@ -54,7 +59,8 @@ const Challenges = () => {
         description: challenge.description || '',
         image: challenge.image || 'https://images.unsplash.com/photo-1599058917765-a780eda07a3e?q=80&w=1469&auto=format&fit=crop',
         status: determineStatus(challenge.start_date, challenge.end_date),
-        categories: transformCompetitionData(challenge).categories,
+        categories: parsed.categories,
+        mode: parsed.mode,
         participants: challenge.participants || 0,
         prizePool: {
           first: 1000,
@@ -62,7 +68,8 @@ const Challenges = () => {
           third: 250,
           total: 1750
         }
-      }));
+      };
+      });
 
       console.log(`Successfully transformed ${transformedChallenges.length} challenges`);
       setChallenges(transformedChallenges);
@@ -152,7 +159,7 @@ const Challenges = () => {
                 to={`/challenges/${c.id}`}
                 icon={<Timer className="w-[18px] h-[18px]" />}
                 title={c.title}
-                pill={c.categories?.[0]}
+                pill={challengePill(c)}
               />
             ))}
         </div>
@@ -187,7 +194,7 @@ const Challenges = () => {
                 to={`/challenges/${c.id}`}
                 icon={<Timer className="w-[18px] h-[18px]" />}
                 title={c.title}
-                pill={c.categories?.[0]}
+                pill={challengePill(c)}
                 trailing={c.status === "completed" ? "Results" : c.status === "upcoming" ? "Preview" : "Open"}
               />
             ))

@@ -76,6 +76,7 @@ export interface Challenge {
   status: "upcoming" | "ongoing" | "completed";
   categories: string[];
   lifttypes?: string[];
+  mode?: string;
   participants: number;
   prizePool?: {
     first: number;
