@@ -16,6 +16,7 @@ exec "$PYTHON" -m pytest \
   tests/test_handicap.py \
   tests/test_scorecard_grid.py \
   tests/test_challenge_leaderboard.py \
+  tests/test_consistency.py \
   tests/test_guest_round_classify.py \
   tests/test_golf_parser.py \
   tests/test_competition_routes.py \

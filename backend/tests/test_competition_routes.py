@@ -505,3 +505,195 @@ def test_leaderboard_pushup_pending_analysis_scores_zero(test_client):
     assert data["metric"] == "reps"
     assert data["rows"][0]["score"] == 0
     assert data["rows"][0]["attempt_count"] == 0
+
+
+# --------------------------------------------------------------------------- #
+# The 100 Club: mode "consistency", admin as_of preview, mode/rules round-trip
+# --------------------------------------------------------------------------- #
+
+_CONSISTENCY_DESC = ('Gym - {"lifttypes": ["Situp", "Pushup", "Squat", "Plank"], '
+                     '"weightclasses": [], "gender": "", "mode": "consistency", '
+                     '"rules": {"week_start": "2026-11-02"}}')
+
+
+def _squat_row(created_at, reps="30"):
+    return _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Squat",
+                 weight_kg=0, status="completed", created_at=created_at,
+                 video_url="v1", annotated_video_url="ann1", reps=reps)
+
+
+def test_leaderboard_consistency_mode_beats_lift_type_inference(test_client):
+    """A mixed Situp/Pushup/Squat/Plank set would fall through to 'weight';
+    mode 'consistency' must win first."""
+    session = _make_session(_CONSISTENCY_DESC, [_squat_row("2026-11-03T17:00:00+00:00")])
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["metric"] == "consistency"
+    assert data["lift_types"] == ["Situp", "Pushup", "Squat", "Plank"]
+    assert data["consistency"]["rules"]["base_quota"] == 100
+    assert data["consistency"]["weeks_total"] == 8
+    assert data["rows"][0]["name"] == "alice"
+
+
+def test_leaderboard_same_lifts_without_mode_stay_legacy(test_client):
+    description = ('Gym - {"lifttypes": ["Situp", "Pushup", "Squat", "Plank"], '
+                   '"weightclasses": [], "gender": ""}')
+    session = _make_session(description, [_squat_row("2026-11-03T17:00:00+00:00")])
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        data = test_client.get("/competitions/comp1/leaderboard").get_json()
+    assert data["metric"] == "weight"
+    assert "consistency" not in data
+
+
+def _as_of_get(test_client, as_of, token=None, rows=None):
+    session = _make_session(_CONSISTENCY_DESC, rows if rows is not None else [
+        _squat_row("2026-11-03T17:00:00+00:00")])
+    headers = {"X-Admin-Token": token} if token is not None else {}
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        return test_client.get("/competitions/comp1/leaderboard",
+                               query_string={"as_of": as_of}, headers=headers)
+
+
+def test_as_of_is_503_when_admin_token_unset(test_client, monkeypatch):
+    monkeypatch.delenv("ADMIN_TOKEN", raising=False)
+    resp = _as_of_get(test_client, "2026-11-04T12:00:00-05:00", token="anything")
+    assert resp.status_code == 503
+    session = _make_session(_CONSISTENCY_DESC, [])
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        assert test_client.get("/competitions/comp1/leaderboard").status_code == 200
+
+
+def test_as_of_is_401_on_missing_or_wrong_token(test_client, monkeypatch):
+    monkeypatch.setenv("ADMIN_TOKEN", "s3cret")
+    assert _as_of_get(test_client, "2026-11-04T12:00:00-05:00").status_code == 401
+    assert _as_of_get(test_client, "2026-11-04T12:00:00-05:00", token="nope").status_code == 401
+
+
+def test_as_of_with_admin_token_computes_the_board_at_that_instant(test_client, monkeypatch):
+    monkeypatch.setenv("ADMIN_TOKEN", "s3cret")
+    resp = _as_of_get(test_client, "2026-11-04T12:00:00-05:00", token="s3cret")
+    assert resp.status_code == 200
+    data = resp.get_json()
+    assert data["consistency"]["status"] == "live"
+    assert data["consistency"]["week_index"] == 1
+    assert data["rows"][0]["this_week"]["lifts"] == 30
+    assert data["rows"][0]["score"] == 30
+
+
+def test_as_of_rejects_garbage_with_400(test_client, monkeypatch):
+    monkeypatch.setenv("ADMIN_TOKEN", "s3cret")
+    resp = _as_of_get(test_client, "next tuesday", token="s3cret")
+    assert resp.status_code == 400
+
+
+def test_as_of_plus_offset_survives_query_decoding(test_client, monkeypatch):
+    """An unencoded '+00:00' arrives as ' 00:00'."""
+    monkeypatch.setenv("ADMIN_TOKEN", "s3cret")
+    resp = _as_of_get(test_client, "2026-11-04T17:00:00 00:00", token="s3cret")
+    assert resp.status_code == 200
+    assert resp.get_json()["consistency"]["week_index"] == 1
+
+
+@pytest.mark.parametrize("raw,hour_utc", [
+    ("2026-11-04 12:00:00", 12),
+    ("2026-11-04 12:00", 12),
+    ("2026-11-04T12:00:00Z", 12),
+    ("2026-11-04 12:00:00Z", 12),
+    ("2026-11-04T12:00:00-05:00", 17),
+    ("2026-11-04 12:00:00-05:00", 17),
+    ("2026-11-04T12:00:00 05:00", 7),
+    ("2026-11-04 12:00:00 05:00", 7),
+])
+def test_as_of_formats_parse_to_the_right_instant(raw, hour_utc):
+    """Runs on CI's Python 3.10 too, whose fromisoformat is the strictest we deploy."""
+    import datetime as dt
+    from toms_gym.routes.competition_routes import _parse_as_of
+    assert _parse_as_of(raw) == dt.datetime(2026, 11, 4, hour_utc, tzinfo=dt.timezone.utc)
+
+
+def test_without_as_of_the_board_uses_now(test_client, monkeypatch):
+    """No param, no token: public, and an attempt in a future week scores nothing."""
+    monkeypatch.delenv("ADMIN_TOKEN", raising=False)
+    session = _make_session(_CONSISTENCY_DESC, [_squat_row("2099-01-06T17:00:00+00:00")])
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1/leaderboard")
+    assert resp.status_code == 200
+    assert resp.get_json()["rows"][0]["score"] == 0
+
+
+def test_creating_a_competition_passes_mode_and_rules_into_metadata(test_client):
+    captured = {}
+    session = MagicMock()
+
+    def execute(statement, params=None):
+        captured["params"] = params
+        result = MagicMock()
+        result.fetchone.return_value = ["new-id"]
+        return result
+
+    session.execute.side_effect = execute
+    body = {"name": "The 100 Club", "description": "100 lifts a week.",
+            "start_date": "2026-10-31T10:00:00-04:00", "end_date": "2026-12-27T23:59:59-05:00",
+            "status": "in_progress", "lifttypes": ["Situp", "Pushup", "Squat", "Plank"],
+            "mode": "consistency", "rules": {"base_quota": 100, "week_start": "2026-11-02"}}
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.post("/create_competition", json=body)
+    assert resp.status_code == 201
+    desc = captured["params"]["description"]
+    location, blob = desc.split(" - ", 1)
+    assert location == "100 lifts a week."
+    meta = json.loads(blob)
+    assert meta["mode"] == "consistency"
+    assert meta["rules"] == {"base_quota": 100, "week_start": "2026-11-02"}
+    assert meta["lifttypes"] == ["Situp", "Pushup", "Squat", "Plank"]
+
+
+def test_creating_a_legacy_competition_has_no_mode_keys(test_client):
+    captured = {}
+    session = MagicMock()
+
+    def execute(statement, params=None):
+        captured["params"] = params
+        result = MagicMock()
+        result.fetchone.return_value = ["new-id"]
+        return result
+
+    session.execute.side_effect = execute
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        test_client.post("/create_competition", json={"name": "x", "description": "Gym",
+                                                      "lifttypes": ["Squat"]})
+    meta = json.loads(captured["params"]["description"].split(" - ", 1)[1])
+    assert set(meta) == {"lifttypes", "weightclasses", "gender"}
+
+
+def _comp_by_id_row(description):
+    row = MagicMock()
+    data = {"id": "comp1", "name": "The 100 Club", "description": description}
+    row._mapping = data
+    return row
+
+
+def test_competition_by_id_returns_mode_and_filled_rules(test_client):
+    session = MagicMock()
+    session.execute.return_value.fetchone.return_value = _comp_by_id_row(_CONSISTENCY_DESC)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        resp = test_client.get("/competitions/comp1")
+    assert resp.status_code == 200
+    comp = resp.get_json()["competition"]
+    assert comp["lifttypes"] == ["Situp", "Pushup", "Squat", "Plank"]
+    assert comp["mode"] == "consistency"
+    assert comp["rules"]["week_start"] == "2026-11-02"
+    assert comp["rules"]["ramp"] == 25
+    assert comp["rules"]["tz"] == "America/New_York"
+
+
+def test_competition_by_id_legacy_has_null_mode(test_client):
+    session = MagicMock()
+    session.execute.return_value.fetchone.return_value = _comp_by_id_row(
+        'Gym - {"lifttypes": ["Plank"], "weightclasses": [], "gender": "M"}')
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        comp = test_client.get("/competitions/comp1").get_json()["competition"]
+    assert comp["mode"] is None
+    assert comp["rules"] is None

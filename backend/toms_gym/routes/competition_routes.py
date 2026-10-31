@@ -235,6 +235,9 @@ def get_competition_by_id(competition_id):
                         competition_data['lifttypes'] = metadata.get('lifttypes', [])
                         competition_data['weightclasses'] = metadata.get('weightclasses', [])
                         competition_data['gender'] = metadata.get('gender', 'M')
+                        mode, rules = _mode_and_rules(metadata if isinstance(metadata, dict) else {})
+                        competition_data['mode'] = mode
+                        competition_data['rules'] = rules
                         logger.debug(f"Successfully parsed metadata: {metadata}")
                     except json.JSONDecodeError as json_err:
                         # If JSON parsing fails, just use the description as location
@@ -263,6 +266,8 @@ def get_competition_by_id(competition_id):
             competition_data['weightclasses'] = []
             competition_data['gender'] = 'M'
         
+        competition_data.setdefault('mode', None)
+        competition_data.setdefault('rules', None)
         logger.info(f"Successfully processed competition data for ID: {competition_id}")
         return {"competition": competition_data}
     except Exception as e:
@@ -353,26 +358,41 @@ def get_competition_participants(competition_id):
         if session:
             session.close()
 
-def _parse_lifttypes(description):
-    """Extract the declared lift types from a Competition.description.
-
-    Mirrors get_competition_by_id: metadata is a JSON blob appended after
-    ' - '. Returns a list (possibly empty) of lift-type strings.
-    """
+def _parse_metadata(description):
+    """The JSON metadata blob appended after ' - ' in Competition.description
+    (mirrors get_competition_by_id); {} when absent or malformed."""
     if not description or ' - ' not in description:
-        return []
+        return {}
     parts = description.split(' - ', 1)
     if len(parts) != 2:
-        return []
+        return {}
     try:
         metadata = json.loads(parts[1])
     except (json.JSONDecodeError, TypeError):
-        return []
-    lifttypes = metadata.get('lifttypes', [])
+        return {}
+    return metadata if isinstance(metadata, dict) else {}
+
+
+def _parse_lifttypes(description):
+    """Extract the declared lift types from a Competition.description.
+
+    Returns a list (possibly empty) of lift-type strings.
+    """
+    lifttypes = _parse_metadata(description).get('lifttypes', [])
     return lifttypes if isinstance(lifttypes, list) else []
 
 
-def _leaderboard_payload(session, competition_id):
+def _mode_and_rules(metadata):
+    """(mode, rules) from competition metadata; consistency rules get defaults."""
+    from toms_gym.services.consistency import fill_rules
+    mode = metadata.get('mode')
+    rules = metadata.get('rules')
+    if mode == 'consistency':
+        rules = fill_rules(rules)
+    return mode, rules
+
+
+def _leaderboard_payload(session, competition_id, now=None):
     """Build the leaderboard response dict, or None when the competition is
     missing.
 
@@ -391,7 +411,9 @@ def _leaderboard_payload(session, competition_id):
     if comp is None:
         return None
 
+    metadata = _parse_metadata(comp._mapping.get('description'))
     declared = _parse_lifttypes(comp._mapping.get('description'))
+    mode, rules = _mode_and_rules(metadata)
 
     # Participants + their submitted attempts. LEFT JOIN keeps entrants with
     # no attempt (the "who joined" signal); LiftingResult supplies plank hold
@@ -482,7 +504,9 @@ def _leaderboard_payload(session, competition_id):
     # (pushup/situp) -> reps; other declared -> weight; no metadata -> infer
     # from completed attempts the same way.
     declared_set = set(declared)
-    if declared_set == {"Plank"}:
+    if mode == "consistency":
+        metric = "consistency"
+    elif declared_set == {"Plank"}:
         metric = "time"
     elif declared_set and declared_set <= REPS_LIFT_TYPES:
         metric = "reps"
@@ -497,9 +521,17 @@ def _leaderboard_payload(session, competition_id):
 
     lift_types = declared if declared else sorted(completed_lift_types)
 
-    ranked = rank_challenge(
-        [participants[uid] for uid in order], metric=metric
-    )
+    consistency = None
+    if metric == "consistency":
+        ranked, consistency = rank_challenge(
+            [participants[uid] for uid in order], metric=metric, rules=rules,
+            now=now or datetime.datetime.now(datetime.timezone.utc),
+            lift_types=lift_types,
+        )
+    else:
+        ranked = rank_challenge(
+            [participants[uid] for uid in order], metric=metric
+        )
 
     uploaded_today = session.execute(
         sqlalchemy.text("""
@@ -512,7 +544,7 @@ def _leaderboard_payload(session, competition_id):
         {"id": competition_id}
     ).scalar()
 
-    return {
+    payload = {
         "competition_id": competition_id,
         "metric": metric,
         "lift_types": lift_types,
@@ -522,15 +554,48 @@ def _leaderboard_payload(session, competition_id):
         },
         "rows": ranked,
     }
+    if consistency is not None:
+        payload["consistency"] = consistency
+    return payload
+
+
+def _parse_as_of(raw):
+    """Aware datetime from an ISO string; naive means UTC; None if unparseable.
+
+    An unencoded '+hh:mm' offset arrives as ' hh:mm', so restore the '+'.
+    """
+    text = (raw or '').strip().replace(' ', '+')
+    if text.endswith('Z'):
+        text = text[:-1] + '+00:00'
+    try:
+        parsed = datetime.datetime.fromisoformat(text)
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=datetime.timezone.utc)
+    return parsed
 
 
 @competition_bp.route('/competitions/<string:competition_id>/leaderboard')
 def get_competition_leaderboard(competition_id):
-    """Per-challenge leaderboard (see _leaderboard_payload)."""
+    """Per-challenge leaderboard (see _leaderboard_payload).
+
+    ``?as_of=<ISO datetime>`` (admin only, X-Admin-Token) computes the board
+    as of that instant instead of now.
+    """
+    now = None
+    if 'as_of' in request.args:
+        from toms_gym.routes.ticket_routes import _require_admin
+        denied = _require_admin()
+        if denied:
+            return denied
+        now = _parse_as_of(request.args.get('as_of'))
+        if now is None:
+            return {"error": "as_of must be an ISO 8601 datetime"}, 400
     session = None
     try:
         session = get_db_connection()
-        payload = _leaderboard_payload(session, competition_id)
+        payload = _leaderboard_payload(session, competition_id, now=now)
         if payload is None:
             return {"error": "Competition not found"}, 404
         return payload
@@ -679,12 +744,15 @@ def create_competition():
         }
         
         # Store additional metadata as JSON in the description if needed
-        if "lifttypes" in request_data or "weightclasses" in request_data or "gender" in request_data:
+        if any(k in request_data for k in ("lifttypes", "weightclasses", "gender", "mode", "rules")):
             metadata = {
                 "lifttypes": request_data.get("lifttypes", []),
                 "weightclasses": request_data.get("weightclasses", []),
                 "gender": request_data.get("gender", "")
             }
+            for key in ("mode", "rules"):
+                if key in request_data:
+                    metadata[key] = request_data[key]
             # Append metadata to description if description exists
             if data["description"]:
                 data["description"] = f"{data['description']} - {json.dumps(metadata)}"

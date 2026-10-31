@@ -1,0 +1,146 @@
+{
+  "competition_id": "the-100-club-sample",
+  "metric": "consistency",
+  "lift_types": [
+    "Situp",
+    "Pushup",
+    "Squat",
+    "Plank"
+  ],
+  "momentum": {
+    "joined": 3,
+    "uploaded_today": 0
+  },
+  "rows": [
+    {
+      "user_id": "a1",
+      "name": "Ana",
+      "weight_class": null,
+      "gender": null,
+      "score": 0,
+      "streak": 0,
+      "best_streak": 0,
+      "weeks_met": 0,
+      "this_week": {
+        "index": 0,
+        "quota": 100,
+        "lifts": 0,
+        "met": false,
+        "pending": 0,
+        "by_type": {
+          "Situp": 0,
+          "Pushup": 0,
+          "Squat": 0,
+          "Plank": 0
+        },
+        "plank_seconds": 0,
+        "leading": []
+      },
+      "weeks": [],
+      "warmup_lifts": 20,
+      "best_by_lift": {},
+      "form_score": null,
+      "steadiness": null,
+      "attempt_id": null,
+      "clip_url": null,
+      "thumbnail_url": null,
+      "date": null,
+      "attempt_count": 0,
+      "history": [],
+      "rank": 1
+    },
+    {
+      "user_id": "b1",
+      "name": "Ben",
+      "weight_class": null,
+      "gender": null,
+      "score": 0,
+      "streak": 0,
+      "best_streak": 0,
+      "weeks_met": 0,
+      "this_week": {
+        "index": 0,
+        "quota": 100,
+        "lifts": 0,
+        "met": false,
+        "pending": 0,
+        "by_type": {
+          "Situp": 0,
+          "Pushup": 0,
+          "Squat": 0,
+          "Plank": 0
+        },
+        "plank_seconds": 0,
+        "leading": []
+      },
+      "weeks": [],
+      "warmup_lifts": 0,
+      "best_by_lift": {},
+      "form_score": null,
+      "steadiness": null,
+      "attempt_id": null,
+      "clip_url": null,
+      "thumbnail_url": null,
+      "date": null,
+      "attempt_count": 0,
+      "history": [],
+      "rank": 2
+    },
+    {
+      "user_id": "c1",
+      "name": "Cy",
+      "weight_class": null,
+      "gender": null,
+      "score": 0,
+      "streak": 0,
+      "best_streak": 0,
+      "weeks_met": 0,
+      "this_week": {
+        "index": 0,
+        "quota": 100,
+        "lifts": 0,
+        "met": false,
+        "pending": 0,
+        "by_type": {
+          "Situp": 0,
+          "Pushup": 0,
+          "Squat": 0,
+          "Plank": 0
+        },
+        "plank_seconds": 0,
+        "leading": []
+      },
+      "weeks": [],
+      "warmup_lifts": 0,
+      "best_by_lift": {},
+      "form_score": null,
+      "steadiness": null,
+      "attempt_id": null,
+      "clip_url": null,
+      "thumbnail_url": null,
+      "date": null,
+      "attempt_count": 0,
+      "history": [],
+      "rank": 3
+    }
+  ],
+  "consistency": {
+    "rules": {
+      "base_quota": 100,
+      "ramp": 25,
+      "weeks": 8,
+      "quota_bonus": 50,
+      "type_bonus": 25,
+      "plank_seconds_per_lift": 10,
+      "tz": "America/New_York",
+      "week_start": "2026-11-02"
+    },
+    "status": "upcoming",
+    "week_index": 0,
+    "weeks_total": 8,
+    "week_start": "2026-11-02",
+    "week_end": "2026-11-08",
+    "days_left": 0,
+    "type_leaders": {}
+  }
+}

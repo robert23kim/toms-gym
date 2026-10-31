@@ -354,13 +354,17 @@ def _finalize(rows, sort_key) -> List[dict]:
     return out
 
 
-def rank_challenge(participants, *, metric) -> List[dict]:
+def rank_challenge(participants, *, metric, rules=None, now=None, lift_types=None):
     """Rank challenge participants best-first for the given metric.
 
     ``metric`` is ``"time"`` (plank: best hold), ``"reps"`` (pushup/situp: best rep
-    count) or ``"weight"`` (best-lift total).
+    count), ``"weight"`` (best-lift total) or ``"consistency"`` (The 100 Club,
+    see ``services/consistency.py``; returns ``(rows, consistency_block)``).
     See the module docstring for the participant shape and scoring rules.
     """
+    if metric == "consistency":
+        from toms_gym.services.consistency import rank_consistency
+        return rank_consistency(participants, rules, now, lift_types=lift_types)
     if metric == "time":
         return _rank_time(participants)
     if metric == "reps":
