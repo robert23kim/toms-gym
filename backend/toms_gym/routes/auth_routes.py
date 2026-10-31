@@ -386,7 +386,8 @@ def register():
                 "email": data['email'],
                 "password": hashed_password,
                 "name": data['name'],
-                "auth_method": 'password' if hashed_password else 'passwordless',
+                # NULL, not 'passwordless': the auth_method enum is {google, password}.
+                "auth_method": 'password' if hashed_password else None,
                 "created_at": datetime.datetime.utcnow()
             }
         )

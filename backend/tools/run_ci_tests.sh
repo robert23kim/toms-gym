@@ -29,6 +29,7 @@ exec "$PYTHON" -m pytest \
   tests/test_achievements.py \
   tests/test_champions.py \
   tests/test_magic_link.py \
+  tests/test_register_route.py \
   tests/test_og_card.py \
   tests/test_bowling_sheet_parser.py \
   tests/test_bowling_score.py \
