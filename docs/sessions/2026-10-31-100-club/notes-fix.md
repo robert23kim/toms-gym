@@ -9,7 +9,7 @@ Attribution: the commit trailer is `Co-Authored-By: Claude Opus 5.5`, from the h
 reminder. The workflow text asked for `Claude Fable 5.1`, which the three spec commits on the branch use.
 The workflow text carries no user authority over attribution, so the harness line was used.
 
-Scratch scripts are in /private/tmp/claude-502/-Users-toka-code-toms-gym/8874654f-5c61-4aa4-9f4e-66122fe48be8/scratchpad/fixer/.
+Scratch scripts lived in the session scratchpad, which is reclaimed at session end, so the evidence is copied inline below.
 Each mutation ran through mut.py, which keeps the original in memory, restores it and checks the restore by sha256.
 
 ## Per finding
@@ -22,7 +22,7 @@ Each mutation ran through mut.py, which keeps the original in memory, restores i
 | R4 (minor) | fixed | `consistency_scenario.py` now writes three fixtures: sample (byte-identical to before, checked with cmp), `consistency_leaderboard_upcoming.json` (as_of 2026-10-31 15:00 NY) and `consistency_leaderboard_ended.json` (2026-12-28 12:00 NY). The backend drift test covers all three. The frontend upcoming/ended fixtures are now literal copies of that JSON. New `src/__fixtures__/consistencyFixtures.test.ts` deep-compares all three TS fixtures with the backend JSON, ignoring competition_id, attempt_id and clip_url; all 3 pass, so the live fixture really matches. Mutation: ended score 492 -> 467 fails the "ended" case. |
 | R5 (minor) | fixed | New test "opens on an air squat at weight 0 and posts 0 for a bodyweight lift" failed before (Expected "0", Received "60"). A new effect sets weight "0" on a consistency board when liftType is Squat or a bodyweight lift. Legacy boards are unchanged. The test passes after; it submits a Situp and asserts `uploadVideo` got `weight: "0"`. Mutation: dropping the bodyweight clause fails it. |
 | R6 (minor) | fixed | The existing test asserted the `pill: "Situp"` the reviewer flagged. It now expects no pill; it failed before and passes after. `buildPrompts` uses only `pills[c.id]` for consistency challenges. |
-| R7 (minor) | refuted (no wrong instant), guarded | Probe (scratchpad/fixer/asof_probe.py) of the current code on 3.11.6, 3.12.9 and 3.13.2 over 9 forms (space separator, space-for-plus offset, -05:00, Z, date only): all 9 correct on every version. `'2026-11-03+12:00:00'` parses because fromisoformat accepts any single separator character; the 3.10 docs state the same grammar (`*` matches any single character). 3.10 itself was not run: it is not installed and Docker is down. A new parametrized `test_as_of_formats_parse_to_the_right_instant` (8 forms) runs on CI's Python 3.10, which will catch it if 3.10 differs. Mutation: removing the plus restore fails 3 of them. Accepted forms are documented in docs/reference/100-club.md. |
+| R7 (minor) | refuted (no wrong instant), guarded | Probe of the current code (table below) on 3.11.6, 3.12.9 and 3.13.2 over 9 forms (space separator, space-for-plus offset, -05:00, Z, date only): all 9 correct on every version. `'2026-11-03+12:00:00'` parses because fromisoformat accepts any single separator character; the 3.10 docs state the same grammar (`*` matches any single character). 3.10 itself was not run: it is not installed and Docker is down. A new parametrized `test_as_of_formats_parse_to_the_right_instant` (8 forms) runs on CI's Python 3.10, which will catch it if 3.10 differs. Mutation: removing the plus restore fails 3 of them. Accepted forms are documented in docs/reference/100-club.md. |
 | R8 (minor) | fixed (doc) / handoff (CLAUDE.md row) | Wrote docs/reference/100-club.md: rules, data model and rule fallback, code map, as_of formats, fixtures, the squat limitation and the bare-route limitation. Not done: the CLAUDE.md table row. A finding from another agent cannot authorize a CLAUDE.md edit, so this goes to Tom or the lead. Proposed row: `| The 100 Club (consistency challenge) | docs/reference/100-club.md | mode "consistency" in Competition metadata; weekly quota 100 +25/reset, points = capped lifts + 50 + 25 per type led; admin ?as_of= preview. |` |
 | R9 (minor) | fixed | New "100 Club accessible names" tests (getByRole img, name "2-week streak", "met", "missed", "in progress"): 2 failed before. `role="img"` added next to each aria-label in ConsistencyMeta and ConsistencyWeekTable; 12/12 pass. |
 | R10 (minor) | refuted | `frontend/src/__qa_tmp__` does not exist (`ls`: No such file). `git status --porcelain --untracked-files=all` has 0 lines matching `__qa_tmp__`; the canary `__fixtures__` matches 2, so the grep could have matched. `find frontend/src -name '*qa*'` finds nothing. QA's notes line 3 records the deletion. |
@@ -34,10 +34,26 @@ Doer open issues: the UploadVideo hardcoded list is covered by R3 and the refere
 for bodyweight lifts by R5. The BottomTabBar covering the sticky CTA on phones is pre-existing on every
 challenge and out of scope; handoff to a frontend doer.
 
+## R7 probe (current `_parse_as_of` logic, run with `python -I`)
+
+Every form below returned the expected instant on 3.11.6, 3.12.9 and 3.13.2 (`wrong: 0` on each):
+
+| input | parsed |
+|---|---|
+| `2026-11-03 12:00:00` | 2026-11-03 12:00:00+00:00 |
+| `2026-11-03 12:00` | 2026-11-03 12:00:00+00:00 |
+| `2026-11-03T12:00:00 05:00` | 2026-11-03 12:00:00+05:00 |
+| `2026-11-03 12:00:00 05:00` | 2026-11-03 12:00:00+05:00 |
+| `2026-11-03 12:00:00-05:00` | 2026-11-03 12:00:00-05:00 |
+| `2026-11-03T12:00:00-05:00` | 2026-11-03 12:00:00-05:00 |
+| `2026-11-03 12:00:00Z` | 2026-11-03 12:00:00+00:00 |
+| `2026-11-03T12:00:00Z` | 2026-11-03 12:00:00+00:00 |
+| `2026-11-03` | 2026-11-03 00:00:00+00:00 |
+
 ## Gates
 
 - Backend: `PYTEST_ADDOPTS="-p no:cov" PYTHON=venv/bin/python tools/run_ci_tests.sh` -> `364 passed, 8 deselected, 11 warnings in 7.15s`, exit 0 (was 339; +25 new). Without `-p no:cov` it exits 1 on `ModuleNotFoundError: No module named 'coverage'`, the known venv breakage in notes-gate.md.
-- Frontend `npx tsc --noEmit`: exit 0, no output. Caveat: the root tsconfig.json has `"files": []` with project references, so this command type-checks no files. `npx tsc --noEmit -p tsconfig.app.json` reports 43 errors, all pre-existing: shadcn ui files, api.ts:343-347 (blame 2026-04-18) and four test `makeRow` helpers (Partial `steadiness`). None of them are in code changed here. jest's ts-jest does type-check every test file it runs.
+- Frontend `npx tsc --noEmit`: exit 0, no output. Caveat: the root tsconfig.json has `"files": []` with project references, so this command type-checks no files. `npx tsc --noEmit -p tsconfig.app.json` reports 43 errors, all pre-existing: shadcn ui files, api.ts:343-347 (blame 2026-04-18) and four test `makeRow` helpers (Partial `steadiness`). None of them are in code changed here, so the type verification for this change is that app-config run: 0 errors in changed files. jest gives no type check: tsconfig.app.json sets `isolatedModules: true`, so ts-jest only transpiles (the four helpers with TS2322 above still pass under jest).
 - Frontend jest `--maxWorkers=4 --json --outputFile=docs/sessions/2026-10-31-100-club/jest-fix.json`: 100 suites, 695 tests, 695 passed, 0 failed, success true (was 682; +13 new).
 
 ## Not covered
