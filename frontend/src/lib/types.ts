@@ -8,6 +8,9 @@ export interface Competition {
   image: string;
   status: 'upcoming' | 'ongoing' | 'completed';
   categories: string[];
+  /** "consistency" for The 100 Club; absent on every other challenge. */
+  mode?: string;
+  rules?: Partial<ConsistencyRules>;
   participants: Participant[];
   prizePool: {
     first: number;
@@ -397,7 +400,67 @@ export interface GolfCreateCourseRequest {
  * `backend/toms_gym/routes/competition_routes.py` +
  * `backend/toms_gym/services/challenge_leaderboard.py`.
  */
-export type ChallengeMetric = "time" | "weight" | "reps";
+export type ChallengeMetric = "time" | "weight" | "reps" | "consistency";
+
+export interface ConsistencyRules {
+  base_quota: number;
+  ramp: number;
+  weeks: number;
+  quota_bonus: number;
+  type_bonus: number;
+  plank_seconds_per_lift: number;
+  tz: string;
+  /** Monday of week 1, YYYY-MM-DD. */
+  week_start: string;
+}
+
+export interface ConsistencyLeader {
+  user_id: string;
+  name: string | null;
+  amount: number;
+}
+
+export type ConsistencyStatus = "upcoming" | "live" | "ended";
+
+export interface ConsistencyBlock {
+  rules: ConsistencyRules;
+  status: ConsistencyStatus;
+  /** 1-based week in progress; 0 before week_start; weeks+1 after the end. */
+  week_index: number;
+  weeks_total: number;
+  week_start: string;
+  week_end: string;
+  /** Whole days left in the week in progress (Sunday counts as 1); 0 outside. */
+  days_left: number;
+  /** Provisional leaders of the week in progress; types nobody has done are absent. */
+  type_leaders: Record<string, ConsistencyLeader[]>;
+}
+
+export interface ConsistencyThisWeek {
+  index: number;
+  quota: number;
+  lifts: number;
+  met: boolean;
+  /** Attempts this week still waiting on analysis. */
+  pending: number;
+  by_type: Record<string, number>;
+  plank_seconds: number;
+  /** Types the athlete leads this week (provisional, not yet in the score). */
+  leading: string[];
+}
+
+export interface ConsistencyWeek {
+  index: number;
+  start: string;
+  quota: number;
+  lifts: number;
+  met: boolean;
+  points: number;
+  bonuses: string[];
+  by_type: Record<string, number>;
+  plank_seconds: number;
+  pending: number;
+}
 
 export interface ChallengeLeaderboardHistoryPoint {
   /** held seconds (time) or weight_kg (weight). */
@@ -431,6 +494,15 @@ export interface ChallengeLeaderboardRow {
   clean_reps?: number | null;
   /** chronological qualifying attempts — powers the (step 3) sparkline. */
   history: ChallengeLeaderboardHistoryPoint[];
+  /** consistency only: current run of met weeks. */
+  streak?: number;
+  best_streak?: number;
+  weeks_met?: number;
+  this_week?: ConsistencyThisWeek;
+  /** consistency only: finished weeks and the week in progress, oldest first. */
+  weeks?: ConsistencyWeek[];
+  /** consistency only: lifts uploaded before week 1 (display only). */
+  warmup_lifts?: number;
 }
 
 export interface ChallengeLeaderboardMomentum {
@@ -443,6 +515,8 @@ export interface ChallengeLeaderboard {
   metric: ChallengeMetric;
   lift_types: string[];
   momentum: ChallengeLeaderboardMomentum;
+  /** Present when metric is "consistency". */
+  consistency?: ConsistencyBlock;
   rows: ChallengeLeaderboardRow[];
 }
 

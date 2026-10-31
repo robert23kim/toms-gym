@@ -6,6 +6,7 @@ import { getGolfAvatar } from "../../lib/api";
 import { formatScoreValue, scoreUnit } from "./metric";
 import { athleteNickname } from "../../lib/plankStats";
 import NicknameBadge from "./NicknameBadge";
+import { StreakFlame, hasWeeks, thisWeekText } from "./ConsistencyMeta";
 
 interface LeaderboardRowProps {
   row: ChallengeLeaderboardRow;
@@ -45,7 +46,10 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
   isChampion = false,
 }) => {
   const dimmed = row.score <= 0;
-  const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
+  const consistency = metric === "consistency";
+  const showAttemptsChip =
+    (consistency ? hasWeeks(row) : (attemptCount ?? 0) > 1) && !!onToggleAttempts;
+  const weekText = consistency ? thisWeekText(row) : null;
   const nickname =
     metric === "time"
       ? athleteNickname({
@@ -115,10 +119,17 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
               {row.name || "Athlete"}
             </span>
             {nickname && <NicknameBadge nickname={nickname} className="shrink-0" />}
+            {consistency && <StreakFlame streak={row.streak} />}
           </div>
-          <div className="text-[11px] text-white/40 lg:hidden">
-            {dimmed ? "No entry yet" : formatDate(row.date)}
-          </div>
+          {weekText ? (
+            <div data-testid="row-this-week" className="text-[11px] text-white/40">
+              {weekText}
+            </div>
+          ) : (
+            <div className="text-[11px] text-white/40 lg:hidden">
+              {dimmed ? "No entry yet" : formatDate(row.date)}
+            </div>
+          )}
         </div>
         {showAttemptsChip && (
           <button
@@ -131,7 +142,7 @@ const LeaderboardRow: React.FC<LeaderboardRowProps> = ({
             aria-expanded={expanded}
             className="ml-2 shrink-0 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
           >
-            {attemptCount} attempts {expanded ? "▴" : "▾"}
+            {consistency ? "Weeks" : `${attemptCount} attempts`} {expanded ? "▴" : "▾"}
           </button>
         )}
       </div>

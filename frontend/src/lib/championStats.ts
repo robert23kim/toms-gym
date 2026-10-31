@@ -40,6 +40,7 @@ const PHOTO_FINISH: Record<Champion["metric"], number> = {
   time: 5,
   weight: 2.5,
   reps: 1,
+  consistency: 25,
 };
 
 export const marginCopy = (c: Champion): string | null => {

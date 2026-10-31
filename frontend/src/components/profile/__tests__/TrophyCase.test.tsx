@@ -64,6 +64,17 @@ describe("TrophyCase", () => {
   });
 });
 
+describe("TrophyCase on a 100 Club win", () => {
+  it("shows a consistency score as points", () => {
+    render(
+      <MemoryRouter>
+        <TrophyCase champions={[{ ...plankWin, competition_name: "The 100 Club", metric: "consistency", score: 325 }]} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByText(/325 pts/)).toBeInTheDocument();
+  });
+});
+
 describe("championTitle", () => {
   it("formats the crowned flair string with the win year", () => {
     expect(championTitle(plankWin)).toBe(

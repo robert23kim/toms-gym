@@ -14,3 +14,10 @@ describe("formatChampionScore", () => {
     expect(formatChampionScore("weight", 120)).toBe("120 kg");
   });
 });
+
+describe("formatChampionScore on a 100 Club win", () => {
+  it("formats consistency scores as points", () => {
+    expect(formatChampionScore("consistency", 325)).toBe("325 pts");
+    expect(formatChampionScore("consistency", 412.5)).toBe("412.5 pts");
+  });
+});

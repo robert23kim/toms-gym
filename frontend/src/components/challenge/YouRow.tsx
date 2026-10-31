@@ -5,6 +5,7 @@ import type { ChallengeLeaderboardRow, ChallengeMetric } from "../../lib/types";
 import { formatScoreValue, scoreUnit } from "./metric";
 import { athleteNickname } from "../../lib/plankStats";
 import NicknameBadge from "./NicknameBadge";
+import { StreakFlame, hasWeeks, thisWeekText } from "./ConsistencyMeta";
 
 // Highlighted "You" row. When the viewer has an entry it sits inline at their
 // actual rank showing rank + score; when they don't, it's an upload prompt.
@@ -69,7 +70,10 @@ const YouRow: React.FC<YouRowProps> = (props) => {
   }
 
   const { row, metric, clipHref, subtitle, attemptCount, expanded, onToggleAttempts } = props;
-  const showAttemptsChip = (attemptCount ?? 0) > 1 && !!onToggleAttempts;
+  const consistency = metric === "consistency";
+  const showAttemptsChip =
+    (consistency ? hasWeeks(row) : (attemptCount ?? 0) > 1) && !!onToggleAttempts;
+  const weekText = consistency ? thisWeekText(row) : null;
   const nickname =
     metric === "time"
       ? athleteNickname({
@@ -130,7 +134,13 @@ const YouRow: React.FC<YouRowProps> = (props) => {
               {row.name || "You"} <span className="text-white/40">· You</span>
             </span>
             {nickname && <NicknameBadge nickname={nickname} className="shrink-0" />}
+            {consistency && <StreakFlame streak={row.streak} />}
           </div>
+          {weekText && (
+            <div data-testid="row-this-week" className="truncate text-[11px] text-[#7fb0ff]/70">
+              {weekText}
+            </div>
+          )}
           {subtitle && (
             <div data-testid="you-row-subtitle" className="truncate text-[11px] text-[#7fb0ff]/70">
               {subtitle}
@@ -148,7 +158,7 @@ const YouRow: React.FC<YouRowProps> = (props) => {
             aria-expanded={expanded}
             className="ml-2 shrink-0 rounded-full border border-white/10 bg-white/5 px-2 py-0.5 text-[11px] text-white/60 hover:text-white hover:bg-white/10 transition-colors"
           >
-            {attemptCount} attempts {expanded ? "▴" : "▾"}
+            {consistency ? "Weeks" : `${attemptCount} attempts`} {expanded ? "▴" : "▾"}
           </button>
         )}
       </div>

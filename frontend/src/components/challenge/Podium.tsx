@@ -4,6 +4,7 @@ import { Play, Trophy } from "lucide-react";
 import type { ChallengeLeaderboardRow, ChallengeMetric } from "../../lib/types";
 import { getGolfAvatar } from "../../lib/api";
 import { formatScoreValue, scoreUnit } from "./metric";
+import { StreakFlame, thisWeekText } from "./ConsistencyMeta";
 
 interface PodiumProps {
   /** Ranked rows (best-first). Only rows with score > 0 occupy pedestals. */
@@ -113,6 +114,15 @@ const PodiumColumn: React.FC<{
         {row.clean_reps != null && row.reps_total != null && (
           <span className="block text-[11px] font-normal text-white/50">
             {row.clean_reps} clean of {row.reps_total}
+          </span>
+        )}
+        {metric === "consistency" && thisWeekText(row) && (
+          <span
+            data-testid={`podium-this-week-${row.rank}`}
+            className="flex items-center justify-center gap-1 text-[11px] font-normal text-white/50"
+          >
+            <StreakFlame streak={row.streak} />
+            {thisWeekText(row)}
           </span>
         )}
       </div>

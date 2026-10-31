@@ -24,6 +24,8 @@ interface VideoData {
 const ChallengeVideos: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const [challengeName, setChallengeName] = useState<string>("");
+  // Multi-category and 100 Club challenges upload from the detail page (the bare route defaults to Squat).
+  const [uploadViaDetail, setUploadViaDetail] = useState(false);
   const [videoData, setVideoData] = useState<VideoData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -46,6 +48,10 @@ const ChallengeVideos: React.FC = () => {
       const liftsDataBackend = liftsResponse.data.lifts || [];
 
       setChallengeName(backendData.name);
+      setUploadViaDetail(
+        backendData.mode === "consistency" ||
+          (Array.isArray(backendData.lifttypes) && backendData.lifttypes.length > 1),
+      );
 
       // Process video data for the gallery
       const processedVideoData: VideoData[] = liftsDataBackend
@@ -151,7 +157,7 @@ const ChallengeVideos: React.FC = () => {
                 Be the first to upload a video for this challenge!
               </p>
               <Link
-                to={`/challenges/${id}/upload`}
+                to={uploadViaDetail ? `/challenges/${id}` : `/challenges/${id}/upload`}
                 className="inline-flex items-center gap-2 bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors"
               >
                 Upload Video

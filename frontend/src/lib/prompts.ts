@@ -1,5 +1,6 @@
 import { BowlingSheetType } from "./api";
-import { Competition } from "./types";
+import { ChallengeLeaderboard, Competition } from "./types";
+import { formatScoreValue } from "../components/challenge/metric";
 
 export type Prompt =
   | { id: "bowl-snap" | "game-snap"; kind: "camera"; title: string; sheetType: BowlingSheetType; fallbackTo: string }
@@ -14,7 +15,7 @@ export type Prompt =
     }
   | { id: string; kind: "link"; title: string; to: string; pill?: string };
 
-type OpenChallenge = Pick<Competition, "id" | "title" | "categories">;
+type OpenChallenge = Pick<Competition, "id" | "title" | "categories"> & Partial<Pick<Competition, "mode">>;
 
 const LIFT_CATEGORIES = new Set(["Squat", "Bench Press", "Deadlift", "Bicep Curl", "Plank", "Pushup", "Situp"]);
 const BODYWEIGHT = new Set(["Plank", "Pushup", "Situp"]);
@@ -25,12 +26,30 @@ export const quickLiftType = (categories: string[] | undefined): string | null =
   return lifts.length === 1 && BODYWEIGHT.has(lifts[0]) ? lifts[0] : null;
 };
 
-export const buildPrompts = (openChallenges: OpenChallenge[]): Prompt[] => [
+/** Home pill for a 100 Club row: "42 / 150 · 3 days left", "Starts Mon"; null when the viewer has no row. */
+export const consistencyPill = (
+  board: Pick<ChallengeLeaderboard, "rows" | "consistency"> | null | undefined,
+  userId: string | null | undefined,
+): string | null => {
+  if (!board?.consistency || !userId) return null;
+  const row = board.rows.find((r) => String(r.user_id) === String(userId));
+  if (!row?.this_week) return null;
+  const { status, days_left } = board.consistency;
+  if (status === "upcoming") return "Starts Mon";
+  if (status === "ended") return null;
+  const lifts = formatScoreValue(row.this_week.lifts, "consistency");
+  return `${lifts} / ${row.this_week.quota} · ${days_left} ${days_left === 1 ? "day" : "days"} left`;
+};
+
+export const isConsistencyChallenge = (c: Pick<Competition, "mode">): boolean => c.mode === "consistency";
+
+/** `pills` overrides a challenge row's pill by competition id (the 100 Club progress pill). */
+export const buildPrompts = (openChallenges: OpenChallenge[], pills: Record<string, string> = {}): Prompt[] => [
   { id: "bowl-snap", kind: "camera", title: "Snap tonight's bowling recap", sheetType: "night", fallbackTo: "/bowling/snap" },
   { id: "game-snap", kind: "camera", title: "Snap a bowling game", sheetType: "game", fallbackTo: "/bowling/snap" },
   ...openChallenges.map<Prompt>((c) => {
-    const liftType = quickLiftType(c.categories);
-    const pill = c.categories?.[0];
+    const liftType = isConsistencyChallenge(c) ? null : quickLiftType(c.categories);
+    const pill = isConsistencyChallenge(c) ? pills[c.id] : pills[c.id] ?? c.categories?.[0];
     if (liftType) {
       return {
         id: `challenge:${c.id}`,

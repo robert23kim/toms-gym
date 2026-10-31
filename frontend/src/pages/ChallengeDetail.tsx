@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { Fragment, useEffect, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Dumbbell, Upload } from "lucide-react";
@@ -20,6 +20,9 @@ import NicknameBadge from "../components/challenge/NicknameBadge";
 import { athleteNickname } from "../lib/plankStats";
 import YouRow from "../components/challenge/YouRow";
 import AttemptHistory from "../components/challenge/AttemptHistory";
+import ConsistencyHero from "../components/challenge/ConsistencyHero";
+import ConsistencyWeekTable from "../components/challenge/ConsistencyWeekTable";
+import { hasWeeks } from "../components/challenge/ConsistencyMeta";
 import MomentumLine from "../components/challenge/MomentumLine";
 import { viewerProcessingAttempts } from "../components/challenge/processing";
 import StandingCard from "../components/challenge/StandingCard";
@@ -184,7 +187,12 @@ const ChallengeDetail: React.FC = () => {
   const handleLiftTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLiftType = e.target.value;
     setLiftType(newLiftType);
-    setWeight(defaultWeights[newLiftType] || "60");
+    // 100 Club squats are air squats by default.
+    setWeight(
+      leaderboard?.metric === "consistency" && newLiftType === "Squat"
+        ? "0"
+        : defaultWeights[newLiftType] || "60",
+    );
   };
 
   // Handle video upload
@@ -500,6 +508,13 @@ const ChallengeDetail: React.FC = () => {
     }
   }, [challenge]);
 
+  // 100 Club: squats default to air squats and bodyweight lifts post 0.
+  useEffect(() => {
+    if (leaderboard?.metric === "consistency" && (liftType === "Squat" || isBodyweightLift(liftType))) {
+      setWeight("0");
+    }
+  }, [leaderboard?.metric, liftType]);
+
   const determineStatus = (startDate: string, endDate: string): "upcoming" | "ongoing" | "completed" => {
     const now = new Date();
     const start = new Date(startDate);
@@ -657,6 +672,14 @@ const ChallengeDetail: React.FC = () => {
   const uploadCta = leaderboard
     ? ctaLabelFor(standing, leaderboard.metric, leaderboard.lift_types)
     : "Upload Lift";
+  const consistencyBlock =
+    leaderboard?.metric === "consistency" ? leaderboard.consistency ?? null : null;
+  const viewerBoardRow =
+    leaderboard && viewerId
+      ? leaderboard.rows.find((r) => String(r.user_id) === String(viewerId)) ?? null
+      : null;
+  const liveWeekIndex =
+    consistencyBlock && consistencyBlock.status === "live" ? consistencyBlock.week_index : null;
   const heroDescription = challenge.description
     ? challenge.description.split(" - ")[0]
     : "";
@@ -722,12 +745,12 @@ const ChallengeDetail: React.FC = () => {
                 {heroDescription}
               </p>
             )}
-            {leaderboard && scoringNote(leaderboard.metric, leaderboard.lift_types) && (
+            {leaderboard && scoringNote(leaderboard.metric, leaderboard.lift_types, leaderboard.consistency?.rules) && (
               <p
                 data-testid="scoring-note"
                 className="mt-1.5 text-[12.5px] text-amber-200/80 lg:max-w-[560px]"
               >
-                {scoringNote(leaderboard.metric, leaderboard.lift_types)}
+                {scoringNote(leaderboard.metric, leaderboard.lift_types, leaderboard.consistency?.rules)}
               </p>
             )}
             {leaderboard && (
@@ -748,6 +771,14 @@ const ChallengeDetail: React.FC = () => {
                 board when analysis finishes (usually a few minutes).
               </p>
             </div>
+          )}
+
+          {leaderboard && consistencyBlock && (
+            <ConsistencyHero
+              block={consistencyBlock}
+              liftTypes={leaderboard.lift_types}
+              viewerRow={viewerBoardRow}
+            />
           )}
 
           {/* Leaderboard */}
@@ -774,15 +805,27 @@ const ChallengeDetail: React.FC = () => {
             }
 
             const { metric, rows } = leaderboard;
+            const isConsistency = metric === "consistency";
             const scoredRows = rows.filter((r) => r.score > 0);
             const podiumRows = scoredRows.slice(0, 3);
-            const tableRows = rows.filter((r) => r.rank > 3);
+            // 100 Club rows at zero points still list (warm-ups, this week's 0/100).
+            const tableRows = isConsistency
+              ? rows.filter((r) => !podiumRows.includes(r))
+              : rows.filter((r) => r.rank > 3);
+            const expandable = (r: ChallengeLeaderboardRow) =>
+              isConsistency ? hasWeeks(r) : r.attempt_count > 1;
+            const detailPanel = (r: ChallengeLeaderboardRow) =>
+              isConsistency ? (
+                <ConsistencyWeekTable weeks={r.weeks ?? []} liveIndex={liveWeekIndex} />
+              ) : (
+                <AttemptHistory userId={String(r.user_id)} competitionId={id!} metric={metric} />
+              );
             const viewerRow = viewerId
               ? rows.find((r) => String(r.user_id) === String(viewerId))
               : undefined;
             const viewerEntered = !!viewerRow;
 
-            if (scoredRows.length === 0) {
+            if (scoredRows.length === 0 && !(isConsistency && rows.length > 0)) {
               return (
                 <div className="rounded-xl border border-white/[.07] bg-card p-8 text-center">
                   <Dumbbell className="mx-auto mb-3 h-10 w-10 text-muted-foreground" />
@@ -807,7 +850,7 @@ const ChallengeDetail: React.FC = () => {
             return (
               <>
                 {standing && rankShift && <RankChangeBanner shift={rankShift} />}
-                {standing && <StandingCard standing={standing} metric={metric} />}
+                {standing && !isConsistency && <StandingCard standing={standing} metric={metric} />}
 
                 <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
 
@@ -817,7 +860,7 @@ const ChallengeDetail: React.FC = () => {
                     an expandable attempts toggle. */}
                 {podiumRows.some(
                   (r) =>
-                    r.attempt_count > 1 ||
+                    expandable(r) ||
                     rowNickname(r) ||
                     championUserId === String(r.user_id),
                 ) && (
@@ -826,14 +869,14 @@ const ChallengeDetail: React.FC = () => {
                       {podiumRows
                         .filter(
                           (r) =>
-                            r.attempt_count > 1 ||
+                            expandable(r) ||
                             rowNickname(r) ||
                             championUserId === String(r.user_id),
                         )
                         .map((r) => {
                           const expanded = expandedAttemptsUserId === String(r.user_id);
                           const nickname = rowNickname(r);
-                          const multi = r.attempt_count > 1;
+                          const multi = expandable(r);
                           const inner = (
                             <>
                               {championUserId === String(r.user_id) && (
@@ -845,7 +888,7 @@ const ChallengeDetail: React.FC = () => {
                               {nickname && <NicknameBadge nickname={nickname} />}
                               {multi && (
                                 <span className="text-white/50">
-                                  · {r.attempt_count} attempts {expanded ? "▴" : "▾"}
+                                  · {isConsistency ? "weeks" : `${r.attempt_count} attempts`} {expanded ? "▴" : "▾"}
                                 </span>
                               )}
                             </>
@@ -878,11 +921,7 @@ const ChallengeDetail: React.FC = () => {
                           key={r.user_id}
                           className="overflow-hidden rounded-xl border border-white/5"
                         >
-                          <AttemptHistory
-                            userId={String(r.user_id)}
-                            competitionId={id!}
-                            metric={metric}
-                          />
+                          {detailPanel(r)}
                         </div>
                       ) : null
                     )}
@@ -917,7 +956,7 @@ const ChallengeDetail: React.FC = () => {
                         const toggle = () =>
                           setExpandedAttemptsUserId(expanded ? null : String(row.user_id));
                         return (
-                          <React.Fragment key={row.user_id}>
+                          <Fragment key={row.user_id}>
                             {viewerEntered && String(row.user_id) === String(viewerId) ? (
                               <YouRow
                                 entered
@@ -940,14 +979,8 @@ const ChallengeDetail: React.FC = () => {
                                 isChampion={championUserId === String(row.user_id)}
                               />
                             )}
-                            {expanded && (
-                              <AttemptHistory
-                                userId={String(row.user_id)}
-                                competitionId={id!}
-                                metric={metric}
-                              />
-                            )}
-                          </React.Fragment>
+                            {expanded && detailPanel(row)}
+                          </Fragment>
                         );
                       })}
                       {!viewerEntered && <YouRow entered={false} onUpload={openUpload} />}
@@ -1027,9 +1060,12 @@ const ChallengeDetail: React.FC = () => {
                             value={weight}
                             onChange={(e) => setWeight(e.target.value)}
                             placeholder="Enter weight"
-                            min="1"
+                            min={consistencyBlock ? "0" : "1"}
                             className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                           />
+                          {consistencyBlock && (
+                            <p className="mt-1 text-xs text-muted-foreground">0 for air squats.</p>
+                          )}
                         </div>
                       )}
                     </div>

@@ -1,4 +1,4 @@
-import type { ChallengeMetric } from "../../lib/types";
+import type { ChallengeMetric, ConsistencyRules } from "../../lib/types";
 
 // Metric-aware rendering. A challenge is ranked by exactly one metric — `time`
 // (plank: seconds held), `reps` (pushup/situp: rep count) or `weight` (best-lift
@@ -11,12 +11,14 @@ import type { ChallengeMetric } from "../../lib/types";
 export function scoreColumnLabel(metric: ChallengeMetric): string {
   if (metric === "time") return "HOLD";
   if (metric === "reps") return "REPS";
+  if (metric === "consistency") return "POINTS";
   return "TOTAL";
 }
 
 export function scoreUnit(metric: ChallengeMetric): string {
   if (metric === "time") return "s";
   if (metric === "reps") return "reps";
+  if (metric === "consistency") return "pts";
   return "lbs";
 }
 
@@ -24,7 +26,7 @@ export function scoreUnit(metric: ChallengeMetric): string {
  * reps keep a half when quality scoring produced one). */
 export function formatScoreValue(score: number, metric: ChallengeMetric): string {
   if (metric === "time") return score.toFixed(1);
-  if (metric === "reps" && !Number.isInteger(score)) return score.toFixed(1);
+  if ((metric === "reps" || metric === "consistency") && !Number.isInteger(score)) return score.toFixed(1);
   return String(Math.round(score));
 }
 
@@ -33,13 +35,36 @@ const isSitupOnly = (liftTypes?: string[]): boolean =>
 
 export function uploadCtaLabel(metric: ChallengeMetric, liftTypes?: string[]): string {
   if (metric === "time") return "Upload your plank";
+  if (metric === "consistency") return "Log this week's lifts";
   if (metric === "reps") return isSitupOnly(liftTypes) ? "Upload your situps" : "Upload your pushups";
   return "Upload your lift";
 }
 
 /** One line explaining a board whose score is not simply "how many". */
-export function scoringNote(metric: ChallengeMetric, liftTypes?: string[]): string | null {
+export function scoringNote(
+  metric: ChallengeMetric,
+  liftTypes?: string[],
+  rules?: Partial<ConsistencyRules>,
+): string | null {
+  if (metric === "consistency") return consistencyNote(rules);
   if (metric !== "reps") return null;
   if (!liftTypes?.some((t) => t.toLowerCase() === "situp")) return null;
   return "Clean reps count in full and sloppy reps count half — a rep is clean when its form grades C or better.";
+}
+
+const CONSISTENCY_DEFAULTS = {
+  base_quota: 100,
+  ramp: 25,
+  quota_bonus: 50,
+  type_bonus: 25,
+  plank_seconds_per_lift: 10,
+};
+
+function consistencyNote(rules?: Partial<ConsistencyRules>): string {
+  const r = { ...CONSISTENCY_DEFAULTS, ...rules };
+  return (
+    `Every rep is a lift (sloppy situps count half) and every ${r.plank_seconds_per_lift} s of plank is one. ` +
+    `Hit the weekly quota for +${r.quota_bonus} and next week's goes up ${r.ramp}; miss it and it resets to ${r.base_quota}. ` +
+    `Most of a lift type in a week: +${r.type_bonus}.`
+  );
 }

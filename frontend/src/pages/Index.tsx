@@ -6,8 +6,8 @@ import IconTile from "../components/IconTile";
 import DemoLoop from "../components/DemoLoop";
 import StreakCard from "../components/StreakCard";
 import PromptList from "../components/home/PromptList";
-import { buildPrompts } from "../lib/prompts";
-import { getCompetitions } from "../lib/api";
+import { buildPrompts, consistencyPill, isConsistencyChallenge } from "../lib/prompts";
+import { getChallengeLeaderboard, getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 
 const VERTICALS = [
@@ -41,6 +41,7 @@ const readUserId = (): string | null => {
 
 const Index = () => {
   const [open, setOpen] = useState<Competition[]>([]);
+  const [pills, setPills] = useState<Record<string, string>>({});
   const userId = readUserId();
   const returning = Boolean(userId);
 
@@ -49,7 +50,17 @@ const Index = () => {
     getCompetitions()
       .then((comps) => {
         if (cancelled) return;
-        setOpen(comps.filter((c) => c.status === "ongoing"));
+        const ongoing = comps.filter((c) => c.status === "ongoing");
+        setOpen(ongoing);
+        if (!userId) return;
+        ongoing.filter(isConsistencyChallenge).forEach((c) => {
+          getChallengeLeaderboard(c.id)
+            .then((board) => {
+              const pill = consistencyPill(board, userId);
+              if (!cancelled && pill) setPills((prev) => ({ ...prev, [c.id]: pill }));
+            })
+            .catch(() => {}); // non-fatal: the row keeps its plain pill
+        });
       })
       .catch(() => {}); // non-fatal: strip simply stays hidden
     return () => {
@@ -65,7 +76,7 @@ const Index = () => {
     </section>
   );
 
-  const todo = <PromptList prompts={buildPrompts(open)} userId={userId} />;
+  const todo = <PromptList prompts={buildPrompts(open, pills)} userId={userId} />;
 
   return (
     <Layout>

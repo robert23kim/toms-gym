@@ -1,3 +1,4 @@
+import { consistencyLeaderboard } from "../../__fixtures__/consistencyLeaderboard";
 import { deriveStanding, ctaLabelFor, attemptScore, metricForLift, personalBest, formatWithUnit, standingShareText } from "../standing";
 import type {
   ChallengeLeaderboard,
@@ -225,5 +226,19 @@ describe("standingShareText", () => {
       .toBe("I just logged 12.0s in the Summer plank challenge. Beat me:");
     expect(standingShareText({ standing: kim, metric: "time", challengeName: null, athleteName: "Kim Lee", isOwner: false }))
       .toBe("Kim just logged 12.0s in this challenge. Can you beat it?");
+  });
+});
+
+
+describe("100 Club standing copy", () => {
+  it("keeps the weekly CTA even when the viewer has points", () => {
+    const s = deriveStanding(consistencyLeaderboard, "b1");
+    expect(s?.rank).toBe(2);
+    expect(ctaLabelFor(s, "consistency", consistencyLeaderboard.lift_types)).toBe("Log this week's lifts");
+  });
+
+  it("formats points with a pts unit and has no per-attempt score", () => {
+    expect(formatWithUnit(137, "consistency")).toBe("137 pts");
+    expect(attemptScore("consistency", { total_reps: 30 }, 0)).toBeNull();
   });
 });

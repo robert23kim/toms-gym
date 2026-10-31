@@ -85,6 +85,7 @@ export const transformCompetitionData = (backendData: any): Competition => {
     image: backendData.image || getDefaultChallengeImage(backendData.id),
     status: determineStatus(backendData.start_date, backendData.end_date),
     categories: getCategoriesFromMetadata(backendData),
+    ...getModeFromMetadata(backendData),
     participants: [],
     prizePool: {
       first: 1000,
@@ -128,6 +129,28 @@ const getCategoriesFromMetadata = (data: any) => {
     }
   }
   return ['Powerlifting', 'Open'];
+};
+
+// mode/rules ride in the same description metadata blob as lifttypes.
+interface ModeSource {
+  mode?: unknown;
+  rules?: unknown;
+  description?: unknown;
+}
+
+const getModeFromMetadata = (data: ModeSource): Pick<Competition, "mode" | "rules"> => {
+  let source: ModeSource = data;
+  if (!data.mode && typeof data.description === "string" && data.description.includes(" - ")) {
+    try {
+      source = JSON.parse(data.description.split(" - ")[1]) as ModeSource;
+    } catch {
+      return {};
+    }
+  }
+  const out: Pick<Competition, "mode" | "rules"> = {};
+  if (typeof source?.mode === "string") out.mode = source.mode;
+  if (source?.rules && typeof source.rules === "object") out.rules = source.rules as Competition["rules"];
+  return out;
 };
 
 // Get competition status based on dates
@@ -537,7 +560,7 @@ export async function updateTicketStatus(
 // Mirrors backend GET /champions and routes/achievement_routes.py.
 // ---------------------------------------------------------------------------
 
-export type ChampionMetric = "time" | "weight" | "reps";
+export type ChampionMetric = "time" | "weight" | "reps" | "consistency";
 
 export interface ChampionRunnerUp {
   name: string | null;
@@ -621,6 +644,7 @@ export const formatChampionScore = (
     return `${m}:${String(s).padStart(2, "0")}`;
   }
   if (metric === "reps") return `${Math.round(score)} reps`;
+  if (metric === "consistency") return `${Number.isInteger(score) ? score : score.toFixed(1)} pts`;
   return `${score} kg`;
 };
 

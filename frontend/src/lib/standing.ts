@@ -138,6 +138,7 @@ export function attemptScore(
   report: (RepReport & { total_in_plank_s?: number | null }) | null | undefined,
   weight: number | null | undefined,
 ): number | null {
+  if (metric === "consistency") return null;
   if (metric === "reps") return boardReps(report);
   if (metric === "time") return report?.total_in_plank_s ?? null;
   return weight ?? null;
@@ -174,6 +175,7 @@ export function formatWithUnit(value: number, metric: ChallengeMetric): string {
     const n = Math.round(value);
     return `${n} rep${n === 1 ? "" : "s"}`;
   }
+  if (metric === "consistency") return `${formatScoreValue(value, metric)} pts`;
   return `${formatScoreValue(value, metric)}${scoreUnit(metric)}`;
 }
 
@@ -183,6 +185,7 @@ export function ctaLabelFor(
   metric: ChallengeMetric,
   liftTypes?: string[],
 ): string {
+  if (metric === "consistency") return uploadCtaLabel(metric, liftTypes);
   return standing ? standing.ctaLabel : uploadCtaLabel(metric, liftTypes);
 }
 

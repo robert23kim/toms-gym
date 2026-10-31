@@ -102,4 +102,21 @@ describe("HallOfChampions", () => {
     renderHall();
     await waitFor(() => expect(screen.getByText(/Sam leads at 40 reps/)).toBeInTheDocument());
   });
+
+  it("formats a 100 Club champion's score as points", async () => {
+    (api.fetchChampions as jest.Mock).mockResolvedValue([
+      champ({
+        competition_id: "club",
+        competition_name: "The 100 Club",
+        metric: "consistency",
+        score: 325,
+        margin: 40,
+        runners_up: [{ name: "victoria", user_id: "u2", score: 285 }],
+      }),
+    ]);
+    renderHall();
+    const hero = await screen.findByRole("region", { name: /reigning champion/i });
+    expect(hero).toHaveTextContent("325 pts");
+    expect(hero).toHaveTextContent("Won by 40 pts over victoria");
+  });
 });

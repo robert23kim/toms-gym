@@ -1,0 +1,166 @@
+import React from "react";
+import "@testing-library/jest-dom";
+import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import axios from "axios";
+import ChallengeDetail from "../ChallengeDetail";
+import * as api from "../../lib/api";
+import { uploadVideo } from "../../lib/resumableUpload";
+import type { ChallengeLeaderboard } from "../../lib/types";
+import {
+  CONSISTENCY_COMPETITION_ID,
+  consistencyLeaderboard,
+  consistencyRules,
+  upcomingConsistencyLeaderboard,
+} from "../../__fixtures__/consistencyLeaderboard";
+
+jest.mock("../../config", () => ({ API_URL: "https://test-api.example", APP_BUILD: "test" }));
+jest.mock("../../components/Layout", () => ({
+  __esModule: true,
+  default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
+}));
+jest.mock("../../lib/resumableUpload", () => ({ uploadVideo: jest.fn() }));
+jest.mock("../../lib/telemetry", () => ({ reportUploadError: jest.fn() }));
+jest.mock("axios", () => ({
+  __esModule: true,
+  default: { get: jest.fn(), post: jest.fn(), isAxiosError: () => false },
+}));
+jest.mock("../../lib/api", () => ({
+  ...jest.requireActual("../../lib/api"),
+  getChallengeLeaderboard: jest.fn(),
+  getLiftingResult: jest.fn(),
+  triggerLiftingAnalysis: jest.fn(),
+  fetchChampions: jest.fn(),
+}));
+
+const ID = CONSISTENCY_COMPETITION_ID;
+const LIFTS = ["Situp", "Pushup", "Squat", "Plank"];
+const description = `100 lifts a week. Situps, pushups, squats or planks. Hit it and the bar rises. - ${JSON.stringify({
+  lifttypes: LIFTS,
+  weightclasses: [],
+  gender: "",
+  mode: "consistency",
+  rules: consistencyRules,
+})}`;
+
+const competition = {
+  id: ID,
+  name: "The 100 Club",
+  start_date: "2026-01-01",
+  end_date: "2099-12-27",
+  description,
+  lifttypes: LIFTS,
+  mode: "consistency",
+  rules: consistencyRules,
+};
+
+const mockGet = axios.get as jest.Mock;
+
+const setup = (board: ChallengeLeaderboard, viewer: string | null) => {
+  (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? viewer : null));
+  (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
+  (api.fetchChampions as jest.Mock).mockResolvedValue([]);
+  mockGet.mockImplementation((url: string) => {
+    if (url.endsWith(`/competitions/${ID}`)) return Promise.resolve({ data: { competition } });
+    if (url.endsWith(`/competitions/${ID}/participants`))
+      return Promise.resolve({ data: { participants: [{ id: "a1" }, { id: "b1" }, { id: "c1" }] } });
+    if (url.endsWith(`/competitions/${ID}/lifts`)) return Promise.resolve({ data: { lifts: [] } });
+    return Promise.reject(new Error(`unexpected GET ${url}`));
+  });
+  return render(
+    <MemoryRouter initialEntries={[`/challenges/${ID}`]}>
+      <Routes>
+        <Route path="/challenges/:id" element={<ChallengeDetail />} />
+      </Routes>
+    </MemoryRouter>,
+  );
+};
+
+describe("ChallengeDetail on a 100 Club board", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it("renders the hero, the rules line, points rows and the week table", async () => {
+    setup(consistencyLeaderboard, "a1");
+    const hero = await screen.findByTestId("consistency-hero");
+    expect(within(hero).getByTestId("consistency-week-line")).toHaveTextContent("Week 3 of 8 · 4 days left");
+    expect(within(hero).getByTestId("consistency-ring-count")).toHaveTextContent("42 / 150");
+    expect(within(hero).getByTestId("consistency-streak")).toHaveTextContent("2-week streak");
+    expect(within(hero).getByTestId("consistency-leader-Situp")).toHaveTextContent(/leading/i);
+
+    expect(screen.getByTestId("scoring-note")).toHaveTextContent(/10 s of plank/);
+    expect(screen.getByTestId("podium-score-1")).toHaveTextContent("467pts");
+    expect(screen.getByTestId("podium-score-2")).toHaveTextContent("330pts");
+    expect(screen.queryByTestId("standing-card")).toBeNull();
+
+    // Cy has zero points and still lists, with this week's quota.
+    const cyRow = screen.getAllByTestId("leaderboard-row").find((r) => r.textContent?.includes("Cy"));
+    expect(cyRow).toBeDefined();
+    expect(within(cyRow!).getByTestId("row-this-week")).toHaveTextContent("0/100 this week");
+
+    expect(screen.getAllByText("Log this week's lifts").length).toBeGreaterThan(0);
+
+    fireEvent.click(screen.getByRole("button", { name: /Ana.*weeks/ }));
+    const table = await screen.findByTestId("week-table");
+    expect(within(table).getByTestId("week-row-1")).toHaveTextContent("Situp, Plank");
+    expect(within(table).getByTestId("week-row-1")).toHaveTextContent("200");
+    expect(within(table).getByTestId("week-row-2")).toHaveTextContent("225");
+    expect(within(table).getByTestId("week-row-3")).toHaveTextContent("now");
+    expect(mockGet).not.toHaveBeenCalledWith(expect.stringContaining("/users/a1/lifts"));
+  });
+
+  it("shows anonymous visitors the week line and leaders without a ring", async () => {
+    setup(consistencyLeaderboard, null);
+    const hero = await screen.findByTestId("consistency-hero");
+    expect(within(hero).getByTestId("consistency-week-line")).toHaveTextContent("Week 3 of 8");
+    expect(within(hero).getByTestId("consistency-leader-Plank")).toHaveTextContent("Ben 100 s");
+    expect(within(hero).queryByTestId("consistency-ring-count")).toBeNull();
+    expect(screen.getByTestId("you-row")).toHaveAttribute("data-entered", "false");
+  });
+
+  it("lists warm-up rows before week 1 instead of the empty podium state", async () => {
+    setup(upcomingConsistencyLeaderboard, "a1");
+    const hero = await screen.findByTestId("consistency-hero");
+    expect(within(hero).getByTestId("consistency-week-line")).toHaveTextContent("Starts Monday 2 Nov");
+    expect(screen.queryByText(/No entries yet/)).toBeNull();
+    const you = screen.getByTestId("you-row");
+    expect(within(you).getByTestId("row-this-week")).toHaveTextContent("0/100 this week · 20 warm-up");
+    expect(screen.queryByTestId("podium")).toBeNull();
+  });
+
+  it("offers exactly the four lifts, hides weight for bodyweight and allows 0 for squats", async () => {
+    setup(consistencyLeaderboard, "a1");
+    await screen.findByTestId("consistency-hero");
+    fireEvent.click(screen.getAllByText("Log this week's lifts")[0]);
+    const select = (await screen.findByText("Lift Type")).parentElement!.querySelector("select")!;
+    const options = Array.from(select.querySelectorAll("option")).map((o) => o.value);
+    expect([...options].sort()).toEqual(["Plank", "Pushup", "Situp", "Squat"]);
+    for (const lift of ["Situp", "Pushup", "Plank"]) {
+      fireEvent.change(select, { target: { value: lift } });
+      expect(screen.queryByText("Weight (lbs)")).toBeNull();
+    }
+    fireEvent.change(select, { target: { value: "Squat" } });
+    const weight = screen.getByPlaceholderText("Enter weight") as HTMLInputElement;
+    expect(weight.value).toBe("0");
+    expect(weight.min).toBe("0");
+    await waitFor(() => expect(api.getChallengeLeaderboard).toHaveBeenCalled());
+  });
+
+  it("opens on an air squat at weight 0 and posts 0 for a bodyweight lift", async () => {
+    (uploadVideo as jest.Mock).mockRejectedValue(new Error("stop after the post"));
+    setup(consistencyLeaderboard, "a1");
+    await screen.findByTestId("consistency-hero");
+    fireEvent.click(screen.getAllByText("Log this week's lifts")[0]);
+    const select = (await screen.findByText("Lift Type")).parentElement!.querySelector("select")!;
+    expect(select.value).toBe("Squat");
+    expect((screen.getByPlaceholderText("Enter weight") as HTMLInputElement).value).toBe("0");
+
+    fireEvent.change(select, { target: { value: "Situp" } });
+    const form = select.closest("form")!;
+    fireEvent.change(form.querySelector('input[type="email"]')!, { target: { value: "ana@example.com" } });
+    const file = new File(["x"], "situps.mp4", { type: "video/mp4" });
+    fireEvent.change(form.querySelector('input[type="file"]')!, { target: { files: [file] } });
+    fireEvent.submit(form);
+    await waitFor(() => expect(uploadVideo).toHaveBeenCalled());
+    expect((uploadVideo as jest.Mock).mock.calls[0][1]).toMatchObject({ lift_type: "Situp", weight: "0" });
+  });
+});
