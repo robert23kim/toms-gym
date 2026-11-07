@@ -119,6 +119,14 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(screen.getByTestId("you-row")).toHaveAttribute("data-entered", "false");
   });
 
+  it("drops the Everyone else header when the podium holds everyone", async () => {
+    setup({ ...consistencyLeaderboard, rows: consistencyLeaderboard.rows.slice(0, 2) }, null);
+    await screen.findByTestId("consistency-hero");
+    expect(await screen.findByTestId("you-row")).toHaveAttribute("data-entered", "false");
+    expect(screen.queryByText("Everyone else")).toBeNull();
+    expect(screen.queryByTestId("leaderboard-header")).toBeNull();
+  });
+
   it("lists warm-up rows before week 1 instead of the empty podium state", async () => {
     setup(upcomingConsistencyLeaderboard, "a1");
     const hero = await screen.findByTestId("consistency-hero");

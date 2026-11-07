@@ -930,6 +930,7 @@ const ChallengeDetail: React.FC = () => {
 
                 {showTable && (
                   <div>
+                    {tableRows.length > 0 && (
                     <div className="mb-2 flex items-center justify-between px-1 lg:mb-3">
                       <h2 className="text-sm font-semibold text-white/70 lg:text-base lg:text-white/85">
                         Everyone else
@@ -938,8 +939,10 @@ const ChallengeDetail: React.FC = () => {
                         {scoreColumnLabel(metric)}
                       </span>
                     </div>
+                    )}
                     <div className="flex flex-col divide-y divide-white/[.06] overflow-hidden rounded-xl border border-white/[.07]">
                       {/* Desktop-only table header (#1b): RANK · ATHLETE · HOLD/TOTAL · CLIP. */}
+                      {tableRows.length > 0 && (
                       <div
                         data-testid="leaderboard-header"
                         className="hidden bg-white/[.03] px-[18px] py-2.5 text-[11px] font-semibold uppercase tracking-[.04em] text-white/40 lg:grid lg:grid-cols-[52px_1fr_120px_90px] lg:gap-3.5"
@@ -949,6 +952,7 @@ const ChallengeDetail: React.FC = () => {
                         <div>{scoreColumnLabel(metric)}</div>
                         <div className="text-right">Clip</div>
                       </div>
+                      )}
                       {tableRows.map((row) => {
                         // Single-open accordion: rows with >1 attempt expand
                         // into that athlete's attempt history (lazy fetch).
