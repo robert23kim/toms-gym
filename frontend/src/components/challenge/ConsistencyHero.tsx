@@ -19,6 +19,14 @@ export const startDayLabel = (iso: string): string => {
   return `${WEEKDAYS[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
 };
 
+/** "Sun 27 Dec": the last day of the final week, read as a local day. */
+export const finalDayLabel = (rules: Pick<ConsistencyBlock["rules"], "week_start" | "weeks">): string => {
+  const d = new Date(`${rules.week_start}T00:00:00`);
+  if (Number.isNaN(d.getTime())) return rules.week_start;
+  d.setDate(d.getDate() + rules.weeks * 7 - 1);
+  return `${WEEKDAYS[d.getDay()].slice(0, 3)} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+};
+
 const plural = (n: number, word: string) => `${n} ${word}${n === 1 ? "" : "s"}`;
 
 export const weekLine = (block: ConsistencyBlock): string => {

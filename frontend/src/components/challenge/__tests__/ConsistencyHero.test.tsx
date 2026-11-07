@@ -1,7 +1,7 @@
 import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import ConsistencyHero, { startDayLabel } from "../ConsistencyHero";
+import ConsistencyHero, { finalDayLabel, startDayLabel } from "../ConsistencyHero";
 import type { ChallengeLeaderboard } from "../../../lib/types";
 import {
   consistencyLeaderboard,
@@ -146,5 +146,9 @@ describe("ConsistencyHero", () => {
   it("has no bonus note outside a live week", () => {
     renderHero(endedConsistencyLeaderboard, "a1");
     expect(screen.queryByTestId("consistency-bonus-note")).toBeNull();
+  });
+  it("names the last Sunday of the challenge from week_start and weeks", () => {
+    expect(finalDayLabel({ week_start: "2026-11-02", weeks: 8 })).toBe("Sun 27 Dec");
+    expect(finalDayLabel({ week_start: "2026-03-02", weeks: 1 })).toBe("Sun 8 Mar");
   });
 });

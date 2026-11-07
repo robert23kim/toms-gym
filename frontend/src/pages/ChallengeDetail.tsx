@@ -20,7 +20,7 @@ import NicknameBadge from "../components/challenge/NicknameBadge";
 import { athleteNickname } from "../lib/plankStats";
 import YouRow from "../components/challenge/YouRow";
 import AttemptHistory from "../components/challenge/AttemptHistory";
-import ConsistencyHero from "../components/challenge/ConsistencyHero";
+import ConsistencyHero, { finalDayLabel } from "../components/challenge/ConsistencyHero";
 import ConsistencyWeekTable from "../components/challenge/ConsistencyWeekTable";
 import { hasWeeks } from "../components/challenge/ConsistencyMeta";
 import MomentumLine from "../components/challenge/MomentumLine";
@@ -720,6 +720,7 @@ const ChallengeDetail: React.FC = () => {
                   status={challenge.status}
                   startDate={challenge.date}
                   endDate={challenge.registrationDeadline}
+                  endsLabel={consistencyBlock ? finalDayLabel(consistencyBlock.rules) : null}
                 />
                 {dateRange && (
                   <span className="hidden text-[12.5px] font-medium text-white/45 lg:inline">

@@ -6,6 +6,8 @@ interface StatusPillProps {
   status: Status;
   startDate: string;
   endDate: string;
+  /** Replaces the day countdown while ongoing, e.g. "Sun 27 Dec". */
+  endsLabel?: string | null;
 }
 
 function daysBetween(from: Date, to: Date): number {
@@ -16,7 +18,7 @@ function daysBetween(from: Date, to: Date): number {
  * Challenge status pill with a countdown, e.g. "Ongoing · 23d left". Extends the
  * page's `determineStatus` by deriving the remaining/until days from the dates.
  */
-const StatusPill: React.FC<StatusPillProps> = ({ status, startDate, endDate }) => {
+const StatusPill: React.FC<StatusPillProps> = ({ status, startDate, endDate, endsLabel = null }) => {
   const now = new Date();
 
   let label: string;
@@ -30,7 +32,7 @@ const StatusPill: React.FC<StatusPillProps> = ({ status, startDate, endDate }) =
     dot = "bg-blue-400";
   } else if (status === "ongoing") {
     const d = daysBetween(now, new Date(endDate));
-    label = d > 0 ? `Ongoing · ${d}d left` : "Ongoing · ends today";
+    label = endsLabel ? `Ongoing · ends ${endsLabel}` : d > 0 ? `Ongoing · ${d}d left` : "Ongoing · ends today";
     tone = "text-[#4ade80] bg-[rgba(52,199,89,.14)]";
     dot = "bg-[#4ade80]";
   } else {

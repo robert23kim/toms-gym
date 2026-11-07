@@ -87,6 +87,7 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(within(hero).getByTestId("consistency-streak")).toHaveTextContent("2-week streak");
     expect(within(hero).getByTestId("consistency-leader-Situp")).toHaveTextContent(/leading/i);
 
+    expect(screen.getByTestId("status-pill")).toHaveTextContent(/^Ongoing · ends Sun 27 Dec$/);
     expect(screen.getByTestId("scoring-note")).toHaveTextContent(/10 s of plank/);
     expect(screen.getByTestId("podium-score-1")).toHaveTextContent("467pts");
     expect(screen.getByTestId("podium-score-2")).toHaveTextContent("330pts");
