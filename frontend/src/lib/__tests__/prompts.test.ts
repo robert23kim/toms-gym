@@ -43,6 +43,11 @@ describe("buildPrompts", () => {
     expect(prompts[3]).toMatchObject({ kind: "link", to: "/lift/upload" });
   });
 
+  it("drops the bowling and golf rows when sports is off", () => {
+    const prompts = buildPrompts([{ id: "c1", title: "Situp challenge", categories: ["Situp"] }], {}, { sports: false });
+    expect(prompts.map((p) => p.id)).toEqual(["challenge:c1", "lift-upload"]);
+  });
+
   it("makes a bodyweight challenge a video row with its lift type preset", () => {
     const prompts = buildPrompts([{ id: "c1", title: "Situp challenge", categories: ["Situp"] }]);
     expect(prompts[2]).toEqual({

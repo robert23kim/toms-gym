@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import Layout from "../components/Layout";
 import { Calendar, ArrowLeft, User, Dumbbell, TrendingUp, CircleDot, Flag, Upload, Camera } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
+import { useIsOwner } from "../hooks/useIsOwner";
 import axios from "axios";
 import { API_URL } from "../config";
 import LiftHistoryList from '../components/profile/LiftHistoryList';
@@ -77,6 +78,7 @@ const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated, loading: authLoading } = useAuth();
+  const isAppOwner = useIsOwner();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -222,8 +224,12 @@ const Profile = () => {
 
   const tabs: { key: SportTab; label: string; icon: React.ReactNode; count: number }[] = [
     { key: "lift", label: "Lift", icon: <Dumbbell size={16} />, count: videoCount },
-    { key: "bowl", label: "Bowl", icon: <CircleDot size={16} />, count: bowlCount },
-    { key: "golf", label: "Golf", icon: <Flag size={16} />, count: golfCount },
+    ...(isAppOwner
+      ? [
+          { key: "bowl" as const, label: "Bowl", icon: <CircleDot size={16} />, count: bowlCount },
+          { key: "golf" as const, label: "Golf", icon: <Flag size={16} />, count: golfCount },
+        ]
+      : []),
   ];
 
   return (

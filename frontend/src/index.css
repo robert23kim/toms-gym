@@ -138,6 +138,7 @@
 .demo-scene { opacity: 0; animation: demo-scene-cycle 12s infinite; }
 .demo-scene-bowl { animation-delay: 4s; }
 .demo-scene-golf { animation-delay: 8s; }
+.demo-scene-solo { opacity: 1; animation: none; }
 @keyframes demo-scene-cycle {
   0% { opacity: 0; } 4% { opacity: 1; } 32% { opacity: 1; } 36% { opacity: 0; } 100% { opacity: 0; }
 }

@@ -9,14 +9,15 @@ import PromptList from "../components/home/PromptList";
 import { buildPrompts, consistencyPill, isConsistencyChallenge } from "../lib/prompts";
 import { getChallengeLeaderboard, getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
+import { useIsOwner } from "../hooks/useIsOwner";
 
-const VERTICALS = [
-  {
+const LIFT_VERTICAL = {
     to: "/lift",
     icon: <Dumbbell className="w-5 h-5" />,
     title: "Lift",
     description: "Per-rep grades on squat, bench, deadlift & curls.",
-  },
+};
+const SPORT_VERTICALS = [
   {
     to: "/bowl",
     icon: <Target className="w-5 h-5" />,
@@ -44,6 +45,8 @@ const Index = () => {
   const [pills, setPills] = useState<Record<string, string>>({});
   const userId = readUserId();
   const returning = Boolean(userId);
+  const isOwner = useIsOwner();
+  const verticalList = isOwner ? [LIFT_VERTICAL, ...SPORT_VERTICALS] : [LIFT_VERTICAL];
 
   useEffect(() => {
     let cancelled = false;
@@ -69,14 +72,17 @@ const Index = () => {
   }, []);
 
   const verticals = (
-    <section aria-label="Verticals" className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-      {VERTICALS.map((v) => (
+    <section
+      aria-label="Verticals"
+      className={`grid grid-cols-1 gap-3.5 ${verticalList.length > 1 ? "sm:grid-cols-3" : "max-w-sm mx-auto w-full"}`}
+    >
+      {verticalList.map((v) => (
         <IconTile key={v.to} {...v} />
       ))}
     </section>
   );
 
-  const todo = <PromptList prompts={buildPrompts(open, pills)} userId={userId} />;
+  const todo = <PromptList prompts={buildPrompts(open, pills, { sports: isOwner })} userId={userId} />;
 
   return (
     <Layout>
@@ -89,7 +95,7 @@ const Index = () => {
         {!returning && (
           <section aria-label="Pitch">
             <h1 className="text-3xl md:text-4xl font-bold leading-tight mb-3 text-balance">
-              AI analysis of your lift, bowl, or round — in minutes.
+              {isOwner ? "AI analysis of your lift, bowl, or round — in minutes." : "AI analysis of your lift — in minutes."}
             </h1>
             <p className="text-muted-foreground max-w-md mx-auto">
               Upload a video or snap a photo and get annotated feedback. No signup — just your email.
@@ -106,7 +112,7 @@ const Index = () => {
         {!returning && (
           <>
             <section aria-label="Analysis demo">
-              <DemoLoop />
+              <DemoLoop liftOnly={!isOwner} />
             </section>
             {verticals}
             {todo}

@@ -43,10 +43,24 @@ export const consistencyPill = (
 
 export const isConsistencyChallenge = (c: Pick<Competition, "mode">): boolean => c.mode === "consistency";
 
-/** `pills` overrides a challenge row's pill by competition id (the 100 Club progress pill). */
-export const buildPrompts = (openChallenges: OpenChallenge[], pills: Record<string, string> = {}): Prompt[] => [
+export type PromptOptions = {
+  /** Bowling and golf rows; only the owner's account sees them. */
+  sports?: boolean;
+};
+
+const BOWLING_PROMPTS: Prompt[] = [
   { id: "bowl-snap", kind: "camera", title: "Snap tonight's bowling recap", sheetType: "night", fallbackTo: "/bowling/snap" },
   { id: "game-snap", kind: "camera", title: "Snap a bowling game", sheetType: "game", fallbackTo: "/bowling/snap" },
+];
+const GOLF_PROMPTS: Prompt[] = [{ id: "golf-snap", kind: "link", title: "Snap a golf scorecard", to: "/golf/snap" }];
+
+/** `pills` overrides a challenge row's pill by competition id (the 100 Club progress pill). */
+export const buildPrompts = (
+  openChallenges: OpenChallenge[],
+  pills: Record<string, string> = {},
+  { sports = true }: PromptOptions = {},
+): Prompt[] => [
+  ...(sports ? BOWLING_PROMPTS : []),
   ...openChallenges.map<Prompt>((c) => {
     const liftType = isConsistencyChallenge(c) ? null : quickLiftType(c.categories);
     const pill = isConsistencyChallenge(c) ? pills[c.id] : pills[c.id] ?? c.categories?.[0];
@@ -63,6 +77,6 @@ export const buildPrompts = (openChallenges: OpenChallenge[], pills: Record<stri
     }
     return { id: `challenge:${c.id}`, kind: "link", title: c.title, to: `/challenges/${c.id}`, pill };
   }),
-  { id: "golf-snap", kind: "link", title: "Snap a golf scorecard", to: "/golf/snap" },
+  ...(sports ? GOLF_PROMPTS : []),
   { id: "lift-upload", kind: "link", title: "Log a lift", to: "/lift/upload" },
 ];

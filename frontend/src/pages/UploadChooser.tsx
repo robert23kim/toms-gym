@@ -3,18 +3,19 @@ import { motion } from "framer-motion";
 import { Dumbbell, Target, Flag } from "lucide-react";
 import Layout from "../components/Layout";
 import IconTile from "../components/IconTile";
+import { useIsOwner } from "../hooks/useIsOwner";
 
 /**
  * Unified upload entry (T7). Asks "What are you analyzing?" and routes to
  * one of the three existing, separate upload flows — same tiles as home.
  */
-const OPTIONS = [
-  {
+const LIFT_OPTION = {
     to: "/lift/upload",
     title: "Lift",
     description: "Per-rep grades on squat, bench, deadlift & curls.",
     icon: <Dumbbell className="w-5 h-5" />,
-  },
+};
+const SPORT_OPTIONS = [
   {
     to: "/bowling/upload",
     title: "Bowl",
@@ -30,6 +31,8 @@ const OPTIONS = [
 ];
 
 const UploadChooser: React.FC = () => {
+  const isOwner = useIsOwner();
+  const options = isOwner ? [LIFT_OPTION, ...SPORT_OPTIONS] : [LIFT_OPTION];
   return (
     <Layout>
       <motion.div
@@ -43,8 +46,8 @@ const UploadChooser: React.FC = () => {
           Pick a sport to start — each upload gives you analysis you can't get anywhere else.
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-          {OPTIONS.map((opt) => (
+        <div className={`grid grid-cols-1 gap-3.5 ${options.length > 1 ? "sm:grid-cols-3" : "max-w-sm mx-auto"}`}>
+          {options.map((opt) => (
             <IconTile key={opt.to} {...opt} />
           ))}
         </div>

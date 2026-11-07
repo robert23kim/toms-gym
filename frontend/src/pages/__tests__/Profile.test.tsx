@@ -5,6 +5,7 @@ import { MemoryRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Profile from "../Profile";
 import * as api from "../../lib/api";
+import { useIsOwner } from "../../hooks/useIsOwner";
 
 jest.mock("../../config", () => ({ API_URL: "https://test-api.example" }));
 
@@ -36,6 +37,7 @@ jest.mock("axios", () => {
   return { ...mocked, default: mocked };
 });
 
+jest.mock("../../hooks/useIsOwner", () => ({ useIsOwner: jest.fn(() => false) }));
 jest.mock("../../lib/api", () => ({
   ...jest.requireActual("../../lib/api"),
   fetchRounds: jest.fn(),
@@ -146,6 +148,22 @@ describe("Profile — Lift tab", () => {
     expect(screen.queryByText("Achievements")).toBeNull();
     expect(screen.queryByText("Lift Videos")).toBeNull();
     expect(screen.queryByText("Competition History")).toBeNull();
+  });
+
+  it("shows the Bowl and Golf tabs only to the app owner", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({ data: profilePayload() });
+    const { unmount } = renderProfile();
+    await waitFor(() => expect(screen.getByText("lift-history")).toBeInTheDocument());
+    expect(screen.queryByRole("button", { name: /bowl/i })).toBeNull();
+    expect(screen.queryByRole("button", { name: /golf/i })).toBeNull();
+    unmount();
+
+    (useIsOwner as jest.Mock).mockReturnValue(true);
+    renderProfile();
+    await waitFor(() => expect(screen.getByText("lift-history")).toBeInTheDocument());
+    expect(screen.getByRole("button", { name: /bowl/i })).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /golf/i })).toBeInTheDocument();
+    (useIsOwner as jest.Mock).mockReturnValue(false);
   });
 
   it("owns the empty state when the user has no uploaded lifts", async () => {

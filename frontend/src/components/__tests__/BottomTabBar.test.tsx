@@ -3,6 +3,9 @@ import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import BottomTabBar from "../BottomTabBar";
+import { useIsOwner } from "../../hooks/useIsOwner";
+
+jest.mock("../../hooks/useIsOwner", () => ({ useIsOwner: jest.fn(() => false) }));
 
 const renderAt = (path: string) =>
   render(
@@ -12,16 +15,29 @@ const renderAt = (path: string) =>
   );
 
 describe("BottomTabBar", () => {
-  afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
+  afterEach(() => {
+    (localStorage.getItem as jest.Mock).mockReset();
+    (useIsOwner as jest.Mock).mockReturnValue(false);
+  });
 
-  it("renders the six tabs with an anonymous Me target", () => {
+  it("renders four tabs for anyone but the owner, with an anonymous Me target", () => {
+    renderAt("/terms");
+    const hrefs = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
+    expect(hrefs).toEqual(["/", "/lift", "/champions", "/find-profile"]);
+    expect(screen.queryByRole("link", { current: "page" })).toBeNull();
+    expect(screen.getByRole("navigation").firstChild).toHaveClass("grid-cols-4");
+  });
+
+  it("adds the Bowl and Golf tabs for the owner", () => {
+    (useIsOwner as jest.Mock).mockReturnValue(true);
     renderAt("/terms");
     const hrefs = screen.getAllByRole("link").map((a) => a.getAttribute("href"));
     expect(hrefs).toEqual(["/", "/lift", "/bowl", "/golf", "/champions", "/find-profile"]);
-    expect(screen.queryByRole("link", { current: "page" })).toBeNull();
+    expect(screen.getByRole("navigation").firstChild).toHaveClass("grid-cols-6");
   });
 
   it("marks only the Bowl tab current on a bowling route", () => {
+    (useIsOwner as jest.Mock).mockReturnValue(true);
     renderAt("/bowling/insights/me");
     const current = screen.getAllByRole("link", { current: "page" });
     expect(current).toHaveLength(1);

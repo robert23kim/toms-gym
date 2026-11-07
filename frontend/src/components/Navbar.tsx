@@ -3,11 +3,13 @@ import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy, CircleDot, Flag } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
+import { useIsOwner } from "../hooks/useIsOwner";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const location = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
+  const isOwner = useIsOwner();
 
   // Check if user has a userId in localStorage (passwordless user)
   const hasLocalUserId = !!localStorage.getItem('userId');
@@ -37,8 +39,12 @@ const Navbar: React.FC = () => {
     { href: "/", label: "Home" },
     // Primary analysis verticals — each lands on a hub whose CTA is Upload
     { href: "/lift", label: "Lift", icon: <Dumbbell className="w-4 h-4" /> },
-    { href: "/bowl", label: "Bowl", icon: <CircleDot className="w-4 h-4" /> },
-    { href: "/golf", label: "Golf", icon: <Flag className="w-4 h-4" /> },
+    ...(isOwner
+      ? [
+          { href: "/bowl", label: "Bowl", icon: <CircleDot className="w-4 h-4" /> },
+          { href: "/golf", label: "Golf", icon: <Flag className="w-4 h-4" /> },
+        ]
+      : []),
     { href: "/challenges", label: "Challenges", icon: <Trophy className="w-4 h-4" /> },
     { href: "/feedback", label: "Feedback" },
     { href: "/store", label: "Store", icon: <ShoppingBag className="w-4 h-4" /> },

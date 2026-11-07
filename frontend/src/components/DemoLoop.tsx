@@ -7,11 +7,12 @@ import React from "react";
  * Pure presentation; all timing lives in index.css (demo-* keyframes).
  * Reference: docs/superpowers/specs/assets/2026-07-06-home-redesign-mockup.html
  */
-const DemoLoop: React.FC = () => (
+/** `liftOnly` keeps the plank scene up and skips the bowling and golf scenes. */
+const DemoLoop: React.FC<{ liftOnly?: boolean }> = ({ liftOnly = false }) => (
   <div>
     <div className="relative glass rounded-2xl overflow-hidden h-[190px]">
       {/* Scene 1: Plank — figure holds, timer counts up, form check pops */}
-      <div className="demo-scene demo-scene-plank absolute inset-0">
+      <div className={`demo-scene demo-scene-plank absolute inset-0 ${liftOnly ? "demo-scene-solo" : ""}`}>
         <span className="absolute top-3 left-4 text-xs uppercase tracking-wider text-muted-foreground">
           Plank · hold + form
         </span>
@@ -37,6 +38,8 @@ const DemoLoop: React.FC = () => (
         </svg>
       </div>
 
+      {!liftOnly && (
+        <>
       {/* Scene 2: Bowl — ball hooks down the lane, trace draws */}
       <div className="demo-scene demo-scene-bowl absolute inset-0">
         <span className="absolute top-3 left-4 text-xs uppercase tracking-wider text-muted-foreground">
@@ -105,12 +108,16 @@ const DemoLoop: React.FC = () => (
           </g>
         </svg>
       </div>
+        </>
+      )}
     </div>
+    {!liftOnly && (
     <div className="flex gap-1.5 justify-center mt-3" aria-hidden="true">
       <span className="demo-dot w-1.5 h-1.5 rounded-full bg-secondary" />
       <span className="demo-dot w-1.5 h-1.5 rounded-full bg-secondary" />
       <span className="demo-dot w-1.5 h-1.5 rounded-full bg-secondary" />
     </div>
+    )}
   </div>
 );
 

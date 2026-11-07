@@ -4,6 +4,9 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import Index from "../Index";
 import * as api from "../../lib/api";
+import { useIsOwner } from "../../hooks/useIsOwner";
+
+jest.mock("../../hooks/useIsOwner", () => ({ useIsOwner: jest.fn(() => false) }));
 
 // config.ts uses import.meta (Vite), which jest can't parse; mock it as the
 // repo's other tests do.
@@ -37,14 +40,29 @@ const renderHome = () =>
   );
 
 describe("Index (quiet-gym home)", () => {
-  beforeEach(() => jest.clearAllMocks());
+  beforeEach(() => {
+    jest.clearAllMocks();
+    (useIsOwner as jest.Mock).mockReturnValue(false);
+  });
 
-  it("renders the three vertical tiles with the right upload targets", async () => {
+  it("renders only the Lift tile and a lift-only pitch for anyone but the owner", async () => {
+    (api.getCompetitions as jest.Mock).mockResolvedValue([]);
+    renderHome();
+    expect(screen.getByRole("link", { name: /^lift/i })).toHaveAttribute("href", "/lift");
+    expect(screen.queryByRole("link", { name: /^bowl/i })).toBeNull();
+    expect(screen.queryByRole("link", { name: /^golf/i })).toBeNull();
+    expect(screen.getByText("AI analysis of your lift — in minutes.")).toBeInTheDocument();
+    await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
+  });
+
+  it("renders the three vertical tiles and the full pitch for the owner", async () => {
+    (useIsOwner as jest.Mock).mockReturnValue(true);
     (api.getCompetitions as jest.Mock).mockResolvedValue([]);
     renderHome();
     expect(screen.getByRole("link", { name: /^lift/i })).toHaveAttribute("href", "/lift");
     expect(screen.getByRole("link", { name: /^bowl/i })).toHaveAttribute("href", "/bowl");
     expect(screen.getByRole("link", { name: /^golf/i })).toHaveAttribute("href", "/golf");
+    expect(screen.getByText(/lift, bowl, or round/i)).toBeInTheDocument();
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
   });
 
@@ -60,7 +78,17 @@ describe("Index (quiet-gym home)", () => {
     expect(screen.getByText(/tonight's to-do/i)).toBeInTheDocument();
   });
 
-  it("keeps the standing to-do rows when nothing is ongoing", async () => {
+  it("keeps only the lift to-do row for anyone but the owner", async () => {
+    (api.getCompetitions as jest.Mock).mockResolvedValue([completed]);
+    renderHome();
+    await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
+    expect(screen.queryByText(/bowling/i)).toBeNull();
+    expect(screen.queryByText(/golf/i)).toBeNull();
+    expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");
+  });
+
+  it("keeps the standing to-do rows for the owner when nothing is ongoing", async () => {
+    (useIsOwner as jest.Mock).mockReturnValue(true);
     (api.getCompetitions as jest.Mock).mockResolvedValue([completed]);
     renderHome();
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
@@ -70,10 +98,21 @@ describe("Index (quiet-gym home)", () => {
     expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");
   });
 
-  it("renders the demo loop", async () => {
+  it("renders the demo loop with only the plank scene for anyone but the owner", async () => {
     (api.getCompetitions as jest.Mock).mockResolvedValue([]);
     renderHome();
     expect(screen.getByText(/plank · hold \+ form/i)).toBeInTheDocument();
+    expect(screen.queryByText(/ball tracking/i)).toBeNull();
+    expect(screen.queryByText(/scorecard/i)).toBeNull();
+    await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
+  });
+
+  it("cycles all three demo scenes for the owner", async () => {
+    (useIsOwner as jest.Mock).mockReturnValue(true);
+    (api.getCompetitions as jest.Mock).mockResolvedValue([]);
+    renderHome();
+    expect(screen.getByText(/ball tracking/i)).toBeInTheDocument();
+    expect(screen.getByText(/scorecard → handicap/i)).toBeInTheDocument();
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
   });
 
@@ -91,6 +130,7 @@ describe("Index (quiet-gym home)", () => {
     afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
 
     it("skips the pitch, demo and tiles and leads with the to-do list above the streak", async () => {
+      (useIsOwner as jest.Mock).mockReturnValue(true);
       (api.getCompetitions as jest.Mock).mockResolvedValue([ongoing]);
       const { container } = renderHome();
       await waitFor(() => expect(screen.getByText("Summer Plank Challenge")).toBeInTheDocument());
