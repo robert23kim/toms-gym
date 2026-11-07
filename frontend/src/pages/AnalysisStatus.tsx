@@ -10,6 +10,7 @@ import type { ChallengeLeaderboard } from "../lib/types";
 import { deriveStanding, personalBest, attemptScore, metricForLift, formatWithUnit } from "../lib/standing";
 import ResultLadder from "../components/challenge/ResultLadder";
 import ConsistencyResult from "../components/challenge/ConsistencyResult";
+import { cleanRepCount, isQualityScoredLift } from "../lib/cleanReps";
 
 // T8 — Post-upload status page. Survives reload via its URL (attemptId is in the
 // path) and polls the existing per-attempt result endpoints. Covers LIFTING and
@@ -24,6 +25,7 @@ interface StatusResult {
   error_message?: string | null;
   user_id?: string | null;
   competition_id?: string | null;
+  attempt_created_at?: string | null;
   report?: {
     total_reps?: number | null;
     total_in_plank_s?: number | null;
@@ -149,6 +151,11 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
     const grade = result.report.overall_grade;
     if (score == null && !grade) return null;
     const standing = !club && board && result.user_id ? deriveStanding(board, result.user_id) : null;
+    const clean = club && metric === "reps" && isQualityScoredLift(result.report.lift_type)
+      ? cleanRepCount(result.report.rep_metrics)
+      : null;
+    const total = result.report.total_reps ?? null;
+    const halfCredit = clean != null && total != null && clean < total;
     return (
       <>
         <motion.div
@@ -168,6 +175,11 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
               Grade <span className="font-semibold text-foreground">{grade}</span>
             </p>
           )}
+          {halfCredit && (
+            <p className="mt-1 text-sm text-muted-foreground tabular-nums">
+              {clean} clean of {total} · sloppy reps count half
+            </p>
+          )}
         </motion.div>
         {club && (
           <motion.div
@@ -176,7 +188,13 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
             transition={{ delay: 0.2 }}
             className="text-left mb-6"
           >
-            <ConsistencyResult board={club} userId={result.user_id} report={result.report} />
+            <ConsistencyResult
+              board={club}
+              userId={result.user_id}
+              report={result.report}
+              attemptAt={result.attempt_created_at}
+              isOwner={!userId || !result.user_id || String(userId) === String(result.user_id)}
+            />
           </motion.div>
         )}
         {standing && board && (

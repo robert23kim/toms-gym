@@ -1,10 +1,11 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import VideoPlayer from "../VideoPlayer";
 import * as api from "../../lib/api";
+import * as share from "../../lib/share";
 import { CONSISTENCY_COMPETITION_ID, consistencyLeaderboard } from "../../__fixtures__/consistencyLeaderboard";
 
 jest.mock("../../config", () => ({ API_URL: "https://test-api.example", PROD_API_URL: "https://test-api.example" }));
@@ -22,6 +23,7 @@ jest.mock("../../lib/api", () => ({
   getLiftingResult: jest.fn(),
   triggerLiftingAnalysis: jest.fn(),
 }));
+jest.mock("../../lib/share", () => ({ shareResult: jest.fn() }));
 
 const ID = CONSISTENCY_COMPETITION_ID;
 
@@ -52,35 +54,103 @@ const liftingResult = {
   },
 };
 
-it("shows the club result block instead of the rank ladder on a 100 Club board", async () => {
-  const board = {
-    ...consistencyLeaderboard,
-    rows: consistencyLeaderboard.rows.map((r) => ({ ...r, history: [{ score: r.score, date: "2026-11-02" }] })),
-  };
-  (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? "b1" : null));
+const clubBoard = {
+  ...consistencyLeaderboard,
+  rows: consistencyLeaderboard.rows.map((r) => ({ ...r, history: [{ score: r.score, date: "2026-11-02" }] })),
+};
+
+function setup({
+  viewer,
+  board = clubBoard,
+  result = liftingResult,
+  liftType = "Situp",
+  participant = "b1",
+  name = "Ben",
+  title = "The 100 Club",
+}: {
+  viewer: string | null;
+  board?: object;
+  result?: object;
+  liftType?: string;
+  participant?: string;
+  name?: string;
+  title?: string;
+}) {
+  (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? viewer : null));
   (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
-  (api.getLiftingResult as jest.Mock).mockResolvedValue(liftingResult);
+  (api.getLiftingResult as jest.Mock).mockResolvedValue(result);
   (axios.get as jest.Mock).mockImplementation((url: string) => {
     if (url.endsWith(`/competitions/${ID}`))
-      return Promise.resolve({ data: { competition: { id: ID, name: "The 100 Club", start_date: "2026-01-01", end_date: "2099-12-27" } } });
+      return Promise.resolve({ data: { competition: { id: ID, name: title, start_date: "2026-01-01", end_date: "2099-12-27" } } });
     if (url.includes("/attempts/v1"))
       return Promise.resolve({
-        data: { id: "v1", lift_type: "Situp", weight: 0, participant_name: "Ben", status: "completed", created_at: "2026-11-04T12:00:00Z" },
+        data: { id: "v1", lift_type: liftType, weight: 0, participant_name: name, status: "completed" },
       });
     return Promise.resolve({ data: { lifts: [] } });
   });
 
   render(
-    <MemoryRouter initialEntries={[`/challenges/${ID}/participants/b1/video/v1`]}>
+    <MemoryRouter initialEntries={[`/challenges/${ID}/participants/${participant}/video/v1`]}>
       <Routes>
         <Route path="/challenges/:id/participants/:participantId/video/:videoId" element={<VideoPlayer />} />
       </Routes>
     </MemoryRouter>,
   );
+}
+
+it("shows the club result block instead of the rank ladder on a 100 Club board", async () => {
+  setup({ viewer: "b1" });
 
   const result = await screen.findByTestId("consistency-result");
   expect(result).toHaveTextContent("+3 lifts banked");
   expect(result).toHaveTextContent("10 / 125 this week · 4 days left");
+  expect(result).not.toHaveTextContent("Ben:");
   expect(screen.queryByText(/to pass/)).toBeNull();
   expect(screen.queryByText(/Where you stand/i)).toBeNull();
+});
+
+it("names the athlete when the viewer is watching someone else's club video", async () => {
+  setup({ viewer: "a1" });
+
+  const result = await screen.findByTestId("consistency-result");
+  expect(result).toHaveTextContent("Ben: 10 / 125 this week · 4 days left");
+});
+
+it("places an older club attempt in its own week", async () => {
+  setup({ viewer: "b1", result: { ...liftingResult, attempt_created_at: "2026-11-04T17:00:00+00:00" } });
+
+  const result = await screen.findByTestId("consistency-result");
+  expect(result).toHaveTextContent("+3 lifts banked in week 1");
+  expect(result).not.toHaveTextContent("this week");
+});
+
+it("shares club wording, not a rank, from a club video", async () => {
+  (share.shareResult as jest.Mock).mockResolvedValue({ url: "https://s/x", method: "share" });
+  setup({ viewer: "b1" });
+  await screen.findByTestId("consistency-result");
+  fireEvent.click(screen.getByTitle("Copy short link to share"));
+
+  await waitFor(() => expect(share.shareResult).toHaveBeenCalled());
+  const words = (share.shareResult as jest.Mock).mock.calls.at(-1)[1];
+  expect(words).toBe("I banked 3 lifts in The 100 Club — 10 / 125 this week. Join me:");
+});
+
+describe("legacy reps board", () => {
+  const mkRow = (rank: number, user_id: string, name: string, score: number) => ({
+    rank, user_id, name, score, best_by_lift: { Pushup: score }, form_score: null, steadiness: null,
+    attempt_id: `${user_id}-best`, clip_url: null, thumbnail_url: null, date: "2026-08-28",
+    weight_class: null, gender: null, attempt_count: 1, history: [{ score, date: "2026-08-01" }],
+  });
+  const legacy = {
+    competition_id: ID, metric: "reps", lift_types: ["Pushup"], momentum: { joined: 2, uploaded_today: 0 },
+    rows: [mkRow(1, "rob", "rob", 39), mkRow(2, "toka", "Toka", 35)],
+  };
+  const pushups = { ...liftingResult, report: { ...liftingResult.report, lift_type: "Pushup", total_reps: 35 } };
+
+  it("still renders the rank ladder and no club block", async () => {
+    setup({ viewer: "toka", board: legacy, result: pushups, liftType: "Pushup", participant: "toka", name: "Toka", title: "Pushup Party" });
+
+    expect(await screen.findByText("4 reps to pass rob")).toBeInTheDocument();
+    expect(screen.queryByTestId("consistency-result")).toBeNull();
+  });
 });

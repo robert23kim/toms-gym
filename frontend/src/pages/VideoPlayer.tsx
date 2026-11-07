@@ -13,7 +13,7 @@ import { formatScoreValue } from '../components/challenge/metric';
 import { deriveStanding, personalBest, attemptScore, standingShareText } from '../lib/standing';
 import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
-import ConsistencyResult from '../components/challenge/ConsistencyResult';
+import ConsistencyResult, { consistencyShareText } from '../components/challenge/ConsistencyResult';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription, metricAppliesToLift } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
@@ -130,7 +130,12 @@ const VideoPlayer: React.FC = () => {
       const bits: string[] = [];
       if (report?.total_reps != null) bits.push(`${report.total_reps} rep${report.total_reps !== 1 ? "s" : ""}`);
       if (videoData?.weight && !isBodyweightLift(lift)) bits.push(`${videoData.weight} lbs`);
-      const words = standing && board
+      const words = board?.metric === 'consistency' && board.consistency
+        ? consistencyShareText({
+            board, userId: participantId, report, attemptAt: liftingResult?.attempt_created_at,
+            isOwner, athleteName: name, challengeName,
+          })
+        : standing && board
         ? standingShareText({ standing, metric: board.metric, challengeName, athleteName: name, isOwner })
         : `${name}'s ${lift} on Tom's Gym`;
       const { url, method } = await shareResult(
@@ -559,7 +564,14 @@ const VideoPlayer: React.FC = () => {
                     </div>
 
                     {board?.metric === 'consistency' && analysisDone && liftingResult?.report && (
-                      <ConsistencyResult board={board} userId={participantId} report={liftingResult.report} />
+                      <ConsistencyResult
+                        board={board}
+                        userId={participantId}
+                        report={liftingResult.report}
+                        attemptAt={liftingResult.attempt_created_at}
+                        isOwner={isOwner}
+                        athleteName={videoData.participant_name}
+                      />
                     )}
 
                     {board && board.metric !== 'consistency' && standing && analysisDone && liftingResult?.report && id && (

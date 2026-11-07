@@ -151,6 +151,8 @@ describe("AnalysisStatus", () => {
     expect(await screen.findByText("#2")).toBeInTheDocument();
     expect(screen.getByText("4 reps to pass rob")).toBeInTheDocument();
     expect(screen.getByText(/New best · up from 28 reps/)).toBeInTheDocument();
+    expect(screen.queryByTestId("consistency-result")).toBeNull();
+    expect(screen.queryByText(/clean of/)).toBeNull();
     expect(screen.getByRole("link", { name: /See your result/i })).toHaveAttribute(
       "href",
       "/challenges/c1/participants/toka/video/a6",
@@ -192,7 +194,47 @@ describe("AnalysisStatus", () => {
     expect(result).toHaveTextContent("10 / 125 this week · 4 days left");
     expect(screen.getByRole("heading", { name: "4 reps" })).toBeInTheDocument();
     expect(screen.getByText("C")).toBeInTheDocument();
+    expect(screen.getByText("2 clean of 4 · sloppy reps count half")).toBeInTheDocument();
+    expect(result).not.toHaveTextContent("Ben:");
     expect(screen.queryByText(/to pass/)).toBeNull();
     expect(screen.queryByText(/Where you stand/i)).toBeNull();
+  });
+
+  it("names the athlete and keeps an older attempt in its own week for another viewer", async () => {
+    const club = {
+      ...consistencyLeaderboard,
+      rows: consistencyLeaderboard.rows.map((r) => ({ ...r, history: [{ score: r.score, date: "2026-11-02" }] })),
+    };
+    const report = {
+      total_reps: 13,
+      overall_grade: "B",
+      lift_type: "Situp",
+      rep_metrics: [...Array(10).fill({ form_score: 85 }), ...Array(3).fill({ form_score: 40 })],
+    };
+    const respond = (attempt_created_at: string | null) =>
+      (axios.get as jest.Mock).mockImplementation((url: string) =>
+        url.includes("/leaderboard")
+          ? Promise.resolve({ data: club })
+          : Promise.resolve({
+              data: { processing_status: "completed", user_id: "b1", competition_id: club.competition_id, attempt_created_at, report },
+            }),
+      );
+    (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? "a1" : null));
+
+    respond("2026-11-18T15:00:00+00:00");
+    const { unmount } = renderAt("lifting", "a10");
+    const live = await screen.findByTestId("consistency-result");
+    expect(screen.getByRole("heading", { name: "13 reps" })).toBeInTheDocument();
+    expect(screen.getByText("10 clean of 13 · sloppy reps count half")).toBeInTheDocument();
+    expect(live).toHaveTextContent("+11.5 lifts banked");
+    expect(live).toHaveTextContent("Ben: 10 / 125 this week · 4 days left");
+    unmount();
+
+    respond("2026-11-04T17:00:00+00:00");
+    renderAt("lifting", "a11");
+    const old = await screen.findByTestId("consistency-result");
+    expect(old).toHaveTextContent("+11.5 lifts banked in week 1");
+    expect(old).not.toHaveTextContent("this week");
+    (localStorage.getItem as jest.Mock).mockReset();
   });
 });

@@ -190,6 +190,8 @@ export interface LiftingResult {
   error_message?: string;
   created_at?: string;
   updated_at?: string;
+  /** Upload time of the attempt itself (ISO, with offset). */
+  attempt_created_at?: string | null;
 }
 
 export type CompetitionStatus = 'upcoming' | 'ongoing' | 'completed';

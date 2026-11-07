@@ -2,7 +2,7 @@ import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import ConsistencyResult, { attemptLifts } from "../ConsistencyResult";
+import ConsistencyResult, { attemptLifts, attemptWeek, consistencyShareText } from "../ConsistencyResult";
 import {
   consistencyLeaderboard,
   consistencyRules,
@@ -15,10 +15,15 @@ const situp = {
   rep_metrics: [{ form_score: 90 }, { form_score: 80 }, { form_score: 40 }, { form_score: 30 }],
 };
 
-const renderResult = (board = consistencyLeaderboard, userId: string | null = "a1", report: object = situp) =>
+const renderResult = (
+  board = consistencyLeaderboard,
+  userId: string | null = "a1",
+  report: object = situp,
+  extra: { isOwner?: boolean; athleteName?: string | null; attemptAt?: string | null } = {},
+) =>
   render(
     <MemoryRouter>
-      <ConsistencyResult board={board} userId={userId} report={report} />
+      <ConsistencyResult board={board} userId={userId} report={report} {...extra} />
     </MemoryRouter>,
   );
 
@@ -68,5 +73,79 @@ describe("ConsistencyResult", () => {
     const block = screen.getByTestId("consistency-result");
     expect(block).toHaveTextContent("+3 lifts banked");
     expect(block).not.toHaveTextContent("this week");
+  });
+});
+
+describe("attemptWeek", () => {
+  it("reads the upload's local day in the challenge timezone, like backend week_of", () => {
+    expect(attemptWeek("2026-11-02T05:00:00Z", consistencyRules)).toBe(1);
+    expect(attemptWeek("2026-11-02T04:30:00Z", consistencyRules)).toBe(0);
+    expect(attemptWeek("2026-11-08T23:00:00-05:00", consistencyRules)).toBe(1);
+    expect(attemptWeek("2026-11-09T12:00:00+00:00", consistencyRules)).toBe(2);
+    expect(attemptWeek("2026-11-18T15:00:00.123456+00:00", consistencyRules)).toBe(3);
+    expect(attemptWeek(null, consistencyRules)).toBeNull();
+    expect(attemptWeek("not a date", consistencyRules)).toBeNull();
+  });
+});
+
+describe("ConsistencyResult on someone else's video", () => {
+  it("names the athlete whose week it is", () => {
+    renderResult(consistencyLeaderboard, "b1", situp, { isOwner: false, athleteName: "Ben B" });
+    const block = screen.getByTestId("consistency-result");
+    expect(block).toHaveTextContent("+3 lifts banked");
+    expect(block).toHaveTextContent("Ben: 10 / 125 this week · 4 days left");
+  });
+
+  it("keeps the owner's own wording unprefixed", () => {
+    renderResult(consistencyLeaderboard, "b1", situp, { isOwner: true, athleteName: "Ben" });
+    expect(screen.getByTestId("consistency-result")).not.toHaveTextContent("Ben:");
+  });
+});
+
+describe("ConsistencyResult for an attempt outside the live week", () => {
+  it("uses the attempt's own week and drops the live week's progress", () => {
+    renderResult(consistencyLeaderboard, "a1", situp, { attemptAt: "2026-11-04T17:00:00+00:00" });
+    const block = screen.getByTestId("consistency-result");
+    expect(block).toHaveTextContent("+3 lifts banked in week 1");
+    expect(block).not.toHaveTextContent("this week");
+  });
+
+  it("calls a pre-start upload a warm-up once the club is live", () => {
+    renderResult(consistencyLeaderboard, "a1", situp, { attemptAt: "2026-11-02T04:30:00Z" });
+    const block = screen.getByTestId("consistency-result");
+    expect(block).toHaveTextContent("+3 warm-up lifts · not scored");
+    expect(block).not.toHaveTextContent("banked");
+    expect(block).not.toHaveTextContent("this week");
+  });
+
+  it("keeps the week's progress when the attempt is from the live week", () => {
+    renderResult(consistencyLeaderboard, "a1", situp, { attemptAt: "2026-11-18T15:00:00+00:00" });
+    const block = screen.getByTestId("consistency-result");
+    expect(block).toHaveTextContent("+3 lifts banked");
+    expect(block).not.toHaveTextContent("in week");
+    expect(block).toHaveTextContent("42 / 150 this week · 4 days left");
+  });
+});
+
+describe("consistencyShareText", () => {
+  const args = { board: consistencyLeaderboard, report: situp, challengeName: "The 100 Club" };
+
+  it("shares the lifts and the week for the owner, without a rank or a doubled 'the'", () => {
+    const text = consistencyShareText({ ...args, userId: "b1", isOwner: true, athleteName: "Ben" });
+    expect(text).toBe("I banked 3 lifts in The 100 Club — 10 / 125 this week. Join me:");
+  });
+
+  it("names someone else's lifts", () => {
+    const text = consistencyShareText({ ...args, userId: "b1", isOwner: false, athleteName: "Ben B" });
+    expect(text).toBe("Ben banked 3 lifts in The 100 Club — 10 / 125 this week. Join in:");
+  });
+
+  it("leaves the week out for an older attempt and says warm-up before the start", () => {
+    expect(
+      consistencyShareText({ ...args, userId: "b1", isOwner: true, attemptAt: "2026-11-04T17:00:00Z" }),
+    ).toBe("I banked 3 lifts in The 100 Club. Join me:");
+    expect(
+      consistencyShareText({ ...args, userId: "b1", isOwner: true, attemptAt: "2026-11-01T17:00:00Z" }),
+    ).toBe("I logged 3 warm-up lifts in The 100 Club. Join me:");
   });
 });
