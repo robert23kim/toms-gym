@@ -29,3 +29,22 @@ export const StreakFlame: React.FC<{ streak?: number; className?: string }> = ({
 
 /** The week-table toggle shows when the row has any scoring week. */
 export const hasWeeks = (row: ChallengeLeaderboardRow): boolean => (row.weeks?.length ?? 0) > 0;
+
+const TIEBREAKS: [string, (r: ChallengeLeaderboardRow) => number][] = [
+  ["a longer streak", (r) => r.streak ?? 0],
+  ["more weeks met", (r) => r.weeks_met ?? 0],
+  ["more lifts this week", (r) => r.this_week?.lifts ?? 0],
+];
+
+/** One line naming the first points tie on the board and what breaks it; null when nobody ties. */
+export const tieLine = (rows: ChallengeLeaderboardRow[]): string | null => {
+  for (let i = 1; i < rows.length; i++) {
+    const [a, b] = [rows[i - 1], rows[i]];
+    if (a.score <= 0 || a.score !== b.score) continue;
+    const first = a.name || "Athlete";
+    const decider = TIEBREAKS.find(([, key]) => key(a) !== key(b));
+    const reason = decider ? decider[0] : "name order";
+    return `${first} and ${b.name || "Athlete"} are tied on points; ${reason} puts ${first} ahead.`;
+  }
+  return null;
+};

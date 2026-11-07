@@ -128,6 +128,20 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(screen.queryByTestId("leaderboard-header")).toBeNull();
   });
 
+  it("explains a points tie under the podium", async () => {
+    const [ana, ben, cy] = consistencyLeaderboard.rows;
+    setup({ ...consistencyLeaderboard, rows: [ana, { ...ben, score: ana.score, streak: 2, weeks_met: 2 }, cy] }, null);
+    expect(await screen.findByTestId("consistency-tie")).toHaveTextContent(
+      "Ana and Ben are tied on points; more lifts this week puts Ana ahead.",
+    );
+  });
+
+  it("shows no tie line when points differ", async () => {
+    setup(consistencyLeaderboard, null);
+    await screen.findByTestId("podium");
+    expect(screen.queryByTestId("consistency-tie")).toBeNull();
+  });
+
   it("lists warm-up rows before week 1 instead of the empty podium state", async () => {
     setup(upcomingConsistencyLeaderboard, "a1");
     const hero = await screen.findByTestId("consistency-hero");

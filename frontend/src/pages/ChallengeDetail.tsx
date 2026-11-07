@@ -22,7 +22,7 @@ import YouRow from "../components/challenge/YouRow";
 import AttemptHistory from "../components/challenge/AttemptHistory";
 import ConsistencyHero, { finalDayLabel } from "../components/challenge/ConsistencyHero";
 import ConsistencyWeekTable from "../components/challenge/ConsistencyWeekTable";
-import { hasWeeks } from "../components/challenge/ConsistencyMeta";
+import { hasWeeks, tieLine } from "../components/challenge/ConsistencyMeta";
 import MomentumLine from "../components/challenge/MomentumLine";
 import { viewerProcessingAttempts } from "../components/challenge/processing";
 import StandingCard from "../components/challenge/StandingCard";
@@ -854,6 +854,11 @@ const ChallengeDetail: React.FC = () => {
                 {standing && !isConsistency && <StandingCard standing={standing} metric={metric} />}
 
                 <Podium rows={podiumRows} metric={metric} getClipHref={resolveClipHref} />
+                {isConsistency && tieLine(rows) && (
+                  <p data-testid="consistency-tie" className="-mt-3 mb-5 text-center text-[12px] text-white/55">
+                    {tieLine(rows)}
+                  </p>
+                )}
 
                 {/* Podium members' steadiness nickname + attempt history — the
                     podium cards stay pure visuals, so athletes get chips below:
