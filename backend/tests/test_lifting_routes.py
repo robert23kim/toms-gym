@@ -27,6 +27,7 @@ def _result_row(**overrides):
     row.error_message = None
     row.created_at = datetime(2026, 8, 29, 1, 0, 0)
     row.updated_at = datetime(2026, 8, 29, 1, 5, 0)
+    row.attempt_created_at = datetime(2026, 8, 29, 0, 58, 0)
     row.user_id = "u1"
     row.competition_id = "c1"
     for k, v in overrides.items():
@@ -72,3 +73,20 @@ def test_missing_result_is_404(client):
         resp = client.get("/lifting/result/nope")
 
     assert resp.status_code == 404
+
+
+def test_result_carries_the_attempt_upload_time(client):
+    session = _session(_result_row())
+    with patch("toms_gym.routes.lifting_routes.get_db_connection", return_value=session):
+        body = client.get("/lifting/result/a1").get_json()
+
+    assert body["attempt_created_at"] == "2026-08-29T00:58:00"
+    assert "a.created_at AS attempt_created_at" in str(session.execute.call_args[0][0])
+
+
+def test_result_without_attempt_time_returns_null(client):
+    session = _session(_result_row(attempt_created_at=None))
+    with patch("toms_gym.routes.lifting_routes.get_db_connection", return_value=session):
+        body = client.get("/lifting/result/a1").get_json()
+
+    assert body["attempt_created_at"] is None
