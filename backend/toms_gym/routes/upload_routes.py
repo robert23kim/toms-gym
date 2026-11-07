@@ -34,6 +34,16 @@ LIFT_TYPE_MAPPING = {
     "Situp": "Situp",
 }
 
+BODYWEIGHT_LIFT_TYPES = {"pushup", "situp", "plank"}
+
+
+def bodyweight_weight_kg(lift_type, weight_kg):
+    """Bodyweight lifts store 0 so a stale client's default weight never lands."""
+    if (lift_type or "").strip().lower() in BODYWEIGHT_LIFT_TYPES:
+        return 0
+    return weight_kg
+
+
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
@@ -108,6 +118,7 @@ def _create_attempt_record(session, user_id, competition_id, database_lift_type,
     except (ValueError, TypeError):
         logger.warning(f"Invalid weight value: {weight}, defaulting to 0")
         weight_kg = 0
+    weight_kg = bodyweight_weight_kg(database_lift_type, weight_kg)
 
     attempt_id = str(uuid.uuid4())
     session.execute(
@@ -365,6 +376,7 @@ def upload_video():
             except (ValueError, TypeError):
                 logger.warning(f"Invalid weight value: {weight}, defaulting to 0")
                 weight_kg = 0
+            weight_kg = bodyweight_weight_kg(database_lift_type, weight_kg)
                 
             insert_attempt_query = """
                 INSERT INTO "Attempt" (id, user_competition_id, lift_type, weight_kg, status, video_url)

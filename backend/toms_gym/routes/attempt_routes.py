@@ -1,6 +1,7 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
 from toms_gym.db import get_db_connection, Session
+from toms_gym.routes.upload_routes import bodyweight_weight_kg
 from google.cloud import storage
 import random
 import datetime
@@ -67,7 +68,7 @@ def create_attempt():
             "id": attempt_id,
             "user_competition_id": request_data.get("user_competition_id"),
             "lift_type": request_data.get("lift_type"),
-            "weight_kg": request_data.get("weight_kg"),
+            "weight_kg": bodyweight_weight_kg(request_data.get("lift_type"), request_data.get("weight_kg")),
             "status": request_data.get("status", "pending"),
             "video_url": request_data.get("video_url")
         }
@@ -122,7 +123,7 @@ def update_attempt(attempt_id):
         data = {
             "attempt_id": attempt_id,
             "lift_type": request_data.get("lift_type"),
-            "weight_kg": request_data.get("weight_kg"),
+            "weight_kg": bodyweight_weight_kg(request_data.get("lift_type"), request_data.get("weight_kg")),
             "status": request_data.get("status"),
             "video_url": request_data.get("video_url")
         }
