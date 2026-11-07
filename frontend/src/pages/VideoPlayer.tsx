@@ -13,6 +13,7 @@ import { formatScoreValue } from '../components/challenge/metric';
 import { deriveStanding, personalBest, attemptScore, standingShareText } from '../lib/standing';
 import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
+import ConsistencyResult from '../components/challenge/ConsistencyResult';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription, metricAppliesToLift } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
@@ -557,7 +558,11 @@ const VideoPlayer: React.FC = () => {
                       </div>
                     </div>
 
-                    {board && standing && analysisDone && liftingResult?.report && id && (
+                    {board?.metric === 'consistency' && analysisDone && liftingResult?.report && (
+                      <ConsistencyResult board={board} userId={participantId} report={liftingResult.report} />
+                    )}
+
+                    {board && board.metric !== 'consistency' && standing && analysisDone && liftingResult?.report && id && (
                       <ResultLadder
                         standing={standing}
                         personalBest={personalBest(standing, attemptScore(board.metric, liftingResult.report, videoData.weight))}

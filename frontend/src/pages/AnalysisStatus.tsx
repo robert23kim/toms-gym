@@ -9,6 +9,7 @@ import { getChallengeLeaderboard } from "../lib/api";
 import type { ChallengeLeaderboard } from "../lib/types";
 import { deriveStanding, personalBest, attemptScore, metricForLift, formatWithUnit } from "../lib/standing";
 import ResultLadder from "../components/challenge/ResultLadder";
+import ConsistencyResult from "../components/challenge/ConsistencyResult";
 
 // T8 — Post-upload status page. Survives reload via its URL (attemptId is in the
 // path) and polls the existing per-attempt result endpoints. Covers LIFTING and
@@ -28,6 +29,7 @@ interface StatusResult {
     total_in_plank_s?: number | null;
     overall_grade?: string | null;
     lift_type?: string | null;
+    rep_metrics?: { form_score?: number | null }[] | null;
   } | null;
   // Lifting
   annotated_video_url?: string | null;
@@ -136,11 +138,17 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
 
   const renderReveal = () => {
     if (kind !== "lifting" || !result?.report) return null;
-    const metric = board?.metric ?? metricForLift(result.report.lift_type);
-    const score = attemptScore(metric, result.report, null);
+    const club = board?.metric === "consistency" ? board : null;
+    const liftMetric = metricForLift(result.report.lift_type);
+    const metric = club ? (liftMetric === "time" ? "time" : "reps") : board?.metric ?? liftMetric;
+    const score = club
+      ? metric === "time"
+        ? result.report.total_in_plank_s ?? null
+        : result.report.total_reps ?? null
+      : attemptScore(metric, result.report, null);
     const grade = result.report.overall_grade;
     if (score == null && !grade) return null;
-    const standing = board && result.user_id ? deriveStanding(board, result.user_id) : null;
+    const standing = !club && board && result.user_id ? deriveStanding(board, result.user_id) : null;
     return (
       <>
         <motion.div
@@ -161,6 +169,16 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
             </p>
           )}
         </motion.div>
+        {club && (
+          <motion.div
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-left mb-6"
+          >
+            <ConsistencyResult board={club} userId={result.user_id} report={result.report} />
+          </motion.div>
+        )}
         {standing && board && (
           <motion.div
             initial={reduceMotion ? false : { opacity: 0, y: 8 }}

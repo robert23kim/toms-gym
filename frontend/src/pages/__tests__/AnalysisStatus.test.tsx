@@ -4,6 +4,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import AnalysisStatus from "../AnalysisStatus";
+import { consistencyLeaderboard } from "../../__fixtures__/consistencyLeaderboard";
 
 // config.ts uses import.meta (Vite), which jest can't parse; mock it as the
 // repo's other tests do (see src/lib/__tests__/queries.test.tsx).
@@ -161,5 +162,37 @@ describe("AnalysisStatus", () => {
     (axios.get as jest.Mock).mockResolvedValue({ data: { processing_status: "completed" } });
     renderAt("bowling", "b7");
     expect(await screen.findByText(/Analysis complete!/)).toBeInTheDocument();
+  });
+  it("shows the club result, not a rank ladder, on a 100 Club board", async () => {
+    const club = {
+      ...consistencyLeaderboard,
+      rows: consistencyLeaderboard.rows.map((r) => ({ ...r, history: [{ score: r.score, date: "2026-11-02" }] })),
+    };
+    (axios.get as jest.Mock).mockImplementation((url: string) =>
+      url.includes("/leaderboard")
+        ? Promise.resolve({ data: club })
+        : Promise.resolve({
+            data: {
+              processing_status: "completed",
+              user_id: "b1",
+              competition_id: club.competition_id,
+              report: {
+                total_reps: 4,
+                overall_grade: "C",
+                lift_type: "Situp",
+                rep_metrics: [{ form_score: 90 }, { form_score: 80 }, { form_score: 40 }, { form_score: 30 }],
+              },
+            },
+          }),
+    );
+    renderAt("lifting", "a9");
+
+    const result = await screen.findByTestId("consistency-result");
+    expect(result).toHaveTextContent("+3 lifts banked");
+    expect(result).toHaveTextContent("10 / 125 this week · 4 days left");
+    expect(screen.getByRole("heading", { name: "4 reps" })).toBeInTheDocument();
+    expect(screen.getByText("C")).toBeInTheDocument();
+    expect(screen.queryByText(/to pass/)).toBeNull();
+    expect(screen.queryByText(/Where you stand/i)).toBeNull();
   });
 });
