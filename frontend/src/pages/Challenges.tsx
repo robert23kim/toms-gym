@@ -12,8 +12,29 @@ import { API_URL, COMPETITIONS_API_URL } from "../config";
 const challengePill = (c: Challenge): string | undefined =>
   c.mode === "consistency" ? "Consistency" : c.categories?.[0];
 
+const ChallengeSection: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+  <div className="max-w-2xl mx-auto mb-10 flex flex-col gap-2.5">
+    <div className="flex items-center gap-3.5 text-xs uppercase tracking-widest text-muted-foreground mb-1">
+      <span className="flex-1 h-px bg-border" aria-hidden="true" />
+      {label}
+      <span className="flex-1 h-px bg-border" aria-hidden="true" />
+    </div>
+    {children}
+  </div>
+);
+
+const ChallengeRow: React.FC<{ challenge: Challenge; trailing: string }> = ({ challenge: c, trailing }) => (
+  <RowCard
+    to={`/challenges/${c.id}`}
+    icon={<Timer className="w-[18px] h-[18px]" />}
+    title={c.title}
+    pill={challengePill(c)}
+    trailing={trailing}
+  />
+);
+
 const Challenges = () => {
-  const [activeFilter, setActiveFilter] = useState<'upcoming' | 'ongoing' | 'completed' | 'all'>("all");
+  const [showPast, setShowPast] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
@@ -99,9 +120,9 @@ const Challenges = () => {
     fetchChallenges();
   }, []);
 
-  const filteredChallenges = activeFilter === "all"
-    ? challenges
-    : challenges.filter(challenge => challenge.status === activeFilter);
+  const ongoing = challenges.filter((c) => c.status === "ongoing");
+  const upcoming = challenges.filter((c) => c.status === "upcoming");
+  const past = challenges.filter((c) => c.status === "completed");
 
   const handleCreateChallenge = async (newChallenge: Challenge) => {
     setChallenges(prev => [...prev, newChallenge]);
@@ -144,69 +165,50 @@ const Challenges = () => {
         </div>
       )}
 
-      {challenges.some((c) => c.status === "ongoing") && (
-        <div className="max-w-2xl mx-auto mb-10 flex flex-col gap-2.5">
-          <div className="flex items-center gap-3.5 text-xs uppercase tracking-widest text-muted-foreground mb-1">
-            <span className="flex-1 h-px bg-border" aria-hidden="true" />
-            Open now
-            <span className="flex-1 h-px bg-border" aria-hidden="true" />
-          </div>
-          {challenges
-            .filter((c) => c.status === "ongoing")
-            .map((c) => (
-              <RowCard
-                key={c.id}
-                to={`/challenges/${c.id}`}
-                icon={<Timer className="w-[18px] h-[18px]" />}
-                title={c.title}
-                pill={challengePill(c)}
-              />
-            ))}
+      {ongoing.length > 0 && (
+        <ChallengeSection label="Open now">
+          {ongoing.map((c) => (
+            <ChallengeRow key={c.id} challenge={c} trailing="Open" />
+          ))}
+        </ChallengeSection>
+      )}
+
+      {upcoming.length > 0 && (
+        <ChallengeSection label="Coming up">
+          {upcoming.map((c) => (
+            <ChallengeRow key={c.id} challenge={c} trailing="Preview" />
+          ))}
+        </ChallengeSection>
+      )}
+
+      {ongoing.length === 0 && upcoming.length === 0 && (
+        <div className="py-16 text-center">
+          <p className="text-lg text-muted-foreground">No open challenges right now.</p>
         </div>
       )}
 
-      <div className="max-w-2xl mx-auto mb-6">
-        <div className="flex flex-wrap justify-between items-center gap-2 mb-4">
-          <h2 className="text-xs uppercase tracking-widest text-muted-foreground">All challenges</h2>
-          
-          <div className="flex flex-wrap gap-2">
-            {(["all", "upcoming", "ongoing", "completed"] as const).map((filter) => (
-              <button
-                key={filter}
-                onClick={() => setActiveFilter(filter)}
-                className={`px-3 py-1 text-sm rounded-full transition-all ${
-                  activeFilter === filter
-                    ? "bg-accent/15 text-accent border border-accent/30"
-                    : "bg-secondary/50 text-muted-foreground hover:text-foreground border border-transparent"
-                }`}
-              >
-                {filter === "all" ? "All" : filter.charAt(0).toUpperCase() + filter.slice(1)}
-              </button>
-            ))}
-          </div>
-        </div>
-        
-        <div className="flex flex-col gap-2.5">
-          {filteredChallenges.length > 0 ? (
-            filteredChallenges.map((c) => (
-              <RowCard
-                key={c.id}
-                to={`/challenges/${c.id}`}
-                icon={<Timer className="w-[18px] h-[18px]" />}
-                title={c.title}
-                pill={challengePill(c)}
-                trailing={c.status === "completed" ? "Results" : c.status === "upcoming" ? "Preview" : "Open"}
-              />
-            ))
-          ) : (
-            <div className="py-16 text-center">
-              <p className="text-lg text-muted-foreground">
-                No {activeFilter !== "all" ? activeFilter : ""} challenges found.
-              </p>
+      {past.length > 0 && (
+        <div className="max-w-2xl mx-auto mb-6">
+          <button
+            type="button"
+            onClick={() => setShowPast((v) => !v)}
+            aria-expanded={showPast}
+            data-testid="past-challenges-toggle"
+            className="w-full flex items-center gap-3.5 text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors mb-3"
+          >
+            <span className="flex-1 h-px bg-border" aria-hidden="true" />
+            {showPast ? "Hide past challenges" : `Past challenges (${past.length})`}
+            <span className="flex-1 h-px bg-border" aria-hidden="true" />
+          </button>
+          {showPast && (
+            <div className="flex flex-col gap-2.5">
+              {past.map((c) => (
+                <ChallengeRow key={c.id} challenge={c} trailing="Results" />
+              ))}
             </div>
           )}
         </div>
-      </div>
+      )}
 
       {isCreateModalOpen && (
         <CreateChallenge
