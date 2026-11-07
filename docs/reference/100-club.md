@@ -1,6 +1,6 @@
 # The 100 Club (consistency challenge, shipped 2026-10-31)
 
-Live challenge: `32ca7bad-a970-4a09-acec-02b768793063` (start 2026-10-31, end 2026-12-27T23:59:59-05:00, week 1 starts Mon 2026-11-02). Branch `feat/100-club`, backend `my-python-backend-00194-8wr`, frontend `my-frontend-00197-h8f`.
+Live challenge: `32ca7bad-a970-4a09-acec-02b768793063` (start 2026-10-31, end 2026-12-27T23:59:59-05:00, week 1 starts Mon 2026-11-02). Branch `feat/100-club`, backend `my-python-backend-00196-mtt`, frontend `my-frontend-00199-qfz` (week-1 fixes, 2026-11-07; shipped at 2026-10-31 as 00194-8wr / 00197-h8f).
 
 Design contract: `docs/superpowers/specs/2026-10-31-100-club-design.md`. This file holds the operational notes.
 
@@ -76,6 +76,22 @@ update the TS file.
 
 ## Week-1 fixes (2026-11-07)
 
+Bug log: `docs/sessions/2026-11-07-100-club-week1/bugs.md`; run notes in the same folder; session doc `docs/sessions/2026-11-07-100-club-week1.md`.
+
+- B1 fixed (backend half, 5bb001f): Pushup/Situp/Plank store `weight_kg 0` on `/upload`, `/upload/finalize`, `POST`/`PUT /attempts`. Not proven in prod (no upload since deploy). The five existing weight-60 rows stay.
+- B2 fixed (7db3ed9): `ConsistencyResult` replaces the rank ladder on the video and status pages.
+- B3 fixed (b7b3c68): live-week type leads show as "Situp · locks Sun", hero note says +25 bonuses land Sunday.
+- B4 fixed (e5b1c8e): podium tie line names the deciding tiebreak.
+- B5 fixed (6710a4b): status pill reads "Ongoing · ends Sun 27 Dec".
+- B6 fixed (fb6aafb): `/lift` hub leads with "The 100 Club · Log this week's lifts".
+- B7 fixed (b7b3c68): week rows list per-type totals (plank seconds included).
+- B8 fixed (855bdcb): no "Everyone else" header on an empty board (all boards).
+- B9 fixed (764863a): lift history hides weight for plank, pushup, situp.
+- B10 fixed (b7b3c68): hero eyebrow reads "Weekly quota".
+- B11, B12 open, see Open follow-ups.
+
+Details:
+
 - Result block (`ConsistencyResult`) replaces the rank ladder on the video and status pages: "+N lifts banked" plus this week's `lifts / quota` and days left. It places the attempt in its own week from `attempt_created_at` (new on `GET /lifting/result/<id>`, read in `rules.tz` like backend `week_of`): an earlier week reads "banked in week K" with no week line, a pre-start upload reads "warm-up lifts · not scored". On someone else's video the week line is prefixed with the athlete's first name.
 - Status page headline keeps the raw rep count; a situp with sloppy reps adds "C clean of T · sloppy reps count half" so it reconciles with the half-credit lifts in the block.
 - Share text on a club video: "I banked N lifts in The 100 Club — L / Q this week. Join me:" (no rank). `inChallenge` drops the extra "the" for any title starting with "The".
@@ -83,6 +99,8 @@ update the TS file.
 - Status pill reads "Ongoing · ends Sun 27 Dec" from the challenge's own `mode`/`rules` on first render, not only after the leaderboard loads.
 - Bodyweight weight guard: Pushup, Situp and Plank attempts store `weight_kg 0` on every write path (stale APKs posted 60). It is keyed on lift type, not challenge mode, so a bodyweight lift on a weight board would score 0 (no prod board mixes them); Squat is not zeroed. `lift_type` is mapped case-insensitively before the guard.
 - `tests/conftest.py` refuses to load unless `DATABASE_URL` is a local Postgres (its `init_db` drops tables and importing the app runs migrations; with `DATABASE_URL` unset that is the Cloud SQL instance in `backend/.env`). Use `tools/run_ci_tests.sh`.
+
+APK: `gs://jtr-lift-u-4ever-cool-bucket/apk/tomsgym-debug-20261107-111511.apk`, short link `https://my-python-backend-quyiiugyoq-ue.a.run.app/s/LSOd2h` (signed URL expires 2026-11-14). Checked by curl and sha256 only; **it still has to be installed on Tom's phone**, which runs the Sep-13 bundle until then (B1 root cause).
 
 ## Limitations
 
@@ -99,7 +117,14 @@ update the TS file.
 
 ## Open follow-ups
 
-- Decision needed (Tom): type bonus has no minimum amount (QA-5), so a 9.9 s plank earns +25 when nobody else planks.
+- B1b unproven in prod: after the next real bodyweight upload read the `weight_kg=` log line (gcloud logging command in `docs/sessions/2026-11-07-100-club-week1/notes-fix-2.md`).
+- B1 data: five existing weight-60 rows left alone on purpose.
+- B11: two unexplained 404s on `GET /lifting/result/5a0d00a7-...` (4 Nov), not chased.
+- B12 / QA-5 (Tom): type bonus has no minimum (see above).
+- R6: weight guard keys on lift type; a bodyweight lift on a weight board would score 0 (no such board).
+- R7: partial `PUT /attempts` may fail on `lift_type` NOT NULL; live constraint not read, no client sends one.
+- R8 (Tom): are club squats always bodyweight? Only symptom is the profile label.
+- Decision needed (Tom): type bonus has no minimum amount (QA-5), so a 9.9 s plank earns +25 when nobody else planks (B12).
 - Pre-existing: `upload_routes.py`, `golf_routes.py` and `email_upload.py` create guest users with `auth_method 'password'` and no hash, so the magic-link route issues them a JWT.
 - Pre-existing: `GET /attempts/<id>` returns 500 for an existing attempt.
 - Multi-category legacy challenges still show only their first lift on `/challenges`; the BottomTabBar covers the sticky CTA on phones.
