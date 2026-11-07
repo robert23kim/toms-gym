@@ -87,7 +87,7 @@ const ConsistencyHero: React.FC<ConsistencyHeroProps> = ({ block, liftTypes, vie
 
   return (
     <div data-testid="consistency-hero" className="mb-6 rounded-2xl p-4 lg:max-w-2xl lg:p-5" style={CARD_STYLE}>
-      <div className="text-[10.5px] font-semibold uppercase tracking-wider text-[#9fc2ff]">The 100 Club</div>
+      <div data-testid="consistency-eyebrow" className="text-[10.5px] font-semibold uppercase tracking-wider text-[#9fc2ff]">Weekly quota</div>
       <div data-testid="consistency-week-line" className="mt-1 text-[17px] font-bold tracking-tight">
         {weekLine(block)}
       </div>
@@ -145,6 +145,11 @@ const ConsistencyHero: React.FC<ConsistencyHeroProps> = ({ block, liftTypes, vie
               </span>
             );
           })}
+        </div>
+      )}
+      {leaders.length > 0 && (
+        <div data-testid="consistency-bonus-note" className="mt-2 text-[11.5px] text-white/50">
+          Type bonuses (+{block.rules.type_bonus} each) are added when the week ends on Sunday.
         </div>
       )}
     </div>

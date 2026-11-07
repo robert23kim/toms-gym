@@ -130,4 +130,21 @@ describe("ConsistencyHero", () => {
     expect(screen.getByTestId("consistency-ring-count")).toHaveTextContent("0 / 100");
     expect(screen.getByTestId("consistency-warmup")).toHaveTextContent("20 warm-up lifts");
   });
+  it("labels the card as the weekly quota, not the challenge name again", () => {
+    renderHero(consistencyLeaderboard, "a1");
+    expect(screen.getByTestId("consistency-eyebrow")).toHaveTextContent(/^Weekly quota$/);
+    expect(screen.queryByText("The 100 Club")).toBeNull();
+  });
+
+  it("says type bonuses are added when the week ends", () => {
+    renderHero(consistencyLeaderboard, null);
+    expect(screen.getByTestId("consistency-bonus-note")).toHaveTextContent(
+      "Type bonuses (+25 each) are added when the week ends on Sunday.",
+    );
+  });
+
+  it("has no bonus note outside a live week", () => {
+    renderHero(endedConsistencyLeaderboard, "a1");
+    expect(screen.queryByTestId("consistency-bonus-note")).toBeNull();
+  });
 });

@@ -816,7 +816,7 @@ const ChallengeDetail: React.FC = () => {
               isConsistency ? hasWeeks(r) : r.attempt_count > 1;
             const detailPanel = (r: ChallengeLeaderboardRow) =>
               isConsistency ? (
-                <ConsistencyWeekTable weeks={r.weeks ?? []} liveIndex={liveWeekIndex} />
+                <ConsistencyWeekTable weeks={r.weeks ?? []} liveIndex={liveWeekIndex} leading={r.this_week?.leading ?? []} />
               ) : (
                 <AttemptHistory userId={String(r.user_id)} competitionId={id!} metric={metric} />
               );

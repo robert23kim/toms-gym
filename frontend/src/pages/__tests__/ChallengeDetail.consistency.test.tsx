@@ -105,6 +105,8 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(within(table).getByTestId("week-row-1")).toHaveTextContent("200");
     expect(within(table).getByTestId("week-row-2")).toHaveTextContent("225");
     expect(within(table).getByTestId("week-row-3")).toHaveTextContent("now");
+    expect(within(table).getByTestId("week-bonus-3")).toHaveTextContent("Situp · locks Sun");
+    expect(within(table).getByTestId("week-types-1")).toHaveTextContent("Situp 45 · Pushup 43 · Plank 24 (240 s)");
     expect(mockGet).not.toHaveBeenCalledWith(expect.stringContaining("/users/a1/lifts"));
   });
 
