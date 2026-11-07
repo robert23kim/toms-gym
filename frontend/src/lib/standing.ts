@@ -190,6 +190,10 @@ export function ctaLabelFor(
 }
 
 /** Words to travel with a shared result link — written for a group chat. */
+/** "in The 100 Club", never "in the The 100 Club". */
+export const inChallenge = (name: string | null | undefined): string =>
+  !name ? "in this challenge" : /^the\s/i.test(name) ? `in ${name}` : `in the ${name}`;
+
 export function standingShareText(args: {
   standing: Standing;
   metric: ChallengeMetric;
@@ -198,7 +202,7 @@ export function standingShareText(args: {
   isOwner: boolean;
 }): string {
   const { standing, metric, isOwner } = args;
-  const where = args.challengeName ? `in the ${args.challengeName}` : "in this challenge";
+  const where = inChallenge(args.challengeName);
   const score = formatWithUnit(standing.best, metric);
   const place = `#${standing.rank} of ${standing.participantCount}`;
   const last = standing.rank === standing.participantCount && standing.participantCount > 2;

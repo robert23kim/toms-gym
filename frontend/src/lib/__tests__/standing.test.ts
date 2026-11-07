@@ -227,6 +227,14 @@ describe("standingShareText", () => {
     expect(standingShareText({ standing: kim, metric: "time", challengeName: null, athleteName: "Kim Lee", isOwner: false }))
       .toBe("Kim just logged 12.0s in this challenge. Can you beat it?");
   });
+
+  test("a title that already starts with The is not given a second one", () => {
+    const me = deriveStanding(midPack(), "me")!;
+    expect(standingShareText({ standing: me, metric: "time", challengeName: "The Plank Off", athleteName: "Toka", isOwner: true }))
+      .toBe("I'm #3 of 4 in The Plank Off — 18.6s. Beat me:");
+    expect(standingShareText({ standing: me, metric: "time", challengeName: "Theory plank", athleteName: "Toka", isOwner: true }))
+      .toBe("I'm #3 of 4 in the Theory plank — 18.6s. Beat me:");
+  });
 });
 
 
