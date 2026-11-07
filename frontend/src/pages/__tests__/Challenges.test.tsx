@@ -4,6 +4,9 @@ import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import axios from "axios";
 import Challenges from "../Challenges";
+import { useIsOwner } from "../../hooks/useIsOwner";
+
+jest.mock("../../hooks/useIsOwner", () => ({ useIsOwner: jest.fn(() => false) }));
 
 jest.mock("axios");
 jest.mock("../../config", () => ({
@@ -50,6 +53,14 @@ const soon = {
   description: 'Tom\'s Gym - {"lifttypes": ["Deadlift"], "weightclasses": [], "gender": "Open"}',
 };
 
+const bowling = {
+  id: "0d1f2a3b-0000-4000-8000-000000000003",
+  name: "Bowling",
+  start_date: "2026-02-21T00:00:00+00:00",
+  end_date: "2026-08-01T00:00:00+00:00",
+  description: 'Ball tracking - {"lifttypes": ["Bowling"], "weightclasses": [], "gender": ""}',
+};
+
 const rowFor = (title: string) => screen.getAllByText(title).map((el) => el.closest("a") as HTMLElement);
 
 const renderPage = () =>
@@ -79,6 +90,27 @@ describe("Challenges list", () => {
     expect(toggle).toHaveTextContent("Hide past challenges");
     fireEvent.click(toggle);
     expect(screen.queryByText("Old Squat-Off")).toBeNull();
+  });
+
+  it("hides a bowling challenge from everyone but the owner", async () => {
+    (axios.get as jest.Mock).mockResolvedValue({ data: { competitions: [club, ended, bowling] } });
+    const { unmount } = renderPage();
+    await waitFor(() => expect(screen.getAllByText("The 100 Club")).toHaveLength(1));
+    const toggle = screen.getByTestId("past-challenges-toggle");
+    expect(toggle).toHaveTextContent("Past challenges (1)");
+    fireEvent.click(toggle);
+    expect(screen.queryByText("Bowling")).toBeNull();
+    expect(screen.getByText("Old Squat-Off")).toBeInTheDocument();
+    unmount();
+
+    (useIsOwner as jest.Mock).mockReturnValue(true);
+    renderPage();
+    await waitFor(() => expect(screen.getAllByText("The 100 Club")).toHaveLength(1));
+    const ownerToggle = screen.getByTestId("past-challenges-toggle");
+    expect(ownerToggle).toHaveTextContent("Past challenges (2)");
+    fireEvent.click(ownerToggle);
+    expect(screen.getAllByText("Bowling").length).toBeGreaterThan(0);
+    (useIsOwner as jest.Mock).mockReturnValue(false);
   });
 
   it("omits the past toggle when nothing has ended", async () => {

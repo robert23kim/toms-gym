@@ -26,3 +26,12 @@ export const writeOwnerCache = (userId: string, owner: boolean): void => {
     // storage unavailable: the next load fetches again
   }
 };
+
+const SPORT_CATEGORIES = new Set(["bowling", "golf"]);
+
+/** Challenges with a bowling or golf category (gender entries ride along in every list); hidden from everyone but the owner. */
+export const isSportChallenge = (c: { categories?: string[] }): boolean =>
+  (c.categories ?? []).some((x) => SPORT_CATEGORIES.has(x.toLowerCase()));
+
+export const visibleChallenges = <T extends { categories?: string[] }>(list: T[], isOwner: boolean): T[] =>
+  isOwner ? list : list.filter((c) => !isSportChallenge(c));

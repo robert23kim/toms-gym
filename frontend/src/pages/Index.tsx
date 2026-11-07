@@ -10,6 +10,7 @@ import { buildPrompts, consistencyPill, isConsistencyChallenge } from "../lib/pr
 import { getChallengeLeaderboard, getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 import { useIsOwner } from "../hooks/useIsOwner";
+import { visibleChallenges } from "../lib/owner";
 
 const LIFT_VERTICAL = {
     to: "/lift",
@@ -82,7 +83,7 @@ const Index = () => {
     </section>
   );
 
-  const todo = <PromptList prompts={buildPrompts(open, pills, { sports: isOwner })} userId={userId} />;
+  const todo = <PromptList prompts={buildPrompts(visibleChallenges(open, isOwner), pills, { sports: isOwner })} userId={userId} />;
 
   return (
     <Layout>

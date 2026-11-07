@@ -79,9 +79,11 @@ describe("Index (quiet-gym home)", () => {
   });
 
   it("keeps only the lift to-do row for anyone but the owner", async () => {
-    (api.getCompetitions as jest.Mock).mockResolvedValue([completed]);
+    const bowlingOpen = { id: "c3", title: "Bowling night", status: "ongoing", categories: ["Bowling"] };
+    (api.getCompetitions as jest.Mock).mockResolvedValue([completed, bowlingOpen]);
     renderHome();
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
+    expect(screen.queryByText("Bowling night")).toBeNull();
     expect(screen.queryByText(/bowling/i)).toBeNull();
     expect(screen.queryByText(/golf/i)).toBeNull();
     expect(screen.getByText("Log a lift").closest("a")).toHaveAttribute("href", "/lift/upload");

@@ -8,6 +8,8 @@ import { Challenge } from "../lib/types";
 import { transformCompetitionData } from "../lib/api";
 import axios from "axios";
 import { API_URL, COMPETITIONS_API_URL } from "../config";
+import { useIsOwner } from "../hooks/useIsOwner";
+import { visibleChallenges } from "../lib/owner";
 
 const challengePill = (c: Challenge): string | undefined =>
   c.mode === "consistency" ? "Consistency" : c.categories?.[0];
@@ -35,6 +37,7 @@ const ChallengeRow: React.FC<{ challenge: Challenge; trailing: string }> = ({ ch
 
 const Challenges = () => {
   const [showPast, setShowPast] = useState(false);
+  const isOwner = useIsOwner();
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [challenges, setChallenges] = useState<Challenge[]>([]);
   const [loading, setLoading] = useState(true);
@@ -120,9 +123,10 @@ const Challenges = () => {
     fetchChallenges();
   }, []);
 
-  const ongoing = challenges.filter((c) => c.status === "ongoing");
-  const upcoming = challenges.filter((c) => c.status === "upcoming");
-  const past = challenges.filter((c) => c.status === "completed");
+  const visible = visibleChallenges(challenges, isOwner);
+  const ongoing = visible.filter((c) => c.status === "ongoing");
+  const upcoming = visible.filter((c) => c.status === "upcoming");
+  const past = visible.filter((c) => c.status === "completed");
 
   const handleCreateChallenge = async (newChallenge: Challenge) => {
     setChallenges(prev => [...prev, newChallenge]);
