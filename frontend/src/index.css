@@ -139,6 +139,8 @@
 .demo-scene-bowl { animation-delay: 4s; }
 .demo-scene-golf { animation-delay: 8s; }
 .demo-scene-solo { opacity: 1; animation: none; }
+
+.above-tab-bar { bottom: calc(4rem + env(safe-area-inset-bottom)); }
 @keyframes demo-scene-cycle {
   0% { opacity: 0; } 4% { opacity: 1; } 32% { opacity: 1; } 36% { opacity: 0; } 100% { opacity: 0; }
 }

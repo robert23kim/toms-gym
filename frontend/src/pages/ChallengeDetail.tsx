@@ -707,7 +707,7 @@ const ChallengeDetail: React.FC = () => {
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="min-h-screen bg-background pt-8 pb-28 px-4 sm:px-6 lg:px-8"
+        className="min-h-screen bg-background pt-8 pb-44 sm:pb-28 px-4 sm:px-6 lg:px-8"
       >
         <div className="max-w-xl lg:max-w-6xl mx-auto">
           {/* Hero */}
@@ -1134,7 +1134,10 @@ const ChallengeDetail: React.FC = () => {
 
         {/* Mobile sticky CTA — opens the existing upload flow. */}
         {(challenge.status === "upcoming" || challenge.status === "ongoing") && (
-          <div className="sm:hidden fixed inset-x-0 bottom-0 z-40 px-4 pb-6 pt-8 bg-gradient-to-t from-background via-background to-transparent">
+          <div
+            data-testid="mobile-upload-cta"
+            className="sm:hidden fixed inset-x-0 above-tab-bar z-40 px-4 pb-3 pt-8 bg-gradient-to-t from-background via-background to-transparent"
+          >
             <button
               onClick={handleUploadClick}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#2f7bf6] py-4 font-semibold text-white shadow-[0_8px_22px_-6px_rgba(47,123,246,.7)]"

@@ -134,6 +134,14 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(await screen.findByTestId("status-pill")).toHaveTextContent(/^Ongoing · ends Sun 27 Dec$/);
   });
 
+  it("pins the phone upload button above the bottom tab bar", async () => {
+    setup(null, null);
+    const cta = await screen.findByTestId("mobile-upload-cta");
+    expect(cta.className).toMatch(/\bfixed\b/);
+    expect(cta.className).not.toMatch(/\bbottom-0\b/);
+    expect(cta.className).toMatch(/\babove-tab-bar\b/);
+  });
+
   it("keeps the day countdown on a legacy challenge", async () => {
     const legacyDescription = `Hold it. - ${JSON.stringify({ lifttypes: ["Plank"], weightclasses: [], gender: "" })}`;
     setup(null, null, { id: ID, name: "Plank Off", start_date: "2026-01-01", end_date: "2099-12-27", description: legacyDescription, lifttypes: ["Plank"] });
