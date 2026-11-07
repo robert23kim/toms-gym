@@ -77,6 +77,7 @@ export interface Challenge {
   categories: string[];
   lifttypes?: string[];
   mode?: string;
+  rules?: Partial<ConsistencyRules>;
   participants: number;
   prizePool?: {
     first: number;

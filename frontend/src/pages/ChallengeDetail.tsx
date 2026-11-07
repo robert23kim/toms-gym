@@ -7,7 +7,7 @@ import axios from "axios";
 import { Challenge, ChallengeLeaderboard, ChallengeLeaderboardRow, LiftingResult } from "../lib/types";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
-import { getChallengeLeaderboard, getLiftingResult, triggerLiftingAnalysis, fetchChampions } from "../lib/api";
+import { getChallengeLeaderboard, getLiftingResult, triggerLiftingAnalysis, fetchChampions, getModeFromMetadata } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
 import { reportUploadError } from "../lib/telemetry";
@@ -425,7 +425,8 @@ const ChallengeDetail: React.FC = () => {
           description: backendData.description || "",
           status: determineStatus(backendData.start_date, backendData.end_date),
           categories: [],
-          participants: participantsDataBackend.length
+          participants: participantsDataBackend.length,
+          ...getModeFromMetadata(backendData),
         };
 
         // Add categories from metadata fields if available
@@ -678,6 +679,11 @@ const ChallengeDetail: React.FC = () => {
     leaderboard && viewerId
       ? leaderboard.rows.find((r) => String(r.user_id) === String(viewerId)) ?? null
       : null;
+  const clubRules = consistencyBlock?.rules ?? (challenge.mode === "consistency" ? challenge.rules : undefined);
+  const clubEndsLabel =
+    clubRules?.week_start && clubRules.weeks
+      ? finalDayLabel({ week_start: clubRules.week_start, weeks: clubRules.weeks })
+      : null;
   const liveWeekIndex =
     consistencyBlock && consistencyBlock.status === "live" ? consistencyBlock.week_index : null;
   const heroDescription = challenge.description
@@ -720,7 +726,7 @@ const ChallengeDetail: React.FC = () => {
                   status={challenge.status}
                   startDate={challenge.date}
                   endDate={challenge.registrationDeadline}
-                  endsLabel={consistencyBlock ? finalDayLabel(consistencyBlock.rules) : null}
+                  endsLabel={clubEndsLabel}
                 />
                 {dateRange && (
                   <span className="hidden text-[12.5px] font-medium text-white/45 lg:inline">

@@ -56,12 +56,13 @@ const competition = {
 
 const mockGet = axios.get as jest.Mock;
 
-const setup = (board: ChallengeLeaderboard, viewer: string | null) => {
+const setup = (board: ChallengeLeaderboard | null, viewer: string | null, comp: object = competition) => {
   (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? viewer : null));
-  (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
+  if (board) (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
+  else (api.getChallengeLeaderboard as jest.Mock).mockReturnValue(new Promise(() => {}));
   (api.fetchChampions as jest.Mock).mockResolvedValue([]);
   mockGet.mockImplementation((url: string) => {
-    if (url.endsWith(`/competitions/${ID}`)) return Promise.resolve({ data: { competition } });
+    if (url.endsWith(`/competitions/${ID}`)) return Promise.resolve({ data: { competition: comp } });
     if (url.endsWith(`/competitions/${ID}/participants`))
       return Promise.resolve({ data: { participants: [{ id: "a1" }, { id: "b1" }, { id: "c1" }] } });
     if (url.endsWith(`/competitions/${ID}/lifts`)) return Promise.resolve({ data: { lifts: [] } });
@@ -126,6 +127,40 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(await screen.findByTestId("you-row")).toHaveAttribute("data-entered", "false");
     expect(screen.queryByText("Everyone else")).toBeNull();
     expect(screen.queryByTestId("leaderboard-header")).toBeNull();
+  });
+
+  it("shows the club's end day in the status pill before the leaderboard arrives", async () => {
+    setup(null, null);
+    expect(await screen.findByTestId("status-pill")).toHaveTextContent(/^Ongoing · ends Sun 27 Dec$/);
+  });
+
+  it("keeps the day countdown on a legacy challenge", async () => {
+    const legacyDescription = `Hold it. - ${JSON.stringify({ lifttypes: ["Plank"], weightclasses: [], gender: "" })}`;
+    setup(null, null, { id: ID, name: "Plank Off", start_date: "2026-01-01", end_date: "2099-12-27", description: legacyDescription, lifttypes: ["Plank"] });
+    expect(await screen.findByTestId("status-pill")).toHaveTextContent(/^Ongoing · \d+d left$/);
+  });
+
+  it("drops the Everyone else header on a legacy board whose podium holds everyone", async () => {
+    const legacyDescription = `Hold it. - ${JSON.stringify({ lifttypes: ["Plank"], weightclasses: [], gender: "" })}`;
+    const legacyBoard: ChallengeLeaderboard = {
+      competition_id: ID,
+      metric: "time",
+      lift_types: ["Plank"],
+      momentum: { joined: 1, uploaded_today: 0 },
+      rows: [
+        {
+          rank: 1, user_id: "a1", name: "Ana", score: 61.2, best_by_lift: { Plank: 61.2 }, form_score: 88,
+          steadiness: 2.1, attempt_id: "a1-best", clip_url: null, thumbnail_url: null, date: "2026-08-28",
+          weight_class: null, gender: null, attempt_count: 1, history: [{ score: 61.2, date: "2026-08-28" }],
+        },
+      ],
+    };
+    setup(legacyBoard, null, { id: ID, name: "Plank Off", start_date: "2026-01-01", end_date: "2099-12-27", description: legacyDescription, lifttypes: ["Plank"] });
+    await screen.findByTestId("podium");
+    expect(await screen.findByTestId("you-row")).toHaveAttribute("data-entered", "false");
+    expect(screen.queryByText("Everyone else")).toBeNull();
+    expect(screen.queryByTestId("leaderboard-header")).toBeNull();
+    expect(screen.queryByTestId("consistency-hero")).toBeNull();
   });
 
   it("explains a points tie under the podium", async () => {

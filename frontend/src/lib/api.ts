@@ -138,7 +138,7 @@ interface ModeSource {
   description?: unknown;
 }
 
-const getModeFromMetadata = (data: ModeSource): Pick<Competition, "mode" | "rules"> => {
+export const getModeFromMetadata = (data: ModeSource): Pick<Competition, "mode" | "rules"> => {
   let source: ModeSource = data;
   if (!data.mode && typeof data.description === "string" && data.description.includes(" - ")) {
     try {
