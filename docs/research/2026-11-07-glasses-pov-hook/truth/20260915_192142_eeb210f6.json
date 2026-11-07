@@ -584,5 +584,82 @@
  "board_convention": "1-39 from the right gutter",
  "method": "Ball centre and radius read by eye on 3x/5x gridded crops of the SOURCE frames (cv2 seek canary: MAD 1.8 at offset 0 vs 5-12 at +-1), confirmed against a purple/dark blob circle drawn on an overlay; lane edges are the wood-to-gutter-lip step found per row on 5-8 rows of THE SAME FRAME that are clear of the ball and of the pin reflections, fitted as a straight line (residual <=1.8 px) and evaluated at the ball row y (board) and at y+r (board_contact). board = 1 + 38*(x - right_x)/(left_x - right_x); pin ruler uses the 7 pin columns (6 in apart = 5.49 units of lane/38, headpin = 20); ball ruler uses 8.5 in = 7.8 units anchored on the headpin column.",
  "limits": "Cut pin_hit_frame 480 is ~10 frames before contact (observed ~490), so the path is extended to f490 and entry.board is read at f490, not 480; the cut-frame reads are kept in entry_at_cut_pin_hit. Near the pins the edge lines are extrapolated 30-76 px from rows in front of the deck; their slopes vary 0.33-0.42 frame to frame, worth ~3-5 px of width, which is ~0.3 board near the lane centre but several feet of depth, so pin_row_frame is +-2 frames. Ball x at f482/f486 is +-3 px (smeared over pins), ~1.5 boards. The ball moves 1.5-2 boards per frame in the last 6 frames, so a +-2 frame contact error is +-3-4 boards of entry. The pin ruler is biased low by 1.5-2 boards whenever the ball is in front of the pins (f479/f480 cut reads 9.2 vs edges 10.9-11.2), so only the f489/f490 pin-ruler reads count for entry. Release frame (415) unchanged from loop 1.",
- "made_by": "loop-2 holdout truth agent, 2026-11-07"
+ "made_by": "loop-2 holdout truth agent, 2026-11-07",
+ "pin_row": {
+  "frame": 490,
+  "frame_old": 490,
+  "board": 22.15,
+  "y_pin_base": 599.0,
+  "reads": {
+   "edge_profile_f490": 22.15,
+   "edge_profile_f490_refit": 22.66,
+   "edge_profile_f489": 19.29,
+   "pin_ruler_f490": 21.68
+  },
+  "frame_contact_row": 490,
+  "frame_contact_row_note": "ball bottom (y+r) reaches the headpin base row f489-491 (existing observed_pin_contact_note, lane width at the ball row = pin-ruler width); among the pins the ball's y is +-3 px, so +-2 frames",
+  "note": "Verified: ball centre y 601 at f488 vs head base 596.7 (not yet), 598.1 at f489 vs ~597.9 (tie within 0.2 px), 595 at f490 vs 599 (reached). Kept 490. Refit = my own edge fit on rows 631-671 at f490 (rms 0.34/0.66 px).",
+  "est_60ft_frame_from_contact": 493,
+  "est_60ft_note": "contact_frame - k, k=0 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound"
+ },
+ "contact_frame": 493,
+ "contact_note": "First visible pin lean f493-494 on zoom_489_500_420_595.jpg (pins left of the ball at x 390-410); aligned pin-region change rises 9.4 (f490) -> 12.6 (f491) -> 15.5 (f493) -> 18.6 (f494), but the ball is inside that window so the series only brackets it. Pins fly f495-496. +-1.",
+ "exit": {
+  "frame": 497,
+  "board": 36.13,
+  "x": 393.0,
+  "y": 597.0,
+  "reads": {
+   "edge_profile_f497": 36.13,
+   "edge_profile_f496": 36.26,
+   "pin_ruler_f497": 34.9
+  },
+  "track": {
+   "490": [
+    424.5,
+    595,
+    22.66
+   ],
+   "491": [
+    421,
+    591,
+    23.85
+   ],
+   "492": [
+    417,
+    588,
+    25.88
+   ],
+   "493": [
+    411,
+    589,
+    28.61
+   ],
+   "494": [
+    406,
+    591,
+    30.68
+   ],
+   "495": [
+    401,
+    591,
+    32.92
+   ],
+   "496": [
+    393,
+    596,
+    36.26
+   ],
+   "497": [
+    393,
+    597,
+    36.13
+   ]
+  },
+  "deflection": "entered left of the headpin (board ~22, Brooklyn side), deflected left through the 2-4-7 side at 2-3 boards per frame and left the deck at its left edge by the 7-pin",
+  "visible_through_deck": true,
+  "in_gutter": false
+ },
+ "exit_method": "Ball positions read by eye on 5x and 8x camera-followed gridded crops (gc_<f>_z.jpg, zoom_489_500_420_595.jpg, zoom_493_501_395_592.jpg) and cross-checked against moving purple HSV components (blob.py); lane edges are the wood-to-gutter Sobel step on rows 629-671 in front of the deck in the same frame, straight-line fit (rms <= 0.66 px), evaluated at the ball row. Pin ruler: the 7 pin columns of f490 (397..458.4 px, headpin 427.8, 10.23 px = 6 in = 5.494 units) shifted by the measured camera dx (-7.0 px) to f497; back row 7/8/9/10 = 36.48/25.49/14.51/3.52 computed from 12-in spacing.",
+ "exit_limits": "Edge lines are extrapolated 32-74 px from the fitted rows to the ball row. From f496 the ball merges with a static purple-tinged dark patch left of the deck (present at x 381-386 from f486, before the ball arrives; merged area 324-331 at f496-498 vs 146 at f495), so f497 is the last frame the ball is a separate disc; a faint blob at x 384-388 to f507 is that static patch and was not counted. Ball x at f496-497 is +-3 px under falling pins (~1.5 boards); the deck spans only ~5 px of rows (head 599, back 594 at f490), so depth on the deck is not resolved."
 }

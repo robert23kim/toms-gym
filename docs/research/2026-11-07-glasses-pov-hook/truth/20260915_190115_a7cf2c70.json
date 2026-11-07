@@ -239,5 +239,91 @@
  "board_formula": "board = 1 + 38*(x - right_x)/(left_x - right_x); 'board' uses edges at the ball centre row y (as prescribed), 'board_contact' at the contact row y+r",
  "method": "Each path point is one source frame: the ball circle and, in that same frame, the left and right wood edges (where the olive/yellow wood meets the dark gutter channel) at the ball centre row y and at the contact row y+r, snapped to the strongest grey-level gradient within +-8-14 px of an eye prior and checked on a gridded lane strip (no quad carried between frames). Entry = median of six named reads: contact-row edge profile at pin_hit-1/0/+1, the 7-column pin ruler (7-pin..10-pin = 36 in, physical boards 36.5..3.5 under the task's board formula) at 442 and 444, and an 8.5 in = 7.8 board ball-diameter ruler from the right edge at 443.",
  "limits": "Far-end edges +-1-2 px on a ~95 px lane (+-0.4-0.8 board); the ball centre +-1 px for r~10. Centre-row vs contact-row reads differ by 0-1 board (contact row is the geometrically correct one; 'board' keeps the prescribed centre row). The pin ruler uses physical column boards 36.5/31.0/25.5/20/14.5/9.0/3.5; the task text's '7-pin on 33, 10-pin on 7' mapping would read 11.2 at f442 and is not used. Scale conflict persists: 7 pin columns span 59 px (1.64 px/in) while the wood is ~90 px (2.15 px/in) and the ball diameter ~20 px (2.35 px/in); the pin ruler still lands within 0.3 board of the edge reads because the rack sits right-of-centre between the edges (left gap ~20 px, right gap ~10 px). Ball-diameter ruler: r 10.3 +-0.5 px -> +-5 % scale. pin_row_frame 443 (+-1: at 442 the centre is 1.4 px below the lowest pin bases at y~640). Loop-1 board formula was 39*(r-x)/(r-l), about 0.5 board off this one; do not 'correct' loop-1 reads with it.",
- "notes": ""
+ "notes": "",
+ "pin_row": {
+  "frame": 455,
+  "primary": "centre",
+  "frame_contact_row": null,
+  "frame_contact_row_extrapolated": 460,
+  "frame_centre": 455,
+  "board": 12.04,
+  "y_pin_base": 574.8,
+  "y_pin_top": 543.8,
+  "top_ref_f444": 585.75,
+  "reads": {
+   "edge_profile_f455": 12.04,
+   "edge_profile_f454": 11.66,
+   "pin_ruler_f456_cols_on_f455": 13.46
+  },
+  "bottom_minus_base": {
+   "456": 9.7,
+   "457": 8.0,
+   "458": 5.8
+  },
+  "centre_minus_base": {
+   "454": 1.5,
+   "455": 0.0,
+   "456": 1.0
+  },
+  "note": "Re-derived, but the contact row is NOT observed. Head top 582.6-588.1 camera-compensated on 10 frames, drifting ~4 px late (per-frame tops used). The centre reaches the base at f455, which is recorded as the frame. The bottom is still +5.8 px at f458 (last found ball, blob 8 px from prediction). Extrapolating ~2 px per frame gives f460-461, after the first pin motion at f456, which is impossible. On this stem the pin-height base sits too far by about 5-10 px, or the ball row is biased by pins in front of it. Pin ruler: f456 columns (headpin 379, 10.0 px per 6 in) moved by camera dx +4.9 to f455.",
+  "frame_old": 443,
+  "y_pin_base_old": 640.0,
+  "note_prev": "NOT re-derived; kept 443 from the existing truth, flagged as early. On zoom_444_459_440_628.jpg the ball is in front of the standing rack through f449, behind the front pins from f450, and the first pin moves at f456, 13 frames after 443. As on 191913/191253 the base row 640 is most likely the bottom of the deck reflection; the contact point probably reaches the head row around f449-450 (first occlusion), not measured; WITHDRAWN: a ball cannot sit behind front pins without touching one, so that \"occlusion\" is 2D overlap; use est_60ft_frame_from_contact instead. No pin-ruler read at f443 (columns behind the ball).",
+  "method": "pin-height base: headpin-column pin top (head top, not the neck stripe) + 15 in x lane px/in at the base row + 3.5 px (topmost white is the 5-pin, 20.8 in behind), per frame where detected within 6 px of the camera-compensated top, else compensated top + measured camera dy; ball centre from the path or a tracked purple component, r = geometric radius scaled by lane width; frame_contact_row = first frame with (y + r) - base <= +1 px.",
+  "est_60ft_frame_from_contact": 455,
+  "est_60ft_note": "contact_frame - k, k=1 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound",
+  "suspect": true
+ },
+ "contact_frame": 456,
+ "contact_note": "Ball behind the front pins f450-455 with pins upright; pins beside the ball distort at f456 and fall from f457 (zoom_444_459_440_628.jpg). Aligned change 7.2 (f455) -> 8.1 (f456) -> 10.8 (f457), weak because the camera pans 4-12 px per frame. +-1. This is 12 frames after the cut pin_hit 444.",
+ "exit": {
+  "frame": 456,
+  "board": 12.47,
+  "x": 390.0,
+  "y": 567.0,
+  "reads": {
+   "edge_profile_f456": 12.47,
+   "edge_profile_f455": 12.04,
+   "pin_ruler_f456_registered": 14.0
+  },
+  "track": {
+   "444": [
+    444.4,
+    635.1,
+    8.82
+   ],
+   "449": [
+    427.1,
+    613.4,
+    null
+   ],
+   "452": [
+    412.5,
+    595.6,
+    null
+   ],
+   "454": [
+    401.4,
+    581.8,
+    null
+   ],
+   "455": [
+    395.8,
+    574.8,
+    12.04
+   ],
+   "456": [
+    390,
+    567,
+    12.47
+   ]
+  },
+  "deflection": "entered right of the pocket (board ~9) and was lost among the pins at the head row; the path through the deck was not seen",
+  "visible_through_deck": true,
+  "in_gutter": false,
+  "observed": false,
+  "note": "ball lost at the head row: frame and board are the last-visible position at deck entry (exit is contact_frame + 0/1, too soon to cross 2.85 ft of deck); the true exit was not seen"
+ },
+ "exit_method": "Ball read by eye on 5x camera-followed gridded crops (zoom_444_459_440_628.jpg) and matched to the moving purple component (a second component static in camera-compensated coordinates at ~465/612 was ignored); f456 position is the visible dark disc, consistent with the f449-455 track extrapolated one frame. Lane edges are the wood-to-gutter Sobel step on rows 616-663 in front of the deck in the same frame (rms 0.29 px); pin ruler: 7 columns 381..441 at f448 (10.0 px per 6 in, headpin 413) moved by the measured camera dx.",
+ "exit_limits": "Edge lines are extrapolated 50-90 px to the ball row. At f456 the ball is a dark disc among moving pins (x,y +-3 px, ~1.5 boards); f457 shows only a faint purple patch at ~(382, 559), so exit is +-1. The pin ruler reads 1.5 boards above the edges. The f444 refit in this run failed (right edge rms 5.6), so the existing path reads are used for the pin row."
 }

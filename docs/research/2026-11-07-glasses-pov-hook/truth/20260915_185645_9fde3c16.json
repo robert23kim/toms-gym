@@ -265,5 +265,95 @@
    "pin_ruler_task_f297": 9.1
   }
  },
- "loop1_compare": "Loop-1 truth board 5.5 +-2.0 (edge reads 8.2/7.2/7.4/6.0 at f280-296, pin ruler 4.2 at f296). This path reads 7.4-8.7 over 285-300; the far-end edge reads agree with loop-1's f285-290 reads, and loop-1's lower number comes from its f296 edge read (6.0) and pin ruler (4.2). Here the pin ruler reads 6.2-6.7 with the physical span."
+ "loop1_compare": "Loop-1 truth board 5.5 +-2.0 (edge reads 8.2/7.2/7.4/6.0 at f280-296, pin ruler 4.2 at f296). This path reads 7.4-8.7 over 285-300; the far-end edge reads agree with loop-1's f285-290 reads, and loop-1's lower number comes from its f296 edge read (6.0) and pin ruler (4.2). Here the pin ruler reads 6.2-6.7 with the physical span.",
+ "pin_row": {
+  "frame": 304,
+  "primary": "contact_row",
+  "frame_contact_row": 304,
+  "frame_centre": 302,
+  "board": 8.08,
+  "y_pin_base": 499.3,
+  "y_pin_top": 467.2,
+  "top_ref_f299": 476.5,
+  "reads": {
+   "edge_profile_f304": 8.08,
+   "edge_profile_f303": 8.01,
+   "pin_ruler_f301_cols_on_f304": 8.13
+  },
+  "bottom_minus_base": {
+   "302": 3.1,
+   "303": 1.4,
+   "304": -1.1,
+   "305": -2.0
+  },
+  "centre_minus_base": {
+   "301": 1.8,
+   "302": -3.6
+  },
+  "note": "Re-derived. Head top 475-478 raw on 10 frames, 476-477.7 camera-compensated, and read by eye at ~475 on f299 (zoom_293_304_338_472.jpg; stripes at 484-486, so it is the head top); the 434 detections on f302-307 are the masking-unit edge and were ignored. Ball bottom reaches the base at f304 (f303 +1.4), centre at f302. contact_frame - k = 310, 6 frames later. Pin ruler: f301 columns (headpin 349, 10.0 px per 6 in) moved by camera dx +5.6 to f304.",
+  "frame_old": 291,
+  "y_pin_base_old": 527.0,
+  "note_prev": "NOT re-derived; kept 291 from the existing truth, flagged as early. On zoom_299_314_365_508.jpg the ball is in front of the standing rack at f299-302, first overlapped by front pins at f303, and the first pin moves at f312, 21 frames after 291. As on 191913/191253 the base row 527 is most likely the bottom of the deck reflection; the contact point probably reaches the head row around f302-303 (first occlusion), not measured; WITHDRAWN: a ball cannot sit behind front pins without touching one, so that \"occlusion\" is 2D overlap; use est_60ft_frame_from_contact instead. The existing path has no point at f291 in the last frames read, so no board is recorded.",
+  "method": "pin-height base: headpin-column pin top (head top, not the neck stripe) + 15 in x lane px/in at the base row + 3.5 px (topmost white is the 5-pin, 20.8 in behind), per frame where detected within 6 px of the camera-compensated top, else compensated top + measured camera dy; ball centre from the path or a tracked purple component, r = geometric radius scaled by lane width; frame_contact_row = first frame with (y + r) - base <= +1 px.",
+  "est_60ft_frame_from_contact": 310,
+  "est_60ft_note": "contact_frame - k, k=2 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound",
+  "suspect": false
+ },
+ "contact_frame": 312,
+ "contact_note": "Ball behind the front pins f303-311 with pins upright; pins beside the ball lean and blur at f312, falling f313 (zoom_299_314_365_508.jpg). Aligned change 10.9 (f311) -> 17.0 (f312). +-1. This is 13 frames after the cut pin_hit 299.",
+ "exit": {
+  "frame": 313,
+  "board": 5.25,
+  "x": 366.0,
+  "y": 462.0,
+  "reads": {
+   "edge_profile_f313": 5.25,
+   "edge_profile_f312": 7.13,
+   "pin_ruler_f313_registered": 5.58
+  },
+  "track": {
+   "299": [
+    365.9,
+    511.3,
+    7.71
+   ],
+   "303": [
+    375.9,
+    496.6,
+    null
+   ],
+   "307": [
+    373.6,
+    477.5,
+    null
+   ],
+   "309": [
+    368.5,
+    470.8,
+    null
+   ],
+   "311": [
+    365.5,
+    465.1,
+    null
+   ],
+   "312": [
+    365.5,
+    462.6,
+    7.13
+   ],
+   "313": [
+    366,
+    462,
+    5.25
+   ]
+  },
+  "deflection": "entered well right of the pocket (board ~7.5), missed the headpin, and was lost at the head row; the path through the deck was not seen",
+  "visible_through_deck": true,
+  "in_gutter": false,
+  "observed": false,
+  "note": "ball lost at the head row: frame and board are the last-visible position at deck entry (exit is contact_frame + 0/1, too soon to cross 2.85 ft of deck); the true exit was not seen"
+ },
+ "exit_method": "Ball read by eye on 5x camera-followed gridded crops (zoom_299_314_365_508.jpg) and matched to the moving purple component; lane edges are the wood-to-gutter Sobel step on rows 513-554 in front of the deck in the exit frame itself (rms 0.29-0.43 px), evaluated at the ball row. Pin ruler: 7 columns 325..384 at f305 (9.83 px per 6 in, headpin 356) moved to f313 by the measured camera dx.",
+ "exit_limits": "Edge lines are extrapolated 50-90 px to the ball row. From f313 the ball component widens (28-42 px) as it merges with the dark pit exposed behind the falling pins, and the 31-36 px component on f315-318 is static in camera-compensated coordinates, so it was not counted; exit is +-1. The f312 -> f313 edge reads differ by 1.9 boards for a ball that barely moved, which is the edge-read noise at this row."
 }

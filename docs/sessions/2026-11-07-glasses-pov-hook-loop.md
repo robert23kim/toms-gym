@@ -27,3 +27,11 @@ Detect contact from pin-deck motion and re-anchor 60 ft; jump-based tail rejecti
 
 ## Files to commit
 `docs/research/2026-11-07-glasses-pov-hook/`: README.md, RULES.md, .gitignore, track_v2.py, score_v2.py, score_all.py, score_final_v2.py, mutate_v2.py, audit_run.py, make_showcase.py, results/, truth/, overlays/, experiments/*/ (run.py, NOTES.md, results, tracks, overlays, helper scripts); this session doc. The restored `2026-10-10-glasses-pov-tracking/truth/` files should show as unmodified. Not: work/, *.mp4, __pycache__, .venv.
+
+## Follow-up pass (same day): breakpoint depth and the pin-deck exit
+Tom read the break at ~37 ft with most of the hook at the end, and asked for the deck-exit board to be measured and highlighted. Two agents (truth-exit on Opus, doer-exit on Fable), notes in `work/truth_exit/NOTES.md` and `work/exit_pass_notes.md`; results `results/final_v3.json`, `results/events_notes.md`; showcase re-rendered (33.8 s).
+- Truth v2.1: per throw `pin_row` (ball bottom at the headpin base = 60 ft, 3 reads), `contact_frame` (first pin motion), `exit` (last frame on the deck, board, 3-5 reads). The hand-cut pin_hit was early on EVERY throw by 3-19 frames, so loop 2's depth and entry were anchored before the ball reached the pins.
+- Tracker: ball stage runs to the cut end; 60 ft anchored at a self-detected headpin-row crossing (chosen after looking at 192142/192636, disclosed); gap-scaled jump rule replaces the fixed-line tail rejection; static pit-patch decoy rule ends the deck track; exit = last real moving deck point.
+- Breakpoints under the new anchor: 192142 39.7 ft, 192636 40.8, 191253 41.7, 191913 42.0 (were 43-48). Entry/exit through the deck agree with truth where the ball is visible (raw 22.2 vs 22.2, 18.2 vs 18.3 at the truth pin-row frame).
+- Holdout means: pin row vs 60-ft truth 4.8 -> 4.6 frames (3.4 without the false 191820 pin-motion hit); vs first pin motion 8.2 -> 3.0; exit/last-seen 14.4 -> 4.7 boards (n=3). Dev: 9.2 -> 4.0, 12.8 -> 7.2, 9.6 -> 3.8.
+- Still broken: the pin-motion clock (4x baseline) fired once, falsely, on the 191820 camera whip; 185121 and 190115 fall back to the cut label (8-11 frames early); on hookers the last-seen board is 3-6 boards short of the truth exit because the ball goes behind pins; 191913's pin row may be the decoy patch; release is still an input; all 10 throws seen.

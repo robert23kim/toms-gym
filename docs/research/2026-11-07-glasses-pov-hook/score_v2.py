@@ -20,6 +20,17 @@ hook_err                    : |(entry - min)_track - (entry_board - min_board)_t
 direction_ok                : least-squares slope x 12 over the far window, track (every track board frame in the
                               window) and truth (truth path points); ok when the signs agree, or both |delta| < 1.
 window_err                  : [|release - truth|, |pin_hit - truth|].
+Exit pass (tracks carrying "events"; truth carrying "pin_row" / "exit", added by the truth agent):
+pin_row_err                 : |events.pin_row_frame_est - truth 60-ft frame| (frames): truth.pin_row.frame_contact_row
+                              (ball bottom at the headpin base row) where present, else truth.pin_row.frame.
+contact_frame_err           : |events.pin_row_frame_est - truth.contact_frame| (first pin motion).
+                              exit_err / exit_err_last are null where truth.exit.observed is false (190115, 185645). The method's resolution is
+                              2-3 frames (the pin row jitters +-5 px, the ball moves ~2 px per frame at the deck).
+entry_err_pr                : |events.entry_board - truth.pin_row.board|.
+exit_err                    : |events.exit_board - truth.exit.board|; null when truth exit.board is null (gutter).
+exit_err_last               : |events.track_last_real_board - truth.exit.board| (the last non-coasted tracked frame,
+                              reported beside the lead's exit definition, not instead of it).
+breakpoint_ft               : events.breakpoint_ft, reported, not scored.
 Boards: 1-39 from the right gutter; the ball moving right = board falling, a hook back left = board rising.
 """
 import bisect
@@ -171,7 +182,30 @@ def score(tracks, truth):
         a, b = tracks.get(k), truth.get(k)
         return None if a is None or b is None else abs(int(a) - int(b))
 
-    return {
+    ev = tracks.get("events") or {}
+    tpr, tex = truth.get("pin_row") or {}, truth.get("exit") or {}
+
+    def absd(a, b, nd=2):
+        return None if a is None or b is None else round(abs(float(a) - float(b)), nd)
+
+    exitpass = {
+        "pin_row_frame_est": ev.get("pin_row_frame_est"), "truth_pin_row_frame": tpr.get("frame"),
+        "truth_pin_row_60ft": tpr.get("frame_contact_row") if tpr.get("frame_contact_row") is not None else tpr.get("frame"),
+        "truth_pin_row_src": "frame_contact_row" if tpr.get("frame_contact_row") is not None else "frame",
+        "pin_row_err": None if ev.get("pin_row_frame_est") is None or tpr.get("frame") is None
+        else abs(int(ev["pin_row_frame_est"]) - int(tpr["frame_contact_row"] if tpr.get("frame_contact_row") is not None else tpr["frame"])),
+        "contact_frame_err": None if ev.get("pin_row_frame_est") is None or truth.get("contact_frame") is None
+        else abs(int(ev["pin_row_frame_est"]) - int(truth["contact_frame"])),
+        "entry_board_pr": ev.get("entry_board"), "entry_err_pr": absd(ev.get("entry_board"), tpr.get("board")),
+        "exit_board": ev.get("exit_board"), "exit_frame": ev.get("exit_frame"),
+        "exit_err": None if tex.get("observed") is False else absd(ev.get("exit_board"), tex.get("board")),
+        "exit_err_last": None if tex.get("observed") is False else absd(ev.get("track_last_real_board"), tex.get("board")),
+        "truth_exit_observed": tex.get("observed") is not False,
+        "truth_exit_frame": tex.get("frame"),
+        "breakpoint_ft": ev.get("breakpoint_ft"), "breakpoint_board": ev.get("breakpoint_board"),
+        "truth_has_pin_row": bool(tpr), "truth_has_exit": bool(tex),
+    }
+    return {**exitpass,
         "stem": tracks.get("stem"), "method": tracks.get("method"), "stage": tracks.get("stage"),
         "recall_pct": round(100.0 * m_all / n, 1) if n else 0.0, "n_matched": m_all, "n_truth_points": n,
         "far_recall_pct": round(100.0 * m_far / n_far, 1) if n_far else None, "n_far_matched": m_far,

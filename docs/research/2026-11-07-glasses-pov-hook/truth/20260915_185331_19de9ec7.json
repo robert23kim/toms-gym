@@ -209,5 +209,93 @@
  "rise_after_min": 2.68,
  "board_convention": "1-39 from the right gutter",
  "method": "Every path point is a hand read from gridded crops of the SOURCE video (decoded sequentially): 3x ball crops and lane-width row crops with brightness/|dx| profiles for f304-336, then per-frame 5x-7x panels of the ball with each lane edge (panel_Z*, ZL*, W*, R*, L*) for f344-359, with the ball x, left_x and right_x averaged over 2-3 independent crops per frame; board = 1 + 38*(x - right_x)/(left_x - right_x) at the ball centre row (board_contact at about y+r where read). Entry board is the median of edge-profile reads at pin_hit-1..+1, a 6 in pin-column ruler (5.49 units per column, headpin = lowest base) at f354/356/358 and a ball-diameter ruler (2r = 7.8 units from the right edge) at f354/356/358.",
- "limits": "The ball runs 10-13 px inside the right gutter edge for the last 15 frames, so every far-end board rests on that gap: a 2-3 px edge or centre error is 1-1.5 boards, and the same frame read in two crops differed by up to 4 px (f352 right edge 560/565, f354 board 5.4-6.7). The ENTRY READS DISAGREE BY ~5 BOARDS: edges and the ball ruler put the ball at 6.7-8.7, the pin ruler at 0.0-3.8, because the 7 pin columns span 60 px against 85-88 px edge to edge (0.69 vs 0.87 expected) and the ball sits beside/right of the 10-pin column, far outside the rack where the ruler extrapolates; the median (6.9) is edge-led and the uncertainty is the half spread. hooks_back=true rests on f356-358 (6.2 -> 7.95, continuing to 8.7 at f359): a rise of 2.7 from the min 5.3 at f346, but inside the pin_hit +-2 window, so it may be pin contact rather than hook; the rack-relative ball offset also shrinks 36.5 -> 29.9 px over f354-358 (about 2 boards more than perspective), so two independent measures agree the ball moves left at the very end. Without f358 the rise is 0.9 and there is no hook. The pin base row is blurred into the deck reflection (+-3 px), so pin_row_frame is +-2 frames. Loop-1 truth read 4.5 +- 2.0 (edges 3.9-4.6, pin ruler 3.0); these reads are 1.5-2.5 boards higher on edges."
+ "limits": "The ball runs 10-13 px inside the right gutter edge for the last 15 frames, so every far-end board rests on that gap: a 2-3 px edge or centre error is 1-1.5 boards, and the same frame read in two crops differed by up to 4 px (f352 right edge 560/565, f354 board 5.4-6.7). The ENTRY READS DISAGREE BY ~5 BOARDS: edges and the ball ruler put the ball at 6.7-8.7, the pin ruler at 0.0-3.8, because the 7 pin columns span 60 px against 85-88 px edge to edge (0.69 vs 0.87 expected) and the ball sits beside/right of the 10-pin column, far outside the rack where the ruler extrapolates; the median (6.9) is edge-led and the uncertainty is the half spread. hooks_back=true rests on f356-358 (6.2 -> 7.95, continuing to 8.7 at f359): a rise of 2.7 from the min 5.3 at f346, but inside the pin_hit +-2 window, so it may be pin contact rather than hook; the rack-relative ball offset also shrinks 36.5 -> 29.9 px over f354-358 (about 2 boards more than perspective), so two independent measures agree the ball moves left at the very end. Without f358 the rise is 0.9 and there is no hook. The pin base row is blurred into the deck reflection (+-3 px), so pin_row_frame is +-2 frames. Loop-1 truth read 4.5 +- 2.0 (edges 3.9-4.6, pin ruler 3.0); these reads are 1.5-2.5 boards higher on edges.",
+ "pin_row": {
+  "frame": 364,
+  "primary": "contact_row",
+  "frame_contact_row": 364,
+  "frame_centre": 362,
+  "board": 11.28,
+  "y_pin_base": 550.6,
+  "y_pin_top": 519.8,
+  "top_ref_f358": 513.5,
+  "reads": {
+   "edge_profile_f364": 11.28,
+   "edge_profile_f363": 11.39,
+   "pin_ruler_f363": 11.65
+  },
+  "bottom_minus_base": {
+   "362": 7.4,
+   "363": 4.5,
+   "364": -0.7,
+   "365": -4.7
+  },
+  "centre_minus_base": {
+   "361": 4.2,
+   "362": -0.3
+  },
+  "note": "Re-derived. Head top read by eye on zoom_351_362_488_512.jpg at 498/509.5/512.5/516/517/519 on f351/356/358/359/360/362 = 512.5-514.7 camera-compensated (513.5 used); the automatic 509/521 reads on f351/356 were the neck stripe, 11 px low. Ball bottom reaches the base at f364 (f363 +4.5), centre at f362. contact_frame - k = 362, 2 frames earlier; contact_frame 364. The ball at f365-366 is predicted, not found. Pin ruler is at f363 (columns not resolved at f364). Sheet prow_356_372.jpg.",
+  "frame_old": 350,
+  "y_pin_base_old": 549.0,
+  "note_prev": "NOT re-derived; kept 350 from the existing truth, flagged. The existing note already says the base row is smeared into the deck reflection (+-3 px) and the ball centre sits at 549-550 from f350 to f358 while the camera tilts. On zoom_358_369_500_545.jpg the ball is still in front of the standing rack at f358-360 and the first pin moves at f364, 6 frames after the cut pin_hit 358; the automatic pin-top read failed on this stem, so no corrected frame is claimed. The existing path has no point at f350 (points at 348/352 per the file), so no board is recorded here.",
+  "method": "pin-height base: headpin-column pin top (head top, not the neck stripe) + 15 in x lane px/in at the base row + 3.5 px (topmost white is the 5-pin, 20.8 in behind), per frame where detected within 6 px of the camera-compensated top, else compensated top + measured camera dy; ball centre from the path or a tracked purple component, r = geometric radius scaled by lane width; frame_contact_row = first frame with (y + r) - base <= +1 px.",
+  "est_60ft_frame_from_contact": 362,
+  "est_60ft_note": "contact_frame - k, k=2 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound",
+  "suspect": false
+ },
+ "contact_frame": 364,
+ "contact_note": "Ball in front of the rack f358-360, behind the front pins f361-363; first leaning pin at x ~455-465 on f364, pins clearly falling f365-367 (zoom_358_369_500_545.jpg). The camera pans 6-9 px per frame, so the aligned change series (6.4-8.6) does not separate it. +-1.",
+ "exit": {
+  "frame": 375,
+  "board": 21.8,
+  "x": 351.0,
+  "y": 526.4,
+  "reads": {
+   "edge_profile_f375": 21.8,
+   "edge_profile_f374": 21.27,
+   "pin_ruler_f375_registered": 23.3
+  },
+  "track": {
+   "358": [
+    510.7,
+    551.3,
+    7.43
+   ],
+   "362": [
+    477.2,
+    549.2,
+    null
+   ],
+   "366": [
+    441.2,
+    543.9,
+    null
+   ],
+   "369": [
+    411.0,
+    539.1,
+    null
+   ],
+   "372": [
+    381.1,
+    532.3,
+    null
+   ],
+   "374": [
+    361.7,
+    528.6,
+    21.27
+   ],
+   "375": [
+    351.0,
+    526.4,
+    21.8
+   ]
+  },
+  "deflection": "came in right of the pocket (board ~7.5), went through the rack moving left about 14 boards and dropped off the back of the deck behind the headpin/5-pin line",
+  "visible_through_deck": true,
+  "in_gutter": false
+ },
+ "exit_method": "Ball read by eye on 5x camera-followed gridded crops (zoom_358_369_500_545.jpg, zoom_370_381_474_530.jpg) and matched to a compact moving purple component; lane edges are the wood-to-gutter Sobel step on rows 574-615 in front of the deck in the exit frame itself (rms 0.28-0.34 px), evaluated at the ball row. Pin ruler: 7 columns 442..501 at f360 (9.83 px per 6 in, headpin 473) moved to f375 by the measured camera dx.",
+ "exit_limits": "Edge lines are extrapolated 50-90 px to the ball row. From f376 the purple component left at x ~478 (camera-compensated) is the dark pit showing through the gap the pins left, static in compensated coordinates, so it was not counted; f376 shows only a weak 114-px remnant, so exit is +-1. The pin ruler reads 1.5 boards above the edges here."
 }

@@ -518,5 +518,77 @@
  "board_convention": "1-39 from the right gutter",
  "method": "Ball centre and radius read by eye on 3x/5x gridded crops of the SOURCE frames (cv2 seek canary: MAD 1.8 at offset 0 vs 5-12 at +-1), confirmed against a purple/dark blob circle drawn on an overlay; lane edges are the wood-to-gutter-lip step found per row on 5-9 rows of THE SAME FRAME that are clear of the ball and of the pin reflections, fitted as a straight line (residual <=1 px on the far frames, <=4 px near) and evaluated at the ball row y (board) and y+r (board_contact). board = 1 + 38*(x - right_x)/(left_x - right_x); pin ruler uses the 7 pin columns (6 in apart = 5.49 units of lane/38, headpin = 20); ball ruler uses 8.5 in = 7.8 units anchored on the headpin column.",
  "limits": "Cut pin_hit_frame 457 is ~6 frames before contact (observed ~463), so the path is extended to f463 and entry.board is read at f463; the cut-frame reads are kept in entry_at_cut_pin_hit. Near the pins the edge lines are extrapolated 28-70 px from rows in front of the deck (slopes 0.27-0.38), ~0.3 board near the lane centre. f406 edges are eye reads, not the automatic step (+-2 px = +-0.3 board). The ball moves 1-2 boards per frame in the last 6 frames, so the +-2 frame contact error is +-2-4 boards of entry. The pin ruler reads 1.5-2.5 boards low while the ball is in front of the pins (cut reads 12.0/13.2 vs edges 13.5-14.7), so only the f462/f463 pin-ruler reads count for entry. Release frame 391 (+-2) unchanged from loop 1; the first path point is release+6.",
- "made_by": "loop-2 holdout truth agent, 2026-11-07"
+ "made_by": "loop-2 holdout truth agent, 2026-11-07",
+ "pin_row": {
+  "frame": 461,
+  "frame_old": 461,
+  "board": 18.33,
+  "y_pin_base": 754.7,
+  "reads": {
+   "edge_profile_f461": 18.33,
+   "edge_profile_f461_refit": 18.53,
+   "edge_profile_f460": 17.52,
+   "pin_ruler_f461": 17.7
+  },
+  "frame_contact_row": 463,
+  "frame_contact_row_note": "ball bottom y+r = 755.0 at f463 vs head base 754.2 (0.8 px, reached within noise); 761.1 vs 754.7 at f461",
+  "note": "Verified: ball centre 759.2 at f459 vs base 755.3 (not yet), 754.6 at f461 vs 754.7 (reached). Kept 461. f460 ball (313.6, 756.2) from the purple component; pin ruler = headpin column 307, 10.5 px per 6 in.",
+  "est_60ft_frame_from_contact": 465,
+  "est_60ft_note": "contact_frame - k, k=0 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound"
+ },
+ "contact_frame": 465,
+ "contact_note": "First visible pin lean f465-466 on zoom_461_472_298_748.jpg; aligned pin-region change 10.4 (f463-464) -> 18.2 (f465). Pins scatter f468-470. +-1.",
+ "exit": {
+  "frame": 471,
+  "board": 35.12,
+  "x": 277.0,
+  "y": 742.0,
+  "reads": {
+   "edge_profile_f471": 35.12,
+   "edge_profile_f470": 33.12,
+   "pin_ruler_f471": 34.49
+  },
+  "track": {
+   "461": [
+    311.4,
+    754.6,
+    18.53
+   ],
+   "466": [
+    297.8,
+    742.7,
+    null
+   ],
+   "467": [
+    295,
+    740,
+    null
+   ],
+   "468": [
+    289.6,
+    740.3,
+    null
+   ],
+   "469": [
+    284,
+    740,
+    32.08
+   ],
+   "470": [
+    281,
+    742,
+    33.12
+   ],
+   "471": [
+    277,
+    742,
+    35.12
+   ]
+  },
+  "deflection": "entered on the headpin's left (board ~20.5), deflected left through the 2-4-7 side and left the deck at its left edge by the 7-pin",
+  "visible_through_deck": true,
+  "in_gutter": false
+ },
+ "exit_method": "Ball positions read by eye on the 6x camera-followed gridded crops (zoom_461_472_298_748.jpg) and checked against moving purple HSV components; lane edges are the wood-to-gutter Sobel step on rows 781-825 in front of the deck in the same frame, straight-line fit (rms <= 0.4 px), evaluated at the ball row. Pin ruler: headpin column 307 and 10.5 px per 6 in from f462-463, shifted by the measured camera dx (-2.3 px) to f471.",
+ "exit_limits": "Edge lines are extrapolated 40-80 px to the ball row. At f471 the ball is a faint disc merging with a static purple-tinged patch left of the deck (x 262-266 in every frame from f458), so f471 is +-1 frame and its x +-3 px (~1.5 boards); f472 shows nothing separable. Ball hidden under the pins f463-465 (faint), so the track there is sparse; deck depth is not resolved (head 754.2 vs back 749.6)."
 }

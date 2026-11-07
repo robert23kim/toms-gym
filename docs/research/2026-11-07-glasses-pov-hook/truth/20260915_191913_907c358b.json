@@ -207,5 +207,71 @@
  },
  "board_convention": "1-39 from the right gutter",
  "method": "Every path point was read by eye on gridded crops of the source frame (3x ball crops, 5.5-9x far-end zooms, 1.7x near lane zoom) made with cv2 from frames decoded by CAP_PROP_POS_FRAMES (identical to sequential decode); lane edges are the wood end at the ball's own row in the same frame, with a Lab b* walker, an L-gradient snap (+-6 px) and an L profile used as aids that were checked against the crop, and at the pin rows the left edge is the end of the dark band before the 7-pin. board = 1 + 38 (x - right_x)/(left_x - right_x) at row y (left_x/right_x/board) and again at the contact row y+r (*_yr); min_board and hooks_back use the row-y column, the yr column agrees.",
- "limits": "Far end (495-510) the lane is 74-85 px wide, so 1 px is ~0.5 board; edges there are +-2-3 px (the row crosses the pin bodies and the left edge hides behind the 7-pin, read from a 4-8 px dark band) and ball centres +-1 px, so each far point is about +-1-1.5 boards and the 6.0->9.7 rise is 2-3x that. The pin ruler and the edges disagree on scale again (pins 9.8-10.25 px per 6 in imply a 70-72 px lane, edges give 74-80 px), so the pin-ruler reads sit 0.5-1 board below the edge reads; the rise from 503 to 509 shows in both (pin ruler 6.6 -> 9.5, edges 6.0 -> 9.9), but the pin ruler is not depth-free: a ball in front of the rack at a fixed off-centre board reads lower against the pin columns than it will at them (board lines converge to the VP), worth roughly 0.8-0.9 of its 2.9-board rise over the last ~4 ft; the edge reads carry no such term and still rise 2.6 (vs the 484-503 plateau) to 3.9 (vs the 503 dip). The move is not pin deflection: a ball on boards 8-10 can only clip the right side of the 3/6 pins, which would push it right, not left. Pins are still upright at 510-511 per loop 1, so the leftward move 503-509 is before contact, but a glancing 10-pin contact at 508-509 cannot be excluded from these frames. 448 and 460 edges are read on a rolled near-end view, +-5 px on a 220-510 px lane. Loop-1 'ball' points were used only as search seeds."
+ "limits": "Far end (495-510) the lane is 74-85 px wide, so 1 px is ~0.5 board; edges there are +-2-3 px (the row crosses the pin bodies and the left edge hides behind the 7-pin, read from a 4-8 px dark band) and ball centres +-1 px, so each far point is about +-1-1.5 boards and the 6.0->9.7 rise is 2-3x that. The pin ruler and the edges disagree on scale again (pins 9.8-10.25 px per 6 in imply a 70-72 px lane, edges give 74-80 px), so the pin-ruler reads sit 0.5-1 board below the edge reads; the rise from 503 to 509 shows in both (pin ruler 6.6 -> 9.5, edges 6.0 -> 9.9), but the pin ruler is not depth-free: a ball in front of the rack at a fixed off-centre board reads lower against the pin columns than it will at them (board lines converge to the VP), worth roughly 0.8-0.9 of its 2.9-board rise over the last ~4 ft; the edge reads carry no such term and still rise 2.6 (vs the 484-503 plateau) to 3.9 (vs the 503 dip). The move is not pin deflection: a ball on boards 8-10 can only clip the right side of the 3/6 pins, which would push it right, not left. Pins are still upright at 510-511 per loop 1, so the leftward move 503-509 is before contact, but a glancing 10-pin contact at 508-509 cannot be excluded from these frames. 448 and 460 edges are read on a rolled near-end view, +-5 px on a 220-510 px lane. Loop-1 'ball' points were used only as search seeds.",
+ "pin_row": {
+  "frame": 503,
+  "frame_old": 492,
+  "board": 5.97,
+  "y_pin_base": 873.9,
+  "reads": {
+   "edge_profile_f503": 5.97,
+   "edge_profile_f501": 7.49,
+   "pin_ruler_f503": 6.3
+  },
+  "frame_contact_row": 505,
+  "frame_contact_row_note": "ball bottom y+r = 871.9 at f505 vs head base ~871.2 (camera dy ~6.7 vs f509); +-2 frames",
+  "y_pin_base_method": "pin height: headpin-column pin tops ~834 at f509 (zoom_509_520_360_855.jpg) + 15 in x 1.81 px/in (lane 75 px at the base row) + 3.5 px (topmost white is the 5-pin, 20.8 in behind) = 864.5 at f509, moved by the measured camera dy (+9.4 at f503). Same rule gives 597.6-599.2 on 192142 where the width-method value is 599.0.",
+  "note": "CORRECTED 492 -> 503. The old base row 907 at f488-492 is the bottom of the pins' deck REFLECTION, not the base: on zoom_490_501_375_860.jpg the pin tops sit at ~862 at f492 so the base is ~889-893, and the ball at f492-509 is drawn in front of standing pins. Ball centre 877.5 at f501 vs base 876.4 (1 px short), 871.5 at f503 vs 873.9 (reached); f502 ties within noise. Edge reads at f503/f501 are the existing path reads (my own edge refit here failed on the right edge, rms 3.8-6.4 px); pin ruler: 7 columns 392..452 at f503, 10.0 px per 6 in, headpin column 423.",
+  "est_60ft_frame_from_contact": 511,
+  "est_60ft_note": "contact_frame - k, k=2 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound"
+ },
+ "contact_frame": 513,
+ "contact_note": "Ball overlaps the 6-pin column f509-511 with pins upright through f512; pins lean/merge from f513 (zoom_509_520_360_855.jpg). The camera pans 11-17 px per frame from f510, so motion blur hides the first lean and the aligned change series (10.9-14.4 over f511-514) does not separate it. +-1, low confidence.",
+ "exit": {
+  "frame": 518,
+  "board": 15.73,
+  "x": 256.6,
+  "y": 831.9,
+  "reads": {
+   "edge_registered_f518": 15.73,
+   "edge_registered_f517": 16.65,
+   "pin_ruler_f518": 16.7,
+   "pin_ruler_f517": 17.7
+  },
+  "track_camera_compensated_f509": {
+   "509": [
+    382.7,
+    853.5
+   ],
+   "511": [
+    374.9,
+    844.8
+   ],
+   "513": [
+    372.7,
+    845.2
+   ],
+   "515": [
+    372.2,
+    848.0
+   ],
+   "517": [
+    367.7,
+    845.6
+   ],
+   "518": [
+    369.5,
+    846.0
+   ],
+   "519": [
+    367.9,
+    843.0
+   ]
+  },
+  "deflection": "came in right of the pocket (board ~10 at the pins, missed the headpin), went straight back through the 3-6 side drifting left about 6 boards, and left the deck between the 9- and 5-pin lines",
+  "visible_through_deck": true,
+  "in_gutter": false
+ },
+ "exit_method": "Ball read by eye on 5x camera-followed gridded crops (zoom_509_520_360_855.jpg) and matched to a moving purple component; its position is mapped back to f509 with the measured camera translation. Edge read: lane edges read by eye at f509 on zoom_509_509_360_880.jpg (L 323 - 0.134 (y - 853.5), R 399.5 + 0.157 (y - 853.5), through the existing path read 323/399.5) evaluated at the compensated ball row; pin ruler: 7 columns 333..394 at f509, 10.1 px per 6 in, headpin column 363.5.",
+ "exit_limits": "The camera pans 11-17 px per frame from f510, so the lane edges cannot be fitted in the exit frame itself (fit failed on f517-519): every exit read is registered from f509 by phase-correlation translation, which ignores rotation and blur. The pin ruler and the edges disagree by about 1 board here (pin spread implies a 70-72 px lane vs 74 px from the edges). The ball darkens at f519 and is a dark unresolved blob at f520 (pit), so the exit frame is +-1; the left edge at the deck is read by eye (+-3 px, ~1.5 boards)."
 }

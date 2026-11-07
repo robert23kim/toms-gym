@@ -275,5 +275,35 @@
  },
  "board_convention": "1-39 from the right gutter",
  "method": "Every path point was read by eye on gridded crops of the source frame (3x ball crop, 4x edge/gutter zooms, 8x rack zoom) made with cv2 from frames decoded by CAP_PROP_POS_FRAMES (checked identical to sequential decode); the left and right lane edges are the wood end at the ball's own row in the same frame, with a Lab b* walker used only to place candidate ticks that were then confirmed or overridden by eye. board = 1 + 38 (x - right_x)/(left_x - right_x) at row y (fields left_x/right_x/board) and again at the contact row y+r (left_x_yr/right_x_yr/board_yr); min_board and hooks_back use the row-y column.",
- "limits": "Gutter ball: the ball runs right from board ~12.5 at 418 to the edge at 441 and rides the right gutter to the deck, so the entry board is a gutter position (-2 to -5) and the pin ruler, built for a ball among the pins, does not apply cleanly (one read is physically impossible, one is a guess on blur). From 455 every frame has heavy diagonal motion blur (head turning right), so far-end ball centres are +-4-5 px and edges +-4 px, about +-1.5-2 boards on a 100 px lane; 464+ is unreadable. The right edge beside the ball (436-441) had to be read as a line above and below the ball because the ball covers it. The near-end rows are rolled ~8 deg so a horizontal row is not a perpendicular cut across the lane (sub-board effect). Release 412 confirmed on rel_411_413.jpg (hand over the ball at 411, finger sliver at 412, free at 413)."
+ "limits": "Gutter ball: the ball runs right from board ~12.5 at 418 to the edge at 441 and rides the right gutter to the deck, so the entry board is a gutter position (-2 to -5) and the pin ruler, built for a ball among the pins, does not apply cleanly (one read is physically impossible, one is a guess on blur). From 455 every frame has heavy diagonal motion blur (head turning right), so far-end ball centres are +-4-5 px and edges +-4 px, about +-1.5-2 boards on a 100 px lane; 464+ is unreadable. The right edge beside the ball (436-441) had to be read as a line above and below the ball because the ball covers it. The near-end rows are rolled ~8 deg so a horizontal row is not a perpendicular cut across the lane (sub-board effect). Release 412 confirmed on rel_411_413.jpg (hand over the ball at 411, finger sliver at 412, free at 413).",
+ "pin_row": {
+  "frame": 464,
+  "frame_old": null,
+  "board": -2.69,
+  "y_pin_base": 992.0,
+  "in_gutter": true,
+  "observed": false,
+  "reads": {
+   "edge_profile_f463": -2.69,
+   "edge_profile_f462": -2.1,
+   "edge_profile_f461": -3.44
+  },
+  "frame_contact_row": null,
+  "note": "Extrapolated, not observed. The ball rolls in the right gutter; at f463 its centre (710, 1012) is still 20 px short of the old base row 992 and ~7 px short of the pin-height base (~1005: pin tops ~965 + 15 in x 2.48 px/in + 3.5 px), moving 10-24 px per frame up the image, so it passes the pin-row depth at f464, where the camera whips and the ball cannot be found (sheet_457_464.jpg, wide_464_500.jpg). Board is the last gutter read (f463); no pin ruler, the ball is outside the pin columns."
+ },
+ "contact_frame": null,
+ "contact_note": "Gutter ball. The camera whips off the lane from f464 and the deck leaves the view by f472 (wide_464_500.jpg), so no pin motion can be seen; none expected.",
+ "exit": {
+  "frame": 463,
+  "board": null,
+  "x": 710.0,
+  "y": 1012.0,
+  "reads": {},
+  "deflection": "no deck contact: the ball stays in the right gutter to the deck front and is lost in the camera whip",
+  "visible_through_deck": false,
+  "in_gutter": true,
+  "null_reason": "never on the pin deck: last seen in the right gutter at the deck front (board -2.69 at f463); from f464 the camera whips away"
+ },
+ "exit_method": "Gutter position read on the camera-followed gridded crops (sheet_457_464.jpg) against the existing path reads; frames after f463 checked on downscaled full frames (wide_464_500.jpg).",
+ "exit_limits": "Phase-correlation camera shifts after f463 are meaningless (155, -89, 114, 180 px jumps), so no positioned crop exists after f463; frame 464 for the pin-row depth is an extrapolation of the ball's image speed, not an observation."
 }

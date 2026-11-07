@@ -336,5 +336,75 @@
  "board_convention": "1-39 from the right gutter",
  "board_formula": "board = 1 + 38*(x - right_x)/(left_x - right_x); 'board' uses edges at the ball centre row y (as prescribed), 'board_contact' at the contact row y+r",
  "method": "Each path point is one source frame: the ball disc read by eye on a 3x-10x gridded crop, and in that same frame the left and right wood edges from per-row grey-gradient snaps on the rows above and below the ball (ball rows excluded), fitted with a straight line per edge and evaluated at the ball centre row y and contact row y+r; no quad is carried between frames. Entry = median of six named reads: contact-row edge profile at pin_hit-1/0/+1, the 7-column pin ruler (physical boards 36.5..3.5) at 434 and 436, and the 8.5 in = 7.8 board ball-diameter ruler from the right edge at 436.",
- "limits": "hooks_back is MARGINAL. The literal rule gives true (centre-row min 5.75 at 430, rise 3.19; contact-row rise 2.24), but 430 is an edge-fit outlier: its right edge 508.5 is ~1.8 px left of the 429/431 interpolation (510.3; fit rms 0.87, slope 0.57 vs 0.38-0.43 elsewhere); with it corrected the min is ~6.4 at 431 and the rise ~2.5 (centre) / ~2.05 (contact). Averaging 423-431 vs 433-437 gives +1.9 (centre) / +1.45 (contact). On 436-438 the ball's right rim abuts a white pin at x~480-487, so the eye centre may sit 1-2 px left (+0.5-0.9 board); robust rise is 1.5-2.5 boards. The rise (433-437) coincides with the ball reaching the right-side pins (cuts.json: level with front pin bases 434-436, contact ~437-440), so pin deflection cannot be excluded. pin_row_frame 429 uses the headpin (lowest) base row, y 665; the right-side pin bases are reached ~434-436. Entry has two clusters: edges + ball ruler 9.1-10.5, physical pin ruler 5.1-5.9 (the same ~4-board split loop 1 hit: 7 pin columns span 62 px = 1.73 px/in, while wood width 82.7 px and ball 17 px give ~2.0 px/in). The task text's '7-pin 33 / 10-pin 7' mapping would give 8.27 (434) and 8.9 (436); not used as reads. Far-end edges +-1 px (line fits rms 0.1-0.9 px) on an ~85 px lane = +-0.5 board; ball centres +-1-2 px. Release+6 (383) right-edge fit rms 1.48 px on a 585 px lane. Contact row is the geometrically correct read; 'board' keeps the prescribed centre row (0.9-1.5 board lower at the far end)."
+ "limits": "hooks_back is MARGINAL. The literal rule gives true (centre-row min 5.75 at 430, rise 3.19; contact-row rise 2.24), but 430 is an edge-fit outlier: its right edge 508.5 is ~1.8 px left of the 429/431 interpolation (510.3; fit rms 0.87, slope 0.57 vs 0.38-0.43 elsewhere); with it corrected the min is ~6.4 at 431 and the rise ~2.5 (centre) / ~2.05 (contact). Averaging 423-431 vs 433-437 gives +1.9 (centre) / +1.45 (contact). On 436-438 the ball's right rim abuts a white pin at x~480-487, so the eye centre may sit 1-2 px left (+0.5-0.9 board); robust rise is 1.5-2.5 boards. The rise (433-437) coincides with the ball reaching the right-side pins (cuts.json: level with front pin bases 434-436, contact ~437-440), so pin deflection cannot be excluded. pin_row_frame 429 uses the headpin (lowest) base row, y 665; the right-side pin bases are reached ~434-436. Entry has two clusters: edges + ball ruler 9.1-10.5, physical pin ruler 5.1-5.9 (the same ~4-board split loop 1 hit: 7 pin columns span 62 px = 1.73 px/in, while wood width 82.7 px and ball 17 px give ~2.0 px/in). The task text's '7-pin 33 / 10-pin 7' mapping would give 8.27 (434) and 8.9 (436); not used as reads. Far-end edges +-1 px (line fits rms 0.1-0.9 px) on an ~85 px lane = +-0.5 board; ball centres +-1-2 px. Release+6 (383) right-edge fit rms 1.48 px on a 585 px lane. Contact row is the geometrically correct read; 'board' keeps the prescribed centre row (0.9-1.5 board lower at the far end).",
+ "pin_row": {
+  "frame": 436,
+  "frame_old": 429,
+  "board": 8.09,
+  "y_pin_base": 673.9,
+  "reads": {
+   "edge_profile_f436": 8.09,
+   "edge_profile_f435": 8.53,
+   "edge_profile_f437_refit": 8.57,
+   "pin_ruler_f436": 5.99
+  },
+  "frame_contact_row": 440,
+  "frame_contact_row_note": "ball bottom y+r = 685.4 at f440 vs base ~686.2 (camera dy +9.2); 684.2 vs 683.3 at f439 (0.9 px short)",
+  "y_pin_base_method": "pin height: pin tops ~644 at f437 (zoom_435_446_452_665.jpg) + 15 in x 2.05 px/in (lane 85 px at the base row, edge fit rms 0.28) + 3.5 px = 677-678 at f437, moved by the measured camera dy (-3.1 at f436).",
+  "note": "CORRECTED 429 -> 436. The old base row 665 at f429 sits ~15 px under the pin-height base (camera dy ~-25 at f429 puts the base near 652), i.e. the bottom of the deck reflection, the same error as 191913. Ball centre 668.6 at f434 vs 667.0 (not yet), 670 at f435 vs 670.2 (tie), 671.5 at f436 vs 673.9 (reached). Pin ruler reads ~2 boards low while the ball is in front of the rack (RULES 32).",
+  "est_60ft_frame_from_contact": 444,
+  "est_60ft_note": "contact_frame - k, k=1 = rack row of the first pin within 6.1 units of the ball's board (about 1 frame per row); first visible pin motion lags the touch, so this is an upper bound"
+ },
+ "contact_frame": 445,
+ "contact_note": "Ball is among the pins from f440 (seen through the gaps f441-444); first displaced pin around x 405-415 at f445, pins tumbling f447-455 under a fast camera pan. Aligned pin-region change 5.7 (f444) -> 13.9 (f445) -> 18.2 (f446). +-1.",
+ "exit": {
+  "frame": 453,
+  "board": 27.72,
+  "x": 336.3,
+  "y": 688.1,
+  "reads": {
+   "edge_registered_f453": 27.72,
+   "edge_registered_f452": 26.81,
+   "pin_ruler_f453": 29.07,
+   "pin_ruler_f452": 28.19,
+   "edge_direct_f453_rejected": 24.24
+  },
+  "track_camera_compensated_f437": {
+   "437": [
+    469.1,
+    673.0,
+    8.57
+   ],
+   "441": [
+    463.8,
+    669.7,
+    10.8
+   ],
+   "445": [
+    454.3,
+    661.6,
+    16.0
+   ],
+   "449": [
+    444.3,
+    655.5,
+    21.5
+   ],
+   "452": [
+    432.1,
+    654.8,
+    26.81
+   ],
+   "453": [
+    430.5,
+    653.1,
+    27.72
+   ]
+  },
+  "deflection": "came in right of the pocket (board ~9), went through the rack moving steadily left about 1.5 boards per frame, crossing the headpin line around f449, and left the deck on the 8-pin side",
+  "visible_through_deck": true,
+  "in_gutter": false
+ },
+ "exit_method": "Ball read by eye on 5x camera-followed gridded crops (zoom_435_446_452_665.jpg, zoom_446_457_445_658.jpg) and matched to a moving purple component (a second component that moves exactly with the camera, at x ~489 compensated, is static and was ignored). Positions are mapped to f437 by the measured camera translation and read against the f437 lane edges (rows 705-745, rms 0.28 px) and the f437 pin columns (415..477, 10.0 px per 6 in, headpin 447); the registration predicts the standing-pin columns at f449/f452 within 0.4-2 px.",
+ "exit_limits": "The camera pans 6-15 px per frame through the exit, so edges fitted in f452-453 themselves are blurred (rms 2-2.7 px) and put the left edge 16 px outside the 7-pin column; that direct read (24.2) is kept but rejected. Registered reads ignore rotation; the ball's compensated row climbs 20 px from f437 to f453, more than the deck depth, so its row (and the lane width there) is uncertain: edge vs pin ruler differ by 1.4 boards. Exit frame +-1: the ball merges with the dark pit at f454-457."
 }

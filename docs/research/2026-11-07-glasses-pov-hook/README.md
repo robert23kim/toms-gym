@@ -85,3 +85,6 @@ Title 0-2 s; holdout first: 191253 2.0-4.7, 191820 -7.1 (labelled GUTTER BALL), 
 4. Rebuild the showcase from the fix-pass drawing to contact.
 5. New glasses session (>= 3 hookers, 2 straight), truth frozen before any run; add a second instrument (pin-ruler-only read).
 6. Port lane-gated-ball + composition edge lane into `exp/r2-glasses-pov` with an on-demand SAM candidate source.
+
+## Follow-up pass: breakpoint depth and the pin-deck exit (same day)
+See `work/exit_pass_notes.md` (Round 2 and Pass 2 sections), `work/truth_exit/NOTES.md`, `results/final_v3.json`, `results/events_notes.md`. The hand-cut pin_hit is early on every throw (3-19 frames); 60 ft is now anchored at a self-detected headpin-row crossing, the ball is followed through the deck, and the showcase marks break, entry and exit (last-seen board when the ball goes behind pins). Breakpoints on the hookers moved from 43-48 ft to 39.7-42 ft. The pin-motion clock as specified (4x baseline) does not fire on real pin motion (1.5-2x) and is the next instrument to build.

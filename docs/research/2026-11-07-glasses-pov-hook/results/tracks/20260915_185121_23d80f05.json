@@ -447,6 +447,78 @@
    "r": 10.8,
    "conf": 1.0,
    "src": "base+refine"
+  },
+  {
+   "f": 361,
+   "x": 243.0,
+   "y": 516.7,
+   "r": 10.8,
+   "conf": 1.0,
+   "src": "pred+refine"
+  },
+  {
+   "f": 362,
+   "x": 247.9,
+   "y": 512.6,
+   "r": 10.8,
+   "conf": 1.0,
+   "src": "pred+refine"
+  },
+  {
+   "f": 363,
+   "x": 251.6,
+   "y": 508.0,
+   "r": 10.8,
+   "conf": 0.2,
+   "src": "coast"
+  },
+  {
+   "f": 364,
+   "x": 256.9,
+   "y": 503.0,
+   "r": 10.8,
+   "conf": 1.0,
+   "src": "pred+refine"
+  },
+  {
+   "f": 365,
+   "x": 261.8,
+   "y": 498.0,
+   "r": 10.8,
+   "conf": 0.2,
+   "src": "coast"
+  },
+  {
+   "f": 366,
+   "x": 266.8,
+   "y": 494.6,
+   "r": 10.8,
+   "conf": 1.0,
+   "src": "pred+refine"
+  },
+  {
+   "f": 367,
+   "x": 272.6,
+   "y": 490.0,
+   "r": 10.8,
+   "conf": 0.2,
+   "src": "coast"
+  },
+  {
+   "f": 368,
+   "x": 278.1,
+   "y": 485.7,
+   "r": 10.8,
+   "conf": 0.2,
+   "src": "coast"
+  },
+  {
+   "f": 369,
+   "x": 283.2,
+   "y": 481.7,
+   "r": 10.8,
+   "conf": 0.2,
+   "src": "coast"
   }
  ],
  "lane": {
@@ -1549,6 +1621,186 @@
    ],
    "fl_is_foul_line": false,
    "src": "edge"
+  },
+  "361": {
+   "fl_l": [
+    0.3,
+    927.0
+   ],
+   "fl_r": [
+    360.1,
+    927.0
+   ],
+   "pd_l": [
+    175.8,
+    540.0
+   ],
+   "pd_r": [
+    271.2,
+    540.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "362": {
+   "fl_l": [
+    0.3,
+    946.0
+   ],
+   "fl_r": [
+    374.7,
+    946.0
+   ],
+   "pd_l": [
+    180.6,
+    540.0
+   ],
+   "pd_r": [
+    278.2,
+    540.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "363": {
+   "fl_l": [
+    0.1,
+    966.0
+   ],
+   "fl_r": [
+    389.7,
+    966.0
+   ],
+   "pd_l": [
+    186.5,
+    536.0
+   ],
+   "pd_r": [
+    283.8,
+    536.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "364": {
+   "fl_l": [
+    0.3,
+    986.0
+   ],
+   "fl_r": [
+    405.6,
+    986.0
+   ],
+   "pd_l": [
+    193.6,
+    530.0
+   ],
+   "pd_r": [
+    289.2,
+    530.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "365": {
+   "fl_l": [
+    0.4,
+    1006.0
+   ],
+   "fl_r": [
+    421.3,
+    1006.0
+   ],
+   "pd_l": [
+    198.7,
+    528.0
+   ],
+   "pd_r": [
+    295.3,
+    528.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "366": {
+   "fl_l": [
+    0.3,
+    1028.0
+   ],
+   "fl_r": [
+    438.0,
+    1028.0
+   ],
+   "pd_l": [
+    205.3,
+    524.0
+   ],
+   "pd_r": [
+    301.4,
+    524.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "367": {
+   "fl_l": [
+    0.1,
+    1051.0
+   ],
+   "fl_r": [
+    454.7,
+    1051.0
+   ],
+   "pd_l": [
+    211.4,
+    520.0
+   ],
+   "pd_r": [
+    307.1,
+    520.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "368": {
+   "fl_l": [
+    0.3,
+    1073.0
+   ],
+   "fl_r": [
+    470.9,
+    1073.0
+   ],
+   "pd_l": [
+    217.7,
+    516.0
+   ],
+   "pd_r": [
+    312.8,
+    516.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "369": {
+   "fl_l": [
+    0.0,
+    1097.0
+   ],
+   "fl_r": [
+    487.4,
+    1097.0
+   ],
+   "pd_l": [
+    225.7,
+    506.0
+   ],
+   "pd_r": [
+    316.9,
+    506.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
   }
  },
  "boards": {
@@ -1606,7 +1858,16 @@
   "357": 11.36,
   "358": 11.54,
   "359": 11.56,
-  "360": 11.55
+  "360": 11.56,
+  "361": 11.92,
+  "362": 12.45,
+  "363": 13.29,
+  "364": 13.5,
+  "365": 13.75,
+  "366": 14.18,
+  "367": 14.28,
+  "368": 14.28,
+  "369": 14.41
  },
  "boards_raw": {
   "306": 16.89,
@@ -1663,7 +1924,16 @@
   "357": 11.36,
   "358": 11.8,
   "359": 11.54,
-  "360": 11.56
+  "360": 11.56,
+  "361": 11.92,
+  "362": 12.45,
+  "363": 13.29,
+  "364": 13.5,
+  "365": 13.75,
+  "366": 14.29,
+  "367": 14.18,
+  "368": 14.28,
+  "369": 14.54
  },
  "boards_contact": {
   "306": 17.62,
@@ -1720,7 +1990,16 @@
   "357": 11.43,
   "358": 11.84,
   "359": 11.64,
-  "360": 11.7
+  "360": 11.7,
+  "361": 12.08,
+  "362": 12.61,
+  "363": 13.41,
+  "364": 13.65,
+  "365": 13.93,
+  "366": 14.45,
+  "367": 14.4,
+  "368": 14.52,
+  "369": 14.79
  },
  "final_board": 11.1,
  "lane_top_down": [
@@ -1730,7 +2009,8 @@
    "ft": 15.19,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 15.25
+   "ft_cv": 15.25,
+   "ft_cv_cut": 15.25
   },
   {
    "f": 313,
@@ -1738,7 +2018,8 @@
    "ft": 15.79,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 16.27
+   "ft_cv": 16.27,
+   "ft_cv_cut": 16.27
   },
   {
    "f": 314,
@@ -1746,7 +2027,8 @@
    "ft": 17.16,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 17.29
+   "ft_cv": 17.29,
+   "ft_cv_cut": 17.29
   },
   {
    "f": 315,
@@ -1754,7 +2036,8 @@
    "ft": 16.94,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 18.31
+   "ft_cv": 18.31,
+   "ft_cv_cut": 18.31
   },
   {
    "f": 316,
@@ -1762,7 +2045,8 @@
    "ft": 19.65,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 19.32
+   "ft_cv": 19.32,
+   "ft_cv_cut": 19.32
   },
   {
    "f": 317,
@@ -1770,7 +2054,8 @@
    "ft": 19.86,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 20.34
+   "ft_cv": 20.34,
+   "ft_cv_cut": 20.34
   },
   {
    "f": 318,
@@ -1778,7 +2063,8 @@
    "ft": 21.76,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 21.36
+   "ft_cv": 21.36,
+   "ft_cv_cut": 21.36
   },
   {
    "f": 319,
@@ -1786,7 +2072,8 @@
    "ft": 23.65,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 22.37
+   "ft_cv": 22.37,
+   "ft_cv_cut": 22.37
   },
   {
    "f": 320,
@@ -1794,7 +2081,8 @@
    "ft": 24.58,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 23.39
+   "ft_cv": 23.39,
+   "ft_cv_cut": 23.39
   },
   {
    "f": 321,
@@ -1802,7 +2090,8 @@
    "ft": 25.64,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 24.41
+   "ft_cv": 24.41,
+   "ft_cv_cut": 24.41
   },
   {
    "f": 322,
@@ -1810,7 +2099,8 @@
    "ft": 26.98,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 25.42
+   "ft_cv": 25.42,
+   "ft_cv_cut": 25.42
   },
   {
    "f": 323,
@@ -1818,7 +2108,8 @@
    "ft": 27.83,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 26.44
+   "ft_cv": 26.44,
+   "ft_cv_cut": 26.44
   },
   {
    "f": 324,
@@ -1826,7 +2117,8 @@
    "ft": 28.63,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 27.46
+   "ft_cv": 27.46,
+   "ft_cv_cut": 27.46
   },
   {
    "f": 325,
@@ -1834,7 +2126,8 @@
    "ft": 29.56,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 28.47
+   "ft_cv": 28.47,
+   "ft_cv_cut": 28.47
   },
   {
    "f": 326,
@@ -1842,7 +2135,8 @@
    "ft": 30.77,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 29.49
+   "ft_cv": 29.49,
+   "ft_cv_cut": 29.49
   },
   {
    "f": 327,
@@ -1850,7 +2144,8 @@
    "ft": 31.28,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 30.51
+   "ft_cv": 30.51,
+   "ft_cv_cut": 30.51
   },
   {
    "f": 328,
@@ -1858,7 +2153,8 @@
    "ft": 42.79,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 31.53
+   "ft_cv": 31.53,
+   "ft_cv_cut": 31.53
   },
   {
    "f": 329,
@@ -1866,7 +2162,8 @@
    "ft": 41.15,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 32.54
+   "ft_cv": 32.54,
+   "ft_cv_cut": 32.54
   },
   {
    "f": 330,
@@ -1874,7 +2171,8 @@
    "ft": 34.89,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 33.56
+   "ft_cv": 33.56,
+   "ft_cv_cut": 33.56
   },
   {
    "f": 331,
@@ -1882,7 +2180,8 @@
    "ft": 35.3,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 34.58
+   "ft_cv": 34.58,
+   "ft_cv_cut": 34.58
   },
   {
    "f": 332,
@@ -1890,7 +2189,8 @@
    "ft": 45.11,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 35.59
+   "ft_cv": 35.59,
+   "ft_cv_cut": 35.59
   },
   {
    "f": 333,
@@ -1898,7 +2198,8 @@
    "ft": 45.29,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 36.61
+   "ft_cv": 36.61,
+   "ft_cv_cut": 36.61
   },
   {
    "f": 334,
@@ -1906,7 +2207,8 @@
    "ft": 45.43,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 37.63
+   "ft_cv": 37.63,
+   "ft_cv_cut": 37.63
   },
   {
    "f": 335,
@@ -1914,7 +2216,8 @@
    "ft": 46.06,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 38.64
+   "ft_cv": 38.64,
+   "ft_cv_cut": 38.64
   },
   {
    "f": 336,
@@ -1922,7 +2225,8 @@
    "ft": 46.64,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 39.66
+   "ft_cv": 39.66,
+   "ft_cv_cut": 39.66
   },
   {
    "f": 337,
@@ -1930,7 +2234,8 @@
    "ft": 47.0,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 40.68
+   "ft_cv": 40.68,
+   "ft_cv_cut": 40.68
   },
   {
    "f": 338,
@@ -1938,7 +2243,8 @@
    "ft": 48.08,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 41.69
+   "ft_cv": 41.69,
+   "ft_cv_cut": 41.69
   },
   {
    "f": 339,
@@ -1946,7 +2252,8 @@
    "ft": 49.53,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 42.71
+   "ft_cv": 42.71,
+   "ft_cv_cut": 42.71
   },
   {
    "f": 340,
@@ -1954,7 +2261,8 @@
    "ft": 49.09,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 43.73
+   "ft_cv": 43.73,
+   "ft_cv_cut": 43.73
   },
   {
    "f": 341,
@@ -1962,7 +2270,8 @@
    "ft": 49.56,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 44.75
+   "ft_cv": 44.75,
+   "ft_cv_cut": 44.75
   },
   {
    "f": 342,
@@ -1970,7 +2279,8 @@
    "ft": 49.56,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 45.76
+   "ft_cv": 45.76,
+   "ft_cv_cut": 45.76
   },
   {
    "f": 343,
@@ -1978,7 +2288,8 @@
    "ft": 50.86,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 46.78
+   "ft_cv": 46.78,
+   "ft_cv_cut": 46.78
   },
   {
    "f": 344,
@@ -1986,7 +2297,8 @@
    "ft": 50.99,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 47.8
+   "ft_cv": 47.8,
+   "ft_cv_cut": 47.8
   },
   {
    "f": 345,
@@ -1994,7 +2306,8 @@
    "ft": 51.15,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 48.81
+   "ft_cv": 48.81,
+   "ft_cv_cut": 48.81
   },
   {
    "f": 346,
@@ -2002,7 +2315,8 @@
    "ft": 51.35,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 49.83
+   "ft_cv": 49.83,
+   "ft_cv_cut": 49.83
   },
   {
    "f": 347,
@@ -2010,7 +2324,8 @@
    "ft": 52.2,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 50.85
+   "ft_cv": 50.85,
+   "ft_cv_cut": 50.85
   },
   {
    "f": 348,
@@ -2018,7 +2333,8 @@
    "ft": 52.95,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 51.86
+   "ft_cv": 51.86,
+   "ft_cv_cut": 51.86
   },
   {
    "f": 349,
@@ -2026,7 +2342,8 @@
    "ft": 55.79,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 52.88
+   "ft_cv": 52.88,
+   "ft_cv_cut": 52.88
   },
   {
    "f": 350,
@@ -2034,7 +2351,8 @@
    "ft": 56.95,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 53.9
+   "ft_cv": 53.9,
+   "ft_cv_cut": 53.9
   },
   {
    "f": 351,
@@ -2042,7 +2360,8 @@
    "ft": 56.66,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 54.92
+   "ft_cv": 54.92,
+   "ft_cv_cut": 54.92
   },
   {
    "f": 352,
@@ -2050,7 +2369,8 @@
    "ft": 56.11,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 55.93
+   "ft_cv": 55.93,
+   "ft_cv_cut": 55.93
   },
   {
    "f": 353,
@@ -2058,7 +2378,8 @@
    "ft": 58.3,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 56.95
+   "ft_cv": 56.95,
+   "ft_cv_cut": 56.95
   },
   {
    "f": 354,
@@ -2066,7 +2387,8 @@
    "ft": 58.52,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 57.97
+   "ft_cv": 57.97,
+   "ft_cv_cut": 57.97
   },
   {
    "f": 355,
@@ -2074,7 +2396,8 @@
    "ft": 60.0,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 58.98
+   "ft_cv": 58.98,
+   "ft_cv_cut": 58.98
   },
   {
    "f": 356,
@@ -2082,7 +2405,8 @@
    "ft": 59.79,
    "on_lane": true,
    "zone": "lane",
-   "ft_cv": 60.0
+   "ft_cv": 60.0,
+   "ft_cv_cut": 60.0
   },
   {
    "f": 357,
@@ -2090,7 +2414,8 @@
    "ft": 60.91,
    "on_lane": false,
    "zone": "past_pins",
-   "ft_cv": 61.02
+   "ft_cv": 61.02,
+   "ft_cv_cut": 61.02
   },
   {
    "f": 358,
@@ -2098,7 +2423,8 @@
    "ft": 62.79,
    "on_lane": false,
    "zone": "past_pins",
-   "ft_cv": 62.03
+   "ft_cv": 62.03,
+   "ft_cv_cut": 62.03
   },
   {
    "f": 359,
@@ -2106,15 +2432,98 @@
    "ft": 62.54,
    "on_lane": false,
    "zone": "past_pins",
-   "ft_cv": 63.05
+   "ft_cv": 63.05,
+   "ft_cv_cut": 63.05
   },
   {
    "f": 360,
-   "board": 11.55,
+   "board": 11.56,
    "ft": 61.78,
    "on_lane": false,
    "zone": "past_pins",
-   "ft_cv": 64.07
+   "ft_cv": 64.07,
+   "ft_cv_cut": 64.07
+  },
+  {
+   "f": 361,
+   "board": 11.92,
+   "ft": 63.15,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 65.08,
+   "ft_cv_cut": 65.08
+  },
+  {
+   "f": 362,
+   "board": 12.45,
+   "ft": 65.22,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 66.1,
+   "ft_cv_cut": 66.1
+  },
+  {
+   "f": 363,
+   "board": 13.29,
+   "ft": 65.59,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 67.12,
+   "ft_cv_cut": 67.12
+  },
+  {
+   "f": 364,
+   "board": 13.5,
+   "ft": 65.26,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 68.14,
+   "ft_cv_cut": 68.14
+  },
+  {
+   "f": 365,
+   "board": 13.75,
+   "ft": 66.95,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 69.15,
+   "ft_cv_cut": 69.15
+  },
+  {
+   "f": 366,
+   "board": 14.18,
+   "ft": 66.64,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 70.17,
+   "ft_cv_cut": 70.17
+  },
+  {
+   "f": 367,
+   "board": 14.28,
+   "ft": 67.05,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 71.19,
+   "ft_cv_cut": 71.19
+  },
+  {
+   "f": 368,
+   "board": 14.28,
+   "ft": 67.32,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 72.2,
+   "ft_cv_cut": 72.2
+  },
+  {
+   "f": 369,
+   "board": 14.41,
+   "ft": 64.13,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 73.22,
+   "ft_cv_cut": 73.22
   }
  ],
  "lane_top_down_model": {
@@ -2130,10 +2539,288 @@
   "note": "ft = a * s + b with s rescaled so the ball at pin_hit reads 60 ft (a = a_fit / s_pin)"
  },
  "final_board_pre_fixpass": 11.1,
+ "boards_clean_raw": {
+  "306": 16.89,
+  "307": 16.68,
+  "308": 16.17,
+  "309": 15.61,
+  "310": 15.35,
+  "311": 15.19,
+  "312": 15.19,
+  "313": 15.14,
+  "314": 14.96,
+  "315": 14.79,
+  "316": 14.43,
+  "317": 14.43,
+  "318": 14.27,
+  "319": 13.98,
+  "320": 13.92,
+  "321": 13.73,
+  "322": 13.57,
+  "323": 13.51,
+  "324": 13.28,
+  "325": 13.05,
+  "326": 12.89,
+  "327": 12.9,
+  "328": 13.0,
+  "329": 14.39,
+  "330": 12.98,
+  "331": 12.56,
+  "332": 13.33,
+  "333": 13.41,
+  "334": 13.52,
+  "335": 13.06,
+  "336": 12.82,
+  "337": 12.5,
+  "338": 12.42,
+  "339": 10.42,
+  "340": 12.04,
+  "341": 11.92,
+  "342": 11.38,
+  "343": 10.88,
+  "344": 11.0,
+  "345": 10.72,
+  "346": 10.94,
+  "347": 10.2,
+  "348": 10.94,
+  "349": 10.13,
+  "350": 10.15,
+  "351": 10.38,
+  "352": 10.85,
+  "353": 11.49,
+  "354": 11.09,
+  "355": 10.82,
+  "356": 11.14,
+  "357": 11.36,
+  "358": 11.8,
+  "359": 11.54,
+  "360": 11.56,
+  "361": 11.92,
+  "362": 12.45,
+  "363": 13.29,
+  "364": 13.5,
+  "365": 13.75,
+  "366": 14.29,
+  "367": 14.18,
+  "368": 14.28,
+  "369": 14.54
+ },
  "series_rejected": {},
- "series_rule": "raw boards on frames >= pin_hit-2 more than 6.0 boards from a Theil-Sen line over raw pin_hit-10..pin_hit-3 are dropped from boards and lane_top_down (kept in boards_raw); boards = 3-frame median of the cleaned raw; final_board = composition fit_path entry (Theil-Sen over pin_hit-10..pin_hit at pin_hit) on the cleaned series",
+ "series_rule": "jump rule: raw boards on frames >= cut pin_hit-2 are walked in order against the last kept raw board (seed = median of the 3 raw boards before); a frame more than 6.0 + 1.0 x (frames skipped) boards from it is dropped from boards and lane_top_down (kept in boards_raw); boards = 3-frame median of the cleaned raw; final_board = composition fit_path entry (Theil-Sen over cut pin_hit-10..pin_hit at cut pin_hit) on the cleaned series",
+ "base_rows": {
+  "312": 94.0,
+  "313": 155.0,
+  "314": 212.0,
+  "315": 258.0,
+  "316": 305.0,
+  "317": 340.0,
+  "318": 374.0,
+  "319": 401.0,
+  "320": 421.0,
+  "321": 434.5,
+  "322": 444.0,
+  "323": 452.5,
+  "324": 460.5,
+  "325": 468.0,
+  "326": 473.5,
+  "327": 477.5,
+  "328": 481.5,
+  "329": 484.0,
+  "330": 488.0,
+  "331": 491.0,
+  "332": 496.0,
+  "333": 498.5,
+  "334": 500.0,
+  "335": 502.5,
+  "336": 506.0,
+  "337": 508.5,
+  "338": 513.0,
+  "339": 516.5,
+  "340": 519.0,
+  "341": 521.5,
+  "342": 522.5,
+  "343": 527.0,
+  "344": 528.0,
+  "345": 528.5,
+  "346": 552.5,
+  "347": 530.0,
+  "348": 529.5,
+  "349": 532.0,
+  "350": 531.5,
+  "351": 529.5,
+  "352": 527.0,
+  "353": 527.5,
+  "354": 526.0,
+  "355": 525.0,
+  "356": 522.5,
+  "357": 521.5,
+  "358": 519.5,
+  "359": 518.0,
+  "360": 514.0,
+  "361": 511.5,
+  "362": 510.0,
+  "363": 506.5,
+  "364": 501.5,
+  "365": 499.0,
+  "366": 495.0,
+  "367": 491.0,
+  "368": 487.5,
+  "369": 503.0
+ },
+ "pin_motion": {
+  "stat": {
+   "346": 5.812,
+   "347": 8.822,
+   "348": 8.149,
+   "349": 9.683,
+   "350": 10.692,
+   "351": 7.864,
+   "352": 8.57,
+   "353": 11.501,
+   "354": 9.88,
+   "355": 11.052,
+   "356": 12.176,
+   "357": 10.067,
+   "358": 9.847,
+   "359": 11.585,
+   "360": 21.417,
+   "361": 14.006,
+   "362": 9.112,
+   "363": 21.477,
+   "364": 13.438,
+   "365": 9.39,
+   "366": 10.426,
+   "367": 7.024,
+   "368": 10.194,
+   "369": 7.77,
+   "370": 11.713,
+   "371": 19.061,
+   "372": 14.55,
+   "373": 13.774,
+   "374": 11.228,
+   "375": 15.575,
+   "376": 7.048
+  },
+  "baseline_n": 10,
+  "threshold": 37.01,
+  "why": "no two consecutive frames above the threshold"
+ },
+ "deck_decoy_from": null,
+ "deck_motion_px": {
+  "355": 6.73,
+  "356": 4.96,
+  "357": 5.69,
+  "358": 3.73,
+  "359": 5.45,
+  "360": 3.67,
+  "361": 4.93
+ },
+ "cut_last_frame": 376,
  "release_frame": 297,
  "pin_hit_frame": 356,
+ "pin_row_frame_est": 356,
+ "events": {
+  "pin_row_frame_est": 356,
+  "deck_decoy_from": null,
+  "entry_board": 11.54,
+  "entry_board_raw": 11.14,
+  "entry_n": 6,
+  "exit_frame": 366,
+  "exit_board": 14.18,
+  "exit_board_raw": 14.29,
+  "exit_kind": "hidden",
+  "exit_back_row_y": 490.5,
+  "exit_ft_deck": 61.3,
+  "deck_points": [
+   {
+    "f": 356,
+    "board": 11.14,
+    "ft_deck": 60.0
+   },
+   {
+    "f": 357,
+    "board": 11.36,
+    "ft_deck": 60.13
+   },
+   {
+    "f": 358,
+    "board": 11.54,
+    "ft_deck": 60.26
+   },
+   {
+    "f": 359,
+    "board": 11.56,
+    "ft_deck": 60.39
+   },
+   {
+    "f": 360,
+    "board": 11.56,
+    "ft_deck": 60.52
+   },
+   {
+    "f": 361,
+    "board": 11.92,
+    "ft_deck": 60.65
+   },
+   {
+    "f": 362,
+    "board": 12.45,
+    "ft_deck": 60.78
+   },
+   {
+    "f": 364,
+    "board": 13.5,
+    "ft_deck": 61.04
+   },
+   {
+    "f": 366,
+    "board": 14.18,
+    "ft_deck": 61.3
+   }
+  ],
+  "exit_reason": "last seen, ball hidden by pins after f366",
+  "track_last_frame": 366,
+  "track_last_real_frame": 366,
+  "track_last_real_board": 14.18,
+  "deck_frames": 9,
+  "deck_frame_list": [
+   356,
+   357,
+   358,
+   359,
+   360,
+   361,
+   362,
+   364,
+   366
+  ],
+  "deflection": "deflected left",
+  "breakpoint_frame": 348,
+  "breakpoint_board": 10.2,
+  "breakpoint_ft": 51.9,
+  "breakpoint_at_roll_end": false,
+  "rise_after_break": 0.92,
+  "how": {
+   "pin_row_frame_est": "first non-coasted ball frame >= release+8 whose centre y is at/above the headpin base row (midpoint of the pin column top and the edge pd row, 3-frame median), held on the next real frame with >= 3 real frames after it; fallback cuts.json pin_hit",
+   "entry_board": "Theil-Sen over boards (3-frame median, cleaned) on pin_row-6..pin_row-1, evaluated at pin_row; entry_board_raw = cleaned raw board at pin_row",
+   "exit_frame": "last non-coasted, moving (not deck_decoy) ball frame >= pin_row with a board; exit_board = boards there; exit_kind pit when the ball bottom is at/behind the back-row base row (headpin base moved 2.6 ft back through the edge vanishing point), else hidden; deck depth: frames pin_row..exit spread linearly from 60 ft to 62.6 (pit) or 61.3 (hidden)",
+   "deck_frames": "non-coasted moving ball frames with a board from pin_row to exit",
+   "deflection": "sign of exit_board - entry_board, dead band 2 boards (straight through inside it)",
+   "breakpoint_ft": "ft_cv at the minimum of the 5-frame median of the cleaned raw boards over release..pin_row; breakpoint_at_roll_end = minimum in the first/last 2 roll frames (no measurable hook back)",
+   "ft_cv": "60 * (f - release) / (pin_row_frame_est - release); release is the cuts.json input",
+   "deck_decoy_from": "first non-coasted ball point at/after pin_row-1 whose camera-compensated drift to every real point in the next 3 frames is < 3.0 px (a static purple patch in the pit/kickback, truth notes finding 5; threshold read off the drift table: moving >= 3.4, static <= 2.4); frames from it on do not count for exit, deck frames or the last real frame"
+  },
+  "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+  "pin_row_base_y": null,
+  "pin_row_frame_contact": null,
+  "pin_row_frame_pd15": null,
+  "pin_row_frame_lane": 347,
+  "pin_row_rows_measured": 58,
+  "cut_pin_hit": 356,
+  "pin_row_minus_cut": 0,
+  "pin_row_frame_geometric": null,
+  "pin_motion_frame": null
+ },
  "final_board_rule": "Theil-Sen over boards in pin_hit-10..pin_hit evaluated at pin_hit (composition fit_path), on the series after clean_series",
  "path_fit_diag": {
   "kind": "line",
@@ -2209,13 +2896,13 @@
   "cut_start": 287,
   "lane_variant": "edge",
   "lane_sources": {
-   "edge": 55
+   "edge": 64
   },
   "edge_fit_failures": 0,
   "edge_fail_reasons": {},
   "fallback_used": false,
   "smooth": 3,
-  "lane_s": 0.3,
+  "lane_s": 0.4,
   "board_row": "ball centre (dev truth convention); boards_contact = y + r",
   "ball_meta": {
    "gates": {
@@ -2224,23 +2911,23 @@
     "radius": 0,
     "jump": 0
    },
-   "refined": 34,
-   "refine_rejected": 3,
-   "coasted": 0,
+   "refined": 38,
+   "refine_rejected": 9,
+   "coasted": 5,
    "sam_reprompts": 0,
    "stage_wall_s": 1.7,
    "base_wall_s": 129.5,
    "base_method": "sam2-video"
   },
-  "wall_s": 131.7,
+  "wall_s": 133.4,
   "wall_note": "track_v2 process seconds + the loop-1 sam2-video wall the ball stage consumes (not re-run)",
   "overlay_trimmed_frames": [],
   "overlay": {
    "roll_frames_drawn": 45,
-   "after_pin_hit_frames_drawn": 4,
+   "after_pin_hit_frames_drawn": 13,
    "pin_hit_drawn": true,
    "shown_frame": 352,
-   "depth": "ft_cv = 60 * (f - release) / (pin_hit - release), both cuts.json inputs"
+   "depth": "ft_cv = 60 * (f - release) / (pin_row_frame_est - release); release is the cuts.json input"
   }
  }
 }
