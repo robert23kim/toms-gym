@@ -102,6 +102,39 @@ Details:
 
 APK: `gs://jtr-lift-u-4ever-cool-bucket/apk/tomsgym-debug-20261107-111511.apk`, short link `https://my-python-backend-quyiiugyoq-ue.a.run.app/s/LSOd2h` (signed URL expires 2026-11-14). Checked by curl and sha256 only; **it still has to be installed on Tom's phone**, which runs the Sep-13 bundle until then (B1 root cause).
 
+## Hero breakdown: ring by type, points receipt, uploads behind a tap (2026-11-07)
+
+Tom asked to see each lift behind the score on a phone. Design options were mocked up on the canvas
+https://claude.ai/artifact/RxeQSFX7riSkVfkgoDhzno; the recommended combination shipped (commit 35c6eb5,
+frontend `my-frontend-00203-7gg`, APK `/s/7uv33h`).
+
+- `components/challenge/clubBreakdown.ts` holds the pure helpers: `ringSegments` (one arc per type with
+  lifts, lift-type order, denominator `max(quota, lifts)` so the ring never overflows), `pointsReceipt`
+  (`min(lifts, quota)` + quota bonus when met, pending `+type_bonus` per lead, `ifLeadsHold`),
+  `groupUploadsByDay` / `timeLabel` (in `rules.tz`), `typeColor` (Situp blue, Pushup green, Plank amber,
+  Squat grey; anything else lavender).
+- `ConsistencyHero` renders, for an entrant in a live week: the segmented ring, a legend row per lift type
+  (`consistency-legend-<Type>`, plank seconds beside plank lifts, `lead` badge from `this_week.leading`),
+  the receipt (`consistency-receipt`, rows `receipt-banked`, `receipt-quota` with `data-earned`,
+  `receipt-lead-<Type>`, `receipt-total` with "N if the lead holds" and "S overall" when the overall score
+  differs from the week), and a `consistency-uploads-toggle` (44 px, collapsed) that lists the viewer's
+  uploads of the week grouped by day, newest first, each a link to its video. Anonymous visitors and
+  non-entrants keep the week line and leader chips only. The old "You lead X this week" line is gone; the
+  legend badge replaces it.
+- Uploads need no new endpoint: `ChallengeDetail` already fetches `GET /lifting/result/<id>` for every
+  video, so `clubUploads` filters `attempts` to the viewer and the live week (`attemptWeek`) and takes
+  lifts from `attemptLifts(report, rules)`; null while analysing, `failed` on a failed analysis.
+- Mirror assumption: `attemptLifts` floors plank seconds per attempt. If the backend floors once over the
+  week's summed seconds, the upload rows can sum one short of `this_week.lifts` for an athlete with two
+  plank uploads. The prod proof checks the sum; see the session doc for the result.
+- Guards: `clubBreakdown.test.ts`, `ConsistencyHero.test.tsx` (segments, legend, receipt, uploads),
+  `ChallengeDetail.consistency.test.tsx` (uploads from results, other weeks and athletes excluded).
+  12 mutants killed (bonus always paid, banked uncapped, projection without leads, zero types in ring,
+  overflow denominator, oldest-first, toggle open by default, badge never shown, receipt when ended,
+  page keeping other weeks / athletes, plank seconds dropped).
+- Prod proof: `docs/sessions/2026-11-07-declutter/prove-breakdown.mjs` reads the live board and lifts
+  and checks every rendered number against them for the owner, another athlete and anonymous at 390 px.
+
 ## Limitations
 
 - Not covered by the proof: the ring, flame, leader chips, week table and ranked rows were never rendered in a browser against live data (the board was empty during every browser check); the saved-`userId` home pill; the upload page lift list and Squat weight 0 in a browser; behaviour after Mon 2 Nov (live state); ties, a second athlete, tiebreaks and the reset after a miss in prod (unit tests only); Pushup and Squat lifts; situp half-credit used seeded `rep_metrics`, not an engine report. The `as_of` call with the real token ran in round 2 only.

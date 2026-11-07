@@ -1,0 +1,58 @@
+PASS owner: build stamp present 1794082656
+PASS owner: ring count matches board 100 / 100
+PASS owner: one ring segment per type with lifts [["Situp",0.4],["Pushup",0.52],["Plank",0.07999999999999996]]
+PASS owner: segment fractions are by_type / max(quota, lifts) denominator 100
+PASS owner: legend Situp reads board value Situp40lead
+PASS owner: legend Situp lead badge iff leading leading=Situp
+PASS owner: legend Pushup reads board value Pushup52
+PASS owner: legend Pushup lead badge iff leading leading=Situp
+PASS owner: legend Squat reads board value Squat0
+PASS owner: legend Squat lead badge iff leading leading=Situp
+PASS owner: legend Plank reads board value Plank8·82.8s
+PASS owner: legend Plank shows seconds Plank8·82.8s
+PASS owner: legend Plank lead badge iff leading leading=Situp
+PASS owner: receipt banked line PointsthisweekLiftsbanked100of100+100Quotamet+50Situplead·locksSun+25150ptsthisweek175iftheleadholds
+PASS owner: receipt quota bonus earned 
+PASS owner: receipt pending lead Situp 
+PASS owner: receipt total 150 pts 150 pts this week175 if the lead holds
+PASS owner: receipt total equals board score this week score 150
+PASS owner: projection if leads hold 
+PASS owner: uploads toggle counts this week's uploads This week's uploads · 5▾
+PASS owner: uploads collapsed by default 
+PASS owner: upload rows are this week's attempts newest first c9dec98b-3c29-41fb-9324-4e545af49895,c400c673-7a96-48eb-9af1-8ad9c6976705,9600f455-6e67-480a-9d2c-3a3b5cfddf81,65572de6-1b2d-44f4-8c99-a6daf1e4dcb8,e18a31d1-b18e-49cd-9561-e93b8a1d2036
+PASS owner: every row links to its video 
+PASS owner: upload lifts sum to the board's week total rows sum 100 vs board 100
+PASS owner: toggle is a 44px target 
+PASS owner: only boot telemetry tried to write, all answered locally POST https://my-python-backend-quyiiugyoq-ue.a.run.app/log-error
+PASS other: build stamp present 1794082656
+PASS other: ring count matches board 107.5 / 100
+PASS other: one ring segment per type with lifts [["Situp",0.2930232558139535],["Pushup",0.6046511627906976],["Plank",0.10232558139534884]]
+PASS other: segment fractions are by_type / max(quota, lifts) denominator 107.5
+PASS other: legend Situp reads board value Situp31.5
+PASS other: legend Situp lead badge iff leading leading=Pushup/Plank
+PASS other: legend Pushup reads board value Pushup65lead
+PASS other: legend Pushup lead badge iff leading leading=Pushup/Plank
+PASS other: legend Squat reads board value Squat0
+PASS other: legend Squat lead badge iff leading leading=Pushup/Plank
+PASS other: legend Plank reads board value Plank11·119.5slead
+PASS other: legend Plank shows seconds Plank11·119.5slead
+PASS other: legend Plank lead badge iff leading leading=Pushup/Plank
+PASS other: receipt banked line PointsthisweekLiftsbanked100of100+100Quotamet+50Pushuplead·locksSun+25Planklead·locksSun+25150ptsthisweek200iftheleadshold
+PASS other: receipt quota bonus earned 
+PASS other: receipt pending lead Pushup 
+PASS other: receipt pending lead Plank 
+PASS other: receipt total 150 pts 150 pts this week200 if the leads hold
+PASS other: receipt total equals board score this week score 150
+PASS other: projection if leads hold 
+PASS other: uploads toggle counts this week's uploads This week's uploads · 6▾
+PASS other: uploads collapsed by default 
+PASS other: upload rows are this week's attempts newest first 5fce96b5-8657-4bf0-b5ad-f944afbd4539,9ff98cee-1aa2-45af-b595-956dc1bbc3dd,bc26c56c-a595-4c87-a714-ce1612f81e42,114b13e6-ec93-4783-8d9a-cdd9ea0dded4,e6b195fd-6498-477a-adfe-64c7c4f172aa,a553ce92-a2e5-4fcf-8d98-a8b237d71aae
+PASS other: every row links to its video 
+PASS other: upload lifts sum to the board's week total rows sum 107.5 vs board 107.5
+PASS other: toggle is a 44px target 
+PASS other: only boot telemetry tried to write, all answered locally POST https://my-python-backend-quyiiugyoq-ue.a.run.app/log-error
+PASS anonymous: build stamp present 1794082656
+PASS anonymous: no ring, legend or receipt 
+PASS anonymous: no uploads toggle 
+PASS anonymous: only boot telemetry tried to write, all answered locally POST https://my-python-backend-quyiiugyoq-ue.a.run.app/log-error
+57/57 passed

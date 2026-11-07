@@ -37,3 +37,27 @@ Tom's phone screenshot showed only a sliver of the blue "Log a lift" button abov
 Prod proof `docs/sessions/2026-11-07-declutter/prove-cta.mjs` (output in `prove-cta.txt`): run against `my-frontend-00201-5vm` first as a negative control it failed 4 of 14 (button bottom 820 px vs tab top 779 px, tap at the button centre landed on the tab bar); against `my-frontend-00202-4gg` it passed 14 of 14 for anonymous and owner sessions at 390x844, with the button ending at 768 px. Only boot telemetry tried to write and was answered locally.
 
 APK rebuilt with stamp 1794081802 and published as `gs://jtr-lift-u-4ever-cool-bucket/apk/tomsgym-debug-20261107-150349.apk`, short link `/s/wCz0Hq` (download byte-identical via `cmp`). Supersedes `/s/jciS2g`.
+
+## Follow-up: lift breakdown in the hero (2026-11-07 evening, 35c6eb5)
+
+Tom asked for designs that show each lift behind the score on a phone. Five options were mocked up on
+https://claude.ai/artifact/RxeQSFX7riSkVfkgoDhzno; he chose the recommended A + C with D behind a tap.
+Shipped: segmented quota ring with a legend per lift type, a points receipt (banked lifts, quota bonus,
+pending type leads, projection, overall), and the viewer's uploads of the live week behind a 44 px toggle,
+with lifts taken from the analysis results the page already fetches. Details and helper names in
+`docs/reference/100-club.md` (hero breakdown section).
+
+Gates: jest 786 green (19 new cases), tsc unchanged at the 43 pre-existing errors, 12 of 12 mutants killed with
+byte-identical restores.
+
+Prod proof `docs/sessions/2026-11-07-declutter/prove-breakdown.mjs` (output `prove-breakdown.txt`, screenshots
+`prove-breakdown-{owner,other}.png`): reads the live board and lifts and checks every rendered number against
+them. Negative control against `my-frontend-00202-4gg` failed on the first segment check. Against
+`my-frontend-00203-7gg` it passed 57 of 57 for the owner, caleb and anonymous at 390x844; the per-upload lifts
+summed exactly to the board's week total for both athletes (100 and 107.5, caleb with two plank uploads), so
+the per-attempt plank floor matched the backend on this data. Only boot telemetry tried to write and was
+answered locally. Not covered: Tom's real signed-in session, a real device, desktop width, a failed or
+still-analysing upload in prod.
+
+APK rebuilt with stamp 1794082851 (the toggle is in its `ConsistencyResult-*.js` chunk, control marker
+`vite:preloadError` present) and published as `gs://jtr-lift-u-4ever-cool-bucket/apk/tomsgym-debug-20261107-152132.apk, short link /s/7uv33h (4,911,153 B, download byte-identical via cmp, expires 2026-11-14)`. Supersedes `/s/wCz0Hq`.
