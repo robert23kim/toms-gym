@@ -24,6 +24,8 @@ interface Props {
 
 const PAGE = 20;
 
+const BODYWEIGHT = new Set(["plank", "pushup", "situp"]);
+
 const GRADE_CLASS: Record<string, string> = {
   A: "bg-green-500/15 text-green-500",
   B: "bg-green-400/15 text-green-400",
@@ -114,7 +116,7 @@ const LiftHistoryList: React.FC<Props> = ({ userId }) => {
             </span>
             <span className="flex-1 min-w-0 truncate font-medium">
               {row.lift_type ? cap(row.lift_type.replace(/_/g, " ")) : "Lift"}
-              {row.lift_type !== "plank" && row.weight != null && row.weight > 0 && (
+              {!BODYWEIGHT.has((row.lift_type || "").toLowerCase()) && row.weight != null && row.weight > 0 && (
                 <span className="text-muted-foreground font-normal"> · {row.weight}kg</span>
               )}
             </span>

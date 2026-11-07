@@ -101,4 +101,16 @@ describe("LiftHistoryList", () => {
     await waitFor(() => expect(axios.get).toHaveBeenCalledTimes(2));
     expect(c2.firstChild).toBeNull();
   });
+
+  it("hides the weight on bodyweight lifts even when one was stored", async () => {
+    const situp = { ...squat, attempt_id: "a4", lift_type: "situp", weight: 60, grade: "C" };
+    const pushup = { ...squat, attempt_id: "a5", lift_type: "Pushup", weight: 60, grade: "B" };
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: { lifts: [situp, pushup, squat], total: 3, limit: 20, offset: 0 },
+    });
+    renderList();
+    await waitFor(() => expect(screen.getByText("C")).toBeInTheDocument());
+    expect(screen.queryByText(/60kg/)).toBeNull();
+    expect(screen.getByText(/100kg/)).toBeInTheDocument();
+  });
 });
