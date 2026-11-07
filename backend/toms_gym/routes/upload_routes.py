@@ -141,7 +141,7 @@ def _create_attempt_record(session, user_id, competition_id, database_lift_type,
          "status": "pending", "video_url": video_url}
     )
     session.commit()
-    logger.info(f"Created attempt {attempt_id} (lift_type={database_lift_type})")
+    logger.info(f"Created attempt {attempt_id} (lift_type={database_lift_type}, weight_kg={weight_kg})")
     return attempt_id, user_competition_id
 
 

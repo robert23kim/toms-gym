@@ -131,3 +131,19 @@ def test_lift_type_maps_case_insensitively(client, session, post, raw, stored):
 @pytest.mark.parametrize("raw", ["Hammer Throw", "", None])
 def test_unknown_lift_type_still_falls_back_to_snatch(raw):
     assert upload_routes.map_lift_type(raw) == "snatch"
+
+
+def test_stale_apk_finalize_by_email_stores_zero_and_logs_it(client, session, caplog):
+    """Replays the Sep-13 APK body: email instead of user_id and the "60" default."""
+    caplog.set_level("INFO", logger=upload_routes.logger.name)
+    resp = client.post("/upload/finalize", json={
+        "object_name": "videos/x.mp4",
+        "public_url": "https://storage.googleapis.com/test-bucket/videos/x.mp4",
+        "competition_id": COMP_ID, "lift_type": "Situp", "weight": "60",
+        "email": "athlete@example.com",
+    })
+    assert resp.status_code == 200, resp.get_json()
+    row = _attempt_insert(session)
+    assert row["lift_type"] == "Situp"
+    assert row["weight_kg"] == 0
+    assert "lift_type=Situp, weight_kg=0)" in caplog.text
