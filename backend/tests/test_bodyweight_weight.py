@@ -109,3 +109,25 @@ def test_attempt_routes_keep_weight_for_weighted_lift(client, session):
     })
     assert resp.status_code == 201, resp.get_json()
     assert _attempt_weight(session, 'INSERT INTO "Attempt"') == 140
+
+
+def _attempt_insert(session):
+    writes = [c.args[1] for c in session.execute.call_args_list
+              if 'INSERT INTO "Attempt"' in str(c.args[0]) and len(c.args) > 1]
+    assert len(writes) == 1, f"expected one Attempt insert, saw {len(writes)}"
+    return writes[0]
+
+
+@pytest.mark.parametrize("post", [_finalize, _multipart])
+@pytest.mark.parametrize("raw, stored", [("pushup", "Pushup"), (" SITUP ", "Situp"), ("bench", "Bench Press")])
+def test_lift_type_maps_case_insensitively(client, session, post, raw, stored):
+    resp = post(client, raw, "60")
+    assert resp.status_code == 200, resp.get_json()
+    row = _attempt_insert(session)
+    assert row["lift_type"] == stored
+    assert row["weight_kg"] == (60.0 if stored == "Bench Press" else 0)
+
+
+@pytest.mark.parametrize("raw", ["Hammer Throw", "", None])
+def test_unknown_lift_type_still_falls_back_to_snatch(raw):
+    assert upload_routes.map_lift_type(raw) == "snatch"

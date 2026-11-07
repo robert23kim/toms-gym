@@ -34,6 +34,16 @@ LIFT_TYPE_MAPPING = {
     "Situp": "Situp",
 }
 
+_LIFT_TYPE_BY_KEY = {k.lower(): v for k, v in LIFT_TYPE_MAPPING.items()}
+
+
+def map_lift_type(lift_type):
+    """Frontend label to DB enum, case-insensitive; unknown labels stay 'snatch'."""
+    if lift_type in LIFT_TYPE_MAPPING:
+        return LIFT_TYPE_MAPPING[lift_type]
+    return _LIFT_TYPE_BY_KEY.get((lift_type or "").strip().lower(), "snatch")
+
+
 BODYWEIGHT_LIFT_TYPES = {"pushup", "situp", "plank"}
 
 
@@ -206,7 +216,7 @@ def upload_video():
     logger.info(f"Received data - lift_type: {lift_type}, weight: {weight}")
     
     # Map the lift type or default to "snatch" if not found
-    database_lift_type = LIFT_TYPE_MAPPING.get(lift_type, "snatch")
+    database_lift_type = map_lift_type(lift_type)
     
     logger.info(f"Upload request received - user_id: {user_id}, competition_id: {competition_id}")
     logger.info(f"Original lift_type: {lift_type}, Mapped to DB lift_type: {database_lift_type}, weight: {weight}")
@@ -578,7 +588,7 @@ def finalize_upload():
         # Don't hard-fail on a transient existence check; log and continue.
         logger.warning(f"Could not verify blob existence for {object_name}: {e}")
 
-    database_lift_type = LIFT_TYPE_MAPPING.get(lift_type, "snatch")
+    database_lift_type = map_lift_type(lift_type)
 
     session = get_db_connection()
     try:
