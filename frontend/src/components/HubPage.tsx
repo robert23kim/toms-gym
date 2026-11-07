@@ -18,6 +18,8 @@ interface HubPageProps {
   icon: React.ReactNode;
   primary: HubLink;
   secondary: HubLink[];
+  /** Optional row shown above the primary CTA. */
+  lead?: HubLink | null;
 }
 
 /**
@@ -25,7 +27,7 @@ interface HubPageProps {
  * Leads with a single primary Upload CTA, then lists the vertical's
  * leaderboard / recent / challenge surfaces below.
  */
-const HubPage: React.FC<HubPageProps> = ({ title, subtitle, icon, primary, secondary }) => {
+const HubPage: React.FC<HubPageProps> = ({ title, subtitle, icon, primary, secondary, lead = null }) => {
   return (
     <Layout>
       <motion.div
@@ -41,6 +43,12 @@ const HubPage: React.FC<HubPageProps> = ({ title, subtitle, icon, primary, secon
           <h1 className="text-3xl font-semibold">{title}</h1>
         </div>
         <p className="text-muted-foreground mb-8 max-w-md mx-auto">{subtitle}</p>
+
+        {lead && (
+          <div className="mb-3">
+            <RowCard to={lead.to} icon={lead.icon} title={lead.label} />
+          </div>
+        )}
 
         {/* Primary CTA — Upload */}
         <Link

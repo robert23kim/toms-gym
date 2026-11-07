@@ -40,4 +40,26 @@ describe("LiftHub plank quick link", () => {
     await waitFor(() => expect(api.getCompetitions).toHaveBeenCalled());
     expect(screen.queryByText(/plank challenge/i)).toBeNull();
   });
+
+  it("labels the 100 Club as the club, above the generic upload, not as a plank challenge", async () => {
+    (api.getCompetitions as jest.Mock).mockResolvedValue([
+      { id: "club-1", title: "The 100 Club", status: "ongoing", categories: ["Situp", "Pushup", "Squat", "Plank"], mode: "consistency" },
+    ]);
+    render(<MemoryRouter><LiftHub /></MemoryRouter>);
+    const tile = await screen.findByText("The 100 Club · Log this week's lifts");
+    expect(tile.closest("a")).toHaveAttribute("href", "/challenges/club-1");
+    expect(screen.queryByText(/plank challenge/i)).toBeNull();
+    const upload = screen.getByText("Upload a lift");
+    expect(tile.compareDocumentPosition(upload) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it("keeps a separate plank challenge tile next to the club", async () => {
+    (api.getCompetitions as jest.Mock).mockResolvedValue([
+      { id: "club-1", title: "The 100 Club", status: "ongoing", categories: ["Plank"], mode: "consistency" },
+      plankChallenge,
+    ]);
+    render(<MemoryRouter><LiftHub /></MemoryRouter>);
+    await screen.findByText("The 100 Club · Log this week's lifts");
+    expect(screen.getByText(/plank challenge/i).closest("a")).toHaveAttribute("href", "/challenges/plank-1");
+  });
 });
