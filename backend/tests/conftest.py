@@ -15,6 +15,18 @@ import sys
 from pathlib import Path
 from unittest.mock import MagicMock
 
+from db_guard import unsafe_database_reason
+
+# Must run before toms_gym.app is imported: the import runs startup migrations and init_db drops tables.
+_unsafe_db = unsafe_database_reason(os.environ.get("DATABASE_URL"))
+if _unsafe_db:
+    pytest.exit(
+        f"Refusing to load tests/conftest.py: {_unsafe_db}. Run tools/run_ci_tests.sh "
+        "(--noconftest), or set DATABASE_URL to a local Postgres "
+        "(see docker-compose.test.yml / the Tickets note in CLAUDE.md).",
+        returncode=4,
+    )
+
 # Import the actual app instance and session factory
 from toms_gym.app import app as application # Rename to avoid conflict
 from toms_gym.db import Session as DBSession, engine as db_engine
