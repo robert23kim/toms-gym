@@ -56,7 +56,9 @@ const competition = {
 
 const mockGet = axios.get as jest.Mock;
 
-const setup = (board: ChallengeLeaderboard | null, viewer: string | null, comp: object = competition) => {
+type LiftRow = { id: string; participant_id: string; lift_type: string; created_at: string; video_url: string; status: string };
+
+const setup = (board: ChallengeLeaderboard | null, viewer: string | null, comp: object = competition, lifts: LiftRow[] = []) => {
   (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? viewer : null));
   if (board) (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
   else (api.getChallengeLeaderboard as jest.Mock).mockReturnValue(new Promise(() => {}));
@@ -65,7 +67,7 @@ const setup = (board: ChallengeLeaderboard | null, viewer: string | null, comp: 
     if (url.endsWith(`/competitions/${ID}`)) return Promise.resolve({ data: { competition: comp } });
     if (url.endsWith(`/competitions/${ID}/participants`))
       return Promise.resolve({ data: { participants: [{ id: "a1" }, { id: "b1" }, { id: "c1" }] } });
-    if (url.endsWith(`/competitions/${ID}/lifts`)) return Promise.resolve({ data: { lifts: [] } });
+    if (url.endsWith(`/competitions/${ID}/lifts`)) return Promise.resolve({ data: { lifts } });
     return Promise.reject(new Error(`unexpected GET ${url}`));
   });
   return render(
@@ -230,5 +232,44 @@ describe("ChallengeDetail on a 100 Club board", () => {
     fireEvent.submit(form);
     await waitFor(() => expect(uploadVideo).toHaveBeenCalled());
     expect((uploadVideo as jest.Mock).mock.calls[0][1]).toMatchObject({ lift_type: "Situp", weight: "0" });
+  });
+
+  it("lists the viewer's uploads of the live week behind a tap, with lifts from their analysis", async () => {
+    const lift = (id: string, created_at: string, lift_type: string, participant_id = "a1"): LiftRow => ({
+      id,
+      participant_id,
+      lift_type,
+      created_at,
+      video_url: `https://storage.example/${id}.mp4`,
+      status: "completed",
+    });
+    const lifts = [
+      lift("w3-situp", "2026-11-17T18:24:00+00:00", "Situp"),
+      lift("w3-plank", "2026-11-16T12:21:00+00:00", "Plank"),
+      lift("w3-pending", "2026-11-18T12:00:00+00:00", "Pushup"),
+      lift("w2-old", "2026-11-10T12:00:00+00:00", "Pushup"),
+      lift("w3-ben", "2026-11-17T12:00:00+00:00", "Situp", "b1"),
+    ];
+    (api.getLiftingResult as jest.Mock).mockImplementation(async (attemptId: string) => {
+      if (attemptId === "w3-situp")
+        return { processing_status: "completed", report: { lift_type: "Situp", total_reps: 4, rep_metrics: [{ form_score: 90 }, { form_score: 80 }, { form_score: 40 }, { form_score: 30 }] } };
+      if (attemptId === "w3-plank") return { processing_status: "completed", report: { lift_type: "Plank", total_in_plank_s: 82.79 } };
+      if (attemptId === "w2-old") return { processing_status: "completed", report: { lift_type: "Pushup", total_reps: 30 } };
+      return { processing_status: "processing" };
+    });
+    setup(consistencyLeaderboard, "a1", competition, lifts);
+    const toggle = await screen.findByTestId("consistency-uploads-toggle");
+    await waitFor(() => expect(toggle).toHaveTextContent("This week's uploads · 3"));
+    fireEvent.click(toggle);
+    const list = await screen.findByTestId("consistency-uploads");
+    await waitFor(() => expect(within(list).getByTestId("consistency-upload-w3-situp")).toHaveTextContent("+3"));
+    expect(within(list).getByTestId("consistency-upload-w3-plank")).toHaveTextContent("Plank82.8 s7:21 am+8");
+    expect(within(list).getByTestId("consistency-upload-w3-pending")).toHaveTextContent("analysing");
+    expect(within(list).queryByTestId("consistency-upload-w2-old")).toBeNull();
+    expect(within(list).queryByTestId("consistency-upload-w3-ben")).toBeNull();
+    expect(within(list).getByTestId("consistency-upload-w3-situp").closest("a")).toHaveAttribute(
+      "href",
+      `/challenges/${ID}/participants/a1/video/w3-situp`,
+    );
   });
 });

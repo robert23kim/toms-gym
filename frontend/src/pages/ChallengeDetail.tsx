@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState, useRef } from "react";
+import React, { Fragment, useEffect, useMemo, useState, useRef } from "react";
 import { useParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Dumbbell, Upload } from "lucide-react";
@@ -21,6 +21,8 @@ import { athleteNickname } from "../lib/plankStats";
 import YouRow from "../components/challenge/YouRow";
 import AttemptHistory from "../components/challenge/AttemptHistory";
 import ConsistencyHero, { finalDayLabel } from "../components/challenge/ConsistencyHero";
+import { attemptLifts, attemptWeek, type ConsistencyReport } from "../components/challenge/ConsistencyResult";
+import type { ClubUpload } from "../components/challenge/clubBreakdown";
 import ConsistencyWeekTable from "../components/challenge/ConsistencyWeekTable";
 import { hasWeeks, tieLine } from "../components/challenge/ConsistencyMeta";
 import MomentumLine from "../components/challenge/MomentumLine";
@@ -42,6 +44,7 @@ interface Attempt {
   status: string;
   video_url: string | null;
   timestamp?: string;
+  created_at?: string;
 }
 
 interface VideoData {
@@ -595,6 +598,29 @@ const ChallengeDetail: React.FC = () => {
     setTimeout(() => uploadRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
 
+  // The viewer's uploads in the week in progress, with lifts from the
+  // analysis results the page already fetches for every video.
+  const clubUploads = useMemo<ClubUpload[]>(() => {
+    const block = leaderboard?.metric === "consistency" ? leaderboard.consistency : null;
+    if (!block || block.status !== "live" || !viewerId) return [];
+    return attempts
+      .filter((a) => String(a.participant_id) === String(viewerId) && a.created_at)
+      .filter((a) => attemptWeek(a.created_at, block.rules) === block.week_index)
+      .map((a) => {
+        const result = liftingResults[String(a.id)];
+        const report = result?.report as ConsistencyReport | undefined;
+        return {
+          id: String(a.id),
+          liftType: a.lift_type,
+          at: a.created_at!,
+          lifts: report ? attemptLifts(report, block.rules) : null,
+          seconds: report?.total_in_plank_s ?? null,
+          failed: result?.processing_status === "failed",
+          href: `/challenges/${id}/participants/${viewerId}/video/${a.id}`,
+        };
+      });
+  }, [attempts, liftingResults, leaderboard, viewerId, id]);
+
   // The video player route is keyed by attempt id, which each leaderboard row
   // now carries. Fall back to matching the row's clip URL against the fetched
   // lifts for responses cached from before attempt_id was added.
@@ -785,6 +811,7 @@ const ChallengeDetail: React.FC = () => {
               block={consistencyBlock}
               liftTypes={leaderboard.lift_types}
               viewerRow={viewerBoardRow}
+              uploads={clubUploads}
             />
           )}
 
