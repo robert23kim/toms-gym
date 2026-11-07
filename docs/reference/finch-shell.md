@@ -31,3 +31,23 @@ from opening the app. Spec: `docs/superpowers/specs/2026-09-13-finch-shell-desig
 - Tests: `lib/__tests__/tabs|prompts|bowlingSheetForm`, `components/__tests__/BottomTabBar|PromptList`,
   `Index.test.tsx` rewritten. Suite at ship: 92 suites / 634 tests. No eslint config in `frontend/`
   — tsc + jest are the gates.
+
+## Owner-only verticals and the past-challenges fold (2026-11-07)
+
+- Bowling and golf are declutter-hidden for everyone except the owner's account (`lib/owner.ts`, `OWNER_EMAIL`
+  = toka778@gmail.com). `hooks/useIsOwner.ts` returns true when the JWT user's email matches, or, for a
+  passwordless viewer, after one `GET /users/<userId>/profile` whose `user.email` matches. The verdict is cached in
+  localStorage `ownerCheck` as `{userId, owner}` (ignored for any other userId, so Forget Me cannot leak it) and the
+  in-flight request is shared between the Navbar and BottomTabBar hooks. Unknown reads as false, so strangers never
+  see Bowl/Golf flash in; the owner sees them pop in once per device.
+- Gated surfaces: Navbar links, BottomTabBar (4 tabs instead of 6), home tiles and pitch line, the demo loop
+  (`liftOnly` keeps the plank scene up), the home to-do rows (`buildPrompts(..., { sports })`), `/upload` chooser and
+  the profile Bowl/Golf tabs. Routes are untouched: `/bowl`, `/golf`, `/bowling/*`, `/golf/*` still open by URL. This
+  is clutter control, not access control, and the email is a literal in the bundle.
+- `visibleChallenges(list, isOwner)` drops any challenge with a Bowling or Golf category (the ended "Bowling"
+  competition) from `/challenges` and the home to-do rows for non-owners.
+- `/challenges` lists "Open now" (ongoing) and "Coming up" (upcoming) once each; ended challenges sit behind a
+  "Past challenges (N)" toggle (`data-testid="past-challenges-toggle"`), collapsed by default. Home, LiftHub and
+  NextToBeCrowned already filtered to ongoing; the Hall of Champions is ended-by-design.
+- Tests: `lib/__tests__/owner.test.ts`, `hooks/__tests__/useIsOwner.test.tsx`, plus owner/non-owner cases in the
+  Navbar, BottomTabBar, Index, UploadChooser, Profile, prompts and Challenges suites (12 mutants, all killed).
