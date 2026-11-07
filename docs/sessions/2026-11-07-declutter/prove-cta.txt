@@ -1,0 +1,13 @@
+PASS anonymous: viewport is phone 390x844
+PASS anonymous: upload button visible {"x":16,"y":712,"width":358,"height":56}
+PASS anonymous: tab bar at bottom {"x":0,"y":779,"width":390,"height":65}
+PASS anonymous: button bottom above tab bar top btn bottom 768 tab top 779
+PASS anonymous: tap at button centre hits the button 
+PASS anonymous: only boot telemetry tried to write, all answered locally POST https://my-python-backend-quyiiugyoq-ue.a.run.app/log-error
+PASS owner: viewport is phone 390x844
+PASS owner: upload button visible {"x":16,"y":712,"width":358,"height":56}
+PASS owner: tab bar at bottom {"x":0,"y":779,"width":390,"height":65}
+PASS owner: button bottom above tab bar top btn bottom 768 tab top 779
+PASS owner: tap at button centre hits the button 
+PASS owner: only boot telemetry tried to write, all answered locally POST https://my-python-backend-quyiiugyoq-ue.a.run.app/log-error
+14/14 passed

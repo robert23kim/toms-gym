@@ -29,3 +29,11 @@ APK: built with stamp 1794075479, entry chunk carries `ownerCheck` and the bowli
 - Nothing was installed or opened on a phone; the APK proof is the short-link download and the bundled index.html stamp.
 - A signed-in JWT session (`/auth/user` path) was proven in jsdom only; prod sessions in this proof were passwordless (`localStorage.userId`).
 - The owner pop-in on first load was not timed.
+
+## Follow-up: sticky upload button hidden under the tab bar (2026-11-07, 110d052)
+
+Tom's phone screenshot showed only a sliver of the blue "Log a lift" button above the bottom tabs. Both were `fixed bottom-0` and the tab bar has the higher z-index. Fix: the CTA wrapper gets `.above-tab-bar` (`bottom: calc(4rem + env(safe-area-inset-bottom))`, in `index.css`) and the page's phone padding grows to `pb-44`. Guard: `ChallengeDetail.consistency.test.tsx` "pins the phone upload button above the bottom tab bar" (mutant `bottom-0` killed, file restored byte-identical).
+
+Prod proof `docs/sessions/2026-11-07-declutter/prove-cta.mjs` (output in `prove-cta.txt`): run against `my-frontend-00201-5vm` first as a negative control it failed 4 of 14 (button bottom 820 px vs tab top 779 px, tap at the button centre landed on the tab bar); against `my-frontend-00202-4gg` it passed 14 of 14 for anonymous and owner sessions at 390x844, with the button ending at 768 px. Only boot telemetry tried to write and was answered locally.
+
+APK rebuilt with stamp 1794081802 and published as `gs://jtr-lift-u-4ever-cool-bucket/apk/tomsgym-debug-20261107-150349.apk`, short link `/s/wCz0Hq` (download byte-identical via `cmp`). Supersedes `/s/jciS2g`.
