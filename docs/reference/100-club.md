@@ -74,6 +74,16 @@ update the TS file.
 - Browser (Claude in Chrome, desktop and a 390 px iframe): hero pre-start state, rules line, CTA, `/challenges` "Consistency" pill and the anonymous home row render with 0 console errors.
 - Cleanup order, one transaction, `DELETE ... RETURNING id`: AnalysisNotification, ShortLink, LiftingResult, Attempt, UserCompetition, User; then `gsutil rm` the video and the two `lifting/<attempt>/` objects. Connect with `cloud_sql_proxy -instances=toms-gym:us-east1:my-db=tcp:5433` and pg8000 using the `db-password` secret. Round 2 cleanup left 0 rows and 0 objects (re-listed with positive controls).
 
+## Week-1 fixes (2026-11-07)
+
+- Result block (`ConsistencyResult`) replaces the rank ladder on the video and status pages: "+N lifts banked" plus this week's `lifts / quota` and days left. It places the attempt in its own week from `attempt_created_at` (new on `GET /lifting/result/<id>`, read in `rules.tz` like backend `week_of`): an earlier week reads "banked in week K" with no week line, a pre-start upload reads "warm-up lifts · not scored". On someone else's video the week line is prefixed with the athlete's first name.
+- Status page headline keeps the raw rep count; a situp with sloppy reps adds "C clean of T · sloppy reps count half" so it reconciles with the half-credit lifts in the block.
+- Share text on a club video: "I banked N lifts in The 100 Club — L / Q this week. Join me:" (no rank). `inChallenge` drops the extra "the" for any title starting with "The".
+- Podium tie line names the tiebreak (streak, weeks met, this week's lifts, name, as backend `sort_key`). Live-week type leads show as "Situp · locks Sun" in the week table, with a hero note that +25 bonuses land on Sunday.
+- Status pill reads "Ongoing · ends Sun 27 Dec" from the challenge's own `mode`/`rules` on first render, not only after the leaderboard loads.
+- Bodyweight weight guard: Pushup, Situp and Plank attempts store `weight_kg 0` on every write path (stale APKs posted 60). It is keyed on lift type, not challenge mode, so a bodyweight lift on a weight board would score 0 (no prod board mixes them); Squat is not zeroed. `lift_type` is mapped case-insensitively before the guard.
+- `tests/conftest.py` refuses to load unless `DATABASE_URL` is a local Postgres (its `init_db` drops tables and importing the app runs migrations; with `DATABASE_URL` unset that is the Cloud SQL instance in `backend/.env`). Use `tools/run_ci_tests.sh`.
+
 ## Limitations
 
 - Not covered by the proof: the ring, flame, leader chips, week table and ranked rows were never rendered in a browser against live data (the board was empty during every browser check); the saved-`userId` home pill; the upload page lift list and Squat weight 0 in a browser; behaviour after Mon 2 Nov (live state); ties, a second athlete, tiebreaks and the reset after a miss in prod (unit tests only); Pushup and Squat lifts; situp half-credit used seeded `rep_metrics`, not an engine report. The `as_of` call with the real token ran in round 2 only.
