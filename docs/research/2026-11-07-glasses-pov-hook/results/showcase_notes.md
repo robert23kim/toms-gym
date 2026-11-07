@@ -1,0 +1,10 @@
+# Showcase loop 2 (re-render after critic)
+showcase.mp4: 1920x1080, 30 fps, H.264 yuv420p, AAC from the sources, 31.9 s, made by make_showcase.py.
+Stages: ball lane-gated-ball, lane composition edge lane + smooth3 + tail rejection, path none (no fit drawn).
+Timeline (s): title 0-2; HOLDOUT first: 191253 2.0-4.7; 191820 -7.13; 191913 -10.1; 192142 -12.97; 192636 -15.87; then dev: 185121 -18.53; 185331 -21.23; 185454 -23.63; 185645 -26.4; 190115 -28.9; closing card 28.9-31.9.
+Order deviates from "stem order": holdout first so the first 15 s are not in-sample (critic). 185121 now has a lane fit so it is not pushed last.
+Critic fixes: depth is the constant-speed ft_cv (60*(f-rel)/(pin-rel)), monotone by construction, drawn to pin_hit (no doubling back; pin_hit points kept); depth axis 0-64 ft, head pin at 60, back row 62.6; vertical board ruler removed, current-board triangle and entry tick sit on the horizontal board axis under the foul line; 191820 reads GUTTER BALL, no min board; min board uses ft_cv; line = 5-frame median of the dots (dots raw) to remove the Z at the arrows; gutter points clamped into the bands.
+192142 / 192636: window is still release-5..pin_hit+15, the tracker ends at pin_hit+4 (labelled on the left), the readout is labelled "at the labelled pin_hit", and an amber diamond plus caption shows the hand-label contact (f490 board 21.65, f463 board 20.55) from the holdout truth. The video does NOT draw tracker output for that last stretch; the trace ends short of the hook's full extent.
+Closing card: holdout n=5 and dev n=5 (in-sample) separately; entry/path use throws with a loop-1 lane fit (dev n=4); like for like on 9 throws entry 4.91 -> 2.46; caveats for tuned dev, post-selected holdout stages, shared instrument.
+Frames Read: 192142 pin and end, 191820 end, 192636 pin, 185331 mid, title card, closing card (the legend overlap was fixed before the last render; 192636/185331/title were read after it). Not viewed: the other 16 saved frames.
+Not checked: audio sync (muxed from per-throw AAC segments, durations from frame counts) and playback in a player; ffprobe confirms codec, size, fps, duration only.

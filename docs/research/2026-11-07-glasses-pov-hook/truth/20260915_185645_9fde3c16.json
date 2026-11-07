@@ -1,0 +1,269 @@
+{
+ "stem": "20260915_185645_9fde3c16",
+ "release_frame": 237,
+ "pin_hit_frame": 299,
+ "fps": 30,
+ "path": [
+  {
+   "f": 243,
+   "x": 525.5,
+   "y": 509.0,
+   "r": 55.2,
+   "left_x": 224.0,
+   "right_x": 795.0,
+   "board": 18.94,
+   "src": "ball = purple blob, circle checked on lw_243.jpg; L Sobel + grey 223:130 -> 226:196; R from the grey profile at row 509 (780:176 -> 798:83 -> 810:25), outside the lane crop",
+   "contact_y": 564,
+   "left_x_contact": 217,
+   "right_x_contact": 844,
+   "board_contact": 20.3
+  },
+  {
+   "f": 251,
+   "x": 335.0,
+   "y": 460.5,
+   "r": 28.2,
+   "left_x": 142.0,
+   "right_x": 459.0,
+   "board": 15.86,
+   "src": "ball = purple blob, circle checked on lw_251.jpg; edges Sobel peaks, markers checked on mont_lw_n1.jpg",
+   "contact_y": 489,
+   "left_x_contact": 136,
+   "right_x_contact": 478,
+   "board_contact": 16.89
+  },
+  {
+   "f": 260,
+   "x": 214.0,
+   "y": 496.5,
+   "r": 21.2,
+   "left_x": 67.5,
+   "right_x": 279.0,
+   "board": 12.68,
+   "src": "ball = purple blob, circle checked on lw_260.jpg; L read on ledge_260.jpg (5x) + grey 66:111 -> 69:193 (Sobel window had missed it); R Sobel, checked on mont_lw_n2.jpg",
+   "contact_y": 518,
+   "left_x_contact": 63,
+   "right_x_contact": 290,
+   "board_contact": 13.72
+  },
+  {
+   "f": 268,
+   "x": 186.0,
+   "y": 523.5,
+   "r": 15.2,
+   "left_x": 63.0,
+   "right_x": 229.0,
+   "board": 10.84,
+   "src": "ball = purple blob, circle checked on lw_268.jpg; edges Sobel + grey, markers checked on mont_lw_n2.jpg",
+   "contact_y": 539,
+   "left_x_contact": 57,
+   "right_x_contact": 236,
+   "board_contact": 11.61
+  },
+  {
+   "f": 277,
+   "x": 222.5,
+   "y": 526.5,
+   "r": 13.5,
+   "left_x": 120.5,
+   "right_x": 251.0,
+   "board": 9.3,
+   "src": "ball = purple blob, circle checked on lw_277.jpg; L from grey 119:103 -> 122:176 (Sobel had 130, in the wood); R Sobel, checked on mont_lw_n2.jpg",
+   "contact_y": 540,
+   "left_x_contact": 118,
+   "right_x_contact": 257,
+   "board_contact": 10.43
+  },
+  {
+   "f": 285,
+   "x": 280.0,
+   "y": 531.0,
+   "r": 10.0,
+   "left_x": 195.0,
+   "right_x": 300.0,
+   "board": 8.24,
+   "src": "ball eye-read on gc_<f>.jpg (6x, 10 px grid); edges = Sobel-x peak / grey profile at row y, markers checked on mont_lw_m1.jpg",
+   "contact_y": 541,
+   "left_x_contact": 192,
+   "right_x_contact": 305,
+   "board_contact": 9.41
+  },
+  {
+   "f": 287,
+   "x": 295.3,
+   "y": 530.0,
+   "r": 9.5,
+   "left_x": 211.5,
+   "right_x": 313.5,
+   "board": 7.78,
+   "src": "ball eye-read on gc_<f>.jpg (6x, 10 px grid); edges = Sobel-x peak / grey profile at row y, markers checked on mont_lw_m1.jpg",
+   "contact_y": 540,
+   "left_x_contact": 209,
+   "right_x_contact": 317,
+   "board_contact": 8.64
+  },
+  {
+   "f": 289,
+   "x": 307.2,
+   "y": 528.7,
+   "r": 8.5,
+   "left_x": 227.5,
+   "right_x": 324.5,
+   "board": 7.78,
+   "src": "ball eye-read on gc_<f>.jpg (6x, 10 px grid); edges = Sobel-x peak / grey profile at row y, markers checked on mont_lw_m1.jpg",
+   "contact_y": 537,
+   "left_x_contact": 225,
+   "right_x_contact": 328,
+   "board_contact": 8.67
+  },
+  {
+   "f": 291,
+   "x": 319.8,
+   "y": 526.0,
+   "r": 9.0,
+   "left_x": 243.5,
+   "right_x": 336.0,
+   "board": 7.66,
+   "src": "ball eye-read on gc_<f>.jpg (6x, 10 px grid); edges = Sobel-x peak / grey profile at row y, markers checked on mont_lw_m1.jpg",
+   "contact_y": 535,
+   "left_x_contact": 240,
+   "right_x_contact": 340,
+   "board_contact": 8.68
+  },
+  {
+   "f": 293,
+   "x": 331.7,
+   "y": 522.0,
+   "r": 6.7,
+   "left_x": 258.3,
+   "right_x": 348.8,
+   "board": 8.18,
+   "src": "ball eye-read on gc_293.jpg; ball centre at/above the pin-base row: edges = straight-line fits of the gutter lips over rows 533-560 in front of the pin deck, extrapolated to the ball row (rms 0.3/0.5 px), checked on mont_lw_m2.jpg",
+   "contact_y": 529,
+   "left_x_contact": 256,
+   "right_x_contact": 350,
+   "board_contact": 8.4
+  },
+  {
+   "f": 295,
+   "x": 344.3,
+   "y": 519.0,
+   "r": 7.0,
+   "left_x": 273.2,
+   "right_x": 360.8,
+   "board": 8.16,
+   "src": "ball eye-read on gc_295.jpg; edges = gutter-lip line fits over rows 530-558 in front of the deck (left feature chosen over the capping stripe 27 px further left, see mont_lw_m2.jpg)",
+   "contact_y": 526,
+   "left_x_contact": 271.6,
+   "right_x_contact": 363.4,
+   "board_contact": 8.91
+  },
+  {
+   "f": 297,
+   "x": 357.0,
+   "y": 516.0,
+   "r": 7.0,
+   "left_x": 289.1,
+   "right_x": 372.7,
+   "board": 8.14,
+   "src": "ball eye-read on gc_297.jpg; edges = gutter-lip line fits over rows 528-555 in front of the deck, checked on mont_lw_m2.jpg",
+   "contact_y": 523,
+   "left_x_contact": 287,
+   "right_x_contact": 374,
+   "board_contact": 8.43
+  },
+  {
+   "f": 299,
+   "x": 366.0,
+   "y": 511.5,
+   "r": 7.0,
+   "left_x": 299.5,
+   "right_x": 379.5,
+   "board": 7.41,
+   "src": "ball eye-read on gc_299.jpg and pins_298_301.jpg (365.5 / 366.5); edges = gutter-lip line fits over rows 528-552 in front of the deck, checked on mont_lw_m2.jpg",
+   "contact_y": 518,
+   "left_x_contact": 298,
+   "right_x_contact": 384,
+   "board_contact": 8.95
+  }
+ ],
+ "pin_row_frame": 291,
+ "pin_row_y": 527,
+ "entry": {
+  "board": 7.52,
+  "uncertainty": 1.42,
+  "reads": {
+   "edge_profile_f298": 8.54,
+   "edge_profile_f299": 7.41,
+   "edge_profile_f300": 7.63,
+   "pin_ruler_f296": 6.7,
+   "pin_ruler_f297": 6.17,
+   "ball_ruler_f298": 9.02
+  },
+  "spread": [
+   6.17,
+   9.02
+  ]
+ },
+ "min_board": 7.41,
+ "min_board_frame": 299,
+ "hooks_back": false,
+ "board_convention": "1-39 from the right gutter",
+ "method": "Each path frame was read on the source video (sequential decode, seek-checked: offset 0 MAD 0.0, +-1 MAD 9-16): ball (x,y,r) eye-read on a gridded crop (purple blob only on 243-277 where its circle was checked on the lane crop; the blob fails from 289 on the purple pin-deck backdrop), and in the SAME frame at the ball centre row the left/right lane edges at the wood/gutter boundary (Sobel or grey-profile step, every marker inspected on a gridded crop; from 293 on the ball row overlaps the rack, so edges are straight-line fits of the gutter lips over the 25 rows in front of the pin deck, extrapolated to the ball row); board = 1 + 38*(x - right_x)/(left_x - right_x), no quad carry-over. Entry = median of 6 named reads: edge profile at pin_hit-1/0/+1, pin ruler at f296/f297 with PHYSICAL pin geometry (7 columns at 6 in, 7-to-10 = 32.97 units of 41.5/38 in, headpin = board 20; the task text's 7->33/10->7 mapping is self-contradictory and was not used), ball-diameter ruler at f298 (2r = 7.78 units, distance from the right edge); extra keys contact_y/left_x_contact/right_x_contact/board_contact re-read the edges at the contact row y+r (board stays the row-y read).",
+ "limits": "Handheld camera with 45-59 px/frame jumps around 290-300: far-end ball r 6.5-8 is read on a dark ring with a highlight, centres +-1.5 px (= +-0.7 board), r +-1 px. Far-end edges +-1.5 px from the line fits; the left gutter has a capping stripe 16-27 px outside the lip that a wide window picks up (295-299). Near-end edges on 243/260/277 were missed by the Sobel window and come from grey profiles (+-3 px). Scale disagreement at f297: lane edges 83.6 px / 38 = 2.20 px/unit, pin columns 62 px / 32.97 = 1.88 px/unit, ball 14 px / 7.78 = 1.80 px/unit; pin span / lane width 0.74 vs physical 0.87; the headpin column sits on the edge midpoint (331 vs 330.9). Ball ruler at r 7-8 is +-13 % per px of radius, the weakest read. With the task text's mapping (26 units for the 7 columns) the pin ruler would read 9.5 (f296) and 9.1 (f297). pin_hit 299 (loop 1, +-2) is NOT confirmed by pin motion: no pin moves through f305 (contact_296_305.jpg); the ball overlaps the rack in projection from ~291 because the camera is low, so the 'centre reaches the pin-base row' frame (291) is 8 frames before pin_hit.",
+ "extra": {
+  "pin_columns_x": {
+   "296": [
+    292,
+    303,
+    314,
+    325,
+    335,
+    345,
+    354
+   ],
+   "297": [
+    299,
+    309,
+    320,
+    331,
+    342,
+    351,
+    361
+   ]
+  },
+  "entry_frames": {
+   "296": {
+    "x": 350,
+    "y": 519,
+    "r": 7.5,
+    "left_x": 281.6,
+    "right_x": 367.3,
+    "board": 8.67
+   },
+   "298": {
+    "x": 361,
+    "y": 515,
+    "r": 8,
+    "left_x": 294.3,
+    "right_x": 377.5,
+    "board": 8.54
+   },
+   "300": {
+    "x": 369,
+    "y": 508.5,
+    "r": 8,
+    "left_x": 302.8,
+    "right_x": 383.0,
+    "board": 7.63
+   }
+  },
+  "pin_row_note": "pin bottoms ~522 at 287 (ball centre 530), ~524-525 at 289 (ball 528.7), ~525-527 at 291 (ball 526) -> 291; the ball's lower edge overlaps the front pin bases in projection from 291 to 299 while no pin moves",
+  "contact_frame_note": "no pin motion visible 296-305; the frame of real contact is not identifiable in the decoded frames read",
+  "task_mapping_pin_ruler": {
+   "pin_ruler_task_f296": 9.52,
+   "pin_ruler_task_f297": 9.1
+  }
+ },
+ "loop1_compare": "Loop-1 truth board 5.5 +-2.0 (edge reads 8.2/7.2/7.4/6.0 at f280-296, pin ruler 4.2 at f296). This path reads 7.4-8.7 over 285-300; the far-end edge reads agree with loop-1's f285-290 reads, and loop-1's lower number comes from its f296 edge read (6.0) and pin ruler (4.2). Here the pin ruler reads 6.2-6.7 with the physical span."
+}

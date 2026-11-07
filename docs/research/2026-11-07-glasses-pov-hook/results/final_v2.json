@@ -1,0 +1,1336 @@
+{
+ "scorer": "score_v2.py",
+ "tracks_dir": "results/tracks",
+ "v1_tracks_dir": "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/results/tracks",
+ "truth": {
+  "dev": "truth/",
+  "holdout": "holdout folder outside the repo (numbers only here; truth_* fields dropped)"
+ },
+ "rows": [
+  {
+   "stem": "20260915_185121_23d80f05",
+   "split": "dev",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 55,
+   "n_boards": 55,
+   "final_board": 11.1,
+   "board_at_60ft": 11.1,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 10.15,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 1.0,
+   "far_median_px_err": 0.9,
+   "path_err_rms": 0.55,
+   "path_err_far": 0.63,
+   "path_bias_far": 0.22,
+   "path_missing": 0,
+   "entry_err": 0.03,
+   "hook_err": 0.71,
+   "direction_ok": true,
+   "entry": 11.1,
+   "track_trend_boards": 0.38,
+   "path_bias": 0.18,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 11.1,
+   "wall_s": 131.7,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 1.4,
+   "v1_far_median_px_err": 2.0,
+   "v1_path_err_rms": null,
+   "v1_path_err_far": null,
+   "v1_path_bias_far": null,
+   "v1_path_missing": 14,
+   "v1_entry_err": null,
+   "v1_hook_err": null,
+   "v1_direction_ok": null,
+   "v1_final_board": null
+  },
+  {
+   "stem": "20260915_185331_19de9ec7",
+   "split": "dev",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 65,
+   "n_boards": 65,
+   "final_board": 8.3,
+   "board_at_60ft": 8.3,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 5.03,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 2.5,
+   "far_median_px_err": 2.1,
+   "path_err_rms": 0.89,
+   "path_err_far": 0.95,
+   "path_bias_far": 0.79,
+   "path_missing": 0,
+   "entry_err": 1.42,
+   "hook_err": 1.66,
+   "direction_ok": true,
+   "entry": 8.3,
+   "track_trend_boards": 3.11,
+   "path_bias": 0.65,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 8.3,
+   "wall_s": 92.0,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 6.0,
+   "v1_far_median_px_err": 8.3,
+   "v1_path_err_rms": 5.6,
+   "v1_path_err_far": 5.05,
+   "v1_path_bias_far": -4.62,
+   "v1_path_missing": 0,
+   "v1_entry_err": 1.88,
+   "v1_hook_err": 3.87,
+   "v1_direction_ok": false,
+   "v1_final_board": 5.0
+  },
+  {
+   "stem": "20260915_185454_f240c883",
+   "split": "dev",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 56,
+   "n_boards": 56,
+   "final_board": 11.0,
+   "board_at_60ft": 11.0,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 11.05,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 1.1,
+   "far_median_px_err": 0.9,
+   "path_err_rms": 0.4,
+   "path_err_far": 0.49,
+   "path_bias_far": -0.46,
+   "path_missing": 0,
+   "entry_err": 0.61,
+   "hook_err": 0.04,
+   "direction_ok": true,
+   "entry": 11.0,
+   "track_trend_boards": -1.14,
+   "path_bias": -0.37,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 11.0,
+   "wall_s": 72.2,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 1.6,
+   "v1_far_median_px_err": 1.1,
+   "v1_path_err_rms": 4.64,
+   "v1_path_err_far": 0.82,
+   "v1_path_bias_far": -0.78,
+   "v1_path_missing": 0,
+   "v1_entry_err": 0.61,
+   "v1_hook_err": 1.82,
+   "v1_direction_ok": true,
+   "v1_final_board": 11.0
+  },
+  {
+   "stem": "20260915_185645_9fde3c16",
+   "split": "dev",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 67,
+   "n_boards": 67,
+   "final_board": 7.6,
+   "board_at_60ft": 7.6,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 7.33,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 1.4,
+   "far_median_px_err": 1.1,
+   "path_err_rms": 0.4,
+   "path_err_far": 0.39,
+   "path_bias_far": -0.19,
+   "path_missing": 0,
+   "entry_err": 0.08,
+   "hook_err": 0.16,
+   "direction_ok": true,
+   "entry": 7.6,
+   "track_trend_boards": -0.38,
+   "path_bias": 0.01,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 7.6,
+   "wall_s": 80.6,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 2.0,
+   "v1_far_median_px_err": 1.9,
+   "v1_path_err_rms": 2.11,
+   "v1_path_err_far": 1.42,
+   "v1_path_bias_far": -1.04,
+   "v1_path_missing": 0,
+   "v1_entry_err": 0.52,
+   "v1_hook_err": 1.9,
+   "v1_direction_ok": false,
+   "v1_final_board": 7.0
+  },
+  {
+   "stem": "20260915_190115_a7cf2c70",
+   "split": "dev",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 59,
+   "n_boards": 59,
+   "final_board": 8.8,
+   "board_at_60ft": 8.8,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 8.67,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 0.6,
+   "far_median_px_err": 0.6,
+   "path_err_rms": 0.28,
+   "path_err_far": 0.2,
+   "path_bias_far": -0.13,
+   "path_missing": 0,
+   "entry_err": 0.19,
+   "hook_err": 0.12,
+   "direction_ok": true,
+   "entry": 8.8,
+   "track_trend_boards": -0.66,
+   "path_bias": -0.18,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 8.8,
+   "wall_s": 168.7,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 2.1,
+   "v1_far_median_px_err": 2.1,
+   "v1_path_err_rms": 2.26,
+   "v1_path_err_far": 1.05,
+   "v1_path_bias_far": 0.51,
+   "v1_path_missing": 0,
+   "v1_entry_err": 1.01,
+   "v1_hook_err": 1.8,
+   "v1_direction_ok": true,
+   "v1_final_board": 10.0
+  },
+  {
+   "stem": "20260915_191253_6cf2480f",
+   "split": "holdout",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 65,
+   "n_boards": 65,
+   "final_board": 8.7,
+   "board_at_60ft": 8.7,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 6.55,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 1.7,
+   "far_median_px_err": 1.8,
+   "path_err_rms": 0.65,
+   "path_err_far": 0.8,
+   "path_bias_far": 0.04,
+   "path_missing": 0,
+   "entry_err": 0.77,
+   "hook_err": 1.57,
+   "direction_ok": true,
+   "entry": 8.7,
+   "track_trend_boards": 2.48,
+   "path_bias": 0.02,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 8.7,
+   "wall_s": 81.3,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 2.5,
+   "v1_far_median_px_err": 3.6,
+   "v1_path_err_rms": 2.66,
+   "v1_path_err_far": 1.51,
+   "v1_path_bias_far": -1.25,
+   "v1_path_missing": 0,
+   "v1_entry_err": 3.47,
+   "v1_hook_err": 2.95,
+   "v1_direction_ok": true,
+   "v1_final_board": 6.0
+  },
+  {
+   "stem": "20260915_191820_0196b564",
+   "split": "holdout",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 57,
+   "n_boards": 52,
+   "final_board": -1.7,
+   "board_at_60ft": -1.7,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": -2.38,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 3.5,
+   "far_median_px_err": 4.4,
+   "path_err_rms": 1.97,
+   "path_err_far": 2.26,
+   "path_bias_far": 2.17,
+   "path_missing": 1,
+   "entry_err": 0.71,
+   "hook_err": 3.64,
+   "direction_ok": false,
+   "entry": -1.7,
+   "track_trend_boards": -0.15,
+   "path_bias": 1.61,
+   "path_missing_far": 1,
+   "series_rejected": [
+    463,
+    464,
+    465,
+    466,
+    467
+   ],
+   "final_board_pre_fixpass": -1.6,
+   "wall_s": 64.6,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 3.9,
+   "v1_far_median_px_err": 5.4,
+   "v1_path_err_rms": 2.24,
+   "v1_path_err_far": 2.49,
+   "v1_path_bias_far": 0.72,
+   "v1_path_missing": 0,
+   "v1_entry_err": 3.41,
+   "v1_hook_err": 10.06,
+   "v1_direction_ok": false,
+   "v1_final_board": 1.0
+  },
+  {
+   "stem": "20260915_191913_907c358b",
+   "split": "holdout",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 73,
+   "n_boards": 73,
+   "final_board": 11.1,
+   "board_at_60ft": 11.1,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 7.64,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 1.5,
+   "far_median_px_err": 1.4,
+   "path_err_rms": 1.26,
+   "path_err_far": 1.55,
+   "path_bias_far": 1.21,
+   "path_missing": 0,
+   "entry_err": 1.0,
+   "hook_err": 0.67,
+   "direction_ok": true,
+   "entry": 11.1,
+   "track_trend_boards": 3.35,
+   "path_bias": 0.91,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 11.1,
+   "wall_s": 99.2,
+   "v1_recall_pct": 33.3,
+   "v1_far_recall_pct": 0.0,
+   "v1_median_px_err": 28.6,
+   "v1_far_median_px_err": 30.8,
+   "v1_path_err_rms": 13.15,
+   "v1_path_err_far": 16.07,
+   "v1_path_bias_far": -15.97,
+   "v1_path_missing": 0,
+   "v1_entry_err": 3.1,
+   "v1_hook_err": 13.49,
+   "v1_direction_ok": false,
+   "v1_final_board": 7.0
+  },
+  {
+   "stem": "20260915_192142_eeb210f6",
+   "split": "holdout",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 70,
+   "n_boards": 70,
+   "final_board": 11.0,
+   "board_at_60ft": 11.0,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 6.3,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 1.0,
+   "far_median_px_err": 1.0,
+   "path_err_rms": 0.38,
+   "path_err_far": 0.51,
+   "path_bias_far": -0.35,
+   "path_missing": 0,
+   "entry_err": 10.65,
+   "hook_err": 10.37,
+   "direction_ok": true,
+   "entry": 11.0,
+   "track_trend_boards": 4.84,
+   "path_bias": -0.21,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 11.0,
+   "wall_s": 91.0,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 2.9,
+   "v1_far_median_px_err": 4.0,
+   "v1_path_err_rms": 5.24,
+   "v1_path_err_far": 2.15,
+   "v1_path_bias_far": -2.05,
+   "v1_path_missing": 0,
+   "v1_entry_err": 16.65,
+   "v1_hook_err": 13.38,
+   "v1_direction_ok": true,
+   "v1_final_board": 5.0
+  },
+  {
+   "stem": "20260915_192636_7c7fbfb0",
+   "split": "holdout",
+   "stages": {
+    "ball": "lane-gated-ball",
+    "lane": "composition/edge+smooth3",
+    "path": "none"
+   },
+   "fallback": [],
+   "n_points": 71,
+   "n_boards": 71,
+   "final_board": 13.8,
+   "board_at_60ft": 13.8,
+   "board_at_60ft_note": "no path stage: the entry is final_board (Theil-Sen at pin_hit)",
+   "min_board": 7.12,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "median_px_err": 0.9,
+   "far_median_px_err": 0.9,
+   "path_err_rms": 0.36,
+   "path_err_far": 0.44,
+   "path_bias_far": -0.1,
+   "path_missing": 0,
+   "entry_err": 6.75,
+   "hook_err": 6.38,
+   "direction_ok": true,
+   "entry": 13.8,
+   "track_trend_boards": 5.65,
+   "path_bias": 0.02,
+   "path_missing_far": 0,
+   "series_rejected": [],
+   "final_board_pre_fixpass": 13.8,
+   "wall_s": 225.7,
+   "v1_recall_pct": 100.0,
+   "v1_far_recall_pct": 100.0,
+   "v1_median_px_err": 6.5,
+   "v1_far_median_px_err": 10.5,
+   "v1_path_err_rms": 3.68,
+   "v1_path_err_far": 4.66,
+   "v1_path_bias_far": -4.26,
+   "v1_path_missing": 0,
+   "v1_entry_err": 13.55,
+   "v1_hook_err": 10.5,
+   "v1_direction_ok": true,
+   "v1_final_board": 7.0
+  }
+ ],
+ "means": {
+  "dev": {
+   "recall_pct": 100.0,
+   "recall_pct_n": 5,
+   "far_recall_pct": 100.0,
+   "far_recall_pct_n": 5,
+   "median_px_err": 1.32,
+   "median_px_err_n": 5,
+   "far_median_px_err": 1.12,
+   "far_median_px_err_n": 5,
+   "path_err_rms": 0.504,
+   "path_err_rms_n": 5,
+   "path_err_far": 0.532,
+   "path_err_far_n": 5,
+   "path_bias_far": 0.046,
+   "path_bias_far_n": 5,
+   "path_missing": 0.0,
+   "path_missing_n": 5,
+   "entry_err": 0.466,
+   "entry_err_n": 5,
+   "hook_err": 0.538,
+   "hook_err_n": 5,
+   "direction_ok_pct": 100.0,
+   "entry_le3_count": 5
+  },
+  "holdout": {
+   "recall_pct": 100.0,
+   "recall_pct_n": 5,
+   "far_recall_pct": 100.0,
+   "far_recall_pct_n": 5,
+   "median_px_err": 1.72,
+   "median_px_err_n": 5,
+   "far_median_px_err": 1.9,
+   "far_median_px_err_n": 5,
+   "path_err_rms": 0.924,
+   "path_err_rms_n": 5,
+   "path_err_far": 1.112,
+   "path_err_far_n": 5,
+   "path_bias_far": 0.594,
+   "path_bias_far_n": 5,
+   "path_missing": 0.2,
+   "path_missing_n": 5,
+   "entry_err": 3.976,
+   "entry_err_n": 5,
+   "hook_err": 4.526,
+   "hook_err_n": 5,
+   "direction_ok_pct": 80.0,
+   "entry_le3_count": 3
+  },
+  "all10": {
+   "recall_pct": 100.0,
+   "recall_pct_n": 10,
+   "far_recall_pct": 100.0,
+   "far_recall_pct_n": 10,
+   "median_px_err": 1.52,
+   "median_px_err_n": 10,
+   "far_median_px_err": 1.51,
+   "far_median_px_err_n": 10,
+   "path_err_rms": 0.714,
+   "path_err_rms_n": 10,
+   "path_err_far": 0.822,
+   "path_err_far_n": 10,
+   "path_bias_far": 0.32,
+   "path_bias_far_n": 10,
+   "path_missing": 0.1,
+   "path_missing_n": 10,
+   "entry_err": 2.221,
+   "entry_err_n": 10,
+   "hook_err": 2.532,
+   "hook_err_n": 10,
+   "direction_ok_pct": 90.0,
+   "entry_le3_count": 8
+  },
+  "v1_dev": {
+   "recall_pct": 100.0,
+   "recall_pct_n": 5,
+   "far_recall_pct": 100.0,
+   "far_recall_pct_n": 5,
+   "median_px_err": 2.62,
+   "median_px_err_n": 5,
+   "far_median_px_err": 3.08,
+   "far_median_px_err_n": 5,
+   "path_err_rms": 3.652,
+   "path_err_rms_n": 4,
+   "path_err_far": 2.085,
+   "path_err_far_n": 4,
+   "path_bias_far": -1.482,
+   "path_bias_far_n": 4,
+   "path_missing": 2.8,
+   "path_missing_n": 5,
+   "entry_err": 1.005,
+   "entry_err_n": 4,
+   "hook_err": 2.348,
+   "hook_err_n": 4,
+   "direction_ok_pct": 50.0,
+   "entry_le3_count": 4
+  },
+  "v1_holdout": {
+   "recall_pct": 86.66,
+   "recall_pct_n": 5,
+   "far_recall_pct": 80.0,
+   "far_recall_pct_n": 5,
+   "median_px_err": 8.88,
+   "median_px_err_n": 5,
+   "far_median_px_err": 10.86,
+   "far_median_px_err_n": 5,
+   "path_err_rms": 5.394,
+   "path_err_rms_n": 5,
+   "path_err_far": 5.376,
+   "path_err_far_n": 5,
+   "path_bias_far": -4.562,
+   "path_bias_far_n": 5,
+   "path_missing": 0.0,
+   "path_missing_n": 5,
+   "entry_err": 8.036,
+   "entry_err_n": 5,
+   "hook_err": 10.076,
+   "hook_err_n": 5,
+   "direction_ok_pct": 60.0,
+   "entry_le3_count": 0
+  },
+  "v1_all10": {
+   "recall_pct": 93.33,
+   "recall_pct_n": 10,
+   "far_recall_pct": 90.0,
+   "far_recall_pct_n": 10,
+   "median_px_err": 5.75,
+   "median_px_err_n": 10,
+   "far_median_px_err": 6.97,
+   "far_median_px_err_n": 10,
+   "path_err_rms": 4.62,
+   "path_err_rms_n": 9,
+   "path_err_far": 3.913,
+   "path_err_far_n": 9,
+   "path_bias_far": -3.193,
+   "path_bias_far_n": 9,
+   "path_missing": 1.4,
+   "path_missing_n": 10,
+   "entry_err": 4.911,
+   "entry_err_n": 9,
+   "hook_err": 6.641,
+   "hook_err_n": 9,
+   "direction_ok_pct": 55.6,
+   "entry_le3_count": 4
+  }
+ },
+ "before_after": {
+  "v1_far_recall": 90.0,
+  "v1_far_recall_n": 10,
+  "v2_far_recall": 100.0,
+  "v2_far_recall_n": 10,
+  "v1_entry_err": 4.911,
+  "v1_entry_err_n": 9,
+  "v2_entry_err": 2.221,
+  "v2_entry_err_n": 10,
+  "v1_path_err_far": 3.913,
+  "v1_path_err_far_n": 9,
+  "v2_path_err_far": 0.822,
+  "v2_path_err_far_n": 10
+ },
+ "before_after_holdout": {
+  "v1_far_recall": 80.0,
+  "v1_far_recall_n": 5,
+  "v2_far_recall": 100.0,
+  "v2_far_recall_n": 5,
+  "v1_entry_err": 8.036,
+  "v1_entry_err_n": 5,
+  "v2_entry_err": 3.976,
+  "v2_entry_err_n": 5,
+  "v1_path_err_far": 5.376,
+  "v1_path_err_far_n": 5,
+  "v2_path_err_far": 1.112,
+  "v2_path_err_far_n": 5,
+  "v1_path_err_rms": 5.394,
+  "v1_path_err_rms_n": 5,
+  "v2_path_err_rms": 0.924,
+  "v2_path_err_rms_n": 5,
+  "v1_hook_err": 10.076,
+  "v1_hook_err_n": 5,
+  "v2_hook_err": 4.526,
+  "v2_hook_err_n": 5
+ },
+ "before_fixpass": {
+  "note": "track_v2 before the fix pass (same scorer, same truth); copy in work/fixpass/before/",
+  "holdout": {
+   "path_err_far": 2.256,
+   "path_err_rms": 1.684,
+   "entry_err": 3.996,
+   "hook_err": 4.546,
+   "direction_ok_pct": 100.0,
+   "entry_le3_count": 3
+  },
+  "before_after": {
+   "v1_far_recall": 90.0,
+   "v1_far_recall_n": 10,
+   "v2_far_recall": 100.0,
+   "v2_far_recall_n": 10,
+   "v1_entry_err": 4.911,
+   "v1_entry_err_n": 9,
+   "v2_entry_err": 2.231,
+   "v2_entry_err_n": 10,
+   "v1_path_err_far": 3.913,
+   "v1_path_err_far_n": 9,
+   "v2_path_err_far": 1.394,
+   "v2_path_err_far_n": 10
+  }
+ },
+ "claim_caveats": [
+  "Shared instrument: the holdout ball truth is a purple/dark HSV blob fit confirmed by eye, and the lane-gated-ball far refine is a purple disc filter; the truth boards come from same-frame wood->gutter edge lines, and the composition lane is per-frame wood-mask gutter edges. The px and board agreement measures agreement with that shared instrument, and v1 (SAM masks) is scored on the instrument v2 copies. Absolute board accuracy below ~1.5 boards is not established: the truth pin ruler and the edge profile disagree by 1-2 boards (px/in 1.67 vs 2.1).",
+  "Post-selection: the ball and lane stages were picked from the judges' holdout rows (judge_*.json), hence the leave-one-out flips in sensitivity, so the holdout means are not a fresh test. before_after (n=10) also mixes in the 5 dev stems on which the refine thresholds and the smoothing were tuned; before_after_holdout is the n=5 view.",
+  "Entry convention: every tracker evaluates at the cuts.json pin_hit; 192142 and 192636 truth entry is at the observed contact 10 and 4 frames later, so most of their entry_err is that convention.",
+  "Fix-pass series rule (clean_series) was written after the skeptics read the 191820 holdout row; its threshold sits between the largest kept tail deviation (4.51 boards) and the smallest rejected one (20.12) on these 10 stems."
+ ],
+ "diag_composition_path_fit": {
+  "note": "NOT the chosen path stage; composition fit_path re-scored on the v2 boards",
+  "rows": [
+   {
+    "stem": "20260915_185121_23d80f05",
+    "split": "dev",
+    "fit_kind": "line",
+    "board_at_60ft": 11.14,
+    "min_board": 10.3,
+    "rise_after_min": null,
+    "entry_err": 0.01,
+    "hook_err": 0.82,
+    "path_err_far": 0.63,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_185331_19de9ec7",
+    "split": "dev",
+    "fit_kind": "line+hook",
+    "board_at_60ft": 8.31,
+    "min_board": 5.58,
+    "rise_after_min": 3.14,
+    "entry_err": 1.43,
+    "hook_err": 1.12,
+    "path_err_far": 0.95,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_185454_f240c883",
+    "split": "dev",
+    "fit_kind": "line",
+    "board_at_60ft": 11.04,
+    "min_board": 10.89,
+    "rise_after_min": null,
+    "entry_err": 0.57,
+    "hook_err": 0.16,
+    "path_err_far": 0.49,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_185645_9fde3c16",
+    "split": "dev",
+    "fit_kind": "line",
+    "board_at_60ft": 7.59,
+    "min_board": 6.66,
+    "rise_after_min": null,
+    "entry_err": 0.07,
+    "hook_err": 0.82,
+    "path_err_far": 0.39,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_190115_a7cf2c70",
+    "split": "dev",
+    "fit_kind": "line",
+    "board_at_60ft": 8.79,
+    "min_board": 8.19,
+    "rise_after_min": null,
+    "entry_err": 0.2,
+    "hook_err": 0.35,
+    "path_err_far": 0.2,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_191253_6cf2480f",
+    "split": "holdout",
+    "fit_kind": "line+hook",
+    "board_at_60ft": 8.69,
+    "min_board": 6.35,
+    "rise_after_min": 2.74,
+    "entry_err": 0.78,
+    "hook_err": 1.38,
+    "path_err_far": 0.8,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_191820_0196b564",
+    "split": "holdout",
+    "fit_kind": "line",
+    "board_at_60ft": -1.66,
+    "min_board": -3.31,
+    "rise_after_min": null,
+    "entry_err": 0.75,
+    "hook_err": 4.61,
+    "path_err_far": 2.26,
+    "direction_ok": false
+   },
+   {
+    "stem": "20260915_191913_907c358b",
+    "split": "holdout",
+    "fit_kind": "line+hook",
+    "board_at_60ft": 11.12,
+    "min_board": 7.67,
+    "rise_after_min": 3.54,
+    "entry_err": 1.02,
+    "hook_err": 0.68,
+    "path_err_far": 1.55,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_192142_eeb210f6",
+    "split": "holdout",
+    "fit_kind": "line+hook",
+    "board_at_60ft": 10.99,
+    "min_board": 6.19,
+    "rise_after_min": 4.88,
+    "entry_err": 10.66,
+    "hook_err": 10.27,
+    "path_err_far": 0.51,
+    "direction_ok": true
+   },
+   {
+    "stem": "20260915_192636_7c7fbfb0",
+    "split": "holdout",
+    "fit_kind": "line+hook",
+    "board_at_60ft": 13.79,
+    "min_board": 7.41,
+    "rise_after_min": 6.52,
+    "entry_err": 6.76,
+    "hook_err": 6.68,
+    "path_err_far": 0.44,
+    "direction_ok": true
+   }
+  ],
+  "holdout_means": {
+   "recall_pct": null,
+   "recall_pct_n": 0,
+   "far_recall_pct": null,
+   "far_recall_pct_n": 0,
+   "median_px_err": null,
+   "median_px_err_n": 0,
+   "far_median_px_err": null,
+   "far_median_px_err_n": 0,
+   "path_err_rms": null,
+   "path_err_rms_n": 0,
+   "path_err_far": 1.112,
+   "path_err_far_n": 5,
+   "path_bias_far": null,
+   "path_bias_far_n": 0,
+   "path_missing": null,
+   "path_missing_n": 0,
+   "entry_err": 3.994,
+   "entry_err_n": 5,
+   "hook_err": 4.724,
+   "hook_err_n": 5,
+   "direction_ok_pct": 80.0,
+   "entry_le3_count": 3
+  },
+  "dev_means": {
+   "recall_pct": null,
+   "recall_pct_n": 0,
+   "far_recall_pct": null,
+   "far_recall_pct_n": 0,
+   "median_px_err": null,
+   "median_px_err_n": 0,
+   "far_median_px_err": null,
+   "far_median_px_err_n": 0,
+   "path_err_rms": null,
+   "path_err_rms_n": 0,
+   "path_err_far": 0.532,
+   "path_err_far_n": 5,
+   "path_bias_far": null,
+   "path_bias_far_n": 0,
+   "path_missing": null,
+   "path_missing_n": 0,
+   "entry_err": 0.456,
+   "entry_err_n": 5,
+   "hook_err": 0.654,
+   "hook_err_n": 5,
+   "direction_ok_pct": 100.0,
+   "entry_le3_count": 5
+  }
+ },
+ "sensitivity": {
+  "judges_rule": {
+   "full_picks": {
+    "ball": "lane-gated-ball",
+    "lane": "composition",
+    "path": "none"
+   },
+   "full_verdicts": {
+    "pin-anchored-geometry": [
+     "partial",
+     "crash/no output on a stem"
+    ],
+    "lane-gated-ball": [
+     "works",
+     "0 per-stem metric regressions"
+    ],
+    "far-end-stacking": [
+     "partial",
+     "1 per-stem metric regressions"
+    ],
+    "composition": [
+     "works",
+     "path_err_far 2.53 vs 5.38, entry<=3 3/5"
+    ],
+    "physics-smoother": [
+     "partial",
+     "path_err_far ok True, entry ok False, entry<=3 0/5, false hook on 191820 True"
+    ]
+   },
+   "leave_one_out": {
+    "20260915_191253_6cf2480f": {
+     "picks": {
+      "ball": "lane-gated-ball",
+      "lane": "loop1/engine-lane",
+      "path": "none"
+     },
+     "flips": {
+      "lane": [
+       "composition",
+       "loop1/engine-lane"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "works",
+       "0 per-stem metric regressions"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "1 per-stem metric regressions"
+      ],
+      "composition": [
+       "partial",
+       "path_err_far 2.95 vs 6.34, entry<=3 2/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    },
+    "20260915_191820_0196b564": {
+     "picks": {
+      "ball": "lane-gated-ball",
+      "lane": "loop1/engine-lane",
+      "path": "none"
+     },
+     "flips": {
+      "lane": [
+       "composition",
+       "loop1/engine-lane"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "works",
+       "0 per-stem metric regressions"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "1 per-stem metric regressions"
+      ],
+      "composition": [
+       "partial",
+       "path_err_far 1.11 vs 6.10, entry<=3 2/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 False"
+      ]
+     }
+    },
+    "20260915_191913_907c358b": {
+     "picks": {
+      "ball": "lane-gated-ball",
+      "lane": "loop1/engine-lane",
+      "path": "none"
+     },
+     "flips": {
+      "lane": [
+       "composition",
+       "loop1/engine-lane"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "path_err_far 2.29 vs 2.70, entry<=3 2/4"
+      ],
+      "lane-gated-ball": [
+       "works",
+       "0 per-stem metric regressions"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "1 per-stem metric regressions"
+      ],
+      "composition": [
+       "partial",
+       "path_err_far 2.68 vs 2.70, entry<=3 2/4"
+      ],
+      "physics-smoother": [
+       "fails",
+       "path_err_far ok False, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    },
+    "20260915_192142_eeb210f6": {
+     "picks": {
+      "ball": "lane-gated-ball",
+      "lane": "composition",
+      "path": "none"
+     },
+     "flips": {},
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "works",
+       "0 per-stem metric regressions"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "1 per-stem metric regressions"
+      ],
+      "composition": [
+       "works",
+       "path_err_far 2.94 vs 6.18, entry<=3 3/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    },
+    "20260915_192636_7c7fbfb0": {
+     "picks": {
+      "ball": "far-end-stacking",
+      "lane": "composition",
+      "path": "none"
+     },
+     "flips": {
+      "ball": [
+       "lane-gated-ball",
+       "far-end-stacking"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "works",
+       "0 per-stem metric regressions"
+      ],
+      "far-end-stacking": [
+       "works",
+       "0 per-stem metric regressions"
+      ],
+      "composition": [
+       "works",
+       "path_err_far 2.99 vs 5.55, entry<=3 3/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    }
+   },
+   "any_flip": true,
+   "deciding_stems": {
+    "20260915_191253_6cf2480f": {
+     "lane": [
+      "composition",
+      "loop1/engine-lane"
+     ]
+    },
+    "20260915_191820_0196b564": {
+     "lane": [
+      "composition",
+      "loop1/engine-lane"
+     ]
+    },
+    "20260915_191913_907c358b": {
+     "lane": [
+      "composition",
+      "loop1/engine-lane"
+     ]
+    },
+    "20260915_192636_7c7fbfb0": {
+     "ball": [
+      "lane-gated-ball",
+      "far-end-stacking"
+     ]
+    }
+   }
+  },
+  "literal_ball_rubric": {
+   "full_picks": {
+    "ball": "composition",
+    "lane": "composition",
+    "path": "none"
+   },
+   "full_verdicts": {
+    "pin-anchored-geometry": [
+     "partial",
+     "crash/no output on a stem"
+    ],
+    "lane-gated-ball": [
+     "fails",
+     "far_recall beats loop-1 on 1/5"
+    ],
+    "far-end-stacking": [
+     "partial",
+     "far_recall beats loop-1 on 1/5"
+    ],
+    "composition": [
+     "works",
+     "path_err_far 2.53 vs 5.38, entry<=3 3/5"
+    ],
+    "physics-smoother": [
+     "partial",
+     "path_err_far ok True, entry ok False, entry<=3 0/5, false hook on 191820 True"
+    ]
+   },
+   "leave_one_out": {
+    "20260915_191253_6cf2480f": {
+     "picks": {
+      "ball": "loop1/sam2-video",
+      "lane": "loop1/engine-lane",
+      "path": "none"
+     },
+     "flips": {
+      "ball": [
+       "composition",
+       "loop1/sam2-video"
+      ],
+      "lane": [
+       "composition",
+       "loop1/engine-lane"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "fails",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "composition": [
+       "partial",
+       "path_err_far 2.95 vs 6.34, entry<=3 2/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    },
+    "20260915_191820_0196b564": {
+     "picks": {
+      "ball": "loop1/sam2-video",
+      "lane": "loop1/engine-lane",
+      "path": "none"
+     },
+     "flips": {
+      "ball": [
+       "composition",
+       "loop1/sam2-video"
+      ],
+      "lane": [
+       "composition",
+       "loop1/engine-lane"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "fails",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "composition": [
+       "partial",
+       "path_err_far 1.11 vs 6.10, entry<=3 2/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 False"
+      ]
+     }
+    },
+    "20260915_191913_907c358b": {
+     "picks": {
+      "ball": "loop1/sam2-video",
+      "lane": "loop1/engine-lane",
+      "path": "none"
+     },
+     "flips": {
+      "ball": [
+       "composition",
+       "loop1/sam2-video"
+      ],
+      "lane": [
+       "composition",
+       "loop1/engine-lane"
+      ]
+     },
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "path_err_far 2.29 vs 2.70, entry<=3 2/4"
+      ],
+      "lane-gated-ball": [
+       "fails",
+       "far_recall beats loop-1 on 0/4"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "far_recall beats loop-1 on 0/4"
+      ],
+      "composition": [
+       "partial",
+       "path_err_far 2.68 vs 2.70, entry<=3 2/4"
+      ],
+      "physics-smoother": [
+       "fails",
+       "path_err_far ok False, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    },
+    "20260915_192142_eeb210f6": {
+     "picks": {
+      "ball": "composition",
+      "lane": "composition",
+      "path": "none"
+     },
+     "flips": {},
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "fails",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "far-end-stacking": [
+       "partial",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "composition": [
+       "works",
+       "path_err_far 2.94 vs 6.18, entry<=3 3/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    },
+    "20260915_192636_7c7fbfb0": {
+     "picks": {
+      "ball": "composition",
+      "lane": "composition",
+      "path": "none"
+     },
+     "flips": {},
+     "verdicts": {
+      "pin-anchored-geometry": [
+       "partial",
+       "crash/no output on a stem"
+      ],
+      "lane-gated-ball": [
+       "fails",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "far-end-stacking": [
+       "fails",
+       "far_recall beats loop-1 on 1/4"
+      ],
+      "composition": [
+       "works",
+       "path_err_far 2.99 vs 5.55, entry<=3 3/4"
+      ],
+      "physics-smoother": [
+       "partial",
+       "path_err_far ok True, entry ok False, entry<=3 0/4, false hook on 191820 True"
+      ]
+     }
+    }
+   },
+   "any_flip": true,
+   "deciding_stems": {
+    "20260915_191253_6cf2480f": {
+     "ball": [
+      "composition",
+      "loop1/sam2-video"
+     ],
+     "lane": [
+      "composition",
+      "loop1/engine-lane"
+     ]
+    },
+    "20260915_191820_0196b564": {
+     "ball": [
+      "composition",
+      "loop1/sam2-video"
+     ],
+     "lane": [
+      "composition",
+      "loop1/engine-lane"
+     ]
+    },
+    "20260915_191913_907c358b": {
+     "ball": [
+      "composition",
+      "loop1/sam2-video"
+     ],
+     "lane": [
+      "composition",
+      "loop1/engine-lane"
+     ]
+    }
+   }
+  },
+  "rule_at_n4": "verdicts re-derived on the 4 remaining stems: lane/both works = path_err_far mean below loop-1 on the same stems AND entry_err <= 3 on >= 3 stems (count kept, not scaled); ball works (judges_rule) = no per-stem regression vs loop-1 on far recall / far px / path rms / path far / entry / hook (lane-gated-ball judge override), (literal_ball_rubric) = far_recall beats loop-1 on >= 3 stems; path works = path_err_far and entry_err means both below loop-1, entry<=3 on >= 3, no hook drawn on 191820"
+ },
+ "fallback_stems": []
+}

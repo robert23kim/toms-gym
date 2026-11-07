@@ -1,0 +1,522 @@
+{
+ "stem": "20260915_192636_7c7fbfb0",
+ "release_frame": 391,
+ "pin_hit_frame": 457,
+ "fps": 30,
+ "path": [
+  {
+   "f": 397,
+   "x": 589.5,
+   "y": 631.5,
+   "r": 70,
+   "left_x": 176.2,
+   "right_x": 835.5,
+   "board": 15.18,
+   "left_x_contact": 164.2,
+   "right_x_contact": 884.9,
+   "board_contact": 16.58,
+   "edge_fit": {
+    "L": [
+     -0.1725,
+     285.1722
+    ],
+    "R": [
+     0.7067,
+     389.2
+    ],
+    "res_px": [
+     0.8,
+     2.5
+    ]
+   },
+   "src": "gc_397.jpg ov_397.jpg (ball near the frame bottom, centre +-3 px, r +-3; edges rows 540-700 through the ball row; right edge has a slight slope change 0.75->0.6 over the rows, residual 2.5 px)"
+  },
+  {
+   "f": 406,
+   "x": 579.5,
+   "y": 559.1,
+   "r": 28,
+   "left_x": 357.9,
+   "right_x": 672.2,
+   "board": 12.21,
+   "left_x_contact": 351.9,
+   "right_x_contact": 682.8,
+   "board_contact": 12.86,
+   "edge_fit": {
+    "L": [
+     -0.214,
+     477.56
+    ],
+    "R": [
+     0.378,
+     460.88
+    ],
+    "res_px": [
+     1.0,
+     1.5
+    ]
+   },
+   "src": "gc_406.jpg ov_406.jpg (edges read BY EYE on ov_406: left wood edge 362@540 slope -0.214, right wood edge 665@540 slope 0.378; the auto right points at x~696 were a light strip inside the gutter and were rejected)"
+  },
+  {
+   "f": 415,
+   "x": 546.4,
+   "y": 673.8,
+   "r": 21.5,
+   "left_x": 392.8,
+   "right_x": 593.8,
+   "board": 9.96,
+   "left_x_contact": 386.8,
+   "right_x_contact": 603.2,
+   "board_contact": 10.97,
+   "edge_fit": {
+    "L": [
+     -0.28,
+     581.4667
+    ],
+    "R": [
+     0.435,
+     300.7
+    ],
+    "res_px": [
+     3.9,
+     0.4
+    ]
+   },
+   "src": "gc_415.jpg ov_415.jpg (edges rows 660-760; left fit residual 3.9 px, matches the visible boundary to ~2 px at the ball row)"
+  },
+  {
+   "f": 425,
+   "x": 486.2,
+   "y": 772.3,
+   "r": 13.3,
+   "left_x": 369.8,
+   "right_x": 515.7,
+   "board": 8.7,
+   "left_x_contact": 365.8,
+   "right_x_contact": 521.0,
+   "board_contact": 9.52,
+   "edge_fit": {
+    "L": [
+     -0.3047,
+     605.1756
+    ],
+    "R": [
+     0.3951,
+     210.6421
+    ],
+    "res_px": [
+     1.0,
+     0.7
+    ]
+   },
+   "src": "gc_425.jpg ovgrid_425_447.jpg"
+  },
+  {
+   "f": 434,
+   "x": 430.1,
+   "y": 804.9,
+   "r": 11.3,
+   "left_x": 335.8,
+   "right_x": 450.3,
+   "board": 7.7,
+   "left_x_contact": 332.1,
+   "right_x_contact": 454.1,
+   "board_contact": 8.49,
+   "edge_fit": {
+    "L": [
+     -0.3238,
+     596.4034
+    ],
+    "R": [
+     0.3411,
+     175.7626
+    ],
+    "res_px": [
+     0.9,
+     0.7
+    ]
+   },
+   "src": "gc_434.jpg ovgrid_425_447.jpg"
+  },
+  {
+   "f": 443,
+   "x": 381.1,
+   "y": 790.9,
+   "r": 10.4,
+   "left_x": 302.0,
+   "right_x": 397.4,
+   "board": 7.49,
+   "left_x_contact": 298.3,
+   "right_x_contact": 400.5,
+   "board_contact": 8.21,
+   "edge_fit": {
+    "L": [
+     -0.36,
+     586.76
+    ],
+    "R": [
+     0.3,
+     160.1
+    ],
+    "res_px": [
+     0.4,
+     0.6
+    ]
+   },
+   "src": "gc_443.jpg ov_443.jpg (edges rows 821-861 below the ball, extrapolated 30-70 px)"
+  },
+  {
+   "f": 445,
+   "x": 370.5,
+   "y": 786.4,
+   "r": 10.1,
+   "left_x": 295.8,
+   "right_x": 389.1,
+   "board": 8.58,
+   "left_x_contact": 292.2,
+   "right_x_contact": 392.2,
+   "board_contact": 9.23,
+   "edge_fit": {
+    "L": [
+     -0.35,
+     571.0
+    ],
+    "R": [
+     0.3,
+     153.2
+    ],
+    "res_px": [
+     0.6,
+     0.0
+    ]
+   },
+   "src": "gc_445.jpg ovgrid_425_447.jpg (edges rows 816-856)"
+  },
+  {
+   "f": 447,
+   "x": 362.9,
+   "y": 782.2,
+   "r": 10.2,
+   "left_x": 291.7,
+   "right_x": 382.4,
+   "board": 9.17,
+   "left_x_contact": 287.9,
+   "right_x_contact": 385.2,
+   "board_contact": 9.7,
+   "edge_fit": {
+    "L": [
+     -0.37,
+     581.07
+    ],
+    "R": [
+     0.27,
+     171.23
+    ],
+    "res_px": [
+     0.4,
+     0.4
+    ]
+   },
+   "src": "gc_447.jpg ovgrid_425_447.jpg (edges rows 811-851)"
+  },
+  {
+   "f": 449,
+   "x": 354.7,
+   "y": 777.9,
+   "r": 9.5,
+   "left_x": 286.0,
+   "right_x": 375.1,
+   "board": 9.71,
+   "left_x_contact": 282.7,
+   "right_x_contact": 377.7,
+   "board_contact": 10.2,
+   "edge_fit": {
+    "L": [
+     -0.35,
+     558.25
+    ],
+    "R": [
+     0.27,
+     165.11
+    ],
+    "res_px": [
+     0.3,
+     0.4
+    ]
+   },
+   "src": "gc_449.jpg ovgrid_449_463.jpg (edges rows 807-847)"
+  },
+  {
+   "f": 451,
+   "x": 347.0,
+   "y": 775.1,
+   "r": 9.8,
+   "left_x": 282.0,
+   "right_x": 368.7,
+   "board": 10.5,
+   "left_x_contact": 278.3,
+   "right_x_contact": 371.4,
+   "board_contact": 10.97,
+   "edge_fit": {
+    "L": [
+     -0.37,
+     568.74
+    ],
+    "R": [
+     0.28,
+     151.64
+    ],
+    "res_px": [
+     0.4,
+     0.4
+    ]
+   },
+   "src": "gc_451.jpg ovgrid_449_463.jpg (edges rows 802-842)"
+  },
+  {
+   "f": 453,
+   "x": 339.8,
+   "y": 770.0,
+   "r": 9.5,
+   "left_x": 276.3,
+   "right_x": 360.6,
+   "board": 10.38,
+   "left_x_contact": 273.1,
+   "right_x_contact": 363.4,
+   "board_contact": 10.95,
+   "edge_fit": {
+    "L": [
+     -0.34,
+     538.12
+    ],
+    "R": [
+     0.3,
+     129.6
+    ],
+    "res_px": [
+     0.4,
+     0.0
+    ]
+   },
+   "src": "gc_453.jpg ovgrid_449_463.jpg (edges rows 798-838, gutter lips in front of the deck)"
+  },
+  {
+   "f": 455,
+   "x": 330.6,
+   "y": 765.9,
+   "r": 8.9,
+   "left_x": 273.4,
+   "right_x": 355.2,
+   "board": 12.42,
+   "left_x_contact": 270.2,
+   "right_x_contact": 357.8,
+   "board_contact": 12.81,
+   "edge_fit": {
+    "L": [
+     -0.36,
+     549.12
+    ],
+    "R": [
+     0.3,
+     125.4
+    ],
+    "res_px": [
+     0.8,
+     0.0
+    ]
+   },
+   "src": "gc_455.jpg ov_455.jpg seq_455_475.jpg (edges rows 792-832, gutter lips in front of the deck)"
+  },
+  {
+   "f": 457,
+   "x": 322.5,
+   "y": 760.5,
+   "r": 8,
+   "left_x": 271.7,
+   "right_x": 351.1,
+   "board": 14.68,
+   "left_x_contact": 268.9,
+   "right_x_contact": 353.5,
+   "board_contact": 14.9,
+   "edge_fit": {
+    "L": [
+     -0.36,
+     545.52
+    ],
+    "R": [
+     0.3,
+     122.9
+    ],
+    "res_px": [
+     0.4,
+     0.0
+    ]
+   },
+   "src": "gcgrid_456_465.jpg seq_455_475.jpg (ball in front of standing pins; edges rows 787-827 in front of the deck)"
+  },
+  {
+   "f": 459,
+   "x": 317.5,
+   "y": 759.2,
+   "r": 7.5,
+   "left_x": 270.0,
+   "right_x": 348.4,
+   "board": 15.99,
+   "left_x_contact": 267.3,
+   "right_x_contact": 350.8,
+   "board_contact": 16.17,
+   "edge_fit": {
+    "L": [
+     -0.36,
+     543.36
+    ],
+    "R": [
+     0.32,
+     105.48
+    ],
+    "res_px": [
+     0.4,
+     0.4
+    ]
+   },
+   "src": "gc_459.jpg ovgrid_449_463.jpg seq_455_475.jpg (edges rows 781-821 in front of the deck)"
+  },
+  {
+   "f": 461,
+   "x": 311.4,
+   "y": 754.6,
+   "r": 6.5,
+   "left_x": 270.3,
+   "right_x": 345.9,
+   "board": 18.33,
+   "left_x_contact": 268.1,
+   "right_x_contact": 348.1,
+   "board_contact": 18.44,
+   "edge_fit": {
+    "L": [
+     -0.33,
+     519.27
+    ],
+    "R": [
+     0.34,
+     89.34
+    ],
+    "res_px": [
+     0.4,
+     0.4
+    ]
+   },
+   "src": "gc_461.jpg ov_461.jpg seq_455_475.jpg (ball in front of standing pins, r small/partly smeared; edges rows 779-819 in front of the deck)"
+  },
+  {
+   "f": 463,
+   "x": 306.0,
+   "y": 748.0,
+   "r": 7,
+   "left_x": 272.4,
+   "right_x": 344.0,
+   "board": 21.18,
+   "left_x_contact": 270.1,
+   "right_x_contact": 346.5,
+   "board_contact": 21.14,
+   "edge_fit": {
+    "L": [
+     -0.33,
+     519.28
+    ],
+    "R": [
+     0.35,
+     82.2
+    ],
+    "res_px": [
+     0.4,
+     0.3
+    ]
+   },
+   "src": "gcgrid_456_465.jpg ovgrid_449_463.jpg seq_455_475.jpg (ball at the headpin column, pins still upright; edges rows 776-816 in front of the deck, extrapolated ~28-68 px)"
+  }
+ ],
+ "pin_row_frame": 461,
+ "pin_row_y": 754.7,
+ "pin_row_note": "pin_row_y is the HEADPIN base row derived in the same frame from the edge lines: the row where lane width = 7-column pin spread (63 px at f462-464: columns 275/286/296-297/307/317-318/327-328/338 = 36 in) x 41.5/36 x 1.043 (headpin 31 in in front of the back row). Read through the reflections the pin bases look ~10-20 px lower; that is the deck reflection.",
+ "pin_rows_by_frame": {
+  "445": {
+   "back": 754.5,
+   "head": 759.3
+  },
+  "447": {
+   "back": 753.9,
+   "head": 758.7
+  },
+  "449": {
+   "back": 751.2,
+   "head": 756.3
+  },
+  "451": {
+   "back": 753.4,
+   "head": 758.2
+  },
+  "453": {
+   "back": 751.8,
+   "head": 756.7
+  },
+  "455": {
+   "back": 752.0,
+   "head": 756.8
+  },
+  "457": {
+   "back": 750.4,
+   "head": 755.1
+  },
+  "459": {
+   "back": 750.7,
+   "head": 755.3
+  },
+  "461": {
+   "back": 750.1,
+   "head": 754.7
+  },
+  "463": {
+   "back": 749.6,
+   "head": 754.2
+  }
+ },
+ "observed_pin_contact_frame": 463,
+ "observed_pin_contact_note": "Cut pin_hit_frame 457 is ~6 frames early. f455-461: the ball is drawn over standing, undisturbed pins and is still in front of the rack (lane width at the ball row 75.7-81.8 px vs 75.8 px at the headpin row); f462-464 the ball sits on the headpin column (x 302.5-307.5 vs column 306-307) with the lane width at its row 69-74 px; f465 camera blur, ball hidden among pins; pins tilt by f467 and fly f469-472. Contact 463 +-2. Crops: seq_455_475.jpg, gcgrid_456_465.jpg.",
+ "entry": {
+  "board": 20.55,
+  "uncertainty": 1.75,
+  "reads": {
+   "edge_profile_f462": 20.25,
+   "edge_profile_f463": 21.18,
+   "edge_profile_f464": 23.19,
+   "pin_ruler_f462": 19.7,
+   "pin_ruler_f463": 20.5,
+   "ball_ruler_f463": 20.6
+  },
+  "frame": 463,
+  "note": "Real entry at the observed contact (f463 +-2). Pin ruler: columns 10.5 px apart (6 in = 5.49 board units), headpin column 307 (f462, f463), ball x 307.5 / 306. Ball ruler: board = 20 - (x_ball - x_headpin) x 7.8 / (2r), r 7. The ball moves ~1-2 boards per frame here."
+ },
+ "entry_at_cut_pin_hit": {
+  "board": 13.59,
+  "uncertainty": 1.36,
+  "reads": {
+   "edge_profile_f456_cut": 13.48,
+   "edge_profile_f457_cut": 14.68,
+   "edge_profile_f458_cut": 14.72,
+   "pin_ruler_f456_cut": 12.0,
+   "pin_ruler_f457_cut": 13.2,
+   "ball_ruler_f457_cut": 13.7
+  },
+  "note": "reads at the cut pin_hit_frame-1/0/+1 as the task named them; the ball is still short of the pins here, so this is NOT the entry board"
+ },
+ "min_board": 7.49,
+ "min_board_frame": 443,
+ "hooks_back": true,
+ "max_rise_after_min": 13.69,
+ "board_convention": "1-39 from the right gutter",
+ "method": "Ball centre and radius read by eye on 3x/5x gridded crops of the SOURCE frames (cv2 seek canary: MAD 1.8 at offset 0 vs 5-12 at +-1), confirmed against a purple/dark blob circle drawn on an overlay; lane edges are the wood-to-gutter-lip step found per row on 5-9 rows of THE SAME FRAME that are clear of the ball and of the pin reflections, fitted as a straight line (residual <=1 px on the far frames, <=4 px near) and evaluated at the ball row y (board) and y+r (board_contact). board = 1 + 38*(x - right_x)/(left_x - right_x); pin ruler uses the 7 pin columns (6 in apart = 5.49 units of lane/38, headpin = 20); ball ruler uses 8.5 in = 7.8 units anchored on the headpin column.",
+ "limits": "Cut pin_hit_frame 457 is ~6 frames before contact (observed ~463), so the path is extended to f463 and entry.board is read at f463; the cut-frame reads are kept in entry_at_cut_pin_hit. Near the pins the edge lines are extrapolated 28-70 px from rows in front of the deck (slopes 0.27-0.38), ~0.3 board near the lane centre. f406 edges are eye reads, not the automatic step (+-2 px = +-0.3 board). The ball moves 1-2 boards per frame in the last 6 frames, so the +-2 frame contact error is +-2-4 boards of entry. The pin ruler reads 1.5-2.5 boards low while the ball is in front of the pins (cut reads 12.0/13.2 vs edges 13.5-14.7), so only the f462/f463 pin-ruler reads count for entry. Release frame 391 (+-2) unchanged from loop 1; the first path point is release+6.",
+ "made_by": "loop-2 holdout truth agent, 2026-11-07"
+}
