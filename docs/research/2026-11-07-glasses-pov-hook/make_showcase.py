@@ -30,6 +30,11 @@ def ixy(board, ft):
     b = min(max(board, -3.0), 42.0)
     return int(IX + 20 + (IW - 40) * (39 - b) / 38), int(ITOP + IH * (1 - (min(max(ft, IFT0), FTMAX) - IFT0) / (FTMAX - IFT0)))
 PINS = [(20.0 + (k - row / 2) * BW, DECK0 + 0.866 * row) for row in range(4) for k in range(row + 1)]
+def draw_pin(im, xy, r):
+    cv2.circle(im, xy, r, (238, 238, 238), -1, cv2.LINE_AA)
+    cv2.circle(im, xy, r, (60, 60, 60), 1, cv2.LINE_AA)
+    cv2.circle(im, xy, max(2, int(r * 0.42)), (40, 40, 215), 2, cv2.LINE_AA)
+PIN_R, PIN_RI, PIN_RZ = 18, 13, 22   # pin ~4.8 in wide = 4.5 boards: main lane, inset, recap zoom
 def deck_bands(im, xy, x0, x1, lane_l, lane_r):
     """lane wood to 60 ft, pin deck 60-62.6 ft (lighter band, edges), pit after (dark)."""
     y60, y626, ytop = xy(20, DECK0)[1], xy(20, DECK1)[1], xy(20, FTMAX)[1]
@@ -37,7 +42,7 @@ def deck_bands(im, xy, x0, x1, lane_l, lane_r):
     cv2.rectangle(im, (x0, ytop), (x1, y626), (18, 18, 18), -1)
     cv2.line(im, (lane_l, y60), (lane_r, y60), (230, 230, 230), 1)
     cv2.line(im, (lane_l, y626), (lane_r, y626), (230, 230, 230), 1)
-def base():
+def base(inset=True):
     im = np.full((H, 960, 3), 24, np.uint8)
     cv2.rectangle(im, (LX - 36, LTOP), (LX + LW + 36, LTOP + LH), (45, 45, 45), -1)
     cv2.rectangle(im, (LX, LTOP), (LX + LW, LTOP + LH), (120, 175, 215), -1)
@@ -50,7 +55,7 @@ def base():
         x, y = lxy(bd, 12.5 + (3 - abs(3 - i)) * 1.0)
         cv2.polylines(im, [np.array([[x - 7, y + 9], [x, y], [x + 7, y + 9]])], False, (60, 60, 60), 2)
     for bd, ft in PINS:
-        cv2.circle(im, lxy(bd, ft), 3, (255, 255, 255), -1)
+        draw_pin(im, lxy(bd, ft), PIN_R)
     for ft in (0, 15, 30, 45, 60):
         y = lxy(20, ft)[1]
         cv2.line(im, (LX - 36, y), (LX - 30, y), (200, 200, 200), 1)
@@ -60,13 +65,13 @@ def base():
     for b in range(5, 40, 5):
         cv2.putText(im, str(b), (LX + int(LW * (39 - b) / 38) - 9, fl + 32), 0, 0.5, (210, 210, 210), 1, cv2.LINE_AA)
     cv2.putText(im, 'board (1 = right gutter side)', (LX - 40, fl + 58), 0, 0.5, (150, 150, 150), 1, cv2.LINE_AA)
-    # inset
+    if not inset: return im
     il, ir = ixy(39, 60)[0], ixy(1, 60)[0]
     cv2.rectangle(im, (IX, ITOP), (IX + IW, ITOP + IH), (45, 45, 45), -1)
     cv2.rectangle(im, (il, ixy(20, DECK0)[1]), (ir, ITOP + IH), (120, 175, 215), -1)
     deck_bands(im, ixy, IX, IX + IW, il, ir)
     for bd, ft in PINS:
-        cv2.circle(im, ixy(bd, ft), 5, (255, 255, 255), -1)
+        draw_pin(im, ixy(bd, ft), PIN_RI)
     cv2.rectangle(im, (IX, ITOP), (IX + IW, ITOP + IH), (120, 120, 120), 1)
     cv2.putText(im, 'pin deck zoom', (IX + 4, ITOP - 6), 0, 0.5, (200, 200, 200), 1, cv2.LINE_AA)
     for ft, lab in ((DECK0, '60 ft'), (DECK1, '62.6')):
@@ -74,6 +79,8 @@ def base():
     cv2.putText(im, 'pit', (IX + IW + 4, ixy(20, 63.8)[1] + 4), 0, 0.38, (170, 170, 170), 1, cv2.LINE_AA)
     return im
 BASE = base()
+BASE_PLAIN = base(inset=False)
+recap_rows = []
 def bx(board): return int(LX + LW * (39 - min(max(board, -3.0), 42.0)) / 38)
 def interp(fr, f):
     if f in fr: return fr[f] + (False,)
@@ -140,6 +147,9 @@ for i, c in enumerate(cuts):
             if all(b < 0.5 for _, b, _ in line2[j:]):
                 g_from = line2[j]; break
     hooker = (not gutter) and ev['breakpoint_frame'] is not None and not ev['breakpoint_at_roll_end'] and (ev['rise_after_break'] or 0) >= 2.0
+    recap_rows.append(dict(lab=stem[9:15], split='dev' if stem in DEV else 'HOLDOUT', line=line2, deck=deck, entry=entry, ex_b=ex_b, ex_ft=ex_ft,
+                           kind=kind, gutter=gutter, hooker=hooker, bp=(ev['breakpoint_board'], ev['breakpoint_ft']) if hooker else None,
+                           defl=ev.get('deflection') or '', g_from=g_from))
     f0 = rel - 5; f1 = min(c['cut_end'], max(pr, last_real or pr) + 8); cs = c['cut_start']
     cap = cv2.VideoCapture(c['cut_path'])
     for _ in range(f0 - cs): cap.read()   # sequential: CAP_PROP_POS_FRAMES seeks one frame late on 185121
@@ -274,8 +284,74 @@ notes = [
     ('  Truth pin_row/exit missing: ' + ', '.join(miss) + '.' if miss else '')]
 for k, s_ in enumerate(notes): txt(cl, s_, (60, 600 + k * 42), 0.54, (190, 190, 190), 1)
 cv2.imwrite(f'{FR}/card_close.png', cl); put(cl, 4 * FPS)
+
+# session recap: every magenta line on one lane, every entry / exit on one pin deck
+ZX, ZW, ZTOP, ZH = 1040, 560, 150, 430
+def zxy(board, ft):
+    b = min(max(board, -3.0), 42.0)
+    return int(ZX + 40 + (ZW - 80) * (39 - b) / 38), int(ZTOP + ZH * (1 - (min(max(ft, IFT0), FTMAX) - IFT0) / (FTMAX - IFT0)))
+def tag(im, s, xy, col=MAG):
+    (tw, th), _ = cv2.getTextSize(s, 0, 0.5, 1)
+    x, y = xy
+    cv2.rectangle(im, (x - tw // 2 - 4, y - th - 4), (x + tw // 2 + 4, y + 4), (20, 20, 20), -1)
+    cv2.rectangle(im, (x - tw // 2 - 4, y - th - 4), (x + tw // 2 + 4, y + 4), col, 1)
+    txt(im, s, (x - tw // 2, y), 0.5, WHITE, 1)
+rc = np.full((H, W, 3), 20, np.uint8)
+rc[:, :960] = BASE_PLAIN
+txt(rc, 'Session recap: %d throws, every line to the pin row' % len(recap_rows), (30, 50), 0.85, WHITE, 2)
+txt(rc, 'magenta = boards vs depth (5-frame median), ring = entry at the pin row, number = throw order in this video', (30, 80), 0.48, (190, 190, 190), 1)
+zl, zr = zxy(39, 60)[0], zxy(1, 60)[0]
+cv2.rectangle(rc, (ZX, ZTOP), (ZX + ZW, ZTOP + ZH), (45, 45, 45), -1)
+cv2.rectangle(rc, (zl, zxy(20, DECK0)[1]), (zr, ZTOP + ZH), (120, 175, 215), -1)
+for b in range(2, 39):
+    x = zxy(b, 60)[0]; cv2.line(rc, (x, zxy(20, DECK0)[1]), (x, ZTOP + ZH), (105, 160, 200), 1)
+deck_bands(rc, zxy, ZX, ZX + ZW, zl, zr)
+for bd, ft in PINS: draw_pin(rc, zxy(bd, ft), PIN_RZ)
+cv2.rectangle(rc, (ZX, ZTOP), (ZX + ZW, ZTOP + ZH), (120, 120, 120), 1)
+txt(rc, 'pin deck: entry rings and exit / last-seen dots', (ZX, ZTOP - 12), 0.55, (200, 200, 200), 1)
+for ft, lab_ in ((DECK0, '60 ft'), (DECK1, '62.6')):
+    txt(rc, lab_, (ZX + ZW + 6, zxy(20, ft)[1] + 4), 0.42, (170, 170, 170), 1)
+for b in range(5, 40, 5):
+    txt(rc, str(b), (zxy(b, 60)[0] - 8, ZTOP + ZH + 18), 0.42, (210, 210, 210), 1)
+for j, r in enumerate(recap_rows):
+    ln = [lxy(b, ft) for (_, b, ft) in r['line']]
+    if len(ln) > 1: cv2.polylines(rc, [np.array(ln)], False, MAG, 2, cv2.LINE_AA)
+    if ln:
+        ft_j = 6.0 + j * 4.8   # one tag depth per throw, leader to the line, tag beside the right gutter
+        kk = min(range(len(r['line'])), key=lambda q: abs(r['line'][q][2] - ft_j))
+        px_ = lxy(r['line'][kk][1], r['line'][kk][2]); tx_ = (LX + LW + 70, px_[1])
+        cv2.line(rc, px_, (tx_[0] - 14, tx_[1]), (150, 90, 150), 1, cv2.LINE_AA)
+        cv2.circle(rc, px_, 4, MAG, -1, cv2.LINE_AA)
+        tag(rc, str(j + 1), (tx_[0], tx_[1] + 6))
+    if r['entry'] is not None and not r['gutter']:
+        dpts = [(r['entry'], DECK0)] + [(b, ft) for (_, b, ft) in r['deck']]
+        dotted(rc, [zxy(b, ft) for b, ft in dpts], EXITC, 3, 9)
+        cv2.circle(rc, lxy(r['entry'], DECK0), 6, CYAN, 2, cv2.LINE_AA)
+        ex0 = zxy(r['entry'], DECK0)
+        cv2.circle(rc, ex0, 11, CYAN, 2, cv2.LINE_AA)
+        tag(rc, str(j + 1), (ex0[0], ex0[1] + 34 + (j % 3) * 22), CYAN)
+        if r['ex_b'] is not None:
+            xy_ = zxy(r['ex_b'], r['ex_ft'])
+            cv2.circle(rc, xy_, 11, (0, 0, 0), 3, cv2.LINE_AA); cv2.circle(rc, xy_, 8, EXITC, -1, cv2.LINE_AA)
+            tag(rc, str(j + 1), (xy_[0], xy_[1] - 16 - (j % 3) * 20), EXITC)
+ty = ZTOP + ZH + 70
+cols = [(ZX, '#'), (ZX + 40, 'throw'), (ZX + 130, 'split'), (ZX + 220, 'entry'), (ZX + 320, 'break'), (ZX + 430, 'exit / last seen'), (ZX + 620, 'through the pins')]
+for x, h_ in cols: txt(rc, h_, (x, ty), 0.5, (170, 170, 170), 1)
+for j, r in enumerate(recap_rows):
+    y = ty + 34 + j * 34
+    if r['gutter']:
+        vals = [str(j + 1), r['lab'], r['split'], 'gutter', '-', '-', 'gutter ball' + (' from ~%.0f ft' % r['g_from'][2] if r['g_from'] else '')]
+    else:
+        vals = [str(j + 1), r['lab'], r['split'], '%.1f' % r['entry'] if r['entry'] is not None else '-',
+                '%.1f @ %.0f ft' % r['bp'] if r['bp'] else 'none',
+                ('%.1f' % r['ex_b'] + (' (exit)' if r['kind'] == 'pit' else ' (last seen)')) if r['ex_b'] is not None else 'not measured',
+                r['defl'] or '-']
+    for (x, _), v in zip(cols, vals): txt(rc, v, (x, y), 0.5, WHITE if j % 2 == 0 else (215, 215, 215), 1)
+txt(rc, 'depth = constant speed, release 0 ft to the detected pin row 60 ft', (ZX, H - 60), 0.42, (160, 160, 160), 1)
+txt(rc, 'exit = last real moving point on the deck; on hookers it reads 3-6 boards short (ball behind pins)', (ZX, H - 36), 0.42, (160, 160, 160), 1)
+cv2.imwrite(f'{FR}/card_recap.png', rc); put(rc, 6 * FPS)
 pr_.stdin.close(); pr_.wait()
-total = tcur + 4
+total = tcur + 4 + 6
 sil = f'{L2}/work/aud_sil.m4a'
 subprocess.run([FF, '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', '2', '-c:a', 'aac', sil], check=True)
 lst = [sil]
@@ -284,7 +360,7 @@ for (n_, stem, a, b, nf, f0, f1, cs, sp) in timeline:
     subprocess.run([FF, '-y', '-loglevel', 'error', '-ss', str((f0 - cs) / FPS), '-t', str(nf / FPS), '-i', cuts[n_ - 1]['cut_path'], '-vn', '-ar', '44100', '-ac', '1', '-c:a', 'aac', p], check=True)
     lst.append(p)
 sil3 = f'{L2}/work/aud_sil3.m4a'
-subprocess.run([FF, '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', '4', '-c:a', 'aac', sil3], check=True)
+subprocess.run([FF, '-y', '-loglevel', 'error', '-f', 'lavfi', '-i', 'anullsrc=r=44100:cl=mono', '-t', '10', '-c:a', 'aac', sil3], check=True)
 lst.append(sil3)
 open(f'{L2}/work/aud_list.txt', 'w').write(''.join(f"file '{x}'\n" for x in lst))
 subprocess.run([FF, '-y', '-loglevel', 'error', '-f', 'concat', '-safe', '0', '-i', f'{L2}/work/aud_list.txt', '-c', 'copy', f'{L2}/work/aud_all.m4a'], check=True)

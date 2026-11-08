@@ -88,3 +88,6 @@ Title 0-2 s; holdout first: 191253 2.0-4.7, 191820 -7.1 (labelled GUTTER BALL), 
 
 ## Follow-up pass: breakpoint depth and the pin-deck exit (same day)
 See `work/exit_pass_notes.md` (Round 2 and Pass 2 sections), `work/truth_exit/NOTES.md`, `results/final_v3.json`, `results/events_notes.md`. The hand-cut pin_hit is early on every throw (3-19 frames); 60 ft is now anchored at a self-detected headpin-row crossing, the ball is followed through the deck, and the showcase marks break, entry and exit (last-seen board when the ball goes behind pins). Breakpoints on the hookers moved from 43-48 ft to 39.7-42 ft. The pin-motion clock as specified (4x baseline) does not fire on real pin motion (1.5-2x) and is the next instrument to build.
+
+### Showcase v3.1 (2026-11-08)
+`showcase.mp4` is now 39.8 s: a 6 s session-recap frame closes the video (every magenta line on one lane, numbered by throw order with leaders beside the right gutter; one pin deck with every entry ring and exit / last-seen dot; a per-throw table of entry, break, exit and deflection). Pins are drawn at a real footprint (4.8 in = 4.5 boards wide: radius 18 px on the lane, 13 in the inset, 22 in the recap zoom) with a red neck ring. Frame: `work/showcase_frames_v3/card_recap.png`. No tracker or scorer change.

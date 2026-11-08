@@ -35,3 +35,8 @@ Tom read the break at ~37 ft with most of the hook at the end, and asked for the
 - Breakpoints under the new anchor: 192142 39.7 ft, 192636 40.8, 191253 41.7, 191913 42.0 (were 43-48). Entry/exit through the deck agree with truth where the ball is visible (raw 22.2 vs 22.2, 18.2 vs 18.3 at the truth pin-row frame).
 - Holdout means: pin row vs 60-ft truth 4.8 -> 4.6 frames (3.4 without the false 191820 pin-motion hit); vs first pin motion 8.2 -> 3.0; exit/last-seen 14.4 -> 4.7 boards (n=3). Dev: 9.2 -> 4.0, 12.8 -> 7.2, 9.6 -> 3.8.
 - Still broken: the pin-motion clock (4x baseline) fired once, falsely, on the 191820 camera whip; 185121 and 190115 fall back to the cut label (8-11 frames early); on hookers the last-seen board is 3-6 boards short of the truth exit because the ball goes behind pins; 191913's pin row may be the decoy patch; release is still an input; all 10 throws seen.
+
+## 2026-11-08: recap frame and fatter pins
+- Tom asked for a session recap shot (all magenta lines on one lane) at the end, fatter pins, a Google Drive copy and an explanation of what changed.
+- `make_showcase.py`: `draw_pin` at a real pin footprint (4.5 boards wide), `base(inset=False)` for the recap, per-throw `recap_rows`, a 6 s recap frame after the stats card (lane with all 10 lines and numbered leaders, pin deck with all entries/exits, table), silence tail 10 s. Video 33.8 -> 39.8 s; frames in `work/showcase_frames_v3/`.
+- Drive upload needs a Drive scope the gcloud login does not have (`cloud-platform` only) and the Chrome upload tool caps at 10 MB, so it waits on Tom running `gcloud auth login --enable-gdrive-access`.
