@@ -39,4 +39,4 @@ Tom read the break at ~37 ft with most of the hook at the end, and asked for the
 ## 2026-11-08: recap frame and fatter pins
 - Tom asked for a session recap shot (all magenta lines on one lane) at the end, fatter pins, a Google Drive copy and an explanation of what changed.
 - `make_showcase.py`: `draw_pin` at a real pin footprint (4.5 boards wide), `base(inset=False)` for the recap, per-throw `recap_rows`, a 6 s recap frame after the stats card (lane with all 10 lines and numbered leaders, pin deck with all entries/exits, table), silence tail 10 s. Video 33.8 -> 39.8 s; frames in `work/showcase_frames_v3/`.
-- Drive upload needs a Drive scope the gcloud login does not have (`cloud-platform` only) and the Chrome upload tool caps at 10 MB, so it waits on Tom running `gcloud auth login --enable-gdrive-access`.
+- Drive upload needs a Drive scope the gcloud login does not have (`cloud-platform` only) and the Chrome upload tool caps at 10 MB, so Tom ran `gcloud auth login --enable-gdrive-access`; uploaded by resumable Drive API to My Drive root as `bowling-glasses-pov-showcase-2026-11-08.mp4` (id 1sRYeMmauHJ_UX1762caqEz9PgQA111OC), private, sharing left to Tom.
