@@ -1,0 +1,294 @@
+{
+ "how_bowlers_were_told_apart": "Two stable POV clusters across all 32 clips. A (21 clips: 104714-110948, 113541-115157): looks down at the approach in stance, ball below view, own head shadow visible, bare forearms, navy/red swirl ball. B (10 clips: 111238-113113): carries a black ball with yellow inserts up at chest height, dark navy long sleeves, wedding band. Names come from the overhead monitors: the pair is lanes 27/28, bowlers alternate lanes each frame and each monitor shows the bowler on its lane. The wearer's lane (ball hitting the rack right of the 26|27 or left of the 28|29 masking label) matched the monitor showing \"Tom\" in game 3 (114631, 114810) and \"Chris\" in game 2 (111238, 112146); the wearer's pin counts matched the board rows (game 1 frame 2 not a strike = Tom; game 2 frames 1 and 5 left pins = Chris, Tom struck). The board spells the second bowler \"Chris\"; this map labels B \"Chardie\" because the brief says Tom and Chardie took turns and only Tom and Chris appear on the boards.",
+ "game_boundaries": "Game 1 = 104714..110948 (10 clips, frames 1-10, wearer Tom); 111218 is a no-throw clip showing the game-1 finals (Tom 123, Chris 169). Game 2 = 111238..113113 (10 clips, frames 1-10, wearer Chardie/\"Chris\"; boards at 111238 empty, through 9 at 113113; finals Tom 197, Chris 187 from series pinfall). Game 3 = 113541..115157 (11 clips, wearer Tom; 113541 board empty; 115105 is frame 10 ball 1, 115157 a 10th-frame bonus ball; Tom 144 thru 9). Game-2 and game-3 frame numbers are pinned by scoreboard reads in 9 clips; game-1 frames are by order plus strict 27/28 lane alternation (no in-game board read). Capture gaps: 2.5 min (110948->111218), 4.5 min (113113->113541).",
+ "rows": [
+  {
+   "stem": "20261108_104714_593f3a1d",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 1,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; game-1 frame 1 by order; return on right = lane 27 (odd frame)"
+  },
+  {
+   "stem": "20261108_104946_3b1b2308",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 2,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; lane 28 (rack left of the 28|29 label at f470); 1-2 pins left standing at f480, matches Tom frame 2 (spare) not Chris (X)"
+  },
+  {
+   "stem": "20261108_105322_bbdb3ef5",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 3,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on right = lane 27"
+  },
+  {
+   "stem": "20261108_105652_31fc9b5e",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 4,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on left = lane 28"
+  },
+  {
+   "stem": "20261108_105857_afb68558",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 5,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on right = lane 27; other bowler (dark top, jeans) on the adjacent approach at f15"
+  },
+  {
+   "stem": "20261108_110224_b216c9b0",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 6,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on left = lane 28"
+  },
+  {
+   "stem": "20261108_110442_d27f6c73",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 7,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on right = lane 27; reference crop person_A.jpg"
+  },
+  {
+   "stem": "20261108_110622_9060f40e",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 8,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on left = lane 28; other bowler (dark navy long sleeves) throwing on the adjacent lane at f487"
+  },
+  {
+   "stem": "20261108_110713_ab4ecb80",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 9,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; only 51 s after 110622 but return on right = lane 27, so next frame not a 2nd ball"
+  },
+  {
+   "stem": "20261108_110948_d3480341",
+   "bowler": "Tom",
+   "bowler_confidence": 0.85,
+   "game": 1,
+   "frame": 10,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on left = lane 28; 111218 boards then show game 1 final (Tom 123, Chris 169)"
+  },
+  {
+   "stem": "20261108_111218_e14116e0",
+   "bowler": "Tom",
+   "bowler_confidence": 0.4,
+   "game": 0,
+   "frame": 0,
+   "ball_in_frame": "no throw (2.6 s); wearer seated at the table, swirl ball not in view",
+   "evidence": "No throw. Boards at f5/f40 show game 1 final (Chris 169, Tom 123) and the End-of-game screen; wearer not identifiable, guessed as the game-1 wearer before the hand-over (20 s before B appears in 111238)"
+  },
+  {
+   "stem": "20261108_111238_e2f9d8c6",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 1,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); boards empty at f182 (frame 1); ball hit lane 27 (right of 26|27 label) where the Chris monitor sits; 3-4 pins left at f493-f508 = Chris 6 (split), not Tom X; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_111420_01c6169b",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 2,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); board f144: both through frame 1 (Chris 7, Tom 10) -> frame 2; return on left = lane 28; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_111631_9c1e9211",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 3,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); order between boards; reference crop person_B.jpg (two hands, dark sleeves, black ball); scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_111941_b9ef6ad6",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 4,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); board f3: Chris 34 / Tom 37 through frame 3 -> frame 4; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_112146_61935a3b",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 5,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); board f136: both through frame 4 -> frame 5; ball on lane 27 with Chris on that monitor; pin(s) left at f424-f439 = Chris 9 (/), not Tom X; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_112413_aa021459",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 6,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); board f126: both through frame 5 (Chris 53, Tom 67) -> frame 6; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_112638_df021fdd",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 7,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); order between boards 112413 (thru 5) and 112936 (thru 8); scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_112800_0c01c7c1",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 8,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); order; return on left = lane 28 (even frame); scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_112936_c3032063",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 9,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); board f98: both through frame 8, frame 9 highlighted; Chris on the left (lane 27) monitor; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_113113_2504dbca",
+   "bowler": "Chardie",
+   "bowler_confidence": 0.8,
+   "game": 2,
+   "frame": 10,
+   "ball_in_frame": "black ball with yellow finger-hole inserts; first ball of the frame, full rack",
+   "evidence": "B cues: holds the black ball up at chest in view, dark navy/slate long sleeves to the wrist, wedding band on left ring finger (112146 f90); board f99: Chris through 9 (109) on the right monitor, Tom 171 -> frame 10; scoreboard spells this bowler Chris"
+  },
+  {
+   "stem": "20261108_113541_fd941fc1",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 1,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f80: Tom (left, lane 27) and Chris both 0 -> game 3 frame 1; ball on lane 27; NB a hand moves a black ball on the return at f45"
+  },
+  {
+   "stem": "20261108_113716_f433d7d5",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 2,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on left = lane 28"
+  },
+  {
+   "stem": "20261108_113911_e5c680e6",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 3,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on right = lane 27"
+  },
+  {
+   "stem": "20261108_114059_25d4ce4d",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 4,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f142: Tom 47 through frame 3 on the right (lane 28) monitor -> frame 4"
+  },
+  {
+   "stem": "20261108_114236_5184e3d7",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 5,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order; return on right = lane 27; ball not visible after release (cuts note)"
+  },
+  {
+   "stem": "20261108_114438_abe7fcc1",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 6,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; order between boards; towel-wiping the swirl ball at f45"
+  },
+  {
+   "stem": "20261108_114631_01d562c5",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 7,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f76: Tom 76 through frame 6 on the left (lane 27) monitor; ball hit lane 27 -> Tom frame 7"
+  },
+  {
+   "stem": "20261108_114810_62ef90d8",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 8,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f108: Tom 96 through frame 7 now on the right (lane 28) monitor; ball hit lane 28 (left of 28|29 label) -> Tom frame 8"
+  },
+  {
+   "stem": "20261108_114919_768b5f15",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 9,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f60: Tom through frame 8 -> frame 9"
+  },
+  {
+   "stem": "20261108_115105_6698185a",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 10,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane); first ball of the frame, full rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f0: Tom 144 through frame 9 -> frame 10 ball 1"
+  },
+  {
+   "stem": "20261108_115157_0e03a53c",
+   "bowler": "Tom",
+   "bowler_confidence": 0.9,
+   "game": 3,
+   "frame": 10,
+   "ball_in_frame": "navy base with red swirl house ball (reads blue-purple on the lane) (red swirl in hand at f90); 10th-frame bonus ball, fresh rack",
+   "evidence": "A cues: looks down at the approach in stance (ball below view, own head shadow on the approach), bare forearms, holds the swirl ball; board f177: Tom game total 154 vs 144 at 115105 f0, so frame 10 already scored 10 pins (X, or spare with one ball unfilmed); this is ball 2 or 3 of frame 10"
+  }
+ ]
+}

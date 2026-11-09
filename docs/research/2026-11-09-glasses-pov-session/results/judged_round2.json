@@ -1,0 +1,1777 @@
+{
+ "round": 2,
+ "judged": "2026-11-09",
+ "supersedes": "the 13:33 round-2 file on 19 stems (copy: work/judge_r2_all/judged_round2.before_round2_all.json)",
+ "rules": "RULES.md J1-J6 with the 12:50 amendments: J4 1-board dead band read as each leg must exceed 1 board (literal reading in rules_failed_pre_amendment), truth entry = score_v2 entry_err_pr <= 2.5, pin_row_err <= 4; J5 = carried-quad reading (strict all-roll-frames reading in metrics.J5_strict_fails); J3 gutter clause applied by frame read",
+ "tracks": "results/tracks as found 13:57-14:01, track_v3 86a42d3466b8f4c3 on 21 stems, 4eba95aa823e59ae on 10",
+ "stems_judged": 31,
+ "n_pass": 15,
+ "n_fail": 16,
+ "n_pass_batch22": 13,
+ "n_pass_missing9": 2,
+ "n_pass_truth6": 3,
+ "n_pass_as_first_written": 4,
+ "truth_clip_means": {
+  "recall_pct": 100.0,
+  "entry_err_pr": 3.16,
+  "entry_err_final_board": 5.64,
+  "pin_row_err": 8.83
+ },
+ "excluded": {
+  "20261108_111218": "no throw (2.6 s)"
+ },
+ "stems": {
+  "20261108_104714_593f3a1d": {
+   "pass": false,
+   "rules_failed": [
+    "J2",
+    "T-pinrow"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f382, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3; at ~55 ft (from the fallback pin row) the ball is still short of the deck",
+   "rule_owner_note": "T-entry passes on entry_err_pr; pin_row_err (fallback pin row) stands.",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": true,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J4",
+    "T-entry",
+    "T-pinrow"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 311,
+    "pin_row": 350,
+    "cut_pin_hit": 350,
+    "J1_pct": 100.0,
+    "J1_window": [
+     316,
+     350
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 16.87,
+    "final_board": 16.8,
+    "J4_n": 30,
+    "J4_sign_changes_nodeadband": 2,
+    "J4_max_jump": 1.24,
+    "J4_window": [
+     320.8,
+     350
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2",
+     "J4"
+    ],
+    "n_points": 72,
+    "entry_n": 6,
+    "track_last_real_frame": 382,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   },
+   "truth_scores": {
+    "recall_pct": 100.0,
+    "far_recall_pct": 100.0,
+    "entry_err": 2.6,
+    "entry_err_pr": 2.47,
+    "pin_row_err": 34,
+    "pin_row_frame_est": 350,
+    "truth_pin_row_frame": 384,
+    "path_err_rms": 0.99,
+    "exit_err": 0.44
+   }
+  },
+  "20261108_104946_3b1b2308": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 394,
+    "pin_row": 447,
+    "cut_pin_hit": 455,
+    "J1_pct": 100.0,
+    "J1_window": [
+     399,
+     447
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 6.18,
+    "final_board": 8.8,
+    "J4_n": 40,
+    "J4_sign_changes_nodeadband": 0,
+    "J4_max_jump": 1.08,
+    "J4_window": [
+     407.2,
+     447
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 80,
+    "entry_n": 6,
+    "track_last_real_frame": 471,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_105322_bbdb3ef5": {
+   "pass": false,
+   "rules_failed": [
+    "J2",
+    "J3"
+   ],
+   "rerun_hint": "same shape as 112413: SAM dies at f440 at the right lane edge (one SAM point in the right channel, entry -1.87, no gutter flag) and the pin row falls back: run the lane-first gutter-channel check over the last 15 track frames so the throw is flagged gutter and the pin row comes from the channel crossing",
+   "j6": "2/3 clear; 55 ft SAM circle at the right lane edge by the deck, ball too small to confirm",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J3"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 380,
+    "pin_row": 445,
+    "cut_pin_hit": 445,
+    "J1_pct": 90.2,
+    "J1_window": [
+     385,
+     445
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": -1.87,
+    "final_board": -6.7,
+    "J4_n": 44,
+    "J4_sign_changes_nodeadband": 0,
+    "J4_max_jump": 2.51,
+    "J4_window": [
+     396.2,
+     445
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 90.9,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 1,
+    "rules_failed_literal": [
+     "J2",
+     "J3"
+    ],
+    "n_points": 61,
+    "entry_n": 2,
+    "track_last_real_frame": 440,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_105652_31fc9b5e": {
+   "pass": false,
+   "rules_failed": [
+    "J2"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f371, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 312,
+    "pin_row": 375,
+    "cut_pin_hit": 375,
+    "J1_pct": 98.3,
+    "J1_window": [
+     317,
+     375
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 17.64,
+    "final_board": 15.3,
+    "J4_n": 36,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 2.7,
+    "J4_window": [
+     327.8,
+     375
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 85.9,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 9,
+    "rules_failed_literal": [
+     "J2"
+    ],
+    "n_points": 68,
+    "entry_n": 4,
+    "track_last_real_frame": 371,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": true,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_105857_afb68558": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 427,
+    "pin_row": 499,
+    "cut_pin_hit": 489,
+    "J1_pct": 98.5,
+    "J1_window": [
+     432,
+     499
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 15.65,
+    "final_board": 10.9,
+    "J4_n": 55,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 1.17,
+    "J4_window": [
+     445.0,
+     499
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 82,
+    "entry_n": 6,
+    "track_last_real_frame": 506,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_110224_b216c9b0": {
+   "pass": false,
+   "rules_failed": [
+    "T-entry"
+   ],
+   "rerun_hint": "only the truth entry fails and the pin row is a detection: read the entry as the board interpolated at the sub-frame headpin-row crossing instead of the 6-point Theil-Sen value",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": true,
+   "rules_failed_pre_amendment": [
+    "T-entry"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 373,
+    "pin_row": 444,
+    "cut_pin_hit": 435,
+    "J1_pct": 100.0,
+    "J1_window": [
+     378,
+     444
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 16.81,
+    "final_board": 9.5,
+    "J4_n": 54,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 1.71,
+    "J4_window": [
+     390.8,
+     444
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 78,
+    "entry_n": 6,
+    "track_last_real_frame": 448,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   },
+   "truth_scores": {
+    "recall_pct": 100.0,
+    "far_recall_pct": 100.0,
+    "entry_err": 10.3,
+    "entry_err_pr": 3.25,
+    "pin_row_err": 1,
+    "pin_row_frame_est": 444,
+    "truth_pin_row_frame": 445,
+    "path_err_rms": 1.25,
+    "exit_err": 1.95
+   }
+  },
+  "20261108_110442_d27f6c73": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 357,
+    "pin_row": 427,
+    "cut_pin_hit": 421,
+    "J1_pct": 98.5,
+    "J1_window": [
+     362,
+     427
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 10.78,
+    "final_board": 7.4,
+    "J4_n": 53,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 1.49,
+    "J4_window": [
+     374.5,
+     427
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 78,
+    "entry_n": 6,
+    "track_last_real_frame": 431,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_110622_9060f40e": {
+   "pass": false,
+   "rules_failed": [
+    "J1",
+    "J3",
+    "J4"
+   ],
+   "rerun_hint": "pin row comes from pin motion f483, 46 frames after the chain ends f437 in the right gutter channel: take the pin row from the ball reaching the base row inside the channel (and keep the gutter flag) instead of from pin motion",
+   "j6": "1/3: 20 ft on the ball near the right edge; 40 and 55 ft have no point (camera tilted up to the ceiling)",
+   "rule_owner_note": "J3 gutter clause: events.gutter.side = right is set, but my frame read cannot confirm it (camera tilted up at 40 and 55 ft), so J3 stays failed; J1 fails anyway.",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J1",
+    "J3",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 370,
+    "pin_row": 483,
+    "cut_pin_hit": 472,
+    "J1_pct": 53.2,
+    "J1_window": [
+     375,
+     483
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f485 - 2",
+    "J3_entry_board": null,
+    "final_board": -19.8,
+    "J4_n": 37,
+    "J4_sign_changes_nodeadband": 2,
+    "J4_max_jump": 2.46,
+    "J4_window": [
+     398.2,
+     483
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 57.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 3,
+    "rules_failed_literal": [
+     "J1",
+     "J3",
+     "J4"
+    ],
+    "n_points": 68,
+    "entry_n": 0,
+    "track_last_real_frame": 437,
+    "J4_sign_changes_deadband_gt1": 2,
+    "J4_sign_changes_deadband_ge1_shared_code": 2,
+    "J5_strict_fails": true,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f485 - 2",
+    "gutter": {
+     "side": "right",
+     "evidence": "ball-stage lane-first channel",
+     "late_median": 0.78,
+     "frames": [
+      424,
+      437
+     ],
+     "n": 7,
+     "board_lf": [
+      0.18,
+      0.4,
+      0.48,
+      -4.75,
+      -0.67,
+      -3.88,
+      -0.75
+     ],
+     "rule": ">= 5 SAM points kept inside one gutter channel by the per-frame lane-first fit within the last 15 frames of the track (ends f437; late median 0.78 not outside 0.5..39.5)"
+    }
+   }
+  },
+  "20261108_110713_ab4ecb80": {
+   "pass": false,
+   "rules_failed": [
+    "J3"
+   ],
+   "rerun_hint": "pin row is detected (f400) but entry_board is None with entry_n 1 (one deck point after the crossing): read the entry as the board interpolated at the sub-frame headpin-row crossing from the last real roll points (last real f393) when fewer than 2 deck points exist",
+   "j6": "2/3 clear; 55 ft is a coast circle at the deck front, ball not distinguishable at grid scale",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J3",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 324,
+    "pin_row": 400,
+    "cut_pin_hit": 388,
+    "J1_pct": 98.6,
+    "J1_window": [
+     329,
+     400
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": null,
+    "final_board": 6.7,
+    "J4_n": 51,
+    "J4_sign_changes_nodeadband": 5,
+    "J4_max_jump": 1.17,
+    "J4_window": [
+     343.0,
+     400
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J3",
+     "J4"
+    ],
+    "n_points": 91,
+    "entry_n": 1,
+    "track_last_real_frame": 393,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_110948_d3480341": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 264,
+    "pin_row": 333,
+    "cut_pin_hit": 326,
+    "J1_pct": 100.0,
+    "J1_window": [
+     269,
+     333
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 18.52,
+    "final_board": 13.9,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 2,
+    "J4_max_jump": 1.47,
+    "J4_window": [
+     281.2,
+     333
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 89,
+    "entry_n": 6,
+    "track_last_real_frame": 349,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_111238_e2f9d8c6": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": true,
+   "rules_failed_pre_amendment": [
+    "T-entry"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 407,
+    "pin_row": 475,
+    "cut_pin_hit": 453,
+    "J1_pct": 95.3,
+    "J1_window": [
+     412,
+     475
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 22.18,
+    "final_board": 14.0,
+    "J4_n": 51,
+    "J4_sign_changes_nodeadband": 0,
+    "J4_max_jump": 1.26,
+    "J4_window": [
+     424.0,
+     475
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 72,
+    "entry_n": 6,
+    "track_last_real_frame": 471,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   },
+   "truth_scores": {
+    "recall_pct": 100.0,
+    "far_recall_pct": 100.0,
+    "entry_err": 5.7,
+    "entry_err_pr": 2.35,
+    "pin_row_err": 1,
+    "pin_row_frame_est": 475,
+    "truth_pin_row_frame": 474,
+    "path_err_rms": 0.74,
+    "exit_err": null
+   }
+  },
+  "20261108_111420_01c6169b": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": true,
+   "rules_failed_pre_amendment": [
+    "T-entry"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 239,
+    "pin_row": 307,
+    "cut_pin_hit": 297,
+    "J1_pct": 98.4,
+    "J1_window": [
+     244,
+     307
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 9.98,
+    "final_board": 6.7,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 2.43,
+    "J4_window": [
+     256.0,
+     307
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 73,
+    "entry_n": 6,
+    "track_last_real_frame": 308,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   },
+   "truth_scores": {
+    "recall_pct": 100.0,
+    "far_recall_pct": 100.0,
+    "entry_err": 2.6,
+    "entry_err_pr": 0.28,
+    "pin_row_err": 2,
+    "pin_row_frame_est": 307,
+    "truth_pin_row_frame": 305,
+    "path_err_rms": 0.36,
+    "exit_err": 5.9
+   }
+  },
+  "20261108_111631_9c1e9211": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 296,
+    "pin_row": 372,
+    "cut_pin_hit": 358,
+    "J1_pct": 98.6,
+    "J1_window": [
+     301,
+     372
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f374 - 2",
+    "J3_entry_board": 21.64,
+    "final_board": 15.4,
+    "J4_n": 56,
+    "J4_sign_changes_nodeadband": 2,
+    "J4_max_jump": 0.77,
+    "J4_window": [
+     315.0,
+     372
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 94.8,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 1,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 77,
+    "entry_n": 5,
+    "track_last_real_frame": 373,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f374 - 2",
+    "gutter": null
+   }
+  },
+  "20261108_111941_b9ef6ad6": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 342,
+    "pin_row": 414,
+    "cut_pin_hit": 401,
+    "J1_pct": 95.6,
+    "J1_window": [
+     347,
+     414
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 15.6,
+    "final_board": 7.6,
+    "J4_n": 54,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 2.0,
+    "J4_window": [
+     360.0,
+     414
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [],
+    "n_points": 77,
+    "entry_n": 6,
+    "track_last_real_frame": 415,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_112146_61935a3b": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 333,
+    "pin_row": 401,
+    "cut_pin_hit": 384,
+    "J1_pct": 100.0,
+    "J1_window": [
+     338,
+     401
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f403 - 2",
+    "J3_entry_board": 20.24,
+    "final_board": 12.3,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 1.17,
+    "J4_window": [
+     350.0,
+     401
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 76,
+    "entry_n": 6,
+    "track_last_real_frame": 408,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f403 - 2",
+    "gutter": null
+   }
+  },
+  "20261108_112413_aa021459": {
+   "pass": false,
+   "rules_failed": [
+    "J2",
+    "J3"
+   ],
+   "rerun_hint": "ball leaves the lane on the right by ~55 ft (entry -0.74, no gutter flag) and the pin row falls back: run the lane-first gutter-channel check over the last 15 track frames so the throw is flagged gutter and the pin row comes from the channel crossing",
+   "j6": "on ball 3/3; the ball reaches the right lane edge by ~55 ft (40 ft tile cut by the frame edge, 55 ft motion-blurred)",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J3",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 310,
+    "pin_row": 371,
+    "cut_pin_hit": 371,
+    "J1_pct": 96.5,
+    "J1_window": [
+     315,
+     371
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": -0.74,
+    "final_board": -0.1,
+    "J4_n": 46,
+    "J4_sign_changes_nodeadband": 5,
+    "J4_max_jump": 1.14,
+    "J4_window": [
+     325.2,
+     371
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2",
+     "J3",
+     "J4"
+    ],
+    "n_points": 71,
+    "entry_n": 6,
+    "track_last_real_frame": 380,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_112638_df021fdd": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": true,
+   "rules_failed_pre_amendment": [
+    "J4",
+    "T-entry"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 343,
+    "pin_row": 412,
+    "cut_pin_hit": 401,
+    "J1_pct": 100.0,
+    "J1_window": [
+     348,
+     412
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f414 - 2",
+    "J3_entry_board": 15.81,
+    "final_board": 11.5,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 0.79,
+    "J4_window": [
+     360.2,
+     412
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 76,
+    "entry_n": 6,
+    "track_last_real_frame": 415,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f414 - 2",
+    "gutter": null
+   },
+   "truth_scores": {
+    "recall_pct": 100.0,
+    "far_recall_pct": 100.0,
+    "entry_err": 2.7,
+    "entry_err_pr": 1.95,
+    "pin_row_err": 1,
+    "pin_row_frame_est": 412,
+    "truth_pin_row_frame": 413,
+    "path_err_rms": 0.85,
+    "exit_err": 4.53
+   }
+  },
+  "20261108_112800_0c01c7c1": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 252,
+    "pin_row": 320,
+    "cut_pin_hit": 310,
+    "J1_pct": 100.0,
+    "J1_window": [
+     257,
+     320
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 16.16,
+    "final_board": 12.4,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 1.12,
+    "J4_window": [
+     269.0,
+     320
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 82,
+    "entry_n": 6,
+    "track_last_real_frame": 326,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_112936_c3032063": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "4eba95aa823e59ae",
+   "metrics": {
+    "release": 455,
+    "pin_row": 524,
+    "cut_pin_hit": 511,
+    "J1_pct": 96.9,
+    "J1_window": [
+     460,
+     524
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f526 - 2",
+    "J3_entry_board": 20.43,
+    "final_board": 14.0,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 4,
+    "J4_max_jump": 2.79,
+    "J4_window": [
+     472.2,
+     524
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 80,
+    "entry_n": 6,
+    "track_last_real_frame": 534,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f526 - 2",
+    "gutter": null
+   }
+  },
+  "20261108_113113_2504dbca": {
+   "pass": false,
+   "rules_failed": [
+    "J2"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f352, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3 (all three SAM points)",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 301,
+    "pin_row": 356,
+    "cut_pin_hit": 356,
+    "J1_pct": 92.2,
+    "J1_window": [
+     306,
+     356
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 9.61,
+    "final_board": 11.3,
+    "J4_n": 38,
+    "J4_sign_changes_nodeadband": 5,
+    "J4_max_jump": 0.3,
+    "J4_window": [
+     314.8,
+     356
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 92.9,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2",
+     "J4"
+    ],
+    "n_points": 52,
+    "entry_n": 3,
+    "track_last_real_frame": 352,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_113541_fd941fc1": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3 (40 ft is a coast point but sits on the ball)",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 538,
+    "pin_row": 614,
+    "cut_pin_hit": 600,
+    "J1_pct": 95.8,
+    "J1_window": [
+     543,
+     614
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f616 - 2",
+    "J3_entry_board": 14.8,
+    "final_board": 8.2,
+    "J4_n": 54,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 1.09,
+    "J4_window": [
+     557.0,
+     614
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 98.7,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 1,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 96,
+    "entry_n": 3,
+    "track_last_real_frame": 615,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f616 - 2",
+    "gutter": null
+   }
+  },
+  "20261108_113716_f433d7d5": {
+   "pass": false,
+   "rules_failed": [
+    "J2",
+    "T-entry",
+    "T-pinrow"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f544, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3 (20 ft circle slightly right of centre, overlapping)",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": true,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "T-entry",
+    "T-pinrow"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 482,
+    "pin_row": 544,
+    "cut_pin_hit": 544,
+    "J1_pct": 98.3,
+    "J1_window": [
+     487,
+     544
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 11.7,
+    "final_board": 11.0,
+    "J4_n": 47,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 1.1,
+    "J4_window": [
+     497.5,
+     544
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2"
+    ],
+    "n_points": 74,
+    "entry_n": 6,
+    "track_last_real_frame": 544,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   },
+   "truth_scores": {
+    "recall_pct": 100.0,
+    "far_recall_pct": 100.0,
+    "entry_err": 9.95,
+    "entry_err_pr": 8.66,
+    "pin_row_err": 14,
+    "pin_row_frame_est": 544,
+    "truth_pin_row_frame": 558,
+    "path_err_rms": 1.17,
+    "exit_err": 10.62
+   }
+  },
+  "20261108_113911_e5c680e6": {
+   "pass": false,
+   "rules_failed": [
+    "J2"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f517, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3 (all three SAM points)",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 457,
+    "pin_row": 518,
+    "cut_pin_hit": 518,
+    "J1_pct": 98.2,
+    "J1_window": [
+     462,
+     518
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 18.08,
+    "final_board": 17.6,
+    "J4_n": 23,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 0.95,
+    "J4_window": [
+     472.2,
+     518
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 82.3,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 10,
+    "rules_failed_literal": [
+     "J2",
+     "J4"
+    ],
+    "n_points": 61,
+    "entry_n": 6,
+    "track_last_real_frame": 517,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": true,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_114059_25d4ce4d": {
+   "pass": false,
+   "rules_failed": [
+    "J2"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f617, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "2/3: 20 ft coast circle about half a diameter low-right of the ball",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 554,
+    "pin_row": 614,
+    "cut_pin_hit": 614,
+    "J1_pct": 98.2,
+    "J1_window": [
+     559,
+     614
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 13.22,
+    "final_board": 12.9,
+    "J4_n": 46,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 1.33,
+    "J4_window": [
+     569.0,
+     614
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2",
+     "J4"
+    ],
+    "n_points": 69,
+    "entry_n": 6,
+    "track_last_real_frame": 617,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_114236_5184e3d7": {
+   "pass": false,
+   "rules_failed": [
+    "J1"
+   ],
+   "rerun_hint": "no tracker change: the ball is out of view f354-366 (camera on the foul line and the bowler's feet, look_seed.jpg), the track starts at f367 and is continuous to f416; rule-owner call: start the J1 window at the first frame the lane-first quad sees the lane, or render video-only",
+   "j6": "3/3 on the frames that exist; 55 ft SAM point in a blurred deck, plausible. The ball is out of view f354-366 (camera on the foul line and feet), see look_seed.jpg",
+   "rule_owner_note": "J1 fails on frames where the ball is not in the picture; no tracker can pass J1 here as written.",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J1"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 349,
+    "pin_row": 417,
+    "cut_pin_hit": 410,
+    "J1_pct": 79.7,
+    "J1_window": [
+     354,
+     417
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 6.73,
+    "final_board": 4.3,
+    "J4_n": 51,
+    "J4_sign_changes_nodeadband": 1,
+    "J4_max_jump": 1.13,
+    "J4_window": [
+     366.0,
+     417
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 73.9,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J1"
+    ],
+    "n_points": 56,
+    "entry_n": 6,
+    "track_last_real_frame": 416,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": true,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_114438_abe7fcc1": {
+   "pass": false,
+   "rules_failed": [
+    "J2"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f592, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 524,
+    "pin_row": 584,
+    "cut_pin_hit": 584,
+    "J1_pct": 100.0,
+    "J1_window": [
+     529,
+     584
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 14.22,
+    "final_board": 14.3,
+    "J4_n": 46,
+    "J4_sign_changes_nodeadband": 5,
+    "J4_max_jump": 1.17,
+    "J4_window": [
+     539.0,
+     584
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2",
+     "J4"
+    ],
+    "n_points": 69,
+    "entry_n": 6,
+    "track_last_real_frame": 592,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_114631_01d562c5": {
+   "pass": false,
+   "rules_failed": [
+    "J2"
+   ],
+   "rerun_hint": "pin row fell back to the cut pin_hit (last real ball frame f581, track never holds the headpin-row crossing): when SAM dies at the deck, re-seed it from the last real residual detection with one more crop pass and keep tracking until the crossing is held on 3 real frames",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "J4 dead band: the 5-frame-median series goes 16.59 -> 14.21 -> 15.52 -> 14.52 -> 15.86; the 15.52 -> 14.52 leg is exactly 1.00 board, which does not exceed 1, so 1 sign change (pass) under RULES.md; the shared code (>= 1) counts 3. Verdict unchanged (J2 fails).",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J2",
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 517,
+    "pin_row": 578,
+    "cut_pin_hit": 578,
+    "J1_pct": 98.2,
+    "J1_window": [
+     522,
+     578
+    ],
+    "J2_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+    "J3_entry_board": 14.58,
+    "final_board": 14.6,
+    "J4_n": 46,
+    "J4_sign_changes_nodeadband": 5,
+    "J4_max_jump": 1.02,
+    "J4_window": [
+     532.2,
+     578
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J2",
+     "J4"
+    ],
+    "n_points": 65,
+    "entry_n": 6,
+    "track_last_real_frame": 581,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 3,
+    "J5_strict_fails": false,
+    "J2_source_full": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+    "gutter": null
+   }
+  },
+  "20261108_114810_62ef90d8": {
+   "pass": false,
+   "rules_failed": [
+    "J4"
+   ],
+   "rerun_hint": "SAM deck points f661-674 lock onto the dark right-edge kickback gap (J6 55 ft off the ball), giving entry 1.41 and 2 dead-band sign changes: gate SAM deck points to within 2 boards of the residual chain",
+   "j6": "2/3: 55 ft SAM circle at the deck front; not confirmable at grid scale, the round-2 zoom read it one diameter right of the ball (kickback gap)",
+   "rule_owner_note": "its J2 geometric crossing f672 rests on the same SAM deck points J6 reads as off the ball; the detection itself is in doubt.",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "this is the last rerun the iteration rule allows for this stem (rerun 1 already spent); if it still fails after it, render video-only with the reason",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 601,
+    "pin_row": 672,
+    "cut_pin_hit": 661,
+    "J1_pct": 97.0,
+    "J1_window": [
+     606,
+     672
+    ],
+    "J2_source": "geometric: detected: ball centre y at the headpin base row (",
+    "J3_entry_board": 1.41,
+    "final_board": 8.4,
+    "J4_n": 49,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 1.65,
+    "J4_window": [
+     618.8,
+     672
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 76,
+    "entry_n": 5,
+    "track_last_real_frame": 671,
+    "J4_sign_changes_deadband_gt1": 2,
+    "J4_sign_changes_deadband_ge1_shared_code": 2,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
+    "gutter": null
+   }
+  },
+  "20261108_114919_768b5f15": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "on ball 3/3",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 611,
+    "pin_row": 684,
+    "cut_pin_hit": 671,
+    "J1_pct": 100.0,
+    "J1_window": [
+     616,
+     684
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f686 - 2",
+    "J3_entry_board": 15.42,
+    "final_board": 7.8,
+    "J4_n": 52,
+    "J4_sign_changes_nodeadband": 3,
+    "J4_max_jump": 1.07,
+    "J4_window": [
+     629.2,
+     684
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 100.0,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 0,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 96,
+    "entry_n": 4,
+    "track_last_real_frame": 699,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f686 - 2",
+    "gutter": null
+   }
+  },
+  "20261108_115105_6698185a": {
+   "pass": false,
+   "rules_failed": [
+    "J1",
+    "J3",
+    "J5",
+    "J4"
+   ],
+   "rerun_hint": "no seed from 49 candidates (ORB failed on 23 frame pairs, camera rolled ~25 deg and panning) although a dark blue ball is plainly on the lane f560-576: when the residual chain has no seed, seed from a dark-disc test inside the lane-first quad (no colour assumption) and let SAM run from there",
+   "j6": "0/3: no track (0 ball points), yet a dark blue ball is plainly on the lane at f560-576 and f570/f582; camera rolled ~25 deg, at 55 ft pointed off the lane (look_seed.jpg)",
+   "rule_owner_note": "",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 0,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J1",
+    "J3",
+    "J4",
+    "J5"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 557,
+    "pin_row": 595,
+    "cut_pin_hit": 596,
+    "J1_pct": 0.0,
+    "J1_window": [
+     562,
+     595
+    ],
+    "J2_source": "pin motion: first camera-compensated rack motion f597 - 2",
+    "J3_entry_board": null,
+    "final_board": null,
+    "J4_n": 0,
+    "J4_sign_changes_nodeadband": 0,
+    "J4_max_jump": null,
+    "J4_window": [
+     566.5,
+     595
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 0.0,
+    "J5_pct_strict_all_roll_frames": 0.0,
+    "J5_max_missing_run": 26,
+    "edge_fit_failures": null,
+    "rules_failed_literal": [
+     "J1",
+     "J3",
+     "J4",
+     "J5"
+    ],
+    "n_points": 0,
+    "entry_n": 0,
+    "track_last_real_frame": null,
+    "J4_sign_changes_deadband_gt1": 0,
+    "J4_sign_changes_deadband_ge1_shared_code": 0,
+    "J5_strict_fails": true,
+    "J2_source_full": "pin motion: first camera-compensated rack motion f597 - 2",
+    "gutter": null
+   }
+  },
+  "20261108_115157_0e03a53c": {
+   "pass": true,
+   "rules_failed": [],
+   "rerun_hint": "",
+   "j6": "2/3 clear; 55 ft SAM circle in the pin deck on a dark blob, ball not confirmable",
+   "rule_owner_note": "J2 passes only via \"geometric: detected (relaxed hold)\" added by rerun 1, resting on SAM deck points f567-570 that J6 cannot confirm are the ball; if relaxed hold does not count as a detection, 115157 fails J2.",
+   "round": 2,
+   "round_note": "round 2 over all 31 stems (14:00), tracks as found; 22 batch stems unchanged since the re-issued round 1, 9 left-out stems judged for the first time",
+   "reruns_spent": 1,
+   "rerun_budget_note": "",
+   "truth_stem": false,
+   "rules_failed_pre_amendment": [
+    "J4"
+   ],
+   "track_sha": "86a42d3466b8f4c3",
+   "metrics": {
+    "release": 498,
+    "pin_row": 570,
+    "cut_pin_hit": 561,
+    "J1_pct": 98.5,
+    "J1_window": [
+     503,
+     570
+    ],
+    "J2_source": "geometric: detected (relaxed hold): ball centre y at the hea",
+    "J3_entry_board": 10.91,
+    "final_board": 4.7,
+    "J4_n": 55,
+    "J4_sign_changes_nodeadband": 5,
+    "J4_max_jump": 2.95,
+    "J4_window": [
+     516.0,
+     570
+    ],
+    "J4_jumps_gt3": [],
+    "J5_pct": 100.0,
+    "J5_pct_strict_all_roll_frames": 98.6,
+    "J5_max_missing_run": 0,
+    "edge_fit_failures": 1,
+    "rules_failed_literal": [
+     "J4"
+    ],
+    "n_points": 75,
+    "entry_n": 6,
+    "track_last_real_frame": 572,
+    "J4_sign_changes_deadband_gt1": 1,
+    "J4_sign_changes_deadband_ge1_shared_code": 1,
+    "J5_strict_fails": false,
+    "J2_source_full": "geometric: detected (relaxed hold): ball centre y at the headpin base row on 3 consecutive real frames, 2 real frames after the crossing, track ends f572",
+    "gutter": null
+   }
+  }
+ }
+}

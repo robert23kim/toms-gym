@@ -1,0 +1,359 @@
+{
+ "summary": {
+  "n_dev": 8,
+  "n_missing": 0,
+  "detection_rate_mean": 0.986,
+  "max_board_jump_mean": 1.81,
+  "pin_row_detected": 4,
+  "runtime_s_per_clip_mean": 37.6,
+  "runtime_s_per_clip_max": 50.9
+ },
+ "per_stem": [
+  {
+   "stem": "20261108_104946_3b1b2308",
+   "model": "dark",
+   "lab": [
+    35.0,
+    141.0,
+    107.0
+   ],
+   "ab_tol": 26.7,
+   "detection_rate": 1.0,
+   "window": [
+    399,
+    447
+   ],
+   "max_board_jump": 0.74,
+   "pin_row_detected": true,
+   "pin_row": 447,
+   "cut_pin": 455,
+   "pin_row_source": "geometric: detected: ball centre y at th",
+   "entry": 6.12,
+   "exit": 10.25,
+   "break_ft": 60.0,
+   "coarse_points": 48,
+   "coasted": 3,
+   "refined": 33,
+   "reprompts": 3,
+   "gates": {
+    "lateral": 1,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 48.3,
+   "stage_s": {
+    "read_and_model_s": 0.4,
+    "coarse_s": 7.3,
+    "lgb_s": 28.8,
+    "lane_s": 0.9,
+    "events_s": 10.8
+   }
+  },
+  {
+   "stem": "20261108_105652_31fc9b5e",
+   "model": "dark",
+   "lab": [
+    37.0,
+    140.0,
+    108.0
+   ],
+   "ab_tol": 24.9,
+   "detection_rate": 1.0,
+   "window": [
+    317,
+    375
+   ],
+   "max_board_jump": 3.05,
+   "pin_row_detected": false,
+   "pin_row": 375,
+   "cut_pin": 375,
+   "pin_row_source": "fallback: cuts.json pin_hit (no held cro",
+   "entry": 15.57,
+   "exit": null,
+   "break_ft": 50.5,
+   "coarse_points": 54,
+   "coasted": 3,
+   "refined": 35,
+   "reprompts": 3,
+   "gates": {
+    "lateral": 2,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 50.9,
+   "stage_s": {
+    "read_and_model_s": 0.6,
+    "coarse_s": 8.0,
+    "lgb_s": 29.8,
+    "lane_s": 1.2,
+    "events_s": 11.4
+   }
+  },
+  {
+   "stem": "20261108_110442_d27f6c73",
+   "model": "dark",
+   "lab": [
+    41.0,
+    139.0,
+    108.0
+   ],
+   "ab_tol": 23.7,
+   "detection_rate": 0.956,
+   "window": [
+    362,
+    429
+   ],
+   "max_board_jump": 5.27,
+   "pin_row_detected": true,
+   "pin_row": 429,
+   "cut_pin": 421,
+   "pin_row_source": "geometric: detected: ball centre y at th",
+   "entry": 9.58,
+   "exit": 18.02,
+   "break_ft": 43.3,
+   "coarse_points": 65,
+   "coasted": 7,
+   "refined": 20,
+   "reprompts": 2,
+   "gates": {
+    "lateral": 0,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 36.7,
+   "stage_s": {
+    "read_and_model_s": 0.4,
+    "coarse_s": 8.1,
+    "lgb_s": 15.2,
+    "lane_s": 1.1,
+    "events_s": 11.8
+   }
+  },
+  {
+   "stem": "20261108_111631_9c1e9211",
+   "model": "dark",
+   "lab": [
+    15.0,
+    128.0,
+    127.0
+   ],
+   "ab_tol": 22.0,
+   "detection_rate": 0.984,
+   "window": [
+    301,
+    363
+   ],
+   "max_board_jump": 0.69,
+   "pin_row_detected": true,
+   "pin_row": 363,
+   "cut_pin": 358,
+   "pin_row_source": "geometric: detected: ball centre y at th",
+   "entry": 16.66,
+   "exit": 18.72,
+   "break_ft": 20.6,
+   "coarse_points": 43,
+   "coasted": 8,
+   "refined": 38,
+   "reprompts": 3,
+   "gates": {
+    "lateral": 1,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 36.5,
+   "stage_s": {
+    "read_and_model_s": 0.5,
+    "coarse_s": 8.0,
+    "lgb_s": 13.1,
+    "lane_s": 1.0,
+    "events_s": 13.9
+   }
+  },
+  {
+   "stem": "20261108_112800_0c01c7c1",
+   "model": "dark",
+   "lab": [
+    25.0,
+    128.0,
+    126.0
+   ],
+   "ab_tol": 22.0,
+   "detection_rate": 1.0,
+   "window": [
+    257,
+    321
+   ],
+   "max_board_jump": 0.9,
+   "pin_row_detected": true,
+   "pin_row": 321,
+   "cut_pin": 310,
+   "pin_row_source": "geometric: detected: ball centre y at th",
+   "entry": 16.4,
+   "exit": null,
+   "break_ft": 27.0,
+   "coarse_points": 49,
+   "coasted": 4,
+   "refined": 46,
+   "reprompts": 3,
+   "gates": {
+    "lateral": 4,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 33.5,
+   "stage_s": {
+    "read_and_model_s": 0.4,
+    "coarse_s": 6.8,
+    "lgb_s": 12.6,
+    "lane_s": 0.8,
+    "events_s": 12.8
+   }
+  },
+  {
+   "stem": "20261108_113911_e5c680e6",
+   "model": "dark",
+   "lab": [
+    38.0,
+    140.0,
+    109.0
+   ],
+   "ab_tol": 28.2,
+   "detection_rate": 0.947,
+   "window": [
+    462,
+    518
+   ],
+   "max_board_jump": 0.88,
+   "pin_row_detected": false,
+   "pin_row": 518,
+   "cut_pin": 518,
+   "pin_row_source": "fallback: cuts.json pin_hit (no held cro",
+   "entry": 22.29,
+   "exit": 23.53,
+   "break_ft": 33.4,
+   "coarse_points": 45,
+   "coasted": 6,
+   "refined": 32,
+   "reprompts": 4,
+   "gates": {
+    "lateral": 5,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [
+    522
+   ],
+   "wall_s": 32.6,
+   "stage_s": {
+    "read_and_model_s": 0.4,
+    "coarse_s": 7.6,
+    "lgb_s": 14.9,
+    "lane_s": 0.9,
+    "events_s": 8.8
+   }
+  },
+  {
+   "stem": "20261108_114631_01d562c5",
+   "model": "dark",
+   "lab": [
+    38.0,
+    138.0,
+    113.0
+   ],
+   "ab_tol": 31.7,
+   "detection_rate": 1.0,
+   "window": [
+    522,
+    578
+   ],
+   "max_board_jump": 1.22,
+   "pin_row_detected": false,
+   "pin_row": 578,
+   "cut_pin": 578,
+   "pin_row_source": "fallback: cuts.json pin_hit (no held cro",
+   "entry": 17.09,
+   "exit": 17.09,
+   "break_ft": 42.3,
+   "coarse_points": 54,
+   "coasted": 3,
+   "refined": 27,
+   "reprompts": 3,
+   "gates": {
+    "lateral": 0,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 30.7,
+   "stage_s": {
+    "read_and_model_s": 0.4,
+    "coarse_s": 6.6,
+    "lgb_s": 11.8,
+    "lane_s": 0.8,
+    "events_s": 11.2
+   }
+  },
+  {
+   "stem": "20261108_115157_0e03a53c",
+   "model": "dark",
+   "lab": [
+    33.0,
+    139.0,
+    108.0
+   ],
+   "ab_tol": 22.0,
+   "detection_rate": 1.0,
+   "window": [
+    503,
+    561
+   ],
+   "max_board_jump": 1.73,
+   "pin_row_detected": false,
+   "pin_row": 561,
+   "cut_pin": 561,
+   "pin_row_source": "fallback: cuts.json pin_hit (no held cro",
+   "entry": 6.05,
+   "exit": 4.88,
+   "break_ft": 46.7,
+   "coarse_points": 46,
+   "coasted": 4,
+   "refined": 17,
+   "reprompts": 4,
+   "gates": {
+    "lateral": 4,
+    "lane": 0,
+    "radius": 0,
+    "jump": 0
+   },
+   "fallback": [],
+   "rejected": [],
+   "wall_s": 31.7,
+   "stage_s": {
+    "read_and_model_s": 0.4,
+    "coarse_s": 6.2,
+    "lgb_s": 14.6,
+    "lane_s": 1.1,
+    "events_s": 9.4
+   }
+  }
+ ]
+}

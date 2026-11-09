@@ -1,0 +1,1861 @@
+{
+ "stem": "20261108_115105_6698185a",
+ "method": "track_v3",
+ "stage": "integrated",
+ "stages": {
+  "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
+  "lane": "prepass lane-first quads (fallback)",
+  "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override (not over a detected crossing while the ball is in a gutter channel); relaxed hold / gutter channel crossing when no held crossing; fallback = cut pin_hit (flagged in events.pin_row_source) after the SAM pass to the cut end and the deck re-seed",
+  "events": "track_v2.deck_decoy + add_depth + compute_events (+ events.gutter, entry_board_crossing)",
+  "path": "none",
+  "pick": {
+   "ball": "motion-only",
+   "verdict": "partial",
+   "flagged": true,
+   "flag": "PARTIAL PICK: no experiment met works (recall >= 85 and entry_err <= 3 on >= 4 of 6); motion-only is the best partial by truth recall",
+   "truth_recall_means": {
+    "motion-only": 100.0,
+    "sam2-from-hand": 92.4,
+    "ball-colour-model (fails)": 74.17
+   },
+   "truth_entry_err_means": {
+    "motion-only": 5.64,
+    "sam2-from-hand": 8.12,
+    "ball-colour-model (fails)": 6.51
+   }
+  }
+ },
+ "frames": [],
+ "lane": {
+  "558": {
+   "fl_l": [
+    0.0,
+    346.0
+   ],
+   "fl_r": [
+    798.1,
+    346.0
+   ],
+   "pd_l": [
+    39.7,
+    60.0
+   ],
+   "pd_r": [
+    717.8,
+    60.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "569": {
+   "fl_l": [
+    87.2,
+    1396.0
+   ],
+   "fl_r": [
+    1182.9,
+    1396.0
+   ],
+   "pd_l": [
+    358.5,
+    68.0
+   ],
+   "pd_r": [
+    460.8,
+    68.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "570": {
+   "fl_l": [
+    73.3,
+    1476.0
+   ],
+   "fl_r": [
+    1183.0,
+    1476.0
+   ],
+   "pd_l": [
+    374.9,
+    108.0
+   ],
+   "pd_r": [
+    479.1,
+    108.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "571": {
+   "fl_l": [
+    52.6,
+    1562.0
+   ],
+   "fl_r": [
+    1182.9,
+    1562.0
+   ],
+   "pd_l": [
+    389.9,
+    148.0
+   ],
+   "pd_r": [
+    493.1,
+    148.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "572": {
+   "fl_l": [
+    39.2,
+    1583.0
+   ],
+   "fl_r": [
+    1146.9,
+    1583.0
+   ],
+   "pd_l": [
+    404.6,
+    188.0
+   ],
+   "pd_r": [
+    504.3,
+    188.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "573": {
+   "fl_l": [
+    28.9,
+    1583.0
+   ],
+   "fl_r": [
+    1097.1,
+    1583.0
+   ],
+   "pd_l": [
+    417.7,
+    234.0
+   ],
+   "pd_r": [
+    517.4,
+    234.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "574": {
+   "fl_l": [
+    18.7,
+    1583.0
+   ],
+   "fl_r": [
+    1046.5,
+    1583.0
+   ],
+   "pd_l": [
+    429.3,
+    284.0
+   ],
+   "pd_r": [
+    531.1,
+    284.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "575": {
+   "fl_l": [
+    9.3,
+    1583.0
+   ],
+   "fl_r": [
+    995.9,
+    1583.0
+   ],
+   "pd_l": [
+    440.9,
+    332.0
+   ],
+   "pd_r": [
+    542.0,
+    332.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "576": {
+   "fl_l": [
+    7.1,
+    1583.0
+   ],
+   "fl_r": [
+    952.1,
+    1583.0
+   ],
+   "pd_l": [
+    456.5,
+    380.0
+   ],
+   "pd_r": [
+    556.1,
+    380.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "577": {
+   "fl_l": [
+    11.5,
+    1583.0
+   ],
+   "fl_r": [
+    916.8,
+    1583.0
+   ],
+   "pd_l": [
+    474.6,
+    428.0
+   ],
+   "pd_r": [
+    574.4,
+    428.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "578": {
+   "fl_l": [
+    23.1,
+    1583.0
+   ],
+   "fl_r": [
+    888.9,
+    1583.0
+   ],
+   "pd_l": [
+    495.3,
+    476.0
+   ],
+   "pd_r": [
+    595.1,
+    476.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "579": {
+   "fl_l": [
+    41.0,
+    1583.0
+   ],
+   "fl_r": [
+    868.3,
+    1583.0
+   ],
+   "pd_l": [
+    519.6,
+    522.0
+   ],
+   "pd_r": [
+    618.2,
+    522.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "580": {
+   "fl_l": [
+    64.2,
+    1583.0
+   ],
+   "fl_r": [
+    854.9,
+    1583.0
+   ],
+   "pd_l": [
+    544.8,
+    570.0
+   ],
+   "pd_r": [
+    644.9,
+    570.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "581": {
+   "fl_l": [
+    98.6,
+    1583.0
+   ],
+   "fl_r": [
+    853.3,
+    1583.0
+   ],
+   "pd_l": [
+    572.3,
+    614.0
+   ],
+   "pd_r": [
+    673.8,
+    614.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "582": {
+   "fl_l": [
+    142.0,
+    1583.0
+   ],
+   "fl_r": [
+    862.1,
+    1583.0
+   ],
+   "pd_l": [
+    605.7,
+    656.0
+   ],
+   "pd_r": [
+    708.1,
+    656.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "583": {
+   "fl_l": [
+    192.2,
+    1583.0
+   ],
+   "fl_r": [
+    882.6,
+    1583.0
+   ],
+   "pd_l": [
+    642.1,
+    698.0
+   ],
+   "pd_r": [
+    745.2,
+    698.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "584": {
+   "fl_l": [
+    250.0,
+    1583.0
+   ],
+   "fl_r": [
+    915.1,
+    1583.0
+   ],
+   "pd_l": [
+    684.1,
+    740.0
+   ],
+   "pd_r": [
+    789.8,
+    740.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "585": {
+   "fl_l": [
+    315.9,
+    1583.0
+   ],
+   "fl_r": [
+    958.3,
+    1583.0
+   ],
+   "pd_l": [
+    733.3,
+    778.0
+   ],
+   "pd_r": [
+    841.4,
+    778.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "586": {
+   "fl_l": [
+    388.3,
+    1583.0
+   ],
+   "fl_r": [
+    1012.1,
+    1583.0
+   ],
+   "pd_l": [
+    787.6,
+    812.0
+   ],
+   "pd_r": [
+    899.0,
+    812.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "587": {
+   "fl_l": [
+    466.9,
+    1583.0
+   ],
+   "fl_r": [
+    1077.3,
+    1583.0
+   ],
+   "pd_l": [
+    849.0,
+    850.0
+   ],
+   "pd_r": [
+    964.8,
+    850.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "588": {
+   "fl_l": [
+    554.8,
+    1583.0
+   ],
+   "fl_r": [
+    1151.6,
+    1583.0
+   ],
+   "pd_l": [
+    916.3,
+    888.0
+   ],
+   "pd_r": [
+    1042.2,
+    888.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "589": {
+   "fl_l": [
+    829.5,
+    1241.0
+   ],
+   "fl_r": [
+    1182.9,
+    1241.0
+   ],
+   "pd_l": [
+    996.1,
+    924.0
+   ],
+   "pd_r": [
+    1119.7,
+    924.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "592": {
+   "fl_l": [
+    0.3,
+    1076.0
+   ],
+   "fl_r": [
+    997.8,
+    1076.0
+   ],
+   "pd_l": [
+    975.2,
+    890.0
+   ],
+   "pd_r": [
+    1291.0,
+    890.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "593": {
+   "fl_l": [
+    4.6,
+    1102.0
+   ],
+   "fl_r": [
+    1033.8,
+    1102.0
+   ],
+   "pd_l": [
+    1038.6,
+    906.0
+   ],
+   "pd_r": [
+    1342.6,
+    906.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "594": {
+   "fl_l": [
+    4.8,
+    1127.0
+   ],
+   "fl_r": [
+    1049.3,
+    1127.0
+   ],
+   "pd_l": [
+    976.5,
+    942.0
+   ],
+   "pd_r": [
+    1337.0,
+    942.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "595": {
+   "fl_l": [
+    2.5,
+    1150.0
+   ],
+   "fl_r": [
+    1047.2,
+    1150.0
+   ],
+   "pd_l": [
+    1133.3,
+    928.0
+   ],
+   "pd_r": [
+    1382.9,
+    928.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "596": {
+   "fl_l": [
+    1.0,
+    1172.0
+   ],
+   "fl_r": [
+    1025.6,
+    1172.0
+   ],
+   "pd_l": [
+    1132.0,
+    930.0
+   ],
+   "pd_r": [
+    1380.6,
+    930.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "597": {
+   "fl_l": [
+    2.6,
+    1190.0
+   ],
+   "fl_r": [
+    990.5,
+    1190.0
+   ],
+   "pd_l": [
+    1009.4,
+    946.0
+   ],
+   "pd_r": [
+    1333.7,
+    946.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "598": {
+   "fl_l": [
+    0.7,
+    1205.0
+   ],
+   "fl_r": [
+    942.1,
+    1205.0
+   ],
+   "pd_l": [
+    1070.7,
+    908.0
+   ],
+   "pd_r": [
+    1339.7,
+    908.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "599": {
+   "fl_l": [
+    2.7,
+    1216.0
+   ],
+   "fl_r": [
+    880.8,
+    1216.0
+   ],
+   "pd_l": [
+    1057.5,
+    880.0
+   ],
+   "pd_r": [
+    1305.5,
+    880.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "600": {
+   "fl_l": [
+    2.2,
+    1220.0
+   ],
+   "fl_r": [
+    810.0,
+    1220.0
+   ],
+   "pd_l": [
+    1028.3,
+    850.0
+   ],
+   "pd_r": [
+    1246.8,
+    850.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "601": {
+   "fl_l": [
+    2.0,
+    1217.0
+   ],
+   "fl_r": [
+    743.8,
+    1217.0
+   ],
+   "pd_l": [
+    989.2,
+    822.0
+   ],
+   "pd_r": [
+    1182.1,
+    822.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "602": {
+   "fl_l": [
+    1.5,
+    1209.0
+   ],
+   "fl_r": [
+    687.3,
+    1209.0
+   ],
+   "pd_l": [
+    948.8,
+    796.0
+   ],
+   "pd_r": [
+    1121.4,
+    796.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "603": {
+   "fl_l": [
+    1.4,
+    1200.0
+   ],
+   "fl_r": [
+    639.7,
+    1200.0
+   ],
+   "pd_l": [
+    914.2,
+    770.0
+   ],
+   "pd_r": [
+    1071.1,
+    770.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "604": {
+   "fl_l": [
+    0.6,
+    1190.0
+   ],
+   "fl_r": [
+    596.9,
+    1190.0
+   ],
+   "pd_l": [
+    887.5,
+    742.0
+   ],
+   "pd_r": [
+    1025.4,
+    742.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "605": {
+   "fl_l": [
+    1.8,
+    1180.0
+   ],
+   "fl_r": [
+    561.5,
+    1180.0
+   ],
+   "pd_l": [
+    845.6,
+    726.0
+   ],
+   "pd_r": [
+    977.3,
+    726.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "606": {
+   "fl_l": [
+    0.5,
+    1171.0
+   ],
+   "fl_r": [
+    529.2,
+    1171.0
+   ],
+   "pd_l": [
+    812.5,
+    708.0
+   ],
+   "pd_r": [
+    935.5,
+    708.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "607": {
+   "fl_l": [
+    1.3,
+    1159.0
+   ],
+   "fl_r": [
+    504.4,
+    1159.0
+   ],
+   "pd_l": [
+    771.5,
+    698.0
+   ],
+   "pd_r": [
+    894.7,
+    698.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "608": {
+   "fl_l": [
+    0.7,
+    1147.0
+   ],
+   "fl_r": [
+    481.6,
+    1147.0
+   ],
+   "pd_l": [
+    743.4,
+    684.0
+   ],
+   "pd_r": [
+    862.4,
+    684.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "609": {
+   "fl_l": [
+    0.6,
+    1136.0
+   ],
+   "fl_r": [
+    459.4,
+    1136.0
+   ],
+   "pd_l": [
+    713.4,
+    674.0
+   ],
+   "pd_r": [
+    827.8,
+    674.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "610": {
+   "fl_l": [
+    0.3,
+    1124.0
+   ],
+   "fl_r": [
+    439.9,
+    1124.0
+   ],
+   "pd_l": [
+    692.8,
+    660.0
+   ],
+   "pd_r": [
+    798.9,
+    660.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "611": {
+   "fl_l": [
+    0.3,
+    1111.0
+   ],
+   "fl_r": [
+    422.0,
+    1111.0
+   ],
+   "pd_l": [
+    675.3,
+    646.0
+   ],
+   "pd_r": [
+    768.9,
+    646.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "612": {
+   "fl_l": [
+    1.1,
+    1096.0
+   ],
+   "fl_r": [
+    410.0,
+    1096.0
+   ],
+   "pd_l": [
+    650.4,
+    638.0
+   ],
+   "pd_r": [
+    747.7,
+    638.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "613": {
+   "fl_l": [
+    1.0,
+    1081.0
+   ],
+   "fl_r": [
+    397.7,
+    1081.0
+   ],
+   "pd_l": [
+    630.8,
+    628.0
+   ],
+   "pd_r": [
+    726.9,
+    628.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "614": {
+   "fl_l": [
+    1.1,
+    1065.0
+   ],
+   "fl_r": [
+    387.0,
+    1065.0
+   ],
+   "pd_l": [
+    611.3,
+    620.0
+   ],
+   "pd_r": [
+    706.2,
+    620.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "615": {
+   "fl_l": [
+    0.8,
+    1049.0
+   ],
+   "fl_r": [
+    378.0,
+    1049.0
+   ],
+   "pd_l": [
+    594.6,
+    612.0
+   ],
+   "pd_r": [
+    689.8,
+    612.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "616": {
+   "fl_l": [
+    0.8,
+    1033.0
+   ],
+   "fl_r": [
+    370.3,
+    1033.0
+   ],
+   "pd_l": [
+    582.6,
+    602.0
+   ],
+   "pd_r": [
+    676.4,
+    602.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "617": {
+   "fl_l": [
+    0.1,
+    1018.0
+   ],
+   "fl_r": [
+    363.9,
+    1018.0
+   ],
+   "pd_l": [
+    570.9,
+    594.0
+   ],
+   "pd_r": [
+    664.4,
+    594.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "618": {
+   "fl_l": [
+    0.4,
+    1004.0
+   ],
+   "fl_r": [
+    358.8,
+    1004.0
+   ],
+   "pd_l": [
+    563.9,
+    584.0
+   ],
+   "pd_r": [
+    656.5,
+    584.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "619": {
+   "fl_l": [
+    1.3,
+    991.0
+   ],
+   "fl_r": [
+    356.2,
+    991.0
+   ],
+   "pd_l": [
+    559.7,
+    576.0
+   ],
+   "pd_r": [
+    650.5,
+    576.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "620": {
+   "fl_l": [
+    0.7,
+    978.0
+   ],
+   "fl_r": [
+    354.6,
+    978.0
+   ],
+   "pd_l": [
+    554.1,
+    568.0
+   ],
+   "pd_r": [
+    647.8,
+    568.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "621": {
+   "fl_l": [
+    0.8,
+    968.0
+   ],
+   "fl_r": [
+    353.5,
+    968.0
+   ],
+   "pd_l": [
+    549.8,
+    562.0
+   ],
+   "pd_r": [
+    644.2,
+    562.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "622": {
+   "fl_l": [
+    0.0,
+    962.0
+   ],
+   "fl_r": [
+    354.1,
+    962.0
+   ],
+   "pd_l": [
+    552.7,
+    554.0
+   ],
+   "pd_r": [
+    646.5,
+    554.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "623": {
+   "fl_l": [
+    0.4,
+    952.0
+   ],
+   "fl_r": [
+    361.0,
+    952.0
+   ],
+   "pd_l": [
+    553.7,
+    546.0
+   ],
+   "pd_r": [
+    652.8,
+    546.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "624": {
+   "fl_l": [
+    1.2,
+    953.0
+   ],
+   "fl_r": [
+    361.1,
+    953.0
+   ],
+   "pd_l": [
+    564.2,
+    536.0
+   ],
+   "pd_r": [
+    659.2,
+    536.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "625": {
+   "fl_l": [
+    1.3,
+    951.0
+   ],
+   "fl_r": [
+    366.7,
+    951.0
+   ],
+   "pd_l": [
+    576.7,
+    526.0
+   ],
+   "pd_r": [
+    669.0,
+    526.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "626": {
+   "fl_l": [
+    1.3,
+    950.0
+   ],
+   "fl_r": [
+    372.9,
+    950.0
+   ],
+   "pd_l": [
+    587.0,
+    518.0
+   ],
+   "pd_r": [
+    680.1,
+    518.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "627": {
+   "fl_l": [
+    1.3,
+    950.0
+   ],
+   "fl_r": [
+    379.8,
+    950.0
+   ],
+   "pd_l": [
+    601.3,
+    510.0
+   ],
+   "pd_r": [
+    694.0,
+    510.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "628": {
+   "fl_l": [
+    0.8,
+    950.0
+   ],
+   "fl_r": [
+    388.8,
+    950.0
+   ],
+   "pd_l": [
+    617.8,
+    502.0
+   ],
+   "pd_r": [
+    712.1,
+    502.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "629": {
+   "fl_l": [
+    0.3,
+    950.0
+   ],
+   "fl_r": [
+    399.5,
+    950.0
+   ],
+   "pd_l": [
+    638.1,
+    494.0
+   ],
+   "pd_r": [
+    733.7,
+    494.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "630": {
+   "fl_l": [
+    0.2,
+    950.0
+   ],
+   "fl_r": [
+    412.2,
+    950.0
+   ],
+   "pd_l": [
+    658.1,
+    488.0
+   ],
+   "pd_r": [
+    757.1,
+    488.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "631": {
+   "fl_l": [
+    1.2,
+    949.0
+   ],
+   "fl_r": [
+    425.3,
+    949.0
+   ],
+   "pd_l": [
+    675.2,
+    484.0
+   ],
+   "pd_r": [
+    779.1,
+    484.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "632": {
+   "fl_l": [
+    0.5,
+    952.0
+   ],
+   "fl_r": [
+    442.6,
+    952.0
+   ],
+   "pd_l": [
+    711.0,
+    476.0
+   ],
+   "pd_r": [
+    813.9,
+    476.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "633": {
+   "fl_l": [
+    0.9,
+    956.0
+   ],
+   "fl_r": [
+    466.0,
+    956.0
+   ],
+   "pd_l": [
+    756.6,
+    468.0
+   ],
+   "pd_r": [
+    858.1,
+    468.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "634": {
+   "fl_l": [
+    1.0,
+    969.0
+   ],
+   "fl_r": [
+    502.5,
+    969.0
+   ],
+   "pd_l": [
+    829.5,
+    458.0
+   ],
+   "pd_r": [
+    933.5,
+    458.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "635": {
+   "fl_l": [
+    0.0,
+    987.0
+   ],
+   "fl_r": [
+    545.6,
+    987.0
+   ],
+   "pd_l": [
+    897.7,
+    460.0
+   ],
+   "pd_r": [
+    1013.9,
+    460.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "636": {
+   "fl_l": [
+    1.2,
+    1008.0
+   ],
+   "fl_r": [
+    601.1,
+    1008.0
+   ],
+   "pd_l": [
+    991.0,
+    460.0
+   ],
+   "pd_r": [
+    1117.3,
+    460.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "637": {
+   "fl_l": [
+    1.7,
+    1032.0
+   ],
+   "fl_r": [
+    669.6,
+    1032.0
+   ],
+   "pd_l": [
+    1094.4,
+    468.0
+   ],
+   "pd_r": [
+    1239.7,
+    468.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "638": {
+   "fl_l": [
+    2.0,
+    1057.0
+   ],
+   "fl_r": [
+    760.6,
+    1057.0
+   ],
+   "pd_l": [
+    1048.8,
+    564.0
+   ],
+   "pd_r": [
+    1307.1,
+    564.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "639": {
+   "fl_l": [
+    2.2,
+    1079.0
+   ],
+   "fl_r": [
+    879.5,
+    1079.0
+   ],
+   "pd_l": [
+    983.9,
+    666.0
+   ],
+   "pd_r": [
+    1383.4,
+    666.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "642": {
+   "fl_l": [
+    173.2,
+    1583.0
+   ],
+   "fl_r": [
+    209.4,
+    1583.0
+   ],
+   "pd_l": [
+    147.1,
+    1176.0
+   ],
+   "pd_r": [
+    181.2,
+    1176.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "643": {
+   "fl_l": [
+    383.3,
+    1583.0
+   ],
+   "fl_r": [
+    447.4,
+    1583.0
+   ],
+   "pd_l": [
+    304.5,
+    440.0
+   ],
+   "pd_r": [
+    318.9,
+    440.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "644": {
+   "fl_l": [
+    590.7,
+    1583.0
+   ],
+   "fl_r": [
+    640.0,
+    1583.0
+   ],
+   "pd_l": [
+    516.4,
+    408.0
+   ],
+   "pd_r": [
+    544.2,
+    408.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "645": {
+   "fl_l": [
+    807.8,
+    1583.0
+   ],
+   "fl_r": [
+    862.4,
+    1583.0
+   ],
+   "pd_l": [
+    744.8,
+    400.0
+   ],
+   "pd_r": [
+    763.8,
+    400.0
+   ],
+   "fl_is_foul_line": false
+  },
+  "650": {
+   "fl_l": [
+    318.5,
+    516.0
+   ],
+   "fl_r": [
+    1182.9,
+    516.0
+   ],
+   "pd_l": [
+    274.6,
+    452.0
+   ],
+   "pd_r": [
+    978.2,
+    452.0
+   ],
+   "fl_is_foul_line": false
+  }
+ },
+ "boards": {},
+ "boards_raw": {},
+ "boards_contact": {},
+ "final_board": null,
+ "lane_top_down": [],
+ "lane_top_down_model": {
+  "a": 60.0,
+  "b": 0.0
+ },
+ "base_rows": {
+  "569": 42.5,
+  "570": 81.5,
+  "571": 127.5,
+  "572": 162.5,
+  "573": 207.0,
+  "574": 254.5,
+  "575": 302.5,
+  "576": 350.5,
+  "577": 398.0,
+  "578": 446.0,
+  "579": 493.0,
+  "580": 540.5,
+  "581": 586.0,
+  "582": 630.5,
+  "583": 672.5,
+  "584": 712.5,
+  "585": 748.5,
+  "586": 785.5,
+  "587": 820.5,
+  "588": 856.5,
+  "589": 891.5,
+  "592": 881.0,
+  "593": 812.5,
+  "594": 919.0,
+  "595": 914.5,
+  "596": 914.5,
+  "597": 916.5,
+  "598": 891.5,
+  "599": 834.0,
+  "600": 812.5,
+  "601": 788.0,
+  "602": 763.5,
+  "603": 748.5,
+  "604": 723.5,
+  "605": 706.0,
+  "606": 684.5,
+  "607": 672.0,
+  "608": 658.5,
+  "609": 648.0,
+  "610": 635.5,
+  "611": 623.5,
+  "612": 614.5,
+  "613": 604.5,
+  "614": 596.5,
+  "615": 588.0,
+  "616": 578.5,
+  "617": 569.5,
+  "618": 560.5,
+  "619": 552.5,
+  "620": 544.5,
+  "621": 538.0,
+  "622": 530.0,
+  "623": 527.0,
+  "624": 517.5,
+  "625": 508.0,
+  "626": 494.5,
+  "627": 486.0,
+  "628": 478.5,
+  "629": 470.5,
+  "630": 469.5,
+  "631": 464.5,
+  "632": 457.0,
+  "633": 449.5,
+  "634": 442.0,
+  "635": 442.0,
+  "636": 441.5,
+  "637": 410.0,
+  "638": 561.0,
+  "639": 586.0
+ },
+ "pin_motion": {
+  "stat": {
+   "586": 4.003,
+   "587": 4.979,
+   "588": 4.011,
+   "589": 4.256,
+   "590": 3.266,
+   "591": 4.345,
+   "592": 13.589,
+   "593": 5.88,
+   "594": 51.252,
+   "595": 26.272,
+   "596": 14.315,
+   "597": 22.288,
+   "598": 31.593,
+   "599": 14.156,
+   "600": 12.903,
+   "601": 30.927,
+   "602": 11.063,
+   "603": 6.94,
+   "604": 7.012,
+   "605": 6.468,
+   "606": 4.44,
+   "607": 7.702,
+   "608": 6.798,
+   "609": 6.092,
+   "610": 11.179,
+   "611": 12.468,
+   "612": 11.092,
+   "613": 4.56,
+   "614": 4.318,
+   "615": 8.893,
+   "616": 3.082,
+   "617": 8.567,
+   "618": 3.753,
+   "619": 17.102,
+   "620": 3.963,
+   "621": 14.782,
+   "622": 20.143,
+   "623": 13.264,
+   "624": 9.563,
+   "625": 8.963,
+   "626": 12.519,
+   "627": 9.752,
+   "628": 8.911,
+   "629": 3.703,
+   "630": 17.938,
+   "631": 11.682,
+   "632": 3.002,
+   "633": 2.924,
+   "634": 14.75,
+   "635": 7.152,
+   "636": 6.509,
+   "637": 6.286,
+   "638": 8.655,
+   "639": 8.698,
+   "640": 33.548,
+   "641": 4.81,
+   "642": 3.384,
+   "643": 12.923,
+   "644": 7.79,
+   "645": 93.179,
+   "646": 16.661,
+   "647": 118.913,
+   "648": 15.214,
+   "649": 18.172,
+   "650": 13.206,
+   "651": 24.295
+  },
+  "baseline_n": 10,
+  "threshold": 18.648
+ },
+ "deck_decoy_from": null,
+ "deck_motion_px": {},
+ "cut_last_frame": 651,
+ "release_frame": 557,
+ "pin_hit_frame": 596,
+ "pin_row_frame_est": 595,
+ "events": {
+  "pin_row_frame_est": 595,
+  "deck_decoy_from": null,
+  "entry_board": null,
+  "entry_board_raw": null,
+  "entry_n": 0,
+  "exit_frame": null,
+  "exit_board": null,
+  "exit_board_raw": null,
+  "exit_kind": null,
+  "exit_back_row_y": null,
+  "exit_ft_deck": null,
+  "deck_points": [],
+  "exit_reason": null,
+  "track_last_frame": null,
+  "track_last_real_frame": null,
+  "track_last_real_board": null,
+  "deck_frames": 0,
+  "deck_frame_list": [],
+  "deflection": null,
+  "breakpoint_frame": null,
+  "breakpoint_board": null,
+  "breakpoint_ft": null,
+  "breakpoint_at_roll_end": null,
+  "rise_after_break": null,
+  "how": {
+   "pin_row_frame_est": "first non-coasted ball frame >= release+8 whose centre y is at/above the headpin base row (midpoint of the pin column top and the edge pd row, 3-frame median), held on the next real frame with >= 3 real frames after it; fallback cuts.json pin_hit",
+   "entry_board": "Theil-Sen over boards (3-frame median, cleaned) on pin_row-6..pin_row-1, evaluated at pin_row; entry_board_raw = cleaned raw board at pin_row",
+   "exit_frame": "last non-coasted, moving (not deck_decoy) ball frame >= pin_row with a board; exit_board = boards there; exit_kind pit when the ball bottom is at/behind the back-row base row (headpin base moved 2.6 ft back through the edge vanishing point), else hidden; deck depth: frames pin_row..exit spread linearly from 60 ft to 62.6 (pit) or 61.3 (hidden)",
+   "deck_frames": "non-coasted moving ball frames with a board from pin_row to exit",
+   "deflection": "sign of exit_board - entry_board, dead band 2 boards (straight through inside it)",
+   "breakpoint_ft": "ft_cv at the minimum of the 5-frame median of the cleaned raw boards over release..pin_row; breakpoint_at_roll_end = minimum in the first/last 2 roll frames (no measurable hook back)",
+   "ft_cv": "60 * (f - release) / (pin_row_frame_est - release); release is the cuts.json input",
+   "deck_decoy_from": "first non-coasted ball point at/after pin_row-1 whose camera-compensated drift to every real point in the next 3 frames is < 3.0 px (a static purple patch in the pit/kickback, truth notes finding 5; threshold read off the drift table: moving >= 3.4, static <= 2.4); frames from it on do not count for exit, deck frames or the last real frame",
+   "entry_board_crossing": "board at the sub-frame crossing of the headpin base row: linear interpolation of the cleaned boards at the two real points bracketing the row (t* from centre y vs the 3-frame-median row), else Theil-Sen over the last 6 cleaned boards before the pin row at t*; it is entry_board only when entry_n < 2"
+  },
+  "entry_board_crossing": null,
+  "entry_t_star": 595.0,
+  "entry_crossing_how": "no real crossing at the pin row: t* = pin row; Theil-Sen over the last 0 cleaned boards before the pin row at t*",
+  "entry_crossing_frames": null,
+  "entry_board_theil_sen": null,
+  "entry_source": "theil_sen",
+  "j4_measured": {
+   "n": 0,
+   "sign_changes_deadband": 0,
+   "max_jump": 0.0,
+   "jump_at": null,
+   "fails": false
+  },
+  "sam_deck_deviations": [],
+  "pin_row_source": "pin motion: first camera-compensated rack motion f597 - 2",
+  "pin_row_base_y": null,
+  "pin_row_frame_contact": null,
+  "pin_row_frame_pd15": null,
+  "pin_row_frame_lane": null,
+  "pin_row_rows_measured": 69,
+  "cut_pin_hit": 596,
+  "pin_row_minus_cut": -1,
+  "pin_row_frame_geometric": null,
+  "pin_motion_frame": 597
+ },
+ "final_board_rule": "none (lane fallback)",
+ "path_fit_diag": null,
+ "fallback": [
+  "lane"
+ ],
+ "fallback_reasons": {
+  "ball": null,
+  "lane": null
+ },
+ "meta": {
+  "device": "mps",
+  "cut_start": 547,
+  "lane_variant": "prepass-edge",
+  "fallback_used": true,
+  "ball_meta": {
+   "gates": {
+    "radius": 0,
+    "jump": 0,
+    "lateral": 0,
+    "sam_radius": 0,
+    "sam_lateral": 0
+   },
+   "coasted": 0,
+   "coasted_merge": 0,
+   "sam_used": 0,
+   "sources": {},
+   "candidates": 49,
+   "seed": null,
+   "sam": {
+    "why": "no seed"
+   },
+   "orb_failed_pairs": 23,
+   "lane_prepass_fits": 75,
+   "params": {
+    "R_LO": 0.45,
+    "R_HI": 1.6,
+    "SAM_R_LO": 0.4,
+    "SAM_R_HI": 2.2,
+    "R_FAR": 16.0,
+    "LAT_BOARDS": 3.0,
+    "RES_THR": 14,
+    "ASPECT_MAX": 2.0,
+    "FILL_MIN": 0.3,
+    "FAR_R": 14.0,
+    "FAR_RADII": [
+     5,
+     8,
+     11
+    ],
+    "FAR_RESP_MIN": 8.0,
+    "FAR_INNER_MIN": 6.0,
+    "COAST_MAX": 3,
+    "JUMP_GAP_CAP": 2,
+    "SEED_FROM": 3
+   }
+  },
+  "timing": {
+   "orb_s": 1.6,
+   "lane_prepass_s": 0.5,
+   "residual_s": 4.7,
+   "events_s": 0.2,
+   "wall_s": 9.0
+  },
+  "wall_s": 9.0,
+  "wall_note": "whole process: ORB, lane pre-pass, residual, chain, SAM, lane stage, events, overlays",
+  "stages": {
+   "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
+   "lane": "prepass lane-first quads (fallback)",
+   "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override (not over a detected crossing while the ball is in a gutter channel); relaxed hold / gutter channel crossing when no held crossing; fallback = cut pin_hit (flagged in events.pin_row_source) after the SAM pass to the cut end and the deck re-seed",
+   "events": "track_v2.deck_decoy + add_depth + compute_events (+ events.gutter, entry_board_crossing)",
+   "path": "none",
+   "pick": {
+    "ball": "motion-only",
+    "verdict": "partial",
+    "flagged": true,
+    "flag": "PARTIAL PICK: no experiment met works (recall >= 85 and entry_err <= 3 on >= 4 of 6); motion-only is the best partial by truth recall",
+    "truth_recall_means": {
+     "motion-only": 100.0,
+     "sam2-from-hand": 92.4,
+     "ball-colour-model (fails)": 74.17
+    },
+    "truth_entry_err_means": {
+     "motion-only": 5.64,
+     "sam2-from-hand": 8.12,
+     "ball-colour-model (fails)": 6.51
+    }
+   }
+  },
+  "overlay": {
+   "roll_frames_drawn": 0,
+   "after_pin_hit_frames_drawn": 0,
+   "pin_hit_drawn": false,
+   "shown_frame": 591
+  },
+  "picture": [],
+  "track_v3": {
+   "ball_run_py": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
+   "ball_run_sha256_16": "e82bb09af801bd73",
+   "track_v3_sha256_16": "61b47162d2283afb",
+   "staging_dir": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/work/v3",
+   "wall_s_total": 9.1,
+   "audit_opens_logged": null,
+   "round": "rerun_round2",
+   "passes": [
+    {
+     "n": 1,
+     "cfg": {
+      "sam_to_end": false,
+      "reseed": false,
+      "deck_gate": false
+     },
+     "pin_row": 595,
+     "source": "pin motion: first camera-compensated rack motion f597 - 2",
+     "geometric_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+     "points": 0,
+     "real_points": 0,
+     "track_end": null,
+     "entry": null,
+     "gutter": null,
+     "j4": {
+      "n": 0,
+      "sign_changes_deadband": 0,
+      "max_jump": 0.0,
+      "jump_at": null,
+      "fails": false
+     },
+     "sam_deck_deviations": 0,
+     "fallbacks": [
+      "dark_seed"
+     ]
+    }
+   ],
+   "fallbacks": [
+    {
+     "dark_seed": {
+      "trigger": "no chained residual seed",
+      "rule": "dark-disc matched filter (255-gray, disc r_geo minus annulus to 1.6 r_geo, >= 35.0 grey levels, inner darkness >= 100.0) inside the lane-first lane eroded by the annulus, at 0.25 scale, top 4 per frame; chained by the unchanged find_seed gates (3 frames); no colour assumption",
+      "frames_with_candidates": 9,
+      "candidates": 9,
+      "seed": null
+     }
+    }
+   ],
+   "fallback_rules": {
+    "far_seed": "seed < release+20 with depth >= 55.0 ft",
+    "dark_seed": "no chained residual seed: dark-disc matched filter inside the lane-first lane seeds the chain",
+    "pin_row_pass2": "pass 1 pin_row_source startswith fallback (or geometric fallback with gutter evidence): SAM to the cut end",
+    "pin_row_relaxed_hold": "still fallback after the SAM pass to the cut end and 3 consecutive real points at/above the base row exist",
+    "deck_reseed_sam": "still fallback after the SAM pass to the cut end: SAM re-prompted on the last residual detection within 6 frames of the track end in a 28.0 x r_geo crop",
+    "pin_row_gutter_crossing": "no held crossing and >= 5 of the last 15 track frames in one gutter channel (lane-first): pin row at the extrapolated (<= 3 frames) base-row crossing",
+    "deck_gate": "J4 fails and SAM deck points deviate > 2.0 boards from the residual chain: those points rejected",
+    "entry_crossing": "entry_n < 2: entry_board = board at the sub-frame headpin-row crossing",
+    "late_jump_reclean": "5-frame median jump > 3.0 boards in 15 ft..pin row",
+    "gutter": "late median of 10 roll boards outside 0.5..39.5; SAM lateral gate waived inside one channel (9.0 boards wide); lane-first channel over all real points when no held crossing or the entry is outside the lane"
+   },
+   "sam_rejections_final": [],
+   "sam_channel_points": [],
+   "lf_points_tail": [],
+   "local_modules": [
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/cam-diff/camdiff.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/lane-first/lane.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/sam2-video/sam_track.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/lane_geom.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/experiments/composition/run.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/experiments/lane-gated-ball/run.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/track_v2.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/track_v3.py"
+   ]
+  },
+  "overlay_v3": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/overlays/final__20261108_115105_6698185a.jpg"
+ },
+ "proxy": {
+  "detection_rate": 0.0,
+  "detection_window": [
+   562,
+   595
+  ],
+  "real_in_window": 0,
+  "max_board_jump": null,
+  "board_series_n": 0,
+  "board_series_gaps": 0,
+  "pin_row_detected": true,
+  "pin_row_source": "pin motion: first camera-compensated rack motion f597 - 2"
+ },
+ "pick_flag": "PARTIAL PICK: no experiment met works (recall >= 85 and entry_err <= 3 on >= 4 of 6); motion-only is the best partial by truth recall"
+}

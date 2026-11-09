@@ -1,0 +1,3191 @@
+{
+ "stem": "20261108_113911_e5c680e6",
+ "method": "track_v3",
+ "stage": "integrated",
+ "stages": {
+  "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
+  "lane": "composition/edge+smooth3",
+  "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override (not over a detected crossing while the ball is in a gutter channel); relaxed hold / gutter channel crossing when no held crossing; fallback = cut pin_hit (flagged in events.pin_row_source) after the SAM pass to the cut end and the deck re-seed",
+  "events": "track_v2.deck_decoy + add_depth + compute_events (+ events.gutter, entry_board_crossing)",
+  "path": "none",
+  "pick": {
+   "ball": "motion-only",
+   "verdict": "partial",
+   "flagged": true,
+   "flag": "PARTIAL PICK: no experiment met works (recall >= 85 and entry_err <= 3 on >= 4 of 6); motion-only is the best partial by truth recall",
+   "truth_recall_means": {
+    "motion-only": 100.0,
+    "sam2-from-hand": 92.4,
+    "ball-colour-model (fails)": 74.17
+   },
+   "truth_entry_err_means": {
+    "motion-only": 5.64,
+    "sam2-from-hand": 8.12,
+    "ball-colour-model (fails)": 6.51
+   }
+  }
+ },
+ "frames": [
+  {
+   "f": 457,
+   "x": 808.4,
+   "y": 1211.5,
+   "r": 145.5,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 458,
+   "x": 766.0,
+   "y": 960.0,
+   "r": 122.9,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 459,
+   "x": 729.5,
+   "y": 794.9,
+   "r": 106.5,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 460,
+   "x": 713.2,
+   "y": 695.7,
+   "r": 100.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 461,
+   "x": 691.8,
+   "y": 626.9,
+   "r": 89.7,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 462,
+   "x": 673.5,
+   "y": 589.3,
+   "r": 78.8,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 463,
+   "x": 660.0,
+   "y": 573.3,
+   "r": 60.1,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 464,
+   "x": 636.0,
+   "y": 564.8,
+   "r": 53.7,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 465,
+   "x": 615.0,
+   "y": 568.7,
+   "r": 48.6,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 466,
+   "x": 583.1,
+   "y": 535.5,
+   "r": 43.3,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 467,
+   "x": 563.1,
+   "y": 593.5,
+   "r": 40.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 468,
+   "x": 531.2,
+   "y": 620.4,
+   "r": 37.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 469,
+   "x": 491.8,
+   "y": 656.4,
+   "r": 30.6,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 470,
+   "x": 447.4,
+   "y": 690.6,
+   "r": 33.9,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 471,
+   "x": 406.4,
+   "y": 721.5,
+   "r": 36.8,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 472,
+   "x": 344.6,
+   "y": 796.2,
+   "r": 31.8,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 473,
+   "x": 293.4,
+   "y": 858.6,
+   "r": 32.5,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 474,
+   "x": 248.7,
+   "y": 920.8,
+   "r": 34.0,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 475,
+   "x": 208.8,
+   "y": 979.5,
+   "r": 28.7,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 476,
+   "x": 171.3,
+   "y": 1034.9,
+   "r": 28.3,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 477,
+   "x": 135.3,
+   "y": 1088.0,
+   "r": 28.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 478,
+   "x": 288.0,
+   "y": 894.0,
+   "r": 12.4,
+   "conf": 0.8,
+   "src": "residual"
+  },
+  {
+   "f": 479,
+   "x": 78.6,
+   "y": 1178.5,
+   "r": 24.8,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 480,
+   "x": 59.0,
+   "y": 1216.7,
+   "r": 23.4,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 481,
+   "x": 44.2,
+   "y": 1249.4,
+   "r": 22.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 482,
+   "x": 37.5,
+   "y": 1275.3,
+   "r": 21.0,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 483,
+   "x": 38.0,
+   "y": 1295.7,
+   "r": 19.9,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 484,
+   "x": 47.3,
+   "y": 1309.5,
+   "r": 19.0,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 485,
+   "x": 63.1,
+   "y": 1316.9,
+   "r": 18.2,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 486,
+   "x": 85.7,
+   "y": 1318.5,
+   "r": 17.2,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 487,
+   "x": 114.1,
+   "y": 1315.3,
+   "r": 16.2,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 488,
+   "x": 143.9,
+   "y": 1306.9,
+   "r": 15.5,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 489,
+   "x": 170.3,
+   "y": 1296.2,
+   "r": 18.0,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 490,
+   "x": 196.0,
+   "y": 1280.2,
+   "r": 17.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 491,
+   "x": 219.5,
+   "y": 1260.0,
+   "r": 15.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 492,
+   "x": 242.2,
+   "y": 1235.7,
+   "r": 15.0,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 493,
+   "x": 261.1,
+   "y": 1207.6,
+   "r": 14.4,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 494,
+   "x": 277.2,
+   "y": 1178.3,
+   "r": 14.2,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 495,
+   "x": 290.6,
+   "y": 1146.6,
+   "r": 13.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 496,
+   "x": 301.7,
+   "y": 1116.4,
+   "r": 13.0,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 497,
+   "x": 308.3,
+   "y": 1086.7,
+   "r": 12.7,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 498,
+   "x": 312.1,
+   "y": 1056.5,
+   "r": 12.5,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 499,
+   "x": 311.7,
+   "y": 1028.7,
+   "r": 12.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 500,
+   "x": 310.0,
+   "y": 1001.5,
+   "r": 11.8,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 501,
+   "x": 303.4,
+   "y": 976.4,
+   "r": 11.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 502,
+   "x": 294.0,
+   "y": 950.2,
+   "r": 11.3,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 503,
+   "x": 281.9,
+   "y": 926.7,
+   "r": 11.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 504,
+   "x": 267.2,
+   "y": 901.3,
+   "r": 10.8,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 505,
+   "x": 252.5,
+   "y": 877.9,
+   "r": 10.7,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 506,
+   "x": 238.6,
+   "y": 853.7,
+   "r": 10.4,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 507,
+   "x": 229.2,
+   "y": 831.3,
+   "r": 10.3,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 508,
+   "x": 218.0,
+   "y": 809.4,
+   "r": 10.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 509,
+   "x": 209.0,
+   "y": 787.6,
+   "r": 10.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 510,
+   "x": 205.2,
+   "y": 766.7,
+   "r": 9.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 511,
+   "x": 202.8,
+   "y": 748.5,
+   "r": 9.7,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 512,
+   "x": 194.6,
+   "y": 726.2,
+   "r": 9.4,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 513,
+   "x": 195.5,
+   "y": 707.2,
+   "r": 9.5,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 514,
+   "x": 196.8,
+   "y": 686.8,
+   "r": 9.4,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 515,
+   "x": 194.7,
+   "y": 667.8,
+   "r": 9.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 516,
+   "x": 198.3,
+   "y": 653.2,
+   "r": 9.3,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 517,
+   "x": 203.0,
+   "y": 634.2,
+   "r": 9.5,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 518,
+   "x": 207.7,
+   "y": 615.2,
+   "r": 9.6,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 519,
+   "x": 212.3,
+   "y": 599.0,
+   "r": 10.1,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 520,
+   "x": 216.3,
+   "y": 581.3,
+   "r": 10.7,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 521,
+   "x": 225.7,
+   "y": 563.6,
+   "r": 10.8,
+   "conf": 0.6,
+   "src": "sam"
+  },
+  {
+   "f": 522,
+   "x": 235.2,
+   "y": 545.3,
+   "r": 11.8,
+   "conf": 0.6,
+   "src": "sam"
+  }
+ ],
+ "lane": {
+  "457": {
+   "fl_l": [
+    224.1,
+    957.0
+   ],
+   "fl_r": [
+    1358.1,
+    957.0
+   ],
+   "pd_l": [
+    320.5,
+    0.0
+   ],
+   "pd_r": [
+    445.0,
+    0.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "458": {
+   "fl_l": [
+    269.4,
+    816.0
+   ],
+   "fl_r": [
+    1359.0,
+    816.0
+   ],
+   "pd_l": [
+    368.1,
+    8.0
+   ],
+   "pd_r": [
+    895.4,
+    8.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "459": {
+   "fl_l": [
+    285.5,
+    877.0
+   ],
+   "fl_r": [
+    1359.0,
+    877.0
+   ],
+   "pd_l": [
+    399.5,
+    30.0
+   ],
+   "pd_r": [
+    534.8,
+    30.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "460": {
+   "fl_l": [
+    303.6,
+    874.0
+   ],
+   "fl_r": [
+    1358.1,
+    874.0
+   ],
+   "pd_l": [
+    428.6,
+    0.0
+   ],
+   "pd_r": [
+    521.9,
+    0.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "461": {
+   "fl_l": [
+    317.1,
+    899.0
+   ],
+   "fl_r": [
+    1358.2,
+    899.0
+   ],
+   "pd_l": [
+    453.2,
+    0.0
+   ],
+   "pd_r": [
+    522.9,
+    0.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "462": {
+   "fl_l": [
+    318.4,
+    964.0
+   ],
+   "fl_r": [
+    1358.6,
+    964.0
+   ],
+   "pd_l": [
+    462.8,
+    30.0
+   ],
+   "pd_r": [
+    551.3,
+    30.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "463": {
+   "fl_l": [
+    311.8,
+    1053.0
+   ],
+   "fl_r": [
+    1358.8,
+    1053.0
+   ],
+   "pd_l": [
+    467.0,
+    88.0
+   ],
+   "pd_r": [
+    589.3,
+    88.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "464": {
+   "fl_l": [
+    293.6,
+    1159.0
+   ],
+   "fl_r": [
+    1358.9,
+    1159.0
+   ],
+   "pd_l": [
+    470.5,
+    120.0
+   ],
+   "pd_r": [
+    590.6,
+    120.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "465": {
+   "fl_l": [
+    263.7,
+    1279.0
+   ],
+   "fl_r": [
+    1358.8,
+    1279.0
+   ],
+   "pd_l": [
+    472.7,
+    160.0
+   ],
+   "pd_r": [
+    590.2,
+    160.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "466": {
+   "fl_l": [
+    218.4,
+    1415.0
+   ],
+   "fl_r": [
+    1358.8,
+    1415.0
+   ],
+   "pd_l": [
+    465.2,
+    202.0
+   ],
+   "pd_r": [
+    578.4,
+    202.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "467": {
+   "fl_l": [
+    158.0,
+    1569.0
+   ],
+   "fl_r": [
+    1358.7,
+    1569.0
+   ],
+   "pd_l": [
+    450.7,
+    248.0
+   ],
+   "pd_r": [
+    562.5,
+    248.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "468": {
+   "fl_l": [
+    79.3,
+    1744.0
+   ],
+   "fl_r": [
+    1358.5,
+    1744.0
+   ],
+   "pd_l": [
+    430.9,
+    296.0
+   ],
+   "pd_r": [
+    535.2,
+    296.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "469": {
+   "fl_l": [
+    16.8,
+    1807.0
+   ],
+   "fl_r": [
+    1285.5,
+    1807.0
+   ],
+   "pd_l": [
+    399.3,
+    352.0
+   ],
+   "pd_r": [
+    505.7,
+    352.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "470": {
+   "fl_l": [
+    0.2,
+    1670.0
+   ],
+   "fl_r": [
+    1101.8,
+    1670.0
+   ],
+   "pd_l": [
+    360.4,
+    410.0
+   ],
+   "pd_r": [
+    468.6,
+    410.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "471": {
+   "fl_l": [
+    0.1,
+    1473.0
+   ],
+   "fl_r": [
+    895.4,
+    1473.0
+   ],
+   "pd_l": [
+    311.4,
+    484.0
+   ],
+   "pd_r": [
+    433.3,
+    484.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "472": {
+   "fl_l": [
+    0.2,
+    1315.0
+   ],
+   "fl_r": [
+    721.0,
+    1315.0
+   ],
+   "pd_l": [
+    273.5,
+    552.0
+   ],
+   "pd_r": [
+    391.0,
+    552.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "473": {
+   "fl_l": [
+    0.0,
+    1211.0
+   ],
+   "fl_r": [
+    583.4,
+    1211.0
+   ],
+   "pd_l": [
+    235.4,
+    628.0
+   ],
+   "pd_r": [
+    352.8,
+    628.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "474": {
+   "fl_l": [
+    0.4,
+    1157.0
+   ],
+   "fl_r": [
+    480.0,
+    1157.0
+   ],
+   "pd_l": [
+    193.6,
+    708.0
+   ],
+   "pd_r": [
+    317.3,
+    708.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "475": {
+   "fl_l": [
+    0.1,
+    1122.0
+   ],
+   "fl_r": [
+    982.4,
+    1122.0
+   ],
+   "pd_l": [
+    156.1,
+    772.0
+   ],
+   "pd_r": [
+    452.6,
+    772.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "476": {
+   "fl_l": [
+    0.1,
+    1097.0
+   ],
+   "fl_r": [
+    803.3,
+    1097.0
+   ],
+   "pd_l": [
+    123.4,
+    830.0
+   ],
+   "pd_r": [
+    416.1,
+    830.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "477": {
+   "fl_l": [
+    0.2,
+    1076.0
+   ],
+   "fl_r": [
+    645.2,
+    1076.0
+   ],
+   "pd_l": [
+    90.5,
+    896.0
+   ],
+   "pd_r": [
+    390.6,
+    896.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "478": {
+   "fl_l": [
+    782.4,
+    1681.0
+   ],
+   "fl_r": [
+    1358.7,
+    1681.0
+   ],
+   "pd_l": [
+    223.3,
+    958.0
+   ],
+   "pd_r": [
+    381.5,
+    958.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "489": {
+   "fl_l": [
+    0.5,
+    1366.0
+   ],
+   "fl_r": [
+    567.3,
+    1366.0
+   ],
+   "pd_l": [
+    146.5,
+    1194.0
+   ],
+   "pd_r": [
+    379.6,
+    1194.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "490": {
+   "fl_l": [
+    0.3,
+    1473.0
+   ],
+   "fl_r": [
+    298.1,
+    1473.0
+   ],
+   "pd_l": [
+    163.7,
+    1182.0
+   ],
+   "pd_r": [
+    253.9,
+    1182.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "491": {
+   "fl_l": [
+    0.3,
+    1507.0
+   ],
+   "fl_r": [
+    327.1,
+    1507.0
+   ],
+   "pd_l": [
+    187.4,
+    1168.0
+   ],
+   "pd_r": [
+    275.0,
+    1168.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "492": {
+   "fl_l": [
+    0.1,
+    1536.0
+   ],
+   "fl_r": [
+    355.1,
+    1536.0
+   ],
+   "pd_l": [
+    209.5,
+    1148.0
+   ],
+   "pd_r": [
+    295.1,
+    1148.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "493": {
+   "fl_l": [
+    0.4,
+    1559.0
+   ],
+   "fl_r": [
+    381.7,
+    1559.0
+   ],
+   "pd_l": [
+    227.1,
+    1126.0
+   ],
+   "pd_r": [
+    312.5,
+    1126.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "494": {
+   "fl_l": [
+    0.2,
+    1577.0
+   ],
+   "fl_r": [
+    403.9,
+    1577.0
+   ],
+   "pd_l": [
+    242.1,
+    1102.0
+   ],
+   "pd_r": [
+    329.7,
+    1102.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "495": {
+   "fl_l": [
+    0.2,
+    1583.0
+   ],
+   "fl_r": [
+    425.0,
+    1583.0
+   ],
+   "pd_l": [
+    258.0,
+    1074.0
+   ],
+   "pd_r": [
+    342.3,
+    1074.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "496": {
+   "fl_l": [
+    0.2,
+    1588.0
+   ],
+   "fl_r": [
+    440.4,
+    1588.0
+   ],
+   "pd_l": [
+    267.3,
+    1048.0
+   ],
+   "pd_r": [
+    349.3,
+    1048.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "497": {
+   "fl_l": [
+    0.5,
+    1586.0
+   ],
+   "fl_r": [
+    455.1,
+    1586.0
+   ],
+   "pd_l": [
+    272.4,
+    1024.0
+   ],
+   "pd_r": [
+    355.4,
+    1024.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "498": {
+   "fl_l": [
+    0.4,
+    1580.0
+   ],
+   "fl_r": [
+    465.2,
+    1580.0
+   ],
+   "pd_l": [
+    273.5,
+    1000.0
+   ],
+   "pd_r": [
+    358.8,
+    1000.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "499": {
+   "fl_l": [
+    0.0,
+    1565.0
+   ],
+   "fl_r": [
+    471.6,
+    1565.0
+   ],
+   "pd_l": [
+    274.7,
+    976.0
+   ],
+   "pd_r": [
+    357.7,
+    976.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "500": {
+   "fl_l": [
+    0.3,
+    1543.0
+   ],
+   "fl_r": [
+    474.5,
+    1543.0
+   ],
+   "pd_l": [
+    269.1,
+    958.0
+   ],
+   "pd_r": [
+    355.2,
+    958.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "501": {
+   "fl_l": [
+    0.1,
+    1519.0
+   ],
+   "fl_r": [
+    474.0,
+    1519.0
+   ],
+   "pd_l": [
+    261.2,
+    938.0
+   ],
+   "pd_r": [
+    349.3,
+    938.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "502": {
+   "fl_l": [
+    0.3,
+    1487.0
+   ],
+   "fl_r": [
+    469.0,
+    1487.0
+   ],
+   "pd_l": [
+    248.4,
+    924.0
+   ],
+   "pd_r": [
+    341.0,
+    924.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "503": {
+   "fl_l": [
+    0.2,
+    1443.0
+   ],
+   "fl_r": [
+    458.2,
+    1443.0
+   ],
+   "pd_l": [
+    238.6,
+    898.0
+   ],
+   "pd_r": [
+    327.4,
+    898.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "504": {
+   "fl_l": [
+    0.4,
+    1393.0
+   ],
+   "fl_r": [
+    443.0,
+    1393.0
+   ],
+   "pd_l": [
+    222.7,
+    878.0
+   ],
+   "pd_r": [
+    312.6,
+    878.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "505": {
+   "fl_l": [
+    0.0,
+    1348.0
+   ],
+   "fl_r": [
+    429.4,
+    1348.0
+   ],
+   "pd_l": [
+    208.1,
+    856.0
+   ],
+   "pd_r": [
+    297.7,
+    856.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "506": {
+   "fl_l": [
+    0.0,
+    1304.0
+   ],
+   "fl_r": [
+    416.7,
+    1304.0
+   ],
+   "pd_l": [
+    194.7,
+    836.0
+   ],
+   "pd_r": [
+    284.1,
+    836.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "507": {
+   "fl_l": [
+    0.4,
+    1266.0
+   ],
+   "fl_r": [
+    406.6,
+    1266.0
+   ],
+   "pd_l": [
+    182.2,
+    818.0
+   ],
+   "pd_r": [
+    273.0,
+    818.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "508": {
+   "fl_l": [
+    0.0,
+    1232.0
+   ],
+   "fl_r": [
+    398.9,
+    1232.0
+   ],
+   "pd_l": [
+    175.2,
+    792.0
+   ],
+   "pd_r": [
+    261.6,
+    792.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "509": {
+   "fl_l": [
+    0.1,
+    1204.0
+   ],
+   "fl_r": [
+    394.2,
+    1204.0
+   ],
+   "pd_l": [
+    164.6,
+    778.0
+   ],
+   "pd_r": [
+    256.2,
+    778.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "510": {
+   "fl_l": [
+    0.1,
+    1180.0
+   ],
+   "fl_r": [
+    389.6,
+    1180.0
+   ],
+   "pd_l": [
+    158.7,
+    758.0
+   ],
+   "pd_r": [
+    246.6,
+    758.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "511": {
+   "fl_l": [
+    0.0,
+    1155.0
+   ],
+   "fl_r": [
+    386.4,
+    1155.0
+   ],
+   "pd_l": [
+    154.6,
+    736.0
+   ],
+   "pd_r": [
+    240.8,
+    736.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "512": {
+   "fl_l": [
+    0.2,
+    1136.0
+   ],
+   "fl_r": [
+    385.5,
+    1136.0
+   ],
+   "pd_l": [
+    150.1,
+    720.0
+   ],
+   "pd_r": [
+    237.4,
+    720.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "513": {
+   "fl_l": [
+    0.2,
+    1117.0
+   ],
+   "fl_r": [
+    385.7,
+    1117.0
+   ],
+   "pd_l": [
+    146.8,
+    700.0
+   ],
+   "pd_r": [
+    234.7,
+    700.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "514": {
+   "fl_l": [
+    0.0,
+    1113.0
+   ],
+   "fl_r": [
+    392.9,
+    1113.0
+   ],
+   "pd_l": [
+    146.6,
+    680.0
+   ],
+   "pd_r": [
+    233.6,
+    680.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "515": {
+   "fl_l": [
+    0.1,
+    1108.0
+   ],
+   "fl_r": [
+    400.7,
+    1108.0
+   ],
+   "pd_l": [
+    149.4,
+    660.0
+   ],
+   "pd_r": [
+    233.0,
+    660.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "516": {
+   "fl_l": [
+    0.2,
+    1112.0
+   ],
+   "fl_r": [
+    412.5,
+    1112.0
+   ],
+   "pd_l": [
+    150.9,
+    646.0
+   ],
+   "pd_r": [
+    236.4,
+    646.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "517": {
+   "fl_l": [
+    0.1,
+    1123.0
+   ],
+   "fl_r": [
+    430.6,
+    1123.0
+   ],
+   "pd_l": [
+    151.8,
+    632.0
+   ],
+   "pd_r": [
+    243.4,
+    632.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "518": {
+   "fl_l": [
+    0.1,
+    1143.0
+   ],
+   "fl_r": [
+    452.7,
+    1143.0
+   ],
+   "pd_l": [
+    155.1,
+    616.0
+   ],
+   "pd_r": [
+    249.7,
+    616.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "519": {
+   "fl_l": [
+    0.1,
+    1159.0
+   ],
+   "fl_r": [
+    476.3,
+    1159.0
+   ],
+   "pd_l": [
+    161.9,
+    598.0
+   ],
+   "pd_r": [
+    260.2,
+    598.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "520": {
+   "fl_l": [
+    0.3,
+    1183.0
+   ],
+   "fl_r": [
+    503.2,
+    1183.0
+   ],
+   "pd_l": [
+    167.6,
+    578.0
+   ],
+   "pd_r": [
+    269.5,
+    578.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "521": {
+   "fl_l": [
+    0.0,
+    1224.0
+   ],
+   "fl_r": [
+    538.8,
+    1224.0
+   ],
+   "pd_l": [
+    175.7,
+    560.0
+   ],
+   "pd_r": [
+    278.5,
+    560.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  },
+  "522": {
+   "fl_l": [
+    24.8,
+    1177.0
+   ],
+   "fl_r": [
+    1358.6,
+    1177.0
+   ],
+   "pd_l": [
+    185.3,
+    544.0
+   ],
+   "pd_r": [
+    439.1,
+    544.0
+   ],
+   "fl_is_foul_line": false,
+   "src": "edge"
+  }
+ },
+ "boards": {
+  "457": 22.52,
+  "458": 22.47,
+  "459": 22.26,
+  "460": 22.04,
+  "461": 22.0,
+  "462": 21.85,
+  "463": 21.53,
+  "464": 21.49,
+  "465": 21.49,
+  "466": 21.16,
+  "467": 20.9,
+  "468": 20.48,
+  "469": 20.25,
+  "470": 19.71,
+  "471": 19.6,
+  "472": 19.6,
+  "473": 19.94,
+  "474": 19.95,
+  "489": 29.26,
+  "498": 18.93,
+  "499": 18.87,
+  "500": 19.11,
+  "501": 19.11,
+  "502": 19.28,
+  "503": 19.39,
+  "504": 19.42,
+  "505": 19.53,
+  "506": 19.53,
+  "507": 19.86,
+  "508": 19.87,
+  "509": 19.87,
+  "510": 18.91,
+  "511": 18.91,
+  "512": 18.08,
+  "513": 18.08,
+  "514": 18.08,
+  "515": 18.13,
+  "516": 18.13,
+  "517": 17.84,
+  "518": 17.84,
+  "519": 19.54,
+  "520": 20.59,
+  "521": 20.74
+ },
+ "boards_raw": {
+  "457": 22.47,
+  "458": 22.58,
+  "459": 22.26,
+  "460": 22.0,
+  "461": 22.04,
+  "462": 21.85,
+  "463": 21.46,
+  "464": 21.53,
+  "465": 21.49,
+  "466": 21.16,
+  "467": 20.9,
+  "468": 20.48,
+  "469": 20.25,
+  "470": 19.71,
+  "471": 18.03,
+  "472": 19.6,
+  "473": 19.97,
+  "474": 19.94,
+  "475": 31.15,
+  "476": 31.09,
+  "477": 30.97,
+  "478": 3.19,
+  "489": 29.26,
+  "490": 18.27,
+  "491": 18.35,
+  "492": 18.24,
+  "493": 18.35,
+  "494": 18.69,
+  "495": 19.16,
+  "496": 18.64,
+  "497": 18.78,
+  "498": 18.74,
+  "499": 19.13,
+  "500": 18.87,
+  "501": 19.11,
+  "502": 19.28,
+  "503": 19.39,
+  "504": 19.42,
+  "505": 19.53,
+  "506": 19.86,
+  "507": 19.12,
+  "508": 19.87,
+  "509": 20.43,
+  "510": 18.91,
+  "511": 17.91,
+  "512": 19.64,
+  "513": 18.08,
+  "514": 17.27,
+  "515": 18.58,
+  "516": 18.13,
+  "517": 17.83,
+  "518": 17.84,
+  "519": 19.54,
+  "520": 20.89,
+  "521": 20.59,
+  "522": 31.54
+ },
+ "boards_contact": {
+  "457": 23.75,
+  "458": 23.23,
+  "459": 23.56,
+  "460": 23.37,
+  "461": 23.37,
+  "462": 23.09,
+  "463": 22.46,
+  "464": 22.41,
+  "465": 22.26,
+  "466": 21.9,
+  "467": 21.51,
+  "468": 21.03,
+  "469": 20.65,
+  "470": 20.12,
+  "471": 18.52,
+  "472": 19.76,
+  "473": 19.96,
+  "474": 19.81,
+  "489": 28.75,
+  "498": 18.29,
+  "499": 18.69,
+  "500": 18.48,
+  "501": 18.74,
+  "502": 18.93,
+  "503": 19.07,
+  "504": 19.13,
+  "505": 19.28,
+  "506": 19.63,
+  "507": 18.98,
+  "508": 19.72,
+  "509": 20.28,
+  "510": 18.91,
+  "511": 18.01,
+  "512": 19.66,
+  "513": 18.23,
+  "514": 17.51,
+  "515": 18.75,
+  "516": 18.36,
+  "517": 18.1,
+  "518": 18.15,
+  "519": 19.74,
+  "520": 21.03,
+  "521": 20.78
+ },
+ "final_board": 17.7,
+ "lane_top_down": [
+  {
+   "f": 463,
+   "board": 21.53,
+   "ft": 8.2,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 5.9,
+   "ft_cv_cut": 5.9
+  },
+  {
+   "f": 464,
+   "board": 21.49,
+   "ft": 9.56,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 6.89,
+   "ft_cv_cut": 6.89
+  },
+  {
+   "f": 465,
+   "board": 21.49,
+   "ft": 10.8,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 7.87,
+   "ft_cv_cut": 7.87
+  },
+  {
+   "f": 466,
+   "board": 21.16,
+   "ft": 13.34,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 8.85,
+   "ft_cv_cut": 8.85
+  },
+  {
+   "f": 467,
+   "board": 20.9,
+   "ft": 13.06,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 9.84,
+   "ft_cv_cut": 9.84
+  },
+  {
+   "f": 468,
+   "board": 20.48,
+   "ft": 13.18,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 10.82,
+   "ft_cv_cut": 10.82
+  },
+  {
+   "f": 469,
+   "board": 20.25,
+   "ft": 14.54,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 11.8,
+   "ft_cv_cut": 11.8
+  },
+  {
+   "f": 470,
+   "board": 19.71,
+   "ft": 16.13,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 12.79,
+   "ft_cv_cut": 12.79
+  },
+  {
+   "f": 471,
+   "board": 19.6,
+   "ft": 20.61,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 13.77,
+   "ft_cv_cut": 13.77
+  },
+  {
+   "f": 472,
+   "board": 19.6,
+   "ft": 19.42,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 14.75,
+   "ft_cv_cut": 14.75
+  },
+  {
+   "f": 473,
+   "board": 19.94,
+   "ft": 20.13,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 15.74,
+   "ft_cv_cut": 15.74
+  },
+  {
+   "f": 474,
+   "board": 19.95,
+   "ft": 22.38,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 16.72,
+   "ft_cv_cut": 16.72
+  },
+  {
+   "f": 489,
+   "board": 29.26,
+   "ft": 30.12,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 31.48,
+   "ft_cv_cut": 31.48
+  },
+  {
+   "f": 498,
+   "board": 18.93,
+   "ft": 40.5,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 40.33,
+   "ft_cv_cut": 40.33
+  },
+  {
+   "f": 499,
+   "board": 18.87,
+   "ft": 40.97,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 41.31,
+   "ft_cv_cut": 41.31
+  },
+  {
+   "f": 500,
+   "board": 19.11,
+   "ft": 43.88,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 42.3,
+   "ft_cv_cut": 42.3
+  },
+  {
+   "f": 501,
+   "board": 19.11,
+   "ft": 45.64,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 43.28,
+   "ft_cv_cut": 43.28
+  },
+  {
+   "f": 502,
+   "board": 19.28,
+   "ft": 49.96,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 44.26,
+   "ft_cv_cut": 44.26
+  },
+  {
+   "f": 503,
+   "board": 19.39,
+   "ft": 48.6,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 45.25,
+   "ft_cv_cut": 45.25
+  },
+  {
+   "f": 504,
+   "board": 19.42,
+   "ft": 50.5,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 46.23,
+   "ft_cv_cut": 46.23
+  },
+  {
+   "f": 505,
+   "board": 19.53,
+   "ft": 50.92,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 47.21,
+   "ft_cv_cut": 47.21
+  },
+  {
+   "f": 506,
+   "board": 19.53,
+   "ft": 52.42,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 48.2,
+   "ft_cv_cut": 48.2
+  },
+  {
+   "f": 507,
+   "board": 19.86,
+   "ft": 54.28,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 49.18,
+   "ft_cv_cut": 49.18
+  },
+  {
+   "f": 508,
+   "board": 19.87,
+   "ft": 52.19,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 50.16,
+   "ft_cv_cut": 50.16
+  },
+  {
+   "f": 509,
+   "board": 19.87,
+   "ft": 55.88,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 51.15,
+   "ft_cv_cut": 51.15
+  },
+  {
+   "f": 510,
+   "board": 18.91,
+   "ft": 56.09,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 52.13,
+   "ft_cv_cut": 52.13
+  },
+  {
+   "f": 511,
+   "board": 18.91,
+   "ft": 54.24,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 53.11,
+   "ft_cv_cut": 53.11
+  },
+  {
+   "f": 512,
+   "board": 18.08,
+   "ft": 57.25,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 54.1,
+   "ft_cv_cut": 54.1
+  },
+  {
+   "f": 513,
+   "board": 18.08,
+   "ft": 56.8,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 55.08,
+   "ft_cv_cut": 55.08
+  },
+  {
+   "f": 514,
+   "board": 18.08,
+   "ft": 57.0,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 56.07,
+   "ft_cv_cut": 56.07
+  },
+  {
+   "f": 515,
+   "board": 18.13,
+   "ft": 56.36,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 57.05,
+   "ft_cv_cut": 57.05
+  },
+  {
+   "f": 516,
+   "board": 18.13,
+   "ft": 56.77,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 58.03,
+   "ft_cv_cut": 58.03
+  },
+  {
+   "f": 517,
+   "board": 17.84,
+   "ft": 59.37,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 59.02,
+   "ft_cv_cut": 59.02
+  },
+  {
+   "f": 518,
+   "board": 17.84,
+   "ft": 60.83,
+   "on_lane": false,
+   "zone": "past_pins",
+   "ft_cv": 60.0,
+   "ft_cv_cut": 60.0
+  },
+  {
+   "f": 519,
+   "board": 19.54,
+   "ft": 60.0,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 60.98,
+   "ft_cv_cut": 60.98
+  },
+  {
+   "f": 520,
+   "board": 20.59,
+   "ft": 59.06,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 61.97,
+   "ft_cv_cut": 61.97
+  },
+  {
+   "f": 521,
+   "board": 20.74,
+   "ft": 58.97,
+   "on_lane": true,
+   "zone": "lane",
+   "ft_cv": 62.95,
+   "ft_cv_cut": 62.95
+  }
+ ],
+ "lane_top_down_model": {
+  "kind": "cv_fit",
+  "a": 65.993,
+  "b": -5.544,
+  "v_ft_per_frame": 1.0412,
+  "n": 46,
+  "rmse_ft": 9.1,
+  "implied_pin_frame": 514.6,
+  "a_fit": 65.544,
+  "s_pin": 0.9932,
+  "note": "ft = a * s + b with s rescaled so the ball at pin_hit reads 60 ft (a = a_fit / s_pin)"
+ },
+ "final_board_pre_fixpass": 17.7,
+ "boards_clean_raw": {
+  "457": 22.47,
+  "458": 22.58,
+  "459": 22.26,
+  "460": 22.0,
+  "461": 22.04,
+  "462": 21.85,
+  "463": 21.46,
+  "464": 21.53,
+  "465": 21.49,
+  "466": 21.16,
+  "467": 20.9,
+  "468": 20.48,
+  "469": 20.25,
+  "470": 19.71,
+  "471": 18.03,
+  "472": 19.6,
+  "473": 19.97,
+  "474": 19.94,
+  "489": 29.26,
+  "498": 18.74,
+  "499": 19.13,
+  "500": 18.87,
+  "501": 19.11,
+  "502": 19.28,
+  "503": 19.39,
+  "504": 19.42,
+  "505": 19.53,
+  "506": 19.86,
+  "507": 19.12,
+  "508": 19.87,
+  "509": 20.43,
+  "510": 18.91,
+  "511": 17.91,
+  "512": 19.64,
+  "513": 18.08,
+  "514": 17.27,
+  "515": 18.58,
+  "516": 18.13,
+  "517": 17.83,
+  "518": 17.84,
+  "519": 19.54,
+  "520": 20.89,
+  "521": 20.59
+ },
+ "series_rejected": {
+  "475": {
+   "raw": 31.15,
+   "ref": 19.94,
+   "ref_f": 474,
+   "thr": 3.0
+  },
+  "476": {
+   "raw": 31.09,
+   "ref": 19.94,
+   "ref_f": 474,
+   "thr": 4.0
+  },
+  "477": {
+   "raw": 30.97,
+   "ref": 19.94,
+   "ref_f": 474,
+   "thr": 5.0
+  },
+  "478": {
+   "raw": 3.19,
+   "ref": 19.94,
+   "ref_f": 474,
+   "thr": 6.0
+  },
+  "490": {
+   "raw": 18.27,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 3.0
+  },
+  "491": {
+   "raw": 18.35,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 4.0
+  },
+  "492": {
+   "raw": 18.24,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 5.0
+  },
+  "493": {
+   "raw": 18.35,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 6.0
+  },
+  "494": {
+   "raw": 18.69,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 7.0
+  },
+  "495": {
+   "raw": 19.16,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 8.0
+  },
+  "496": {
+   "raw": 18.64,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 9.0
+  },
+  "497": {
+   "raw": 18.78,
+   "ref": 29.26,
+   "ref_f": 489,
+   "thr": 10.0
+  },
+  "522": {
+   "raw": 31.54,
+   "ref": 20.59,
+   "ref_f": 521,
+   "thr": 3.0
+  }
+ },
+ "series_rule": "jump rule: raw boards on frames >= cut pin_hit-58 are walked in order against the last kept raw board (seed = median of the 3 raw boards before); a frame more than 3.0 + 1.0 x (frames skipped) boards from it is dropped from boards and lane_top_down (kept in boards_raw); boards = 3-frame median of the cleaned raw; final_board = composition fit_path entry (Theil-Sen over cut pin_hit-10..pin_hit at cut pin_hit) on the cleaned series",
+ "base_rows": {
+  "465": 134.5,
+  "466": 177.0,
+  "467": 221.5,
+  "468": 272.0,
+  "469": 334.0,
+  "470": 394.0,
+  "471": 464.0,
+  "472": 532.5,
+  "473": 607.5,
+  "474": 682.0,
+  "475": 746.5,
+  "476": 807.0,
+  "477": 869.0,
+  "478": 924.5,
+  "489": 1174.0,
+  "490": 1166.5,
+  "491": 1153.5,
+  "492": 1134.0,
+  "493": 1106.5,
+  "494": 1082.5,
+  "495": 1055.5,
+  "496": 1030.5,
+  "497": 1006.5,
+  "498": 983.0,
+  "499": 959.5,
+  "500": 939.5,
+  "501": 919.0,
+  "502": 901.0,
+  "503": 877.5,
+  "504": 857.5,
+  "505": 836.0,
+  "506": 815.5,
+  "507": 797.0,
+  "508": 774.0,
+  "509": 762.5,
+  "510": 737.5,
+  "511": 717.0,
+  "512": 699.5,
+  "513": 680.5,
+  "514": 661.0,
+  "515": 642.0,
+  "516": 627.5,
+  "517": 610.5,
+  "518": 594.0,
+  "519": 580.0,
+  "520": 561.0,
+  "521": 543.0,
+  "522": 525.0
+ },
+ "pin_motion": {
+  "stat": {
+   "508": 5.955,
+   "509": 8.847,
+   "510": 12.872,
+   "511": 7.763,
+   "512": 10.543,
+   "513": 8.525,
+   "514": 11.052,
+   "515": 10.866,
+   "516": 11.275,
+   "517": 10.542,
+   "518": 12.965,
+   "519": 45.424,
+   "520": 8.654,
+   "521": 5.199,
+   "522": 5.624,
+   "523": 16.565,
+   "524": 10.17,
+   "525": 9.642,
+   "526": 6.396,
+   "527": 5.331,
+   "528": 6.081,
+   "529": 11.838,
+   "530": 3.0,
+   "531": 6.684,
+   "532": 3.048,
+   "533": 10.445,
+   "534": 1.369,
+   "535": 1.905,
+   "536": 1.703
+  },
+  "baseline_n": 10,
+  "threshold": 42.17,
+  "why": "no two consecutive frames above the threshold"
+ },
+ "deck_decoy_from": null,
+ "deck_motion_px": {
+  "517": 4.83,
+  "518": 5.97,
+  "519": 6.79,
+  "520": 3.66
+ },
+ "cut_last_frame": 536,
+ "path_fit_diag_reclean": {
+  "kind": "line",
+  "params": {
+   "f0": 489.0,
+   "b0": 23.353,
+   "slope_boards_per_frame": -0.2199,
+   "hook_rejected": {
+    "rms_line": 1.63,
+    "rms_hook": 1.15,
+    "rise": 0.76,
+    "break_frame": 491.0
+   },
+   "smoothed_tail_min": 17.84
+  },
+  "board_at_60ft": 17.68,
+  "min_board": 16.98,
+  "min_board_ft": 60.8,
+  "residual_rms_boards": 1.63,
+  "n_points": 40,
+  "min_board_frame": 518.0,
+  "n_tail": 22,
+  "entry_fit": {
+   "n": 11,
+   "slope_boards_per_frame": -0.156
+  },
+  "boards_by_frame": {
+   "489": 23.35,
+   "498": 21.37,
+   "499": 21.15,
+   "500": 20.93,
+   "501": 20.71,
+   "502": 20.49,
+   "503": 20.27,
+   "504": 20.05,
+   "505": 19.83,
+   "506": 19.61,
+   "507": 19.39,
+   "508": 19.18,
+   "509": 18.96,
+   "510": 18.74,
+   "511": 18.52,
+   "512": 18.3,
+   "513": 18.08,
+   "514": 17.86,
+   "515": 17.64,
+   "516": 17.42,
+   "517": 17.2,
+   "518": 16.98
+  }
+ },
+ "release_frame": 457,
+ "pin_hit_frame": 518,
+ "pin_row_frame_est": 518,
+ "events": {
+  "pin_row_frame_est": 518,
+  "deck_decoy_from": null,
+  "entry_board": 18.08,
+  "entry_board_raw": 17.84,
+  "entry_n": 6,
+  "exit_frame": 521,
+  "exit_board": 20.74,
+  "exit_board_raw": 20.59,
+  "exit_kind": "hidden",
+  "exit_back_row_y": 537.5,
+  "exit_ft_deck": 61.3,
+  "deck_points": [
+   {
+    "f": 518,
+    "board": 17.84,
+    "ft_deck": 60.0
+   },
+   {
+    "f": 519,
+    "board": 19.54,
+    "ft_deck": 60.43
+   },
+   {
+    "f": 520,
+    "board": 20.59,
+    "ft_deck": 60.87
+   },
+   {
+    "f": 521,
+    "board": 20.74,
+    "ft_deck": 61.3
+   }
+  ],
+  "exit_reason": "last seen, ball hidden by pins after f521",
+  "track_last_frame": 522,
+  "track_last_real_frame": 521,
+  "track_last_real_board": 20.74,
+  "deck_frames": 4,
+  "deck_frame_list": [
+   518,
+   519,
+   520,
+   521
+  ],
+  "deflection": "deflected left",
+  "breakpoint_frame": 516,
+  "breakpoint_board": 17.84,
+  "breakpoint_ft": 58.0,
+  "breakpoint_at_roll_end": false,
+  "rise_after_break": 0.14,
+  "how": {
+   "pin_row_frame_est": "first non-coasted ball frame >= release+8 whose centre y is at/above the headpin base row (midpoint of the pin column top and the edge pd row, 3-frame median), held on the next real frame with >= 3 real frames after it; fallback cuts.json pin_hit",
+   "entry_board": "Theil-Sen over boards (3-frame median, cleaned) on pin_row-6..pin_row-1, evaluated at pin_row; entry_board_raw = cleaned raw board at pin_row",
+   "exit_frame": "last non-coasted, moving (not deck_decoy) ball frame >= pin_row with a board; exit_board = boards there; exit_kind pit when the ball bottom is at/behind the back-row base row (headpin base moved 2.6 ft back through the edge vanishing point), else hidden; deck depth: frames pin_row..exit spread linearly from 60 ft to 62.6 (pit) or 61.3 (hidden)",
+   "deck_frames": "non-coasted moving ball frames with a board from pin_row to exit",
+   "deflection": "sign of exit_board - entry_board, dead band 2 boards (straight through inside it)",
+   "breakpoint_ft": "ft_cv at the minimum of the 5-frame median of the cleaned raw boards over release..pin_row; breakpoint_at_roll_end = minimum in the first/last 2 roll frames (no measurable hook back)",
+   "ft_cv": "60 * (f - release) / (pin_row_frame_est - release); release is the cuts.json input",
+   "deck_decoy_from": "first non-coasted ball point at/after pin_row-1 whose camera-compensated drift to every real point in the next 3 frames is < 3.0 px (a static purple patch in the pit/kickback, truth notes finding 5; threshold read off the drift table: moving >= 3.4, static <= 2.4); frames from it on do not count for exit, deck frames or the last real frame",
+   "entry_board_crossing": "board at the sub-frame crossing of the headpin base row: linear interpolation of the cleaned boards at the two real points bracketing the row (t* from centre y vs the 3-frame-median row), else Theil-Sen over the last 6 cleaned boards before the pin row at t*; it is entry_board only when entry_n < 2"
+  },
+  "entry_board_crossing": 18.08,
+  "entry_t_star": 518.0,
+  "entry_crossing_how": "no real crossing at the pin row: t* = pin row; Theil-Sen over the last 6 cleaned boards before the pin row at t*",
+  "entry_crossing_frames": [
+   512,
+   517
+  ],
+  "entry_board_theil_sen": 18.08,
+  "entry_source": "theil_sen",
+  "j4_measured": {
+   "n": 24,
+   "sign_changes_deadband": 0,
+   "max_jump": 0.95,
+   "jump_at": 509,
+   "fails": false
+  },
+  "sam_deck_deviations": [
+   {
+    "f": 514,
+    "board_lf": 17.27,
+    "ref": 19.72,
+    "dev": 2.45
+   }
+  ],
+  "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+  "pin_row_base_y": null,
+  "pin_row_frame_contact": null,
+  "pin_row_frame_pd15": null,
+  "pin_row_frame_lane": 478,
+  "pin_row_rows_measured": 48,
+  "cut_pin_hit": 518,
+  "pin_row_minus_cut": 0,
+  "pin_row_frame_geometric": null,
+  "pin_motion_frame": null
+ },
+ "final_board_rule": "Theil-Sen over boards in pin_hit-10..pin_hit evaluated at pin_hit (composition fit_path), on the series after clean_series",
+ "path_fit_diag": {
+  "kind": "line",
+  "params": {
+   "f0": 489.0,
+   "b0": 19.562,
+   "slope_boards_per_frame": -0.042,
+   "smoothed_tail_min": 17.84
+  },
+  "board_at_60ft": 17.68,
+  "min_board": 18.35,
+  "min_board_ft": 60.8,
+  "residual_rms_boards": 1.02,
+  "n_points": 52,
+  "min_board_frame": 518.0,
+  "n_tail": 30,
+  "entry_fit": {
+   "n": 11,
+   "slope_boards_per_frame": -0.156
+  },
+  "boards_by_frame": {
+   "489": 19.56,
+   "490": 19.52,
+   "491": 19.48,
+   "492": 19.44,
+   "493": 19.39,
+   "494": 19.35,
+   "495": 19.31,
+   "496": 19.27,
+   "497": 19.23,
+   "498": 19.18,
+   "499": 19.14,
+   "500": 19.1,
+   "501": 19.06,
+   "502": 19.02,
+   "503": 18.97,
+   "504": 18.93,
+   "505": 18.89,
+   "506": 18.85,
+   "507": 18.81,
+   "508": 18.76,
+   "509": 18.72,
+   "510": 18.68,
+   "511": 18.64,
+   "512": 18.6,
+   "513": 18.55,
+   "514": 18.51,
+   "515": 18.47,
+   "516": 18.43,
+   "517": 18.39,
+   "518": 18.35
+  }
+ },
+ "fallback": [],
+ "fallback_reasons": {
+  "ball": null,
+  "lane": null
+ },
+ "meta": {
+  "device": "mps",
+  "cut_start": 447,
+  "lane_variant": "edge",
+  "lane_sources": {
+   "edge": 56
+  },
+  "edge_fit_failures": 10,
+  "edge_fail_reasons": {
+   "479": "ball outside the fitted lane",
+   "480": "ball outside the fitted lane",
+   "481": "ball outside the fitted lane",
+   "482": "ball outside the fitted lane",
+   "483": "ball outside the fitted lane",
+   "484": "ball outside the fitted lane",
+   "485": "ball outside the fitted lane",
+   "486": "ball outside the fitted lane",
+   "487": "ball outside the fitted lane",
+   "488": "ball outside the fitted lane"
+  },
+  "fallback_used": false,
+  "smooth": 3,
+  "lane_s": 0.7,
+  "board_row": "ball centre (dev truth convention); boards_contact = y + r",
+  "ball_meta": {
+   "gates": {
+    "radius": 1,
+    "jump": 1,
+    "lateral": 0,
+    "sam_radius": 0,
+    "sam_lateral": 0
+   },
+   "coasted": 12,
+   "coasted_merge": 3,
+   "sam_used": 56,
+   "sources": {
+    "sam": 56,
+    "residual": 10
+   },
+   "candidates": 80,
+   "seed": {
+    "k": 16,
+    "f": 463,
+    "x": 660.0,
+    "y": 573.3,
+    "r_ext": 80.5,
+    "r_geo": 60.1,
+    "res": 48.7
+   },
+   "sam": {
+    "prompt_k": 16,
+    "prompt_f": 463,
+    "box": [
+     584.9,
+     498.2,
+     735.2,
+     648.5
+    ],
+    "forward": 73,
+    "backward": 6,
+    "passes": [
+     {
+      "tag": "full",
+      "k0": 16,
+      "box": [
+       584,
+       498,
+       735,
+       648
+      ],
+      "good": 62,
+      "death": 78
+     },
+     {
+      "tag": "crop1",
+      "k0": 77,
+      "crop": [
+       48,
+       210,
+       480
+      ],
+      "good": 13,
+      "added": 10,
+      "death": 88
+     },
+     {
+      "tag": "crop2",
+      "k0": 87,
+      "crop": [
+       0,
+       152,
+       480
+      ],
+      "good": 3,
+      "added": 1,
+      "death": 89
+     }
+    ]
+   },
+   "orb_failed_pairs": 8,
+   "lane_prepass_fits": 73,
+   "params": {
+    "R_LO": 0.45,
+    "R_HI": 1.6,
+    "SAM_R_LO": 0.4,
+    "SAM_R_HI": 2.2,
+    "R_FAR": 16.0,
+    "LAT_BOARDS": 3.0,
+    "RES_THR": 14,
+    "ASPECT_MAX": 2.0,
+    "FILL_MIN": 0.3,
+    "FAR_R": 14.0,
+    "FAR_RADII": [
+     5,
+     8,
+     11
+    ],
+    "FAR_RESP_MIN": 8.0,
+    "FAR_INNER_MIN": 6.0,
+    "COAST_MAX": 3,
+    "JUMP_GAP_CAP": 2,
+    "SEED_FROM": 3
+   }
+  },
+  "timing": {
+   "orb_s": 8.4,
+   "lane_prepass_s": 0.8,
+   "residual_s": 8.1,
+   "chain_s": -0.0,
+   "sam_s": 0.0,
+   "events_s": 0.3,
+   "wall_s": 27.8
+  },
+  "wall_s": 27.7,
+  "wall_note": "whole process: ORB, lane pre-pass, residual, chain, SAM, lane stage, events, overlays",
+  "stages": {
+   "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
+   "lane": "composition/edge+smooth3",
+   "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override (not over a detected crossing while the ball is in a gutter channel); relaxed hold / gutter channel crossing when no held crossing; fallback = cut pin_hit (flagged in events.pin_row_source) after the SAM pass to the cut end and the deck re-seed",
+   "events": "track_v2.deck_decoy + add_depth + compute_events (+ events.gutter, entry_board_crossing)",
+   "path": "none",
+   "pick": {
+    "ball": "motion-only",
+    "verdict": "partial",
+    "flagged": true,
+    "flag": "PARTIAL PICK: no experiment met works (recall >= 85 and entry_err <= 3 on >= 4 of 6); motion-only is the best partial by truth recall",
+    "truth_recall_means": {
+     "motion-only": 100.0,
+     "sam2-from-hand": 92.4,
+     "ball-colour-model (fails)": 74.17
+    },
+    "truth_entry_err_means": {
+     "motion-only": 5.64,
+     "sam2-from-hand": 8.12,
+     "ball-colour-model (fails)": 6.51
+    }
+   }
+  },
+  "overlay": {
+   "roll_frames_drawn": 34,
+   "after_pin_hit_frames_drawn": 3,
+   "pin_hit_drawn": true,
+   "shown_frame": 514
+  },
+  "picture": [
+   {
+    "target_ft": 20.0,
+    "f": 474,
+    "ft_cv": 16.72,
+    "src": "residual",
+    "r": 34.0
+   },
+   {
+    "target_ft": 40.0,
+    "f": 498,
+    "ft_cv": 40.33,
+    "src": "sam",
+    "r": 12.5
+   },
+   {
+    "target_ft": 55.0,
+    "f": 513,
+    "ft_cv": 55.08,
+    "src": "sam",
+    "r": 9.5
+   }
+  ],
+  "track_v3": {
+   "ball_run_py": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
+   "ball_run_sha256_16": "e82bb09af801bd73",
+   "track_v3_sha256_16": "61b47162d2283afb",
+   "staging_dir": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/work/v3",
+   "wall_s_total": 139.9,
+   "audit_opens_logged": null,
+   "round": "rerun_round2",
+   "passes": [
+    {
+     "n": 1,
+     "cfg": {
+      "sam_to_end": false,
+      "reseed": false,
+      "deck_gate": false
+     },
+     "pin_row": 518,
+     "source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+     "geometric_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+     "points": 61,
+     "real_points": 61,
+     "track_end": 517,
+     "entry": 18.08,
+     "gutter": null,
+     "j4": {
+      "n": 23,
+      "sign_changes_deadband": 0,
+      "max_jump": 0.95,
+      "jump_at": 509,
+      "fails": false
+     },
+     "sam_deck_deviations": 1,
+     "fallbacks": [
+      "late_jump_reclean"
+     ]
+    },
+    {
+     "n": 2,
+     "cfg": {
+      "sam_to_end": true,
+      "reseed": false,
+      "deck_gate": false
+     },
+     "pin_row": 518,
+     "source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+     "geometric_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+     "points": 61,
+     "real_points": 61,
+     "track_end": 517,
+     "entry": 18.08,
+     "gutter": null,
+     "j4": {
+      "n": 23,
+      "sign_changes_deadband": 0,
+      "max_jump": 0.95,
+      "jump_at": 509,
+      "fails": false
+     },
+     "sam_deck_deviations": 1,
+     "fallbacks": [
+      "late_jump_reclean"
+     ]
+    },
+    {
+     "n": 3,
+     "cfg": {
+      "sam_to_end": true,
+      "reseed": true,
+      "deck_gate": false
+     },
+     "pin_row": 518,
+     "source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+     "geometric_source": "fallback: cuts.json pin_hit (no held crossing of the detecte",
+     "points": 66,
+     "real_points": 66,
+     "track_end": 522,
+     "entry": 18.08,
+     "gutter": null,
+     "j4": {
+      "n": 24,
+      "sign_changes_deadband": 0,
+      "max_jump": 0.95,
+      "jump_at": 509,
+      "fails": false
+     },
+     "sam_deck_deviations": 1,
+     "fallbacks": [
+      "deck_reseed_sam",
+      "late_jump_reclean"
+     ]
+    }
+   ],
+   "fallbacks": [
+    {
+     "pin_row_pass2": {
+      "trigger": "pass 1 pin row fell back (fallback: cuts.json pin_hit (no held crossing of the detected pin row)); track ended f517",
+      "passes_run": 3,
+      "final_cfg": {
+       "sam_to_end": true,
+       "reseed": true,
+       "deck_gate": false
+      },
+      "resolved": false
+     }
+    },
+    {
+     "pass_trigger": {
+      "pass": 2,
+      "cfg": {
+       "sam_to_end": true,
+       "reseed": false,
+       "deck_gate": false
+      },
+      "why": [
+       "pin row fell back (final): SAM forward pass to the cut end (k89) instead of cut pin_hit + 12"
+      ],
+      "previous": "work/v3/tracks/20261108_113911_e5c680e6.pass1.json"
+     }
+    },
+    {
+     "pass_trigger": {
+      "pass": 3,
+      "cfg": {
+       "sam_to_end": true,
+       "reseed": true,
+       "deck_gate": false
+      },
+      "why": [
+       "pin row still fell back after the SAM pass to the cut end: deck re-seed of SAM from the last residual detection"
+      ],
+      "previous": "work/v3/tracks/20261108_113911_e5c680e6.pass2.json"
+     }
+    },
+    {
+     "deck_reseed_sam": {
+      "prompt": {
+       "k": 70,
+       "f": 517,
+       "src": "sam",
+       "x": 203.0,
+       "y": 634.2,
+       "r": 9.5
+      },
+      "crop": [
+       69,
+       501,
+       266
+      ],
+      "scale": 3,
+      "r_geo": 9.5,
+      "masks": 8,
+      "good": 8,
+      "death_k": 78,
+      "border_k": 76,
+      "points": 5,
+      "k_range": [
+       71,
+       75
+      ],
+      "trigger": "no held headpin-row crossing after the SAM pass to the cut end",
+      "prompt_rule": "last residual point within 6 frames of the track end (f517), else the last real point; crop 28.0 x r_geo clamped 128..480 px, upscaled to ~768 px; SAM 2 propagated to the cut end, gated and merged by the unchanged radius/lateral gates",
+      "track_end_before": 517,
+      "track_end_after": 522,
+      "points_kept": 5
+     }
+    },
+    {
+     "late_jump_reclean": {
+      "trigger": "5-frame median jump 11.00 > 3.0 at f474 (window 15 ft..pin row f518)",
+      "rule": "jump rule at 3.0 boards (+1 per frame skipped) walked from the 4th roll frame f460 (seed = median of the first 3), instead of 6.0 boards from cut pin_hit-2",
+      "rejected_before": [
+       522
+      ],
+      "rejected_after": [
+       475,
+       476,
+       477,
+       478,
+       490,
+       491,
+       492,
+       493,
+       494,
+       495,
+       496,
+       497,
+       522
+      ],
+      "med5_jump_after": 0.95,
+      "at_after": 509
+     }
+    }
+   ],
+   "fallback_rules": {
+    "far_seed": "seed < release+20 with depth >= 55.0 ft",
+    "dark_seed": "no chained residual seed: dark-disc matched filter inside the lane-first lane seeds the chain",
+    "pin_row_pass2": "pass 1 pin_row_source startswith fallback (or geometric fallback with gutter evidence): SAM to the cut end",
+    "pin_row_relaxed_hold": "still fallback after the SAM pass to the cut end and 3 consecutive real points at/above the base row exist",
+    "deck_reseed_sam": "still fallback after the SAM pass to the cut end: SAM re-prompted on the last residual detection within 6 frames of the track end in a 28.0 x r_geo crop",
+    "pin_row_gutter_crossing": "no held crossing and >= 5 of the last 15 track frames in one gutter channel (lane-first): pin row at the extrapolated (<= 3 frames) base-row crossing",
+    "deck_gate": "J4 fails and SAM deck points deviate > 2.0 boards from the residual chain: those points rejected",
+    "entry_crossing": "entry_n < 2: entry_board = board at the sub-frame headpin-row crossing",
+    "late_jump_reclean": "5-frame median jump > 3.0 boards in 15 ft..pin row",
+    "gutter": "late median of 10 roll boards outside 0.5..39.5; SAM lateral gate waived inside one channel (9.0 boards wide); lane-first channel over all real points when no held crossing or the entry is outside the lane"
+   },
+   "sam_rejections_final": [],
+   "sam_channel_points": [],
+   "lf_points_tail": [
+    {
+     "k": 55,
+     "f": 502,
+     "src": "sam",
+     "board_lf": 19.28,
+     "side": null,
+     "z_ft": 50.4
+    },
+    {
+     "k": 56,
+     "f": 503,
+     "src": "sam",
+     "board_lf": 19.4,
+     "side": null,
+     "z_ft": 49.2
+    },
+    {
+     "k": 57,
+     "f": 504,
+     "src": "sam",
+     "board_lf": 19.39,
+     "side": null,
+     "z_ft": 51.0
+    },
+    {
+     "k": 58,
+     "f": 505,
+     "src": "sam",
+     "board_lf": 19.54,
+     "side": null,
+     "z_ft": 51.3
+    },
+    {
+     "k": 59,
+     "f": 506,
+     "src": "sam",
+     "board_lf": 19.87,
+     "side": null,
+     "z_ft": 52.7
+    },
+    {
+     "k": 60,
+     "f": 507,
+     "src": "sam",
+     "board_lf": 19.1,
+     "side": null,
+     "z_ft": 54.4
+    },
+    {
+     "k": 61,
+     "f": 508,
+     "src": "sam",
+     "board_lf": 19.86,
+     "side": null,
+     "z_ft": 52.5
+    },
+    {
+     "k": 62,
+     "f": 509,
+     "src": "sam",
+     "board_lf": 20.4,
+     "side": null,
+     "z_ft": 55.8
+    },
+    {
+     "k": 63,
+     "f": 510,
+     "src": "sam",
+     "board_lf": 18.92,
+     "side": null,
+     "z_ft": 56.1
+    },
+    {
+     "k": 64,
+     "f": 511,
+     "src": "sam",
+     "board_lf": 17.9,
+     "side": null,
+     "z_ft": 54.4
+    },
+    {
+     "k": 65,
+     "f": 512,
+     "src": "sam",
+     "board_lf": 19.63,
+     "side": null,
+     "z_ft": 57.1
+    },
+    {
+     "k": 66,
+     "f": 513,
+     "src": "sam",
+     "board_lf": 18.09,
+     "side": null,
+     "z_ft": 56.7
+    },
+    {
+     "k": 67,
+     "f": 514,
+     "src": "sam",
+     "board_lf": 17.27,
+     "side": null,
+     "z_ft": 56.8
+    },
+    {
+     "k": 68,
+     "f": 515,
+     "src": "sam",
+     "board_lf": 18.58,
+     "side": null,
+     "z_ft": 56.3
+    },
+    {
+     "k": 69,
+     "f": 516,
+     "src": "sam",
+     "board_lf": 18.16,
+     "side": null,
+     "z_ft": 56.7
+    },
+    {
+     "k": 70,
+     "f": 517,
+     "src": "sam",
+     "board_lf": 17.84,
+     "side": null,
+     "z_ft": 59.0
+    },
+    {
+     "k": 71,
+     "f": 518,
+     "src": "sam",
+     "board_lf": 17.84,
+     "side": null,
+     "z_ft": 60.3
+    },
+    {
+     "k": 72,
+     "f": 519,
+     "src": "sam",
+     "board_lf": 19.52,
+     "side": null,
+     "z_ft": 59.6
+    },
+    {
+     "k": 73,
+     "f": 520,
+     "src": "sam",
+     "board_lf": 20.91,
+     "side": null,
+     "z_ft": 58.7
+    },
+    {
+     "k": 74,
+     "f": 521,
+     "src": "sam",
+     "board_lf": 20.59,
+     "side": null,
+     "z_ft": 58.7
+    }
+   ],
+   "local_modules": [
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/cam-diff/camdiff.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/lane-first/lane.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/sam2-video/sam_track.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/lane_geom.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/experiments/composition/run.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/experiments/lane-gated-ball/run.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/track_v2.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/_classes.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/_ops.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/track_v3.py"
+   ]
+  },
+  "overlay_v3": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/overlays/final__20261108_113911_e5c680e6.jpg"
+ },
+ "proxy": {
+  "detection_rate": 1.0,
+  "detection_window": [
+   462,
+   518
+  ],
+  "real_in_window": 57,
+  "max_board_jump": 10.33,
+  "board_series_n": 40,
+  "board_series_gaps": 2,
+  "pin_row_detected": false,
+  "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)"
+ },
+ "pick_flag": "PARTIAL PICK: no experiment met works (recall >= 85 and entry_err <= 3 on >= 4 of 6); motion-only is the best partial by truth recall"
+}

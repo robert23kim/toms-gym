@@ -1,0 +1,220 @@
+{
+ "experiment": "ball-colour-model",
+ "rows": [
+  {
+   "stem": "104714",
+   "ran": true,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "entry_err": 3.0,
+   "pin_row_err": 34,
+   "median_px_err": 5.1,
+   "far_median_px_err": 2.5,
+   "path_err_rms": 0.74,
+   "hook_err": 4.93,
+   "direction_ok": true,
+   "window_err": [
+    0,
+    0
+   ],
+   "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+   "proxies": {
+    "detection_rate": 1.0,
+    "window": [
+     316,
+     350
+    ],
+    "real_in_window": 35,
+    "max_board_jump_med5": 0.57,
+    "pin_row_detected": false
+   },
+   "ball_kind": "dark"
+  },
+  {
+   "stem": "110224",
+   "ran": true,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "entry_err": 10.3,
+   "pin_row_err": 10,
+   "median_px_err": 2.4,
+   "far_median_px_err": 2.3,
+   "path_err_rms": 1.19,
+   "hook_err": 9.17,
+   "direction_ok": true,
+   "window_err": [
+    0,
+    0
+   ],
+   "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+   "proxies": {
+    "detection_rate": 1.0,
+    "window": [
+     378,
+     435
+    ],
+    "real_in_window": 58,
+    "max_board_jump_med5": 0.61,
+    "pin_row_detected": false
+   },
+   "ball_kind": "dark"
+  },
+  {
+   "stem": "111238",
+   "ran": true,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "entry_err": 5.5,
+   "pin_row_err": 21,
+   "median_px_err": 3.3,
+   "far_median_px_err": 1.8,
+   "path_err_rms": 0.69,
+   "hook_err": 6.48,
+   "direction_ok": true,
+   "window_err": [
+    0,
+    0
+   ],
+   "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+   "proxies": {
+    "detection_rate": 1.0,
+    "window": [
+     412,
+     453
+    ],
+    "real_in_window": 42,
+    "max_board_jump_med5": 0.42,
+    "pin_row_detected": false
+   },
+   "ball_kind": "dark"
+  },
+  {
+   "stem": "111420",
+   "ran": true,
+   "recall_pct": 45.0,
+   "far_recall_pct": 0.0,
+   "entry_err": 4.2,
+   "pin_row_err": 8,
+   "median_px_err": 19.8,
+   "far_median_px_err": 39.3,
+   "path_err_rms": 0.86,
+   "hook_err": 4.48,
+   "direction_ok": false,
+   "window_err": [
+    0,
+    0
+   ],
+   "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+   "proxies": {
+    "detection_rate": 1.0,
+    "window": [
+     244,
+     297
+    ],
+    "real_in_window": 54,
+    "max_board_jump_med5": 0.91,
+    "pin_row_detected": false
+   },
+   "ball_kind": "dark"
+  },
+  {
+   "stem": "112638",
+   "ran": true,
+   "recall_pct": 0.0,
+   "far_recall_pct": 0.0,
+   "entry_err": -1.0,
+   "pin_row_err": 12,
+   "median_px_err": null,
+   "far_median_px_err": null,
+   "path_err_rms": null,
+   "hook_err": null,
+   "direction_ok": null,
+   "window_err": [
+    0,
+    0
+   ],
+   "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+   "proxies": {
+    "detection_rate": 0.0,
+    "window": [
+     348,
+     401
+    ],
+    "real_in_window": 0,
+    "max_board_jump_med5": null,
+    "pin_row_detected": false
+   },
+   "ball_kind": "colour"
+  },
+  {
+   "stem": "113716",
+   "ran": true,
+   "recall_pct": 100.0,
+   "far_recall_pct": 100.0,
+   "entry_err": 9.55,
+   "pin_row_err": 14,
+   "median_px_err": 2.3,
+   "far_median_px_err": 2.4,
+   "path_err_rms": 0.75,
+   "hook_err": 9.09,
+   "direction_ok": true,
+   "window_err": [
+    0,
+    0
+   ],
+   "pin_row_source": "fallback: cuts.json pin_hit (no held crossing of the detected pin row)",
+   "proxies": {
+    "detection_rate": 1.0,
+    "window": [
+     487,
+     544
+    ],
+    "real_in_window": 58,
+    "max_board_jump_med5": 0.66,
+    "pin_row_detected": false
+   },
+   "ball_kind": "dark"
+  }
+ ],
+ "means": {
+  "recall_pct": 74.17,
+  "far_recall_pct": 66.67,
+  "entry_err": 6.51,
+  "pin_row_err": 16.5
+ },
+ "n_ran": 6,
+ "n_entry_err_le3": 1,
+ "rule": {
+  "mean_recall_ge85": false,
+  "entry_le3_on_ge4": false
+ },
+ "verdict": "fails",
+ "note": "numbers only; no truth coordinates. -1 = not available",
+ "overlay_verdict": "110224: visual: circle on the ball at 20/40/55 ft; number read: path ends ~7 frames before the truth pin row, entry_err 10.3, so it does not end at the ball at the pin row. 111420: visual: on the ball at 20 ft, below it at 40 ft, on empty lane short of the ball at 55 ft; does not end at the ball.",
+ "judge_run": {
+  "fresh": true,
+  "device": "mps",
+  "wall_s": {
+   "104714": 26,
+   "110224": 30,
+   "111238": 28,
+   "111420": 36,
+   "112638": 10,
+   "113716": 31
+  },
+  "crashes": 0,
+  "path_fixes": 0,
+  "sequential": true
+ },
+ "diagnosis": {
+  "truth_pin_row_after_cut_pin_hit_frames": [
+   34,
+   10,
+   21,
+   8,
+   14
+  ],
+  "track_ends_before_truth_pin_row_on": "4/5 tracked",
+  "named_change": "track past the cut pin_hit to a detected pin row"
+ }
+}
