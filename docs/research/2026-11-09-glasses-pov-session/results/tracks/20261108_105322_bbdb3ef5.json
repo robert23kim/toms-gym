@@ -3015,12 +3015,12 @@
    "orb_s": 10.9,
    "lane_prepass_s": 1.0,
    "residual_s": 10.1,
-   "chain_s": -0.0,
+   "chain_s": 0.0,
    "sam_s": 0.0,
    "events_s": 0.4,
-   "wall_s": 42.2
+   "wall_s": 42.8
   },
-  "wall_s": 42.1,
+  "wall_s": 42.8,
   "wall_note": "whole process: ORB, lane pre-pass, residual, chain, SAM, lane stage, events, overlays",
   "stages": {
    "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
@@ -3077,9 +3077,9 @@
   "track_v3": {
    "ball_run_py": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
    "ball_run_sha256_16": "e82bb09af801bd73",
-   "track_v3_sha256_16": "61b47162d2283afb",
+   "track_v3_sha256_16": "41f11a72d8f885a8",
    "staging_dir": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/work/v3",
-   "wall_s_total": 230.7,
+   "wall_s_total": 235.4,
    "audit_opens_logged": null,
    "round": "rerun_round2",
    "passes": [
@@ -3158,6 +3158,7 @@
      "sam_deck_deviations": 9,
      "fallbacks": [
       "deck_reseed_sam",
+      "pin_row_extrapolated_crossing",
       "late_jump_reclean",
       "entry_crossing"
      ]
@@ -3186,7 +3187,8 @@
      },
      "sam_deck_deviations": 0,
      "fallbacks": [
-      "deck_reseed_sam"
+      "deck_reseed_sam",
+      "pin_row_extrapolated_crossing"
      ]
     }
    ],
@@ -3277,6 +3279,14 @@
       "track_end_after": 443,
       "points_kept": 7
      }
+    },
+    {
+     "pin_row_extrapolated_crossing": {
+      "trigger": "pin row still on the cut fallback after the SAM pass to the cut end, the deck re-seed, the relaxed hold and the gutter channel",
+      "rule": "least-squares line over the same-frame gap (ball y - headpin base row) on the last 6 real points; pin row = its zero when the gap is closing and the zero is within -3..8 frames of the track end",
+      "fired": false,
+      "why": "zero at f455.6 is +12.6 frames past the track end f443, outside -3..8"
+     }
     }
    ],
    "fallback_rules": {
@@ -3285,6 +3295,7 @@
     "pin_row_pass2": "pass 1 pin_row_source startswith fallback (or geometric fallback with gutter evidence): SAM to the cut end",
     "pin_row_relaxed_hold": "still fallback after the SAM pass to the cut end and 3 consecutive real points at/above the base row exist",
     "deck_reseed_sam": "still fallback after the SAM pass to the cut end: SAM re-prompted on the last residual detection within 6 frames of the track end in a 28.0 x r_geo crop",
+    "pin_row_extrapolated_crossing": "round 4: still fallback after every other pin-row fallback; least-squares zero of the same-frame gap over the last 6 real points within -3..8 frames of the track end",
     "pin_row_gutter_crossing": "no held crossing and >= 5 of the last 15 track frames in one gutter channel (lane-first): pin row at the extrapolated (<= 3 frames) base-row crossing",
     "deck_gate": "J4 fails and SAM deck points deviate > 2.0 boards from the residual chain: those points rejected",
     "entry_crossing": "entry_n < 2: entry_board = board at the sub-frame headpin-row crossing",

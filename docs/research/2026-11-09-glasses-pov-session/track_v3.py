@@ -33,6 +33,13 @@ derived from what the previous pass measured, so a clip that passes in pass 1 is
                  crossing); it replaces entry_board only when fewer than 2 pre-window boards exist (entry_n < 2).
   dark seed    : no chained residual seed -> a dark-disc matched filter inside the lane-first lane (no colour) seeds the
                  chain and SAM runs from there.
+
+Round 4 (rule owner, 2026-11-09, after judge round 3): extrapolated headpin-row crossing, last resort after the SAM pass
+to the cut end, the deck re-seed, the relaxed hold and the gutter channel all left the pin row on the cut fallback:
+  a least-squares line over the same-frame gap (ball centre y minus the headpin base row of that frame) on the last
+  XC_FIT_N real points; when the gap is closing and the line's zero lies within XC_LO..XC_HI frames of the track end,
+  that zero is the pin row (source 'detected (extrapolated crossing)'). Same-frame gaps are used on purpose: the 3-frame
+  row median becomes a 2-sample mean at the track end and reads a false drop under camera pan.
 """
 import argparse
 import copy
@@ -66,6 +73,7 @@ J4_DEAD = 1.0
 GUTTER_LO, GUTTER_HI, GUTTER_W, GUTTER_N = 0.5, 39.5, 9.0, 10
 GUTTER_MIN_PTS, GUTTER_TAIL, GUTTER_EXTRAP, GUTTER_FIT_N = 5, 15, 3, 4
 HOLD_PTS = 3
+XC_FIT_N, XC_LO, XC_HI = 6, -3.0, 8.0
 MAX_PASSES = 4
 RESEED_BACK, RESEED_SIDE_R, RESEED_SIDE_MIN, RESEED_SIDE_MAX, RESEED_PX = 6, 28.0, 128, 480, 768
 DECK_GATE_BOARDS, DECK_REF_N = 2.0, 3
@@ -589,6 +597,32 @@ def install(mo):
         return {'f_star': round(float(f_star), 2), 'frame': int(round(f_star)), 'last_real': last, 'fit_frames': [int(fs[0]), int(fs[-1])],
                 'closing_px_per_frame': round(float(vr - vy), 2)}, g
 
+    def extrap_crossing(tr, rel):
+        """Round 4: zero of a least-squares line over the same-frame gap (ball y - headpin base row) on the last XC_FIT_N
+        real points, accepted when the gap is closing and the zero is within XC_LO..XC_HI frames of the track end."""
+        rows = {int(k): float(v) for k, v in (tr.get('base_rows') or {}).items()}
+        real = sorted((p for p in tr.get('frames') or [] if p.get('src') != 'coast' and p['f'] >= rel + TV.PIN_ROW_MIN_REL),
+                      key=lambda p: p['f'])
+        if not real:
+            return None, 'no real points'
+        last = real[-1]['f']
+        fit = [p for p in real[-XC_FIT_N:] if p['f'] in rows]
+        if len(fit) < 3:
+            return None, f'{len(fit)} fit points with a base row (< 3)'
+        fs = [p['f'] for p in fit]
+        gs = [p['y'] - rows[p['f']] for p in fit]
+        n = len(fs)
+        mf, mg = sum(fs) / n, sum(gs) / n
+        slope = sum((f - mf) * (g - mg) for f, g in zip(fs, gs)) / sum((f - mf) ** 2 for f in fs)
+        if slope >= 0:
+            return None, f'gap not closing (slope {slope:+.2f} px/frame over f{fs[0]}-{fs[-1]})'
+        f_star = mf - mg / slope
+        past = f_star - last
+        if not (XC_LO <= past <= XC_HI):
+            return None, f'zero at f{f_star:.1f} is {past:+.1f} frames past the track end f{last}, outside {XC_LO:.0f}..{XC_HI:.0f}'
+        return {'f_star': round(float(f_star), 2), 'frame': int(round(f_star)), 'last_real': last, 'frames_past_end': round(float(past), 2),
+                'closing_px_per_frame': round(float(-slope), 2), 'gaps_px': [round(g, 1) for g in gs], 'fit_frames': [fs[0], fs[-1]]}, 'ok'
+
     def pin_row_estimate_v3(tr, base_quads, rel, pin_cut, frames, off):
         info = orig_pre(tr, base_quads, rel, pin_cut, frames, off)
         _ctx['gutter_lf'] = None
@@ -616,6 +650,20 @@ def install(mo):
                     'rule': f'pin row = frame where the ball centre reaches the headpin base row inside the channel, extrapolated '
                             f'<= {GUTTER_EXTRAP} frames past the last real point; pin motion is not used over it',
                     **gc, 'gutter': g}})
+        if str(info.get('pin_row_source', '')).startswith('fallback') and _ctx['cfg'].get('sam_to_end') and _ctx['cfg'].get('reseed'):
+            xc, why = extrap_crossing(tr, rel)
+            rec = {'trigger': 'pin row still on the cut fallback after the SAM pass to the cut end, the deck re-seed, the relaxed hold '
+                              'and the gutter channel',
+                   'rule': f'least-squares line over the same-frame gap (ball y - headpin base row) on the last {XC_FIT_N} real points; '
+                           f'pin row = its zero when the gap is closing and the zero is within {XC_LO:.0f}..{XC_HI:.0f} frames of the track end',
+                   'fired': xc is not None, 'why': why}
+            if xc is not None:
+                rec.update(xc)
+                info.update(pin_row_frame_est=xc['frame'], pin_row_minus_cut=xc['frame'] - pin_cut,
+                            pin_row_source=f"detected (extrapolated crossing): same-frame gap to the headpin base row closing "
+                                           f"{xc['closing_px_per_frame']} px/frame over the last {len(xc['gaps_px'])} real points, zero at "
+                                           f"f{xc['f_star']} ({xc['frames_past_end']:+.1f} frames past the track end f{xc['last_real']})")
+            _ctx['fallbacks'].append({'pin_row_extrapolated_crossing': rec})
         _ctx['pr_info'] = dict(info)
         return info
 
@@ -829,6 +877,9 @@ def main():
                                                   'pin_row_relaxed_hold': f'still fallback after the SAM pass to the cut end and {HOLD_PTS} consecutive real points at/above the base row exist',
                                                   'deck_reseed_sam': 'still fallback after the SAM pass to the cut end: SAM re-prompted on the last residual '
                                                                      f'detection within {RESEED_BACK} frames of the track end in a {RESEED_SIDE_R} x r_geo crop',
+                                                  'pin_row_extrapolated_crossing': f'round 4: still fallback after every other pin-row fallback; least-squares '
+                                                                                   f'zero of the same-frame gap over the last {XC_FIT_N} real points within '
+                                                                                   f'{XC_LO:.0f}..{XC_HI:.0f} frames of the track end',
                                                   'pin_row_gutter_crossing': f'no held crossing and >= {GUTTER_MIN_PTS} of the last {GUTTER_TAIL} track frames in one gutter '
                                                                              f'channel (lane-first): pin row at the extrapolated (<= {GUTTER_EXTRAP} frames) base-row crossing',
                                                   'deck_gate': f'J4 fails and SAM deck points deviate > {DECK_GATE_BOARDS} boards from the residual chain: those points rejected',

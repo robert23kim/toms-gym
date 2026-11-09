@@ -3,7 +3,7 @@ import numpy as np, cv2
 S = os.path.dirname(os.path.abspath(__file__))
 CLIPS = '/Users/toka/pov-2026-11-08/drive_raw'
 FF = '/opt/homebrew/bin/ffmpeg'
-VIDEO_ONLY = ["20261108_104714_593f3a1d", "20261108_110224_b216c9b0", "20261108_110622_9060f40e", "20261108_112413_aa021459", "20261108_113716_f433d7d5", "20261108_114059_25d4ce4d", "20261108_114438_abe7fcc1", "20261108_114631_01d562c5", "20261108_114810_62ef90d8", "20261108_105322_bbdb3ef5", "20261108_113911_e5c680e6", "20261108_114236_5184e3d7", "20261108_115105_6698185a"]
+VIDEO_ONLY = sorted(s for s, v in json.load(open(f'{S}/results/judged_final.json'))['stems'].items() if not v['pass'])
 W, H, FPS = 1920, 1080, 30
 GREY = (95, 95, 95); GREEN = (90, 220, 90); MAG = (200, 60, 200); AMB = (40, 170, 255); CYAN = (255, 230, 80)
 EXITC = (60, 240, 255); WHITE = (255, 255, 255)
@@ -194,7 +194,8 @@ def render_throw(m, lab, gtxt, timeline, tcur):
         ex_ft = ev.get('exit_ft_deck') or DECK1; kind = ev.get('exit_kind')
         gutter = (entry is not None and entry < 0.5) or (entry is None and bool(line2) and line2[-1][1] < 0.5)
         detected = not ev['pin_row_source'].startswith('fallback')
-        src_lab = 'pin motion - 2' if ev['pin_row_source'].startswith('pin motion') else 'geometric crossing'
+        src_lab = ('pin motion - 2' if ev['pin_row_source'].startswith('pin motion')
+                   else 'extrapolated crossing' if 'extrapolated crossing' in ev['pin_row_source'] else 'geometric crossing')
         g_from = None
         if gutter:
             for j in range(len(line2)):

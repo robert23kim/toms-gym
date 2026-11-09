@@ -5,8 +5,8 @@
  "stages": {
   "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
   "lane": "composition/edge+smooth3",
-  "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override; fallback = cut pin_hit (flagged in events.pin_row_source)",
-  "events": "track_v2.deck_decoy + add_depth + compute_events",
+  "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override (not over a detected crossing while the ball is in a gutter channel); relaxed hold / gutter channel crossing when no held crossing; fallback = cut pin_hit (flagged in events.pin_row_source) after the SAM pass to the cut end and the deck re-seed",
+  "events": "track_v2.deck_decoy + add_depth + compute_events (+ events.gutter, entry_board_crossing)",
   "path": "none",
   "pick": {
    "ball": "motion-only",
@@ -3553,8 +3553,26 @@
    "deflection": "sign of exit_board - entry_board, dead band 2 boards (straight through inside it)",
    "breakpoint_ft": "ft_cv at the minimum of the 5-frame median of the cleaned raw boards over release..pin_row; breakpoint_at_roll_end = minimum in the first/last 2 roll frames (no measurable hook back)",
    "ft_cv": "60 * (f - release) / (pin_row_frame_est - release); release is the cuts.json input",
-   "deck_decoy_from": "first non-coasted ball point at/after pin_row-1 whose camera-compensated drift to every real point in the next 3 frames is < 3.0 px (a static purple patch in the pit/kickback, truth notes finding 5; threshold read off the drift table: moving >= 3.4, static <= 2.4); frames from it on do not count for exit, deck frames or the last real frame"
+   "deck_decoy_from": "first non-coasted ball point at/after pin_row-1 whose camera-compensated drift to every real point in the next 3 frames is < 3.0 px (a static purple patch in the pit/kickback, truth notes finding 5; threshold read off the drift table: moving >= 3.4, static <= 2.4); frames from it on do not count for exit, deck frames or the last real frame",
+   "entry_board_crossing": "board at the sub-frame crossing of the headpin base row: linear interpolation of the cleaned boards at the two real points bracketing the row (t* from centre y vs the 3-frame-median row), else Theil-Sen over the last 6 cleaned boards before the pin row at t*; it is entry_board only when entry_n < 2"
   },
+  "entry_board_crossing": 6.39,
+  "entry_t_star": 446.83,
+  "entry_crossing_how": "t* between f446 and f447 (centre y vs base row); boards interpolated",
+  "entry_crossing_frames": [
+   446,
+   447
+  ],
+  "entry_board_theil_sen": 6.18,
+  "entry_source": "theil_sen",
+  "j4_measured": {
+   "n": 40,
+   "sign_changes_deadband": 0,
+   "max_jump": 1.08,
+   "jump_at": 409,
+   "fails": false
+  },
+  "sam_deck_deviations": [],
   "pin_row_source": "geometric: detected: ball centre y at the headpin base row (midpoint of pin column top and edge pd row)",
   "pin_row_base_y": 555.0,
   "pin_row_frame_contact": 463,
@@ -3741,17 +3759,17 @@
    "lane_prepass_s": 0.6,
    "residual_s": 4.9,
    "chain_s": -0.0,
-   "sam_s": 38.3,
-   "events_s": 0.4,
-   "wall_s": 47.1
+   "sam_s": 39.8,
+   "events_s": 0.3,
+   "wall_s": 48.7
   },
-  "wall_s": 47.1,
+  "wall_s": 48.7,
   "wall_note": "whole process: ORB, lane pre-pass, residual, chain, SAM, lane stage, events, overlays",
   "stages": {
    "ball": "motion-only (residual chain + SAM 2 fill) [PARTIAL pick, flagged]",
    "lane": "composition/edge+smooth3",
-   "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override; fallback = cut pin_hit (flagged in events.pin_row_source)",
-   "events": "track_v2.deck_decoy + add_depth + compute_events",
+   "pin_row": "track_v2.pin_row_estimate (geometric headpin-row crossing) then track_v2.pin_motion override (not over a detected crossing while the ball is in a gutter channel); relaxed hold / gutter channel crossing when no held crossing; fallback = cut pin_hit (flagged in events.pin_row_source) after the SAM pass to the cut end and the deck re-seed",
+   "events": "track_v2.deck_decoy + add_depth + compute_events (+ events.gutter, entry_board_crossing)",
    "path": "none",
    "pick": {
     "ball": "motion-only",
@@ -3802,10 +3820,227 @@
   "track_v3": {
    "ball_run_py": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
    "ball_run_sha256_16": "e82bb09af801bd73",
-   "track_v3_sha256_16": "4eba95aa823e59ae",
+   "track_v3_sha256_16": "41f11a72d8f885a8",
    "staging_dir": "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/work/v3",
-   "wall_s_total": 47.2,
-   "audit_opens_logged": 2237,
+   "wall_s_total": 48.8,
+   "audit_opens_logged": null,
+   "round": "rerun_round2",
+   "passes": [
+    {
+     "n": 1,
+     "cfg": {
+      "sam_to_end": false,
+      "reseed": false,
+      "deck_gate": false
+     },
+     "pin_row": 447,
+     "source": "geometric: detected: ball centre y at the headpin base row (midpoint of pin colu",
+     "geometric_source": "detected: ball centre y at the headpin base row (midpoint of",
+     "points": 80,
+     "real_points": 79,
+     "track_end": 473,
+     "entry": 6.18,
+     "gutter": null,
+     "j4": {
+      "n": 40,
+      "sign_changes_deadband": 0,
+      "max_jump": 1.08,
+      "jump_at": 409,
+      "fails": false
+     },
+     "sam_deck_deviations": 0,
+     "fallbacks": []
+    }
+   ],
+   "fallbacks": [],
+   "fallback_rules": {
+    "far_seed": "seed < release+20 with depth >= 55.0 ft",
+    "dark_seed": "no chained residual seed: dark-disc matched filter inside the lane-first lane seeds the chain",
+    "pin_row_pass2": "pass 1 pin_row_source startswith fallback (or geometric fallback with gutter evidence): SAM to the cut end",
+    "pin_row_relaxed_hold": "still fallback after the SAM pass to the cut end and 3 consecutive real points at/above the base row exist",
+    "deck_reseed_sam": "still fallback after the SAM pass to the cut end: SAM re-prompted on the last residual detection within 6 frames of the track end in a 28.0 x r_geo crop",
+    "pin_row_extrapolated_crossing": "round 4: still fallback after every other pin-row fallback; least-squares zero of the same-frame gap over the last 6 real points within -3..8 frames of the track end",
+    "pin_row_gutter_crossing": "no held crossing and >= 5 of the last 15 track frames in one gutter channel (lane-first): pin row at the extrapolated (<= 3 frames) base-row crossing",
+    "deck_gate": "J4 fails and SAM deck points deviate > 2.0 boards from the residual chain: those points rejected",
+    "entry_crossing": "entry_n < 2: entry_board = board at the sub-frame headpin-row crossing",
+    "late_jump_reclean": "5-frame median jump > 3.0 boards in 15 ft..pin row",
+    "gutter": "late median of 10 roll boards outside 0.5..39.5; SAM lateral gate waived inside one channel (9.0 boards wide); lane-first channel over all real points when no held crossing or the entry is outside the lane"
+   },
+   "sam_rejections_final": [
+    {
+     "k": 82,
+     "gate": "sam_radius",
+     "x": 422.3,
+     "y": 547.6,
+     "r": 26.0,
+     "rg": 7.6,
+     "board": 8.16,
+     "nb_k": 81
+    }
+   ],
+   "sam_channel_points": [],
+   "lf_points_tail": [
+    {
+     "k": 69,
+     "f": 453,
+     "src": "residual",
+     "board_lf": 8.32,
+     "side": null,
+     "z_ft": 68.0
+    },
+    {
+     "k": 70,
+     "f": 454,
+     "src": "residual",
+     "board_lf": 8.12,
+     "side": null,
+     "z_ft": 68.5
+    },
+    {
+     "k": 71,
+     "f": 455,
+     "src": "residual",
+     "board_lf": 8.41,
+     "side": null,
+     "z_ft": 68.2
+    },
+    {
+     "k": 72,
+     "f": 456,
+     "src": "residual",
+     "board_lf": 9.06,
+     "side": null,
+     "z_ft": 69.2
+    },
+    {
+     "k": 73,
+     "f": 457,
+     "src": "residual",
+     "board_lf": 10.26,
+     "side": null,
+     "z_ft": 69.2
+    },
+    {
+     "k": 74,
+     "f": 458,
+     "src": "residual",
+     "board_lf": 10.95,
+     "side": null,
+     "z_ft": 68.8
+    },
+    {
+     "k": 75,
+     "f": 459,
+     "src": "residual",
+     "board_lf": 11.44,
+     "side": null,
+     "z_ft": 69.5
+    },
+    {
+     "k": 76,
+     "f": 460,
+     "src": "residual",
+     "board_lf": 12.08,
+     "side": null,
+     "z_ft": 70.1
+    },
+    {
+     "k": 77,
+     "f": 461,
+     "src": "residual",
+     "board_lf": 12.72,
+     "side": null,
+     "z_ft": 73.2
+    },
+    {
+     "k": 78,
+     "f": 462,
+     "src": "residual",
+     "board_lf": 14.12,
+     "side": null,
+     "z_ft": 71.7
+    },
+    {
+     "k": 79,
+     "f": 463,
+     "src": "residual",
+     "board_lf": 14.58,
+     "side": null,
+     "z_ft": 72.8
+    },
+    {
+     "k": 80,
+     "f": 464,
+     "src": "residual",
+     "board_lf": 14.95,
+     "side": null,
+     "z_ft": 73.5
+    },
+    {
+     "k": 81,
+     "f": 465,
+     "src": "residual",
+     "board_lf": 16.89,
+     "side": null,
+     "z_ft": 71.2
+    },
+    {
+     "k": 83,
+     "f": 467,
+     "src": "residual",
+     "board_lf": 24.08,
+     "side": null,
+     "z_ft": 83.5
+    },
+    {
+     "k": 84,
+     "f": 468,
+     "src": "residual",
+     "board_lf": 36.74,
+     "side": null,
+     "z_ft": 81.2
+    },
+    {
+     "k": 85,
+     "f": 469,
+     "src": "residual",
+     "board_lf": 16.25,
+     "side": null,
+     "z_ft": 88.4
+    },
+    {
+     "k": 86,
+     "f": 470,
+     "src": "residual",
+     "board_lf": 16.53,
+     "side": null,
+     "z_ft": 87.4
+    },
+    {
+     "k": 87,
+     "f": 471,
+     "src": "residual",
+     "board_lf": 16.85,
+     "side": null,
+     "z_ft": 90.5
+    },
+    {
+     "k": 88,
+     "f": 472,
+     "src": "residual",
+     "board_lf": -1.46,
+     "side": "right",
+     "z_ft": 77.6
+    },
+    {
+     "k": 89,
+     "f": 473,
+     "src": "residual",
+     "board_lf": -0.47,
+     "side": "right",
+     "z_ft": 75.6
+    }
+   ],
    "local_modules": [
     "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/cam-diff/camdiff.py",
     "/Users/toka/code/toms_gym/docs/research/2026-10-10-glasses-pov-tracking/experiments/lane-first/lane.py",
@@ -3814,9 +4049,9 @@
     "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/experiments/composition/run.py",
     "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/experiments/lane-gated-ball/run.py",
     "/Users/toka/code/toms_gym/docs/research/2026-11-07-glasses-pov-hook/track_v2.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/_classes.py",
+    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/_ops.py",
     "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/experiments/motion-only/run.py",
-    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/results/_classes.py",
-    "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/results/_ops.py",
     "/Users/toka/code/toms_gym/docs/research/2026-11-09-glasses-pov-session/track_v3.py"
    ]
   },

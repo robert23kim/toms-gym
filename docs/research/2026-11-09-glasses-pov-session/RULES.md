@@ -52,3 +52,9 @@ Clips: 32 Meta-glasses clips at /Users/toka/pov-2026-11-08/drive_raw (20261108_1
 15. A breakpoint taken as the argmin of a flat stretch is not a break; do not print it as a reading.
 16. Overlay text needs a backing box and pins need a size that fits the row pitch, or the screen contradicts the line.
 17. The brief's bowler name can differ from the on-screen name (Chris vs Chardie); record both.
+
+## Amendments by the rule owner, 2026-11-09 17:40, after judge round 3 (disclosed: made after seeing results)
+- Tom asked for the judge's pin-row hint to be applied and the video re-rendered. This is a third rerun (round 4), over the "max 2 reruns" budget, taken on the rule owner's say-so; the as-first-written count stays in judged_final.json.
+- J2 reading: an extrapolated crossing counts as a detection when it is the last resort (after the SAM pass to the cut end, the deck re-seed, the relaxed hold and the gutter channel), the same-frame gap between the ball centre and the headpin base row is closing over the last 6 real points, and the least-squares zero lies within -3..+8 frames of the track end. Source `detected (extrapolated crossing)`; the renderer labels it so.
+- Same-frame gap, not the 3-frame row median: at the track end the median is a 2-sample mean and reads a false drop under camera pan (113911: median gaps 21, 11; same-frame gaps 20.6, 20.3). The round-3 gap table used the median, so its "7 of 9 within 8 frames" overstates; the same-frame simulation on the stored tracks fires on 3 (104714, 114059, 114438).
+- Judging for round 4 is run by the main loop with the round-1/round-3 rule code (judge_rules.py, rules.py indep J4 dead band, score_v2 on the truth stems), not by an independent judge agent; the tracker change was fixed before any truth number was read, and the tracker is not touched after.
