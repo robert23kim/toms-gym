@@ -1,0 +1,11 @@
+10 failed, 1280 passed, 36 skipped, 7 warnings in 228.84s (0:03:48)
+FAILED tests/test_benchmarks/test_lane_edge_benchmark.py::TestLaneEdgeBenchmark::test_composite_loss_within_threshold[sample_input-config0]
+FAILED tests/test_detectors/test_tracker.py::TestBallTrackerYOLO::test_yolo_continues_after_trajectory_complete
+FAILED tests/test_detectors/test_tracker.py::TestBallTrackerYOLO::test_yolo_detection_used_as_candidate
+FAILED tests/test_detectors/test_tracker.py::TestYoloPositionCollection::test_yolo_positions_collected
+FAILED tests/test_detectors/test_tracker.py::TestYoloPositionCollection::test_yolo_positions_empty_on_no_detections
+FAILED tests/test_pipeline_integration.py::test_detection_rate_above_baseline[--anchor-seeded]
+FAILED tests/test_pipeline_integration.py::test_detection_rate_above_baseline[--lane-detect]
+FAILED tests/test_pipeline_integration.py::test_detection_rate_above_baseline[--simple-detect]
+FAILED tests/test_pipeline_integration.py::test_detection_rate_above_baseline[default]
+FAILED tests/test_service_app.py::test_metric_clips_are_reencoded_uploaded_and_rewritten

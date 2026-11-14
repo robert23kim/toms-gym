@@ -1,0 +1,25 @@
+{
+  "fixture": "situp_c9dec98b",
+  "lift_type": "situp",
+  "worktree": "/app",
+  "code_hash": "b669411bba94573b",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true",
+    "LIFT_POSE_WORKERS": "4"
+  },
+  "stages": {
+    "download": 0.24,
+    "analyze": 88.0,
+    "reencode": 15.98,
+    "clips": 13.54
+  },
+  "analyze_breakdown": {
+    "pose": 52.55,
+    "render_video": 20.91,
+    "render_clips": 13.4
+  },
+  "wall_s": 117.77,
+  "total_reps": 14,
+  "total_in_plank_s": null
+}

@@ -1,0 +1,25 @@
+{
+  "fixture": "pushup_e18a31d1",
+  "lift_type": "pushup",
+  "worktree": "/app",
+  "code_hash": "b669411bba94573b",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true",
+    "LIFT_POSE_WORKERS": "4"
+  },
+  "stages": {
+    "download": 0.02,
+    "analyze": 82.66,
+    "reencode": 15.11,
+    "clips": 51.22
+  },
+  "analyze_breakdown": {
+    "pose": 29.41,
+    "render_video": 14.42,
+    "render_clips": 38.33
+  },
+  "wall_s": 149.03,
+  "total_reps": 24,
+  "total_in_plank_s": null
+}

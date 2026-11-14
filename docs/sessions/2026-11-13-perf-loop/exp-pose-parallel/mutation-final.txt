@@ -1,0 +1,14 @@
+baseline (0, ['22 passed, 2 deselected in 0.41s'])
+KILLED M1 sync on a single matching frame ['test_late_sync_extends_the_left_chunk', 'test_short_coincidence_is_not_a_sync']
+KILLED M1b sync on four matching frames ['test_late_sync_extends_the_left_chunk', 'test_short_coincidence_is_not_a_sync']
+KILLED M12 sync search ignores the owner's own sync frame ['test_two_cold_chunks_agreeing_is_not_a_sync']
+KILLED M2 splice drops one frame ['test_chunk_that_never_syncs_is_dropped', 'test_dropped_chunk_then_late_sync_on_the_next', 'test_immediate_sync_needs_no_extension', 'test_late_sync_extends_the_left_chunk', 'test_metadata_overcount_leaves_an_empty_chunk', 'test_short_coincidence_is_not_a_sync', 'test_two_cold_chunks_agreeing_is_not_a_sync']
+KILLED M3 adopt chunk at its bound unverified ['test_chunk_that_never_syncs_is_dropped', 'test_dropped_chunk_then_late_sync_on_the_next', 'test_last_chunk_never_syncs_owner_covers_the_rest', 'test_late_sync_extends_the_left_chunk', 'test_short_coincidence_is_not_a_sync', 'test_two_cold_chunks_agreeing_is_not_a_sync']
+KILLED M4 never extend the owner ['test_chunk_that_never_syncs_is_dropped', 'test_dropped_chunk_then_late_sync_on_the_next', 'test_last_chunk_never_syncs_owner_covers_the_rest', 'test_late_sync_extends_the_left_chunk', 'test_short_coincidence_is_not_a_sync', 'test_two_cold_chunks_agreeing_is_not_a_sync']
+KILLED M5 digest ignores the frame ['test_different_frame_same_landmarks_differs']
+KILLED M6 digest ignores presence ['test_one_float_differs']
+KILLED M7 replay timestamp drift (estimate_video) ['test_replay_equals_sequential[estimate_video]']
+KILLED M8 replay timestamp drift (candidates) ['test_replay_equals_sequential[estimate_video_candidates]']
+KILLED M9 flag ignored (always sequential) ['test_replay_equals_sequential[estimate_video]', 'test_replay_equals_sequential[estimate_video_candidates]', 'test_worker_failure_falls_back_to_sequential[estimate_video]', 'test_worker_failure_falls_back_to_sequential[estimate_video_candidates]']
+KILLED M11 swallow worker failure silently into empty result ['test_worker_failure_falls_back_to_sequential[estimate_video]', 'test_worker_failure_falls_back_to_sequential[estimate_video_candidates]']
+restored baseline (0, ['22 passed, 2 deselected in 0.31s'])

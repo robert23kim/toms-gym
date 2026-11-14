@@ -1,0 +1,53 @@
+apiVersion: serving.knative.dev/v1
+kind: Revision
+metadata:
+  annotations:
+    autoscaling.knative.dev/maxScale: '3'
+    run.googleapis.com/execution-environment: gen1
+    run.googleapis.com/startup-cpu-boost: 'true'
+  labels:
+    cloud.googleapis.com/location: us-east1
+    run.googleapis.com/startupProbeType: Default
+    serving.knative.dev/configuration: bowling-service-perf
+    serving.knative.dev/configurationGeneration: '9'
+    serving.knative.dev/route: bowling-service-perf
+    serving.knative.dev/service: bowling-service-perf
+    serving.knative.dev/serviceUid: 473f4ee5-b0a9-4baf-9f18-8a68fe75dd90
+  name: bowling-service-perf-pp-off
+  namespace: '834341357827'
+  ownerReferences:
+  - apiVersion: serving.knative.dev/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: Configuration
+    name: bowling-service-perf
+    uid: 05854f88-cfd7-49e5-8a78-d61643b26848
+spec:
+  containerConcurrency: 1
+  containers:
+  - env:
+    - name: GCS_BUCKET_NAME
+      value: jtr-lift-u-4ever-cool-bucket
+    - name: PLANK_POSE_WORKERS
+      value: '8'
+    - name: NORMALIZE_BEFORE_ANALYZE
+      value: 'true'
+    - name: CLIP_UPLOAD_WORKERS
+      value: '4'
+    image: gcr.io/toms-gym/bowling-service@sha256:e33eed0e2c04752a1437345b2be869e8c294b1212c20acf62790b0786f2d60d8
+    name: bowling-service-1
+    ports:
+    - containerPort: 8080
+      name: http1
+    resources:
+      limits:
+        cpu: '8'
+        memory: 8Gi
+    startupProbe:
+      failureThreshold: 1
+      periodSeconds: 240
+      tcpSocket:
+        port: 8080
+      timeoutSeconds: 240
+  serviceAccountName: toms-gym-service@toms-gym.iam.gserviceaccount.com
+  timeoutSeconds: 880

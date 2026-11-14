@@ -1,0 +1,33 @@
+fixture | arm | n | pose s per rep | pose median | analyze median | wall median | pose speedup vs off (per-rep pairs)
+plank_9600f455 | off | 1 | [76.87] | 76.87 | 76.88 | 78.65 | [1.0]
+plank_9600f455 | w4 | 1 | [75.33] | 75.33 | 75.34 | 77.19 | [1.02]
+pushup_3c66c85e | off | 1 | [25.12] | 25.12 | 30.48 | 32.66 | [1.0]
+pushup_3c66c85e | w4 | 1 | [8.1] | 8.1 | 14.01 | 16.32 | [3.1]
+pushup_97b4aaf2 | off | 1 | [19.36] | 19.36 | 46.99 | 55.97 | [1.0]
+pushup_97b4aaf2 | w4 | 1 | [7.65] | 7.65 | 41.51 | 51.66 | [2.53]
+pushup_e18a31d1 | base | 3 | [24.62, 36.84, 30.32] | 30.32 | 83.71 | 96.73 | [0.99, 0.89, 0.77]
+pushup_e18a31d1 | off | 3 | [24.34, 32.68, 23.35] | 24.34 | 73.68 | 85.75 | [1.0, 1.0, 1.0]
+pushup_e18a31d1 | w2 | 3 | [15.04, 18.21, 13.45] | 15.04 | 59.44 | 70.47 | [1.62, 1.79, 1.74]
+pushup_e18a31d1 | w4 | 3 | [9.22, 9.24, 7.61] | 9.22 | 50.32 | 64.56 | [2.64, 3.54, 3.07]
+situp_16b6ca35 | off | 1 | [54.33] | 54.33 | 61.74 | 64.2 | [1.0]
+situp_16b6ca35 | w4 | 1 | [16.13] | 16.13 | 24.29 | 27.08 | [3.37]
+situp_667a8480 | base | 3 | [71.1, 66.88, 64.48] | 66.88 | 112.26 | 122.33 | [0.79, 1.1, 0.95]
+situp_667a8480 | off | 3 | [55.97, 73.26, 61.38] | 61.38 | 109.31 | 119.26 | [1.0, 1.0, 1.0]
+situp_667a8480 | w2 | 3 | [30.84, 33.15, 35.84] | 33.15 | 66.53 | 76.01 | [1.81, 2.21, 1.71]
+situp_667a8480 | w4 | 3 | [20.45, 19.97, 27.47] | 20.45 | 59.68 | 75.3 | [2.74, 3.67, 2.23]
+situp_c9dec98b | off | 1 | [37.5] | 37.5 | 58.81 | 65.2 | [1.0]
+situp_c9dec98b | w4 | 1 | [11.95] | 11.95 | 33.2 | 39.61 | [3.14]
+squat_f47a8848 | base | 3 | [16.17, 21.16, 15.24] | 16.17 | 20.1 | 21.83 | [0.99, 0.95, 0.99]
+squat_f47a8848 | off | 3 | [16.04, 20.07, 15.05] | 16.04 | 20.15 | 21.88 | [1.0, 1.0, 1.0]
+squat_f47a8848 | w2 | 3 | [10.34, 9.23, 8.4] | 9.23 | 13.25 | 14.99 | [1.55, 2.17, 1.79]
+squat_f47a8848 | w4 | 3 | [7.94, 6.73, 5.29] | 6.73 | 12.2 | 14.15 | [2.02, 2.98, 2.84]
+
+equivalence (native): each arm's summary vs off-r1 summary of the same fixture, and off-r1 vs base-local/run1
+plank_9600f455 off-r1:bytes=/cmp-ok w4-r1:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+pushup_3c66c85e off-r1:bytes=/cmp-ok w4-r1:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+pushup_97b4aaf2 off-r1:bytes=/cmp-ok w4-r1:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+pushup_e18a31d1 base-r1:bytes=/cmp-ok base-r2:bytes=/cmp-ok base-r3:bytes=/cmp-ok off-r1:bytes=/cmp-ok off-r2:bytes=/cmp-ok off-r3:bytes=/cmp-ok w2-r1:bytes=/cmp-ok w2-r2:bytes=/cmp-ok w2-r3:bytes=/cmp-ok w4-r1:bytes=/cmp-ok w4-r2:bytes=/cmp-ok w4-r3:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+situp_16b6ca35 off-r1:bytes=/cmp-ok w4-r1:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+situp_667a8480 base-r1:bytes=/cmp-ok base-r2:bytes=/cmp-ok base-r3:bytes=/cmp-ok off-r1:bytes=/cmp-ok off-r2:bytes=/cmp-ok off-r3:bytes=/cmp-ok w2-r1:bytes=/cmp-ok w2-r2:bytes=/cmp-ok w2-r3:bytes=/cmp-ok w4-r1:bytes=/cmp-ok w4-r2:bytes=/cmp-ok w4-r3:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+situp_c9dec98b off-r1:bytes=/cmp-ok w4-r1:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
+squat_f47a8848 base-r1:bytes=/cmp-ok base-r2:bytes=/cmp-ok base-r3:bytes=/cmp-ok off-r1:bytes=/cmp-ok off-r2:bytes=/cmp-ok off-r3:bytes=/cmp-ok w2-r1:bytes=/cmp-ok w2-r2:bytes=/cmp-ok w2-r3:bytes=/cmp-ok w4-r1:bytes=/cmp-ok w4-r2:bytes=/cmp-ok w4-r3:bytes=/cmp-ok | off-r1 vs base-local/run1: bytes= cmp-ok
