@@ -1,0 +1,116 @@
+{
+ "fixture": "pushup_e18a31d1.mp4",
+ "frames": 1022,
+ "chunks": 22,
+ "chunk": 48,
+ "arms": {
+  "off": {
+   "wall_ms_per_frame": 32.45,
+   "cpu_ms_per_frame": 27.02,
+   "ratio_vs_off_total": 1.0,
+   "ratio_vs_off_chunk_median": 1.0,
+   "ratio_vs_off_chunk_p10_p90": [
+    1.0,
+    1.0
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1011
+   }
+  },
+  "off2": {
+   "wall_ms_per_frame": 28.97,
+   "cpu_ms_per_frame": 27.08,
+   "ratio_vs_off_total": 0.893,
+   "ratio_vs_off_chunk_median": 1.006,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.736,
+    1.106
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1011
+   }
+  },
+  "np1": {
+   "wall_ms_per_frame": 18.92,
+   "cpu_ms_per_frame": 17.35,
+   "ratio_vs_off_total": 0.583,
+   "ratio_vs_off_chunk_median": 0.639,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.484,
+    0.73
+   ],
+   "stats": {
+    "num_poses": 1,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1022
+   }
+  },
+  "stride2": {
+   "wall_ms_per_frame": 14.61,
+   "cpu_ms_per_frame": 13.51,
+   "ratio_vs_off_total": 0.45,
+   "ratio_vs_off_chunk_median": 0.497,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.371,
+    0.542
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 2,
+    "inferred": 511,
+    "resized": 0,
+    "poses": 511
+   }
+  },
+  "side640": {
+   "wall_ms_per_frame": 30.56,
+   "cpu_ms_per_frame": 26.88,
+   "ratio_vs_off_total": 0.942,
+   "ratio_vs_off_chunk_median": 0.98,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.796,
+    1.107
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 640,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 1022,
+    "poses": 1013
+   }
+  },
+  "np1+stride2": {
+   "wall_ms_per_frame": 9.8,
+   "cpu_ms_per_frame": 8.73,
+   "ratio_vs_off_total": 0.302,
+   "ratio_vs_off_chunk_median": 0.311,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.265,
+    0.345
+   ],
+   "stats": {
+    "num_poses": 1,
+    "max_side": 0,
+    "frame_stride": 2,
+    "inferred": 511,
+    "resized": 0,
+    "poses": 511
+   }
+  }
+ }
+}

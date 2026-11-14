@@ -1,0 +1,1328 @@
+{
+  "camera_view": "side",
+  "active_arm": "right",
+  "total_reps": 18,
+  "overall_grade": "A",
+  "overall_score": 98.6483165278468,
+  "lift_type": "pushup",
+  "rep_metrics": [
+    {
+      "rep_number": 1,
+      "elbow_angle_range": [
+        3.1542606398298236,
+        179.46465002416844
+      ],
+      "tempo_ratio": 1.1666666666666665,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 71.24409504433089,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 124.1694152876081,
+      "form_grade": "A",
+      "form_score": 90.41469834811028,
+      "start_s": 2.29,
+      "peak_s": 2.54,
+      "end_s": 2.83,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 2.54,
+          "worst_time_s": 2.29
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 71.2,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 2.67,
+          "worst_time_s": 2.83
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 2.71,
+          "worst_time_s": 2.5
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 124.2,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 2.62,
+          "worst_time_s": 2.33
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.2,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 2,
+      "elbow_angle_range": [
+        81.21926559822502,
+        173.5768545129092
+      ],
+      "tempo_ratio": 10.0,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 83.74856039938186,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 43.735070487936085,
+      "form_grade": "A",
+      "form_score": 94.5828534664606,
+      "start_s": 2.83,
+      "peak_s": 2.96,
+      "end_s": 4.21,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 2.96,
+          "worst_time_s": 2.83
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 83.7,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 3.58,
+          "worst_time_s": 4.21
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 3.54,
+          "worst_time_s": 4.21
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 43.7,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "warn",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 3.58,
+          "worst_time_s": 3.08
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 10.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 3,
+      "elbow_angle_range": [
+        51.50943363420885,
+        173.37695269422196
+      ],
+      "tempo_ratio": 0.16666666666666666,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 83.51488255432257,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 4.21,
+      "peak_s": 8.96,
+      "end_s": 9.75,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 8.96,
+          "worst_time_s": 4.21
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 9.33,
+          "worst_time_s": 9.75
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 5.46,
+          "worst_time_s": 4.21
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 83.5,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 9.12,
+          "worst_time_s": 4.42
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.2,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 4,
+      "elbow_angle_range": [
+        48.357962336186525,
+        174.72430337942467
+      ],
+      "tempo_ratio": 0.8857142857142857,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 64.45867902995472,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 9.75,
+      "peak_s": 11.21,
+      "end_s": 12.5,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 11.21,
+          "worst_time_s": 9.75
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 11.83,
+          "worst_time_s": 12.5
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 10.04,
+          "worst_time_s": 10.92
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 64.5,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 10.96,
+          "worst_time_s": 12.42
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.9,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 5,
+      "elbow_angle_range": [
+        55.28383099456363,
+        172.3633547193739
+      ],
+      "tempo_ratio": 0.6,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 56.02086785602466,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 12.5,
+      "peak_s": 13.75,
+      "end_s": 14.5,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 13.75,
+          "worst_time_s": 12.5
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 14.12,
+          "worst_time_s": 14.5
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 13.17,
+          "worst_time_s": 13.42
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 56.0,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 14.0,
+          "worst_time_s": 12.75
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.6,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 6,
+      "elbow_angle_range": [
+        51.499945750879014,
+        172.6457170990137
+      ],
+      "tempo_ratio": 0.5,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 62.90788473106162,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 14.5,
+      "peak_s": 16.17,
+      "end_s": 17.0,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 16.17,
+          "worst_time_s": 14.5
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 16.58,
+          "worst_time_s": 17.0
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 15.04,
+          "worst_time_s": 15.92
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 62.9,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 16.5,
+          "worst_time_s": 15.54
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 7,
+      "elbow_angle_range": [
+        44.903403248555236,
+        179.4072039733302
+      ],
+      "tempo_ratio": 0.85,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 68.72185289592633,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 17.0,
+      "peak_s": 18.67,
+      "end_s": 20.08,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 18.67,
+          "worst_time_s": 17.0
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 19.38,
+          "worst_time_s": 20.08
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 17.92,
+          "worst_time_s": 19.0
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 68.7,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 18.46,
+          "worst_time_s": 20.0
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 8,
+      "elbow_angle_range": [
+        43.7832507896136,
+        179.0056435430725
+      ],
+      "tempo_ratio": 1.2105263157894737,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 57.74019089853917,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 20.08,
+      "peak_s": 20.88,
+      "end_s": 21.83,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 20.88,
+          "worst_time_s": 20.08
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 21.33,
+          "worst_time_s": 21.83
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 21.38,
+          "worst_time_s": 21.25
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 57.7,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 21.21,
+          "worst_time_s": 21.83
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.2,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 9,
+      "elbow_angle_range": [
+        46.395193028401856,
+        179.70926743274248
+      ],
+      "tempo_ratio": 1.1764705882352942,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 69.78470408888539,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 21.83,
+      "peak_s": 23.25,
+      "end_s": 24.92,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 23.25,
+          "worst_time_s": 21.83
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 24.08,
+          "worst_time_s": 24.92
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 22.42,
+          "worst_time_s": 23.04
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 69.8,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 23.08,
+          "worst_time_s": 21.88
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.2,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 10,
+      "elbow_angle_range": [
+        47.840969894695064,
+        179.58445694032554
+      ],
+      "tempo_ratio": 1.736842105263158,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 61.16493257565405,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 24.92,
+      "peak_s": 25.71,
+      "end_s": 27.08,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 25.71,
+          "worst_time_s": 24.92
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 26.38,
+          "worst_time_s": 27.08
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 26.54,
+          "worst_time_s": 25.46
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 61.2,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 25.5,
+          "worst_time_s": 24.92
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.7,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "pass",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 11,
+      "elbow_angle_range": [
+        43.080912720405664,
+        179.8757769712854
+      ],
+      "tempo_ratio": 0.4313725490196078,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 68.15331384847553,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 27.08,
+      "peak_s": 29.21,
+      "end_s": 30.12,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 29.21,
+          "worst_time_s": 27.08
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 29.67,
+          "worst_time_s": 30.12
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 28.21,
+          "worst_time_s": 29.46
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 68.2,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 29.46,
+          "worst_time_s": 27.67
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.4,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 12,
+      "elbow_angle_range": [
+        43.81530028935147,
+        179.8757769712854
+      ],
+      "tempo_ratio": 0.5,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 59.92579659816261,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 30.12,
+      "peak_s": 31.79,
+      "end_s": 32.62,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 31.79,
+          "worst_time_s": 30.12
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 32.21,
+          "worst_time_s": 32.62
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 31.29,
+          "worst_time_s": 32.21
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 59.9,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 32.12,
+          "worst_time_s": 30.12
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 13,
+      "elbow_angle_range": [
+        44.33842622104218,
+        173.15739769739582
+      ],
+      "tempo_ratio": 0.5348837209302325,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 63.63521075310859,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 32.62,
+      "peak_s": 34.42,
+      "end_s": 35.38,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 34.42,
+          "worst_time_s": 32.62
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 34.88,
+          "worst_time_s": 35.38
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 33.46,
+          "worst_time_s": 34.79
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 63.6,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 34.71,
+          "worst_time_s": 33.62
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 14,
+      "elbow_angle_range": [
+        43.22462349379425,
+        168.83396058197212
+      ],
+      "tempo_ratio": 0.5,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 60.21537095743578,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 35.38,
+      "peak_s": 36.96,
+      "end_s": 37.75,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 36.96,
+          "worst_time_s": 35.38
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 37.33,
+          "worst_time_s": 37.75
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 36.17,
+          "worst_time_s": 37.25
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 60.2,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 37.25,
+          "worst_time_s": 37.75
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 15,
+      "elbow_angle_range": [
+        44.55826058027098,
+        172.35665812679548
+      ],
+      "tempo_ratio": 0.4318181818181818,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 64.73445137850555,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 37.75,
+      "peak_s": 39.58,
+      "end_s": 40.38,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 39.58,
+          "worst_time_s": 37.75
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 39.96,
+          "worst_time_s": 40.38
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 40.12,
+          "worst_time_s": 39.92
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 64.7,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 39.29,
+          "worst_time_s": 38.21
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.4,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 16,
+      "elbow_angle_range": [
+        45.006464628675424,
+        174.39928045324925
+      ],
+      "tempo_ratio": 1.0,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 100.0,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 66.91563898887752,
+      "form_grade": "A",
+      "form_score": 99.99999999999999,
+      "start_s": 40.38,
+      "peak_s": 41.96,
+      "end_s": 43.54,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 41.96,
+          "worst_time_s": 40.38
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 42.75,
+          "worst_time_s": 43.54
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 42.75,
+          "worst_time_s": 42.33
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 66.9,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 42.21,
+          "worst_time_s": 43.46
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 17,
+      "elbow_angle_range": [
+        41.49113337146725,
+        178.79914824824465
+      ],
+      "tempo_ratio": 1.9500000000000002,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 72.53269105764745,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 66.67878222398186,
+      "form_grade": "A",
+      "form_score": 90.84423035254915,
+      "start_s": 43.54,
+      "peak_s": 44.38,
+      "end_s": 46.0,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 44.38,
+          "worst_time_s": 43.54
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 72.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 45.17,
+          "worst_time_s": 46.0
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 44.38,
+          "worst_time_s": 44.67
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 66.7,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "fail",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 44.62,
+          "worst_time_s": 45.96
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 2.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "pass",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 18,
+      "elbow_angle_range": [
+        83.65723979079772,
+        178.58547561716404
+      ],
+      "tempo_ratio": 0.8235294117647058,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 99.48374600236659,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 31.23008444792005,
+      "form_grade": "A",
+      "form_score": 99.82791533412218,
+      "start_s": 46.0,
+      "peak_s": 46.71,
+      "end_s": 47.29,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 46.71,
+          "worst_time_s": 46.0
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 99.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 47.0,
+          "worst_time_s": 47.29
+        },
+        {
+          "key": "elbow_stability",
+          "label": "Elbow Stability",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">60%",
+          "status": "fail",
+          "description": "How stationary your elbow stayed during the curl. Measures horizontal drift of the elbow joint relative to your upper arm length.",
+          "best_time_s": 46.54,
+          "worst_time_s": 46.0
+        },
+        {
+          "key": "shoulder_swing",
+          "label": "Shoulder Swing",
+          "value": 31.2,
+          "unit": "\u00b0",
+          "target": "<30\u00b0",
+          "status": "warn",
+          "description": "How much your upper arm swung forward. Measures the angle between your torso and upper arm at the shoulder joint.",
+          "best_time_s": 46.42,
+          "worst_time_s": 46.04
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    }
+  ],
+  "insights": [
+    "Range of motion decreasing \u2014 consider lighter weight",
+    "Excellent form throughout the set"
+  ]
+}

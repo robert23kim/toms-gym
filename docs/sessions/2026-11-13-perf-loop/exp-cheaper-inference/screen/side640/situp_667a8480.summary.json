@@ -1,0 +1,2362 @@
+{
+  "camera_view": "side",
+  "active_arm": "right",
+  "total_reps": 34,
+  "overall_grade": "B",
+  "overall_score": 86.58134219881312,
+  "lift_type": "situp",
+  "rep_metrics": [
+    {
+      "rep_number": 1,
+      "elbow_angle_range": [
+        108.87347344242451,
+        140.24170759841152
+      ],
+      "tempo_ratio": 2.85,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 0.0,
+      "momentum_score": 88.47465282224793,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 123.44894571457054,
+      "form_grade": "C",
+      "form_score": 72.11866320556199,
+      "start_s": 0.9,
+      "peak_s": 1.57,
+      "end_s": 3.48,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 1.57,
+          "worst_time_s": 0.9
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 88.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 2.51,
+          "worst_time_s": 3.48
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 2.9,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 2,
+      "elbow_angle_range": [
+        96.84355114719862,
+        130.70550636875024
+      ],
+      "tempo_ratio": 0.2682926829268293,
+      "elbow_drift_pct": 52.311089427960376,
+      "body_sway_pct": 0.0,
+      "momentum_score": 97.59456314690483,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 119.13563654930311,
+      "form_grade": "C",
+      "form_score": 74.3986407867262,
+      "start_s": 4.72,
+      "peak_s": 7.47,
+      "end_s": 8.2,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 7.47,
+          "worst_time_s": 4.72
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 97.6,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 7.84,
+          "worst_time_s": 8.2
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.3,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 3,
+      "elbow_angle_range": [
+        98.91747834528445,
+        117.66736764488085
+      ],
+      "tempo_ratio": 0.9642857142857143,
+      "elbow_drift_pct": 23.962298928323676,
+      "body_sway_pct": 100.0,
+      "momentum_score": 91.33710430081115,
+      "rom_score": 93.74944649798202,
+      "shoulder_flexion_avg": 132.43561438995172,
+      "form_grade": "A",
+      "form_score": 94.7089993241938,
+      "start_s": 8.2,
+      "peak_s": 9.14,
+      "end_s": 10.05,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 93.7,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 9.14,
+          "worst_time_s": 8.2
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 91.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 9.58,
+          "worst_time_s": 10.05
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 90.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 4,
+      "elbow_angle_range": [
+        101.71314225562658,
+        116.59774141028655
+      ],
+      "tempo_ratio": 1.0476190476190477,
+      "elbow_drift_pct": 26.647052921927784,
+      "body_sway_pct": 100.0,
+      "momentum_score": 97.31876016374311,
+      "rom_score": 74.42299577329983,
+      "shoulder_flexion_avg": 125.96708565344335,
+      "form_grade": "B",
+      "form_score": 86.5411879275857,
+      "start_s": 10.05,
+      "peak_s": 10.75,
+      "end_s": 11.49,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 74.4,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 10.75,
+          "worst_time_s": 10.05
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 97.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 11.12,
+          "worst_time_s": 11.49
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 5,
+      "elbow_angle_range": [
+        101.54326646918913,
+        117.24846231286074
+      ],
+      "tempo_ratio": 0.72,
+      "elbow_drift_pct": 6.659020500659518,
+      "body_sway_pct": 100.0,
+      "momentum_score": 90.99215321701958,
+      "rom_score": 78.52597921835802,
+      "shoulder_flexion_avg": 123.73583700213364,
+      "form_grade": "B",
+      "form_score": 87.0110279134339,
+      "start_s": 11.49,
+      "peak_s": 12.32,
+      "end_s": 12.93,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 78.5,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 12.32,
+          "worst_time_s": 11.49
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 91.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 12.62,
+          "worst_time_s": 12.93
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.7,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 6,
+      "elbow_angle_range": [
+        102.82156352092808,
+        117.24846231286074
+      ],
+      "tempo_ratio": 0.7407407407407407,
+      "elbow_drift_pct": 12.536700737697648,
+      "body_sway_pct": 100.0,
+      "momentum_score": 94.80421457494234,
+      "rom_score": 72.13449395966329,
+      "shoulder_flexion_avg": 120.32943249030744,
+      "form_grade": "B",
+      "form_score": 84.76830062356723,
+      "start_s": 12.93,
+      "peak_s": 13.83,
+      "end_s": 14.5,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 72.1,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 13.83,
+          "worst_time_s": 12.93
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 94.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 14.16,
+          "worst_time_s": 14.5
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.7,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 7,
+      "elbow_angle_range": [
+        101.28463058639541,
+        117.72201319793037
+      ],
+      "tempo_ratio": 0.6428571428571428,
+      "elbow_drift_pct": 20.315330354238736,
+      "body_sway_pct": 100.0,
+      "momentum_score": 89.63131319083575,
+      "rom_score": 82.18691305767479,
+      "shoulder_flexion_avg": 121.57672045423698,
+      "form_grade": "B",
+      "form_score": 88.50128482654634,
+      "start_s": 14.5,
+      "peak_s": 15.44,
+      "end_s": 16.04,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 82.2,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 15.44,
+          "worst_time_s": 14.5
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 89.6,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 15.74,
+          "worst_time_s": 16.04
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.6,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 8,
+      "elbow_angle_range": [
+        87.99975685336159,
+        117.72201319793037
+      ],
+      "tempo_ratio": 0.823529411764706,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 100.0,
+      "momentum_score": 87.76796915270133,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 123.13309543528301,
+      "form_grade": "A",
+      "form_score": 96.94199228817533,
+      "start_s": 16.04,
+      "peak_s": 17.18,
+      "end_s": 18.12,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 17.18,
+          "worst_time_s": 16.04
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 87.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 17.65,
+          "worst_time_s": 18.12
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 97.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 9,
+      "elbow_angle_range": [
+        99.50692961818187,
+        117.68125884071765
+      ],
+      "tempo_ratio": 1.5555555555555556,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 100.0,
+      "momentum_score": 89.63920870925608,
+      "rom_score": 90.87164611267887,
+      "shoulder_flexion_avg": 111.54625434183227,
+      "form_grade": "A",
+      "form_score": 92.84562523365346,
+      "start_s": 18.12,
+      "peak_s": 18.72,
+      "end_s": 19.66,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 90.9,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 18.72,
+          "worst_time_s": 18.12
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 89.6,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 19.19,
+          "worst_time_s": 19.66
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.6,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "pass",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 10,
+      "elbow_angle_range": [
+        98.50314738134006,
+        116.63594485149272
+      ],
+      "tempo_ratio": 1.2,
+      "elbow_drift_pct": 7.514479427746612,
+      "body_sway_pct": 100.0,
+      "momentum_score": 97.23743827443495,
+      "rom_score": 90.66398735076334,
+      "shoulder_flexion_avg": 125.4257399650626,
+      "form_grade": "A",
+      "form_score": 94.64135324399041,
+      "start_s": 19.66,
+      "peak_s": 20.66,
+      "end_s": 21.87,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 90.7,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 20.66,
+          "worst_time_s": 19.66
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 97.2,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 21.26,
+          "worst_time_s": 21.87
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.2,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 11,
+      "elbow_angle_range": [
+        95.11970003023748,
+        119.30680558538823
+      ],
+      "tempo_ratio": 1.2916666666666665,
+      "elbow_drift_pct": 9.050006239841057,
+      "body_sway_pct": 100.0,
+      "momentum_score": 96.96226398086873,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 115.59847172865936,
+      "form_grade": "A",
+      "form_score": 99.24056599521718,
+      "start_s": 21.87,
+      "peak_s": 22.67,
+      "end_s": 23.71,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 22.67,
+          "worst_time_s": 21.87
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 97.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 23.17,
+          "worst_time_s": 23.71
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.3,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 12,
+      "elbow_angle_range": [
+        100.10681817133694,
+        127.6487527124858
+      ],
+      "tempo_ratio": 0.9565217391304348,
+      "elbow_drift_pct": 32.25215866777492,
+      "body_sway_pct": 89.25015332199597,
+      "momentum_score": 95.34922236395298,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 113.73066997890024,
+      "form_grade": "A",
+      "form_score": 96.14984392148723,
+      "start_s": 23.71,
+      "peak_s": 24.48,
+      "end_s": 25.21,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 24.48,
+          "worst_time_s": 23.71
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 95.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 24.85,
+          "worst_time_s": 25.21
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 89.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 55.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "warn",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 13,
+      "elbow_angle_range": [
+        100.2096141250238,
+        127.6487527124858
+      ],
+      "tempo_ratio": 1.0,
+      "elbow_drift_pct": 7.884437234069841,
+      "body_sway_pct": 92.49747519104046,
+      "momentum_score": 97.97890096562068,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 121.90499819226049,
+      "form_grade": "A",
+      "form_score": 97.61909403916529,
+      "start_s": 25.21,
+      "peak_s": 26.19,
+      "end_s": 27.16,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 26.19,
+          "worst_time_s": 25.21
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 98.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 26.65,
+          "worst_time_s": 27.16
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 92.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 55.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "warn",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 14,
+      "elbow_angle_range": [
+        101.17874469859515,
+        117.64773686822997
+      ],
+      "tempo_ratio": 1.523809523809524,
+      "elbow_drift_pct": 12.85383369942693,
+      "body_sway_pct": 100.0,
+      "momentum_score": 93.43064614386883,
+      "rom_score": 82.34496084817408,
+      "shoulder_flexion_avg": 120.77840100134907,
+      "form_grade": "B",
+      "form_score": 89.53014196005425,
+      "start_s": 27.16,
+      "peak_s": 27.86,
+      "end_s": 28.93,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 82.3,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 27.86,
+          "worst_time_s": 27.16
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 93.4,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 28.4,
+          "worst_time_s": 28.93
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 99.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "pass",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 15,
+      "elbow_angle_range": [
+        100.16718624298764,
+        116.82606420975155
+      ],
+      "tempo_ratio": 1.1363636363636365,
+      "elbow_drift_pct": 8.880462294807467,
+      "body_sway_pct": 100.0,
+      "momentum_score": 89.72094558235024,
+      "rom_score": 83.29438983381955,
+      "shoulder_flexion_avg": 109.27023535179482,
+      "form_grade": "B",
+      "form_score": 89.07743131249734,
+      "start_s": 28.93,
+      "peak_s": 29.67,
+      "end_s": 30.5,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 83.3,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 29.67,
+          "worst_time_s": 28.93
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 89.7,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 30.07,
+          "worst_time_s": 30.5
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.1,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 16,
+      "elbow_angle_range": [
+        100.9133775458416,
+        118.74527334659027
+      ],
+      "tempo_ratio": 0.8214285714285714,
+      "elbow_drift_pct": 9.442707985131204,
+      "body_sway_pct": 100.0,
+      "momentum_score": 93.34462071388114,
+      "rom_score": 89.15947900374334,
+      "shoulder_flexion_avg": 119.24015054628262,
+      "form_grade": "A",
+      "form_score": 92.91589468034195,
+      "start_s": 30.5,
+      "peak_s": 31.44,
+      "end_s": 32.21,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 89.2,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 31.44,
+          "worst_time_s": 30.5
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 93.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 31.81,
+          "worst_time_s": 32.21
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 17,
+      "elbow_angle_range": [
+        101.13280865049603,
+        118.74527334659027
+      ],
+      "tempo_ratio": 0.4285714285714286,
+      "elbow_drift_pct": 10.568905666459683,
+      "body_sway_pct": 100.0,
+      "momentum_score": 89.23312932251814,
+      "rom_score": 88.06232348047118,
+      "shoulder_flexion_avg": 121.27712729221184,
+      "form_grade": "A",
+      "form_score": 91.33944407086513,
+      "start_s": 32.21,
+      "peak_s": 33.62,
+      "end_s": 34.22,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 88.1,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 33.62,
+          "worst_time_s": 32.21
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 89.2,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 33.92,
+          "worst_time_s": 34.22
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.4,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 18,
+      "elbow_angle_range": [
+        102.18051829371011,
+        117.47391458589544
+      ],
+      "tempo_ratio": 0.7857142857142857,
+      "elbow_drift_pct": 5.2155545632632805,
+      "body_sway_pct": 100.0,
+      "momentum_score": 93.1796435020037,
+      "rom_score": 76.46698146092668,
+      "shoulder_flexion_avg": 116.85844081477593,
+      "form_grade": "B",
+      "form_score": 86.52840160596426,
+      "start_s": 34.22,
+      "peak_s": 35.16,
+      "end_s": 35.9,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 76.5,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 35.16,
+          "worst_time_s": 34.22
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 93.2,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 35.53,
+          "worst_time_s": 35.9
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 19,
+      "elbow_angle_range": [
+        104.62547596867829,
+        117.40883943267133
+      ],
+      "tempo_ratio": 0.7419354838709676,
+      "elbow_drift_pct": 10.937747923987073,
+      "body_sway_pct": 100.0,
+      "momentum_score": 98.77775152244324,
+      "rom_score": 63.916817319965205,
+      "shoulder_flexion_avg": 120.03087076908962,
+      "form_grade": "B",
+      "form_score": 81.6528465405934,
+      "start_s": 35.9,
+      "peak_s": 36.93,
+      "end_s": 37.7,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 63.9,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 36.93,
+          "worst_time_s": 35.9
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 98.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 37.3,
+          "worst_time_s": 37.7
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.7,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 20,
+      "elbow_angle_range": [
+        103.15157114989778,
+        119.03562879628608
+      ],
+      "tempo_ratio": 0.5806451612903225,
+      "elbow_drift_pct": 5.107359921776789,
+      "body_sway_pct": 100.0,
+      "momentum_score": 98.53915662227625,
+      "rom_score": 79.4202882319415,
+      "shoulder_flexion_avg": 119.02090780964598,
+      "form_grade": "B",
+      "form_score": 89.34493327153982,
+      "start_s": 37.7,
+      "peak_s": 38.74,
+      "end_s": 39.35,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 79.4,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 38.74,
+          "worst_time_s": 37.7
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 98.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 39.04,
+          "worst_time_s": 39.35
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.6,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 21,
+      "elbow_angle_range": [
+        103.0839183012768,
+        118.55818291787057
+      ],
+      "tempo_ratio": 0.8148148148148148,
+      "elbow_drift_pct": 0.0,
+      "body_sway_pct": 100.0,
+      "momentum_score": 96.84369660624822,
+      "rom_score": 77.37132308296886,
+      "shoulder_flexion_avg": 121.98229632784827,
+      "form_grade": "B",
+      "form_score": 87.89658569304649,
+      "start_s": 39.35,
+      "peak_s": 40.25,
+      "end_s": 40.99,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 77.4,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 40.25,
+          "worst_time_s": 39.35
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 96.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 40.62,
+          "worst_time_s": 40.99
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 22,
+      "elbow_angle_range": [
+        100.07291129933361,
+        116.97924983172184
+      ],
+      "tempo_ratio": 0.5806451612903225,
+      "elbow_drift_pct": 3.01817585680324,
+      "body_sway_pct": 100.0,
+      "momentum_score": 95.26587072194191,
+      "rom_score": 84.53169266194116,
+      "shoulder_flexion_avg": 118.0359757721109,
+      "form_grade": "A",
+      "form_score": 91.08231401145605,
+      "start_s": 40.99,
+      "peak_s": 42.02,
+      "end_s": 42.63,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 84.5,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 42.02,
+          "worst_time_s": 40.99
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 95.3,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 42.33,
+          "worst_time_s": 42.63
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.6,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 23,
+      "elbow_angle_range": [
+        102.92933960064421,
+        117.54337738043834
+      ],
+      "tempo_ratio": 0.6666666666666666,
+      "elbow_drift_pct": 15.548512346363164,
+      "body_sway_pct": 100.0,
+      "momentum_score": 90.40193112416127,
+      "rom_score": 73.07018889897066,
+      "shoulder_flexion_avg": 119.565160717717,
+      "form_grade": "B",
+      "form_score": 84.13557723052564,
+      "start_s": 42.63,
+      "peak_s": 43.73,
+      "end_s": 44.47,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 73.1,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 43.73,
+          "worst_time_s": 42.63
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 90.4,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 44.1,
+          "worst_time_s": 44.47
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.7,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 24,
+      "elbow_angle_range": [
+        101.86204063136134,
+        117.54337738043834
+      ],
+      "tempo_ratio": 0.5405405405405406,
+      "elbow_drift_pct": 15.901913233883558,
+      "body_sway_pct": 100.0,
+      "momentum_score": 95.80865802248577,
+      "rom_score": 78.40668374538502,
+      "shoulder_flexion_avg": 122.44256843529226,
+      "form_grade": "B",
+      "form_score": 88.15550637831396,
+      "start_s": 44.47,
+      "peak_s": 45.71,
+      "end_s": 46.38,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 78.4,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 45.71,
+          "worst_time_s": 44.47
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 95.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 46.04,
+          "worst_time_s": 46.38
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 25,
+      "elbow_angle_range": [
+        104.23459129746055,
+        116.6058903631137
+      ],
+      "tempo_ratio": 0.6451612903225806,
+      "elbow_drift_pct": 11.8286818551131,
+      "body_sway_pct": 100.0,
+      "momentum_score": 94.00953012483153,
+      "rom_score": 61.85649532826574,
+      "shoulder_flexion_avg": 122.21706399869564,
+      "form_grade": "C",
+      "form_score": 79.43063019534075,
+      "start_s": 46.38,
+      "peak_s": 47.41,
+      "end_s": 48.08,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 61.9,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 47.41,
+          "worst_time_s": 46.38
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 94.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 47.75,
+          "worst_time_s": 48.08
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.6,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 26,
+      "elbow_angle_range": [
+        103.26166755054513,
+        117.88760292666697
+      ],
+      "tempo_ratio": 0.5428571428571428,
+      "elbow_drift_pct": 15.250918220980159,
+      "body_sway_pct": 100.0,
+      "momentum_score": 95.61362274534054,
+      "rom_score": 73.12967688060922,
+      "shoulder_flexion_avg": 120.48788373758744,
+      "form_grade": "B",
+      "form_score": 85.46824412663975,
+      "start_s": 48.08,
+      "peak_s": 49.26,
+      "end_s": 49.89,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 73.1,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 49.26,
+          "worst_time_s": 48.08
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 95.6,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 49.56,
+          "worst_time_s": 49.89
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 27,
+      "elbow_angle_range": [
+        105.24887122012706,
+        117.88760292666697
+      ],
+      "tempo_ratio": 0.8333333333333334,
+      "elbow_drift_pct": 10.27136062825611,
+      "body_sway_pct": 100.0,
+      "momentum_score": 92.38591885933835,
+      "rom_score": 63.19365853269957,
+      "shoulder_flexion_avg": 128.213625913353,
+      "form_grade": "C",
+      "form_score": 79.69330898118437,
+      "start_s": 49.89,
+      "peak_s": 51.1,
+      "end_s": 52.1,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 63.2,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 51.1,
+          "worst_time_s": 49.89
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 92.4,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 51.6,
+          "worst_time_s": 52.1
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.8,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 28,
+      "elbow_angle_range": [
+        104.15712785278532,
+        117.46587717777652
+      ],
+      "tempo_ratio": 0.9523809523809524,
+      "elbow_drift_pct": 27.413681517697842,
+      "body_sway_pct": 100.0,
+      "momentum_score": 90.75455020527686,
+      "rom_score": 66.54374662495599,
+      "shoulder_flexion_avg": 114.70266223694374,
+      "form_grade": "B",
+      "form_score": 80.96051086379721,
+      "start_s": 52.1,
+      "peak_s": 52.81,
+      "end_s": 53.48,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 66.5,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 52.81,
+          "worst_time_s": 52.1
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 90.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 53.14,
+          "worst_time_s": 53.48
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 29,
+      "elbow_angle_range": [
+        104.45584351094365,
+        118.21365840207632
+      ],
+      "tempo_ratio": 1.0,
+      "elbow_drift_pct": 20.85066219117724,
+      "body_sway_pct": 100.0,
+      "momentum_score": 95.93097331544924,
+      "rom_score": 68.78907445566334,
+      "shoulder_flexion_avg": 124.63202920138204,
+      "form_grade": "B",
+      "form_score": 83.37728055669399,
+      "start_s": 53.48,
+      "peak_s": 54.48,
+      "end_s": 55.48,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 68.8,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 54.48,
+          "worst_time_s": 53.48
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 95.9,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 54.98,
+          "worst_time_s": 55.48
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 30,
+      "elbow_angle_range": [
+        105.02939335301936,
+        118.79590085869881
+      ],
+      "tempo_ratio": 0.8571428571428572,
+      "elbow_drift_pct": 32.97811778097775,
+      "body_sway_pct": 100.0,
+      "momentum_score": 91.11066920223365,
+      "rom_score": 68.83253752839728,
+      "shoulder_flexion_avg": 115.18047350676702,
+      "form_grade": "B",
+      "form_score": 82.19393606475705,
+      "start_s": 55.48,
+      "peak_s": 56.19,
+      "end_s": 56.79,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 68.8,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 56.19,
+          "worst_time_s": 55.48
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 91.1,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 56.49,
+          "worst_time_s": 56.79
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.9,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 31,
+      "elbow_angle_range": [
+        104.92425882213946,
+        118.79590085869881
+      ],
+      "tempo_ratio": 0.4838709677419355,
+      "elbow_drift_pct": 14.503125077202073,
+      "body_sway_pct": 100.0,
+      "momentum_score": 93.7585218572197,
+      "rom_score": 69.35821018279675,
+      "shoulder_flexion_avg": 118.86338477894199,
+      "form_grade": "B",
+      "form_score": 83.1187355557033,
+      "start_s": 56.79,
+      "peak_s": 57.83,
+      "end_s": 58.33,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 69.4,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 57.83,
+          "worst_time_s": 56.79
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 93.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 58.06,
+          "worst_time_s": 58.33
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 32,
+      "elbow_angle_range": [
+        103.70246069209162,
+        119.58057857715937
+      ],
+      "tempo_ratio": 0.4722222222222222,
+      "elbow_drift_pct": 29.948932805945606,
+      "body_sway_pct": 100.0,
+      "momentum_score": 96.79696887796509,
+      "rom_score": 79.39058942533876,
+      "shoulder_flexion_avg": 118.43697867162697,
+      "form_grade": "B",
+      "form_score": 88.89453693216065,
+      "start_s": 58.33,
+      "peak_s": 59.54,
+      "end_s": 60.11,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 79.4,
+          "unit": "%",
+          "target": ">80%",
+          "status": "warn",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 59.54,
+          "worst_time_s": 58.33
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 96.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 59.8,
+          "worst_time_s": 60.11
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 10.5,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 0.5,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 33,
+      "elbow_angle_range": [
+        103.18310067730081,
+        163.78040698355784
+      ],
+      "tempo_ratio": 1.129032258064516,
+      "elbow_drift_pct": 15.39493199118871,
+      "body_sway_pct": 0.0,
+      "momentum_score": 99.82889745268241,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 120.22034798429331,
+      "form_grade": "C",
+      "form_score": 74.95722436317061,
+      "start_s": 60.11,
+      "peak_s": 61.14,
+      "end_s": 62.32,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 61.14,
+          "worst_time_s": 60.11
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 99.8,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 61.71,
+          "worst_time_s": 62.32
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 1.1,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    },
+    {
+      "rep_number": 34,
+      "elbow_angle_range": [
+        67.358372933761,
+        175.55737670672997
+      ],
+      "tempo_ratio": 10.0,
+      "elbow_drift_pct": 3.4135696214818267,
+      "body_sway_pct": 0.0,
+      "momentum_score": 74.10228414278801,
+      "rom_score": 100.0,
+      "shoulder_flexion_avg": 93.4888818403335,
+      "form_grade": "D",
+      "form_score": 68.525571035697,
+      "start_s": 62.32,
+      "peak_s": 62.52,
+      "end_s": 64.53,
+      "metrics": [
+        {
+          "key": "rom",
+          "label": "Range of Motion",
+          "value": 100.0,
+          "unit": "%",
+          "target": ">80%",
+          "status": "pass",
+          "description": "How much of the full curl range you used. Measures the angle between full extension (~160\u00b0) and peak contraction (~60\u00b0).",
+          "best_time_s": 62.52,
+          "worst_time_s": 62.32
+        },
+        {
+          "key": "control",
+          "label": "Control",
+          "value": 74.1,
+          "unit": "%",
+          "target": ">70%",
+          "status": "pass",
+          "description": "How smoothly you lowered the weight. Measures wrist deceleration in the last 20% of the lowering phase.",
+          "best_time_s": 63.52,
+          "worst_time_s": 64.53
+        },
+        {
+          "key": "hips_planted",
+          "label": "Hips Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your hips stayed on the floor through the rep."
+        },
+        {
+          "key": "feet_planted",
+          "label": "Feet Planted",
+          "value": 0.0,
+          "unit": "%",
+          "target": ">70%",
+          "status": "fail",
+          "description": "How still your feet stayed on the floor through the rep."
+        },
+        {
+          "key": "tempo",
+          "label": "Tempo",
+          "value": 10.0,
+          "unit": ":1",
+          "target": "1.5-2.5:1",
+          "status": "fail",
+          "description": "Ratio of lowering time to lifting time. A 2:1 ratio means you lower twice as slowly as you lift \u2014 good for muscle growth."
+        }
+      ]
+    }
+  ],
+  "insights": [
+    "Try slowing the lowering phase (aim for 2:1 ratio)",
+    "Elbow drift increasing \u2014 possible fatigue",
+    "Range of motion decreasing \u2014 consider lighter weight",
+    "Focus on form for reps 34"
+  ]
+}

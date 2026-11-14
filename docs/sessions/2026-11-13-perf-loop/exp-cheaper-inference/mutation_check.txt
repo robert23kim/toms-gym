@@ -1,0 +1,11 @@
+clean: (0, [], '26 passed in 0.87s')
+KILLED | M1 default num_poses 5->1 | ['TestResolvePoseOptions::test_unset_env_is_the_old_behaviour', 'TestResolvePoseOptions::test_per_lift_flag_alone_leaves_other_lifts_on_default', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_NUM_POSES-abc]', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_NUM_POSES-0]', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_FRAME_STRIDE-0]', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_MAX_SIDE--5]', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_NUM_POSES-]', 'TestEstimatorOptions::test_default_num_poses_is_five', 'TestPipelineWiring::test_default_env_builds_the_old_estimator', 'TestPipelineWiring::test_lift_flag_reaches_the_estimator']
+KILLED | M2 pipeline drops options | ['TestPipelineWiring::test_default_env_builds_the_old_estimator', 'TestPipelineWiring::test_lift_flag_reaches_the_estimator']
+KILLED | M3 per-lift env ignored | ['TestResolvePoseOptions::test_per_lift_flag_wins_and_does_not_leak', 'TestResolvePoseOptions::test_per_lift_flag_alone_leaves_other_lifts_on_default', 'TestPipelineWiring::test_lift_flag_reaches_the_estimator']
+KILLED | M4 num_poses not passed to landmarker | ['TestEstimatorOptions::test_num_poses_reaches_the_landmarker']
+KILLED | M5 stride ignored | ['TestFrameStride::test_estimate_video_infers_only_stride_frames[2-3]', 'TestFrameStride::test_estimate_video_infers_only_stride_frames[3-2]', 'TestFrameStride::test_candidates_leave_skipped_frames_empty']
+KILLED | M6 resize skipped | ['TestEstimatorOptions::test_max_side_downscales_input_but_keeps_source_pixels']
+KILLED | M7 interpolation weight zero | ['TestInterpolateSkipped::test_midpoint_between_neighbours', 'TestInterpolateSkipped::test_stride_three_weights']
+KILLED | M8 invalid value accepted | ['TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_NUM_POSES-0]', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_FRAME_STRIDE-0]', 'TestResolvePoseOptions::test_invalid_value_falls_back_to_default[POSE_MAX_SIDE--5]']
+KILLED | M9 landmarks scaled by the resized frame | ['TestEstimatorOptions::test_max_side_downscales_input_but_keeps_source_pixels']
+clean after: (0, [], '26 passed in 0.92s')
