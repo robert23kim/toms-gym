@@ -1,0 +1,29 @@
+A-sitting pushup_3c66c85e raw_exit=0 cmp_exit=0  | leaves A=1105 B=1033 differing=0 onlyA=72 onlyB=0 only-not-clip_url=0
+A-sitting pushup_3c66c85e raw_exit=0 cmp_exit=0  | leaves A=1105 B=1033 differing=0 onlyA=72 onlyB=0 only-not-clip_url=0
+A-sitting pushup_97b4aaf2 raw_exit=0 cmp_exit=0  | leaves A=1594 B=1490 differing=0 onlyA=104 onlyB=0 only-not-clip_url=0
+A-sitting pushup_97b4aaf2 raw_exit=0 cmp_exit=0  | leaves A=1594 B=1490 differing=0 onlyA=104 onlyB=0 only-not-clip_url=0
+A-sitting pushup_e18a31d1 raw_exit=0 cmp_exit=0  | leaves A=1472 B=1376 differing=0 onlyA=96 onlyB=0 only-not-clip_url=0
+A-sitting pushup_e18a31d1 raw_exit=0 cmp_exit=0  | leaves A=1472 B=1376 differing=0 onlyA=96 onlyB=0 only-not-clip_url=0
+A-sitting situp_667a8480 raw_exit=0 cmp_exit=0  | leaves A=1658 B=1598 differing=0 onlyA=60 onlyB=0 only-not-clip_url=0
+A-sitting situp_667a8480 raw_exit=0 cmp_exit=0  | leaves A=1658 B=1598 differing=0 onlyA=60 onlyB=0 only-not-clip_url=0
+A-sitting situp_c9dec98b raw_exit=0 cmp_exit=0  | leaves A=778 B=750 differing=0 onlyA=28 onlyB=0 only-not-clip_url=0
+A-sitting situp_c9dec98b raw_exit=0 cmp_exit=0  | leaves A=778 B=750 differing=0 onlyA=28 onlyB=0 only-not-clip_url=0
+A-sqA+B squat_f47a8848 raw_exit=1 cmp_exit=0  | leaves A=741 B=741 differing=117 onlyA=0 onlyB=0 only-not-clip_url=0
+A-sqA+B squat_f47a8848 raw_exit=1 cmp_exit=0  | leaves A=741 B=741 differing=117 onlyA=0 onlyB=0 only-not-clip_url=0
+A-ref situp_16b6ca35 raw_exit=0 cmp_exit=0  | leaves A=1767 B=1703 differing=0 onlyA=64 onlyB=0 only-not-clip_url=0
+A-ref situp_16b6ca35 raw_exit=0 cmp_exit=0  | leaves A=1767 B=1703 differing=0 onlyA=64 onlyB=0 only-not-clip_url=0
+A-ref plank_9600f455 raw_exit=0 cmp_exit=0  | leaves A=445 B=445 differing=0 onlyA=0 onlyB=0 only-not-clip_url=0
+A-ref plank_9600f455 raw_exit=0 cmp_exit=0  | leaves A=445 B=445 differing=0 onlyA=0 onlyB=0 only-not-clip_url=0
+B-sitting squat_f47a8848 raw_exit=1 cmp_exit=0  | leaves A=741 B=741 differing=48 onlyA=0 onlyB=0 only-not-clip_url=0
+B-sitting pushup_3c66c85e raw_exit=0 cmp_exit=0  | leaves A=1105 B=1033 differing=0 onlyA=72 onlyB=0 only-not-clip_url=0
+B-sitting pushup_97b4aaf2 raw_exit=0 cmp_exit=0  | leaves A=1532 B=1432 differing=0 onlyA=100 onlyB=0 only-not-clip_url=0
+B-sitting pushup_e18a31d1 raw_exit=0 cmp_exit=0  | leaves A=1472 B=1376 differing=0 onlyA=96 onlyB=0 only-not-clip_url=0
+B-sitting situp_16b6ca35 raw_exit=0 cmp_exit=0  | leaves A=1767 B=1703 differing=0 onlyA=64 onlyB=0 only-not-clip_url=0
+B-sitting plank_9600f455 raw_exit=0 cmp_exit=0  | leaves A=445 B=445 differing=0 onlyA=0 onlyB=0 only-not-clip_url=0
+B-ref situp_667a8480 raw_exit=0 cmp_exit=0  | leaves A=1714 B=1652 differing=0 onlyA=62 onlyB=0 only-not-clip_url=0
+B-ref situp_c9dec98b raw_exit=0 cmp_exit=0  | leaves A=723 B=697 differing=0 onlyA=26 onlyB=0 only-not-clip_url=0
+BASEvsBASE pushup_3c66c85e raw_exit=1 cmp_exit=1 failing gates: metric_status,score_drift | leaves A=1105 B=1105 differing=160 onlyA=0 onlyB=0 only-not-clip_url=0
+BASEvsBASE pushup_97b4aaf2 raw_exit=1 cmp_exit=1 failing gates: grade,metric_status,rep_timing,reps,score_drift | leaves A=1594 B=1532 differing=592 onlyA=62 onlyB=0 only-not-clip_url=58
+BASEvsBASE pushup_e18a31d1 raw_exit=1 cmp_exit=1 failing gates: clean_split,grade,metric_status,score_drift | leaves A=1472 B=1472 differing=204 onlyA=0 onlyB=0 only-not-clip_url=0
+BASEvsBASE situp_16b6ca35 raw_exit=1 cmp_exit=1 failing gates: reps | leaves A=1767 B=1767 differing=641 onlyA=0 onlyB=0 only-not-clip_url=0
+BASEvsBASE plank_9600f455 raw_exit=1 cmp_exit=1 failing gates: plank_hold,plank_score | leaves A=445 B=445 differing=217 onlyA=0 onlyB=0 only-not-clip_url=0

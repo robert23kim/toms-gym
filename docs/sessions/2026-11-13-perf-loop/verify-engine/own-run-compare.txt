@@ -1,0 +1,16 @@
+== squat_f47a8848  cand-class=A+B base-class=A+B
+  cand vs base (same sitting): cmp_exit=0 raw: leaves A=741 B=741 differing=117 onlyA=0 onlyB=0 only-not-clip_url=0
+  cand vs prod: MATCH
+  base vs prod: MATCH
+== pushup_e18a31d1  cand-class=A base-class=A
+  cand vs base (same sitting): cmp_exit=0 raw: leaves A=1472 B=1376 differing=0 onlyA=96 onlyB=0 only-not-clip_url=0
+  cand vs prod: MATCH
+  base vs prod: MATCH
+== situp_667a8480  cand-class=A base-class=A
+  cand vs base (same sitting): cmp_exit=0 raw: leaves A=1658 B=1598 differing=0 onlyA=60 onlyB=0 only-not-clip_url=0
+  cand vs prod: MATCH
+  base vs prod: MATCH
+== plank_9600f455  cand-class=A base-class=B
+  cand vs base (same sitting): cmp_exit=1 raw: leaves A=445 B=445 differing=217 onlyA=0 onlyB=0 only-not-clip_url=0
+  cand vs prod: MATCH
+  base vs prod: DIFF  failing gates: plank_hold,plank_score
