@@ -7,7 +7,6 @@
 
 export type TransferPath = "single-put" | "resumable" | "parallel" | "resumable-fallback";
 export type TransferPhase = "sign" | "put" | "complete" | "finalize";
-export type CompressPipeline = "webcodecs" | "mediarecorder";
 
 /** Wraps one network phase of a transfer so its duration is recorded. */
 export type PhaseTimer = <T>(phase: TransferPhase, run: () => Promise<T>) => Promise<T>;
@@ -78,9 +77,9 @@ export interface UploadTimingInput {
   mode: string;
   /**
    * What compression did: `skipped:<reason>` (never attempted), `kept-original`
-   * (attempted, no usable gain), or the pipeline that produced the sent file.
+   * (attempted, no usable gain), or `webcodecs` (the sent file is the re-encode).
    */
-  compress: `skipped:${string}` | "kept-original" | CompressPipeline;
+  compress: `skipped:${string}` | "kept-original" | "webcodecs";
   compressMs: number;
   path: TransferPath;
   srcBytes: number;

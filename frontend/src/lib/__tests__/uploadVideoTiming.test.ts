@@ -183,6 +183,23 @@ describe("uploadVideo timing telemetry", () => {
     expect(events[0].details.hiddenCount).toBe(1);
   });
 
+  test("network hints from the browser ride along on the event", async () => {
+    Object.defineProperty(navigator, "connection", {
+      value: { type: "cellular", effectiveType: "3g", downlink: 1.4 },
+      configurable: true,
+    });
+    try {
+      await uploadVideo(makeFile(), fields);
+    } finally {
+      delete (navigator as Navigator & { connection?: unknown }).connection;
+    }
+    expect(events[0].details).toMatchObject({
+      netType: "cellular",
+      netEffective: "3g",
+      netDownMbps: 1.4,
+    });
+  });
+
   test("a failed PUT rejects with its stage tag and reports no timing event", async () => {
     routeAxios({ put: () => Promise.reject(new Error("connection reset")) });
     await expect(uploadVideo(makeFile(), fields)).rejects.toMatchObject({

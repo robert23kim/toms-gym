@@ -10,7 +10,6 @@ import { uploadVideoParallel } from "./parallelUpload";
 import { shouldCompress } from "./compressionPolicy";
 import { beginJourney, markStage, endJourney } from "./uploadJourney";
 import {
-  CompressPipeline,
   PhaseTimer,
   TransferPath,
   UploadTimingInput,
@@ -254,23 +253,16 @@ async function runUpload(
   let compress: UploadTimingInput["compress"] = `skipped:${skipReason(mode, decision, file.size)}`;
   if (attemptCompress) {
     markStage("compress-start", { compressDecision: decision.reason });
-    const used: { pipeline: CompressPipeline | null } = { pipeline: null };
     try {
       toUpload = await compressVideo(
         file,
-        {
-          maxHeight: 720,
-          fastPathOnly: true,
-          onPipeline: (pipeline) => {
-            used.pipeline = pipeline;
-          },
-        },
+        { maxHeight: 720, fastPathOnly: true },
         (pct) => onProgress?.(Math.round(pct * COMPRESS_PROGRESS_SHARE))
       );
     } catch {
       toUpload = file;
     }
-    compress = toUpload === file ? "kept-original" : used.pipeline ?? "webcodecs";
+    compress = toUpload === file ? "kept-original" : "webcodecs";
     markStage("compress-done", {
       compressedMB: Number((toUpload.size / (1024 * 1024)).toFixed(2)),
     });
