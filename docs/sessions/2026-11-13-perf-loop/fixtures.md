@@ -3,13 +3,15 @@
 ## Headline
 
 - 8 real attempts (3 Situp, 3 Pushup, 1 Squat, 1 Plank) are fixtures, all analysed by prod engine rev `bowling-service-00053-fxm` (the only revision serving since 2026-09-13).
-- **I ran the prod image (digest `sha256:e3acfcbd…`) on the laptop as linux/amd64. On 6 of 8 fixtures it reproduces the prod result exactly, under the strict gates.** It is byte-deterministic run to run, and the result is the same with 4 or 8 CPUs.
-- The other 2 (`pushup_97b4aaf2`, `situp_c9dec98b`) differ from prod by **one rep at a borderline**. The image gives 26 vs 25 and 14 vs 13 with a different rep set. Their GCS objects were not rewritten after upload (GCS generation time = upload time). These two **flip on tiny numeric perturbation** (Rosetta x86 vs Cloud Run's real CPU), so treat them as tripwires, not as proof.
-- **Do not use laptop-native runs (analysis-engine venv) to check prod parity.** They are deterministic (byte-identical run1 vs run2 on all 8), but they match prod on **0 of 8**: rep counts are off by 1 to 20 (`situp_c9dec98b` gives 33 vs 13), and the plank `longest_run_s` is 0.87 s off. The cause is the deps: the venv is Python 3.13 / cv2 4.13 / arm64, and the image is Python 3.10.21 / cv2 **5.0.0** / mediapipe 0.10.30 / numpy 2.2.6. Native runs are fine for native-vs-native A/B speed and diffs only.
-- The image's `/app/src` and `/app/service` are **identical** to the perf-engine worktree at `93378b0` (`diff -rq` is empty). Its model `.task` sha256 values match the copies seeded into the worktree. Mounting the worktree over `/app` (`WORKTREE=`) gives a byte-identical squat result.
+- **I ran the prod image (digest `sha256:e3acfcbd…`) on the laptop as emulated linux/amd64. On 6 of 8 fixtures it reproduces the prod result exactly, under the strict gates.** It is byte-deterministic run to run, and the result is the same with 4 or 8 CPUs.
+- The other 2 (`pushup_97b4aaf2`, `situp_c9dec98b`) differ from prod in rep count by one: the image gives 26 vs 25 and 14 vs 13. For `situp_c9dec98b` the rep *sets* differ by about five reps (prod has 1.0-2.67 s, the image has 17.58-19.59 s, 24.67-26.11 s and others). Ruled out: run-to-run variation (repeat is identical), CPU count (4 vs 8 identical), and object rewrite (GCS generation time = upload time). **Hypothesis, untested:** emulated-amd64 float kernels differ from Cloud Run's real CPU, and these videos sit on a rep-gate borderline. Treat them as tripwires, not as proof.
+- **Do not use laptop-native runs (analysis-engine venv) to check prod parity.** They are deterministic (byte-identical run1 vs run2 on all 8), but they match prod on **0 of 8**. The native baselines ran **without** prod's env flags, so PLANK_POSE_WORKERS took its default of 1 where prod uses 8. That means the plank's native DIFF and its 1.4x time are confounded, and whether the worker count changes the hold is untested. On rep lifts: rep counts are off by 1 to 20 (`situp_c9dec98b` gives 33 vs 13), and the plank `longest_run_s` is 0.87 s off. The cause is the deps: the venv is Python 3.13 / cv2 4.13 / arm64, and the image is Python 3.10.21 / cv2 **5.0.0** / mediapipe 0.10.30 / numpy 2.2.6. Native runs are fine for native-vs-native A/B speed and diffs only.
+- The image's `/app/src` and `/app/service` are **identical** to the perf-engine worktree at `93378b0` (`diff -rq` is empty). Its model `.task` sha256 values match the copies seeded into the worktree. Mounting the worktree over `/app` (`WORKTREE=`) gives a byte-identical squat result, but that alone does not prove the mount works, because the code is identical. The proof is the guard. `run_local.py` writes `code_hash` (sha256 of the `.py` files under src/ and service/) into `timing.json`, and `run_prod_image.sh` passes `--expect-code-hash` with the host worktree's hash. I proved it on a scratch copy with one extra line. Host and container both reported `4b99fd94…` against the base `be4ce339…`. A wrong expected hash exits with `CODE HASH FAIL`, and a wrong `--worktree` exits with `CANARY FAIL`. The mount covers **only src/ and service/**. A variant that changes requirements, the Dockerfile, apt packages or the models needs a rebuilt image (`docker build --platform linux/amd64`), not the mount.
 - Laptop seconds, for reference only (the claim must be Cloud Run seconds): native analyze takes about 0.3-0.5x prod's analyze time on rep lifts (1.4x on the plank, heavy model). The emulated image takes about 0.6-1.1x.
 
 ## What is NOT covered
+
+- Side effect on the laptop: `gcloud auth configure-docker gcr.io` ran (to pull the image) and may have edited `~/.docker/config.json`. No GCP resource was created or changed, and nothing was POSTed to prod.
 
 - None of this ran on Cloud Run. `bowling-service-perf` did not exist at 2026-11-13 ~21:30 (`gcloud run services list`). Until a variant runs there on the 8 fixtures and passes `compare.py` against `*.prod.json`, no claim about prod parity or prod speed is proven. The 2 tripwire fixtures need that run most.
 - The pairing of attempt to video is by **log adjacency**: each `Finalize upload: object=…` line is paired with the next `Finalize succeeded: attempt=…` line (the trace field was empty). `GET /attempts/<id>` returned an error for all 8, so it could not confirm the pairing. The pairing is confirmed by the lift type in the Finalize line, and by the prod-image exact match on 6 of 8. The 2 tripwires share most rep boundaries with prod (same video).
@@ -17,7 +19,7 @@
 
 ## Manifest
 
-Prod timings come from the backend `ANALYSIS_TIMING` line (`engine_s` = backend-measured engine call, `total_s` = whole job). "prod result" is what the board reads: `total_reps`, reps with `form_score >= 70`, and plank `total_in_plank_s`. Native runs use the analysis-engine venv on the perf-engine worktree. Prod-image runs use the rev-00053 image as linux/amd64 under Rosetta, `--cpus 4`, `PLANK_POSE_WORKERS=8 NORMALIZE_BEFORE_ANALYZE=true` (prod env).
+Prod timings come from the backend `ANALYSIS_TIMING` line (`engine_s` = backend-measured engine call, `total_s` = whole job). "prod result" is what the board reads: `total_reps`, reps with `form_score >= 70`, and plank `total_in_plank_s`. Native runs use the analysis-engine venv on the perf-engine worktree. Prod-image runs use the rev-00053 image as emulated linux/amd64 (Docker Desktop; I did not check which emulator), `--cpus 4`, `PLANK_POSE_WORKERS=8 NORMALIZE_BEFORE_ANALYZE=true` (prod env).
 
 | fixture | lift | frames | fps | res | rot | dur s | prod result | prod analyze / clips / reencode / engine / total s | laptop-native wall (analyze) s, run1/run2 | prod-image wall s | native vs prod | prod-image vs prod |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -90,7 +92,7 @@ Every gate is strict by default. Reps are paired by time overlap, so one extra o
 
 I did not loosen any tolerance. The prod-image instrument needs none on 6 of 8, and the 2 tripwires differ in rep count, which no tolerance may hide.
 
-**Mutation check** (edited copies of prod JSONs):
+**Mutation check** (edited copies of prod JSONs, re-run on the final compare.py with time-overlap pairing):
 
 | mutation | expected | result |
 |---|---|---|
@@ -104,6 +106,6 @@ I did not loosen any tolerance. The prod-image instrument needs none on 6 of 8, 
 
 ## Side observations for the perf agents
 
-- On Cloud Run, `analyze` is 85-93% of engine time. On the slow fixtures the prod analyze time is about 2-3x the native laptop time and about 1.3-1.6x the emulated-image laptop time at 4 CPUs, so the 8-vCPU Cloud Run instance is slower per job than a laptop under Rosetta. CPU allocation and throttling, and the pose stage, are the places to look.
+- On Cloud Run, `analyze` is 85-93% of engine time. On the slow fixtures the prod analyze time is about 2-3x the native laptop time and about 1.3-1.6x the emulated-image laptop time at 4 CPUs, so the 8-vCPU Cloud Run instance is slower per job than a laptop under amd64 emulation. CPU allocation and throttling, and the pose stage, are the places to look.
 - `clips` is 4-26 s in prod for pushups and situps. It is `_reencode_h264` x (reps x metrics) plus the uploads.
 - Laptop-native breakdown (situp_667a8480): analyze is 74.9 s, split into pose 51.3 s, render_video 7.7 s and render_clips 15.4 s. Pose is about 70% of it (see `analyze_breakdown` in `base-local/run1/*.timing.json`).
