@@ -1,0 +1,1 @@
+Docs agent: edited docs/reference/100-club.md (revisions, rules clause aligned to live copy per P2-1, fixes section, follow-ups), situp-challenge.md (one line), wrote docs/sessions/2026-11-13-caleb-feedback.md. Committed text files under 200 KB; excluded jest-*.json, deploy logs, apk logs, bundles, images, dirs (bundle-*, c3, prove*, refute*, reporter-clip).

@@ -1,0 +1,14 @@
+import { createRequire } from 'module';
+const require = createRequire('/Users/toka/code/toms_gym/frontend/package.json');
+const { chromium } = require('playwright');
+const b = await chromium.launch();
+const ctx = await b.newContext({ viewport: { width: 390, height: 844 } });
+const page = await ctx.newPage();
+await page.unrouteAll();
+await page.route((u) => true, (r) => r.request().method() === 'GET' ? r.continue() : r.fulfill({ status: 200, body: '{}' }));
+await page.goto('https://my-frontend-quyiiugyoq-ue.a.run.app/challenges/32ca7bad-a970-4a09-acec-02b768793063');
+await page.waitForTimeout(1500);
+console.log('innerWidth', await page.evaluate(() => window.innerWidth));
+const el = page.locator('[data-testid="you-row"]').first();
+console.log('YOU-ROW:', (await el.count()) ? await el.innerText() : '(absent)');
+await b.close();

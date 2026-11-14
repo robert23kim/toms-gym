@@ -1,0 +1,15 @@
+# Gate notes 2026-11-13 (all 8 targets writable)
+
+1 gcloud: project toms-gym; print-access-token rc=0. writable.
+2 cloudrun (us-east1): my-python-backend-00196-mtt, my-frontend-00203-7gg, bowling-service-00053-fxm; bowling image gcr.io/toms-gym/bowling-service:situp-13b49b5.
+3 gcs: gsutil cp then rm of gs://jtr-lift-u-4ever-cool-bucket/gate/2026-11-13-x both succeeded. writable.
+4 playwright 1.58.2; gate-pw.mjs at 390x844 empty storage: innerWidth 390, you-row text "—\nYOU\nNot logged yet" (bug reproduced; before-you-row-anon.txt). writable.
+5 android: openjdk@21 java executable, commandlinetools dir present, package.json lines 68/70 android:build (scripts/build-android.sh) and android:publish (scripts/publish-apk.sh). Not built.
+6 git: HEAD 5ef44cba5517aff85781923947c9eea9e64dfe4c on feat/100-club. Modified tracked: only .claude/settings.json and frontend/.env.production. Untracked set (not mine, never stage): .claude/workflows/{100-club-fix-deploy-prove,feature-build-deploy-prove,persona-walk}.js, .superpowers/, backend/=3.5.0, backend/tests/fixtures/test_video_plank_10s.mp4, backend/tools/grid_debug_out/, docs/delight/2026-09-19-iteration-07/, docs/delight/persona-walk.config.json, docs/plans/{2026-03-04-bowling-pages-implementation,2026-03-04-bowling-pages-redesign,2026-03-04-challenge-video-redesign,2026-03-05-robust-elbow-swing-filter,labeler-port-progress}.md, docs/research/2026-09-14-alley-face/results/e6_eval_*.json (4), docs/research/2026-09-19-new-alley-videos/, docs/sessions/2026-08-28-* 2026-08-29-* 2026-08-31-* 2026-09-08-* 2026-10-05-* top-level .md files, docs/sessions/2026-10-31-100-club/{jest-*,legacy-*,prove*}, docs/sessions/2026-11-07-100-club-week1/{apk-prove-2/,apk-prove/tomsgym-prove.apk,jest-*.json}, docs/sessions/2026-11-13-caleb-feedback/ (this run), fairway_spec_bundle/, frontend/scripts/persona-walk.mjs. useIsOwner (Navbar, BottomTabBar) and components/challenge/ConsistencyHero.tsx present. writable.
+7 engine: feat/situp-config = 93378b009593fa0aef83be361027dae4b0947c09; remote origin git@github-personal:toka13902/bowling_app.git; push --dry-run: "Everything up-to-date". writable.
+8 reporter clip: attempt f47a8848... in /users/<id>/lifts: squat, total_reps 12, grade D. GET /competitions/<cid>/participants/<uid>/attempts/<aid> (public) returns video_url = https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/videos/20261112_165537_81619529051__946C5722-1686-4634-B6F3-83A4A5590CA7.MOV (3054415 bytes). Recipe: gsutil cp that gs:// path to a local dir (already fetched read-only: reporter-clip/squat12.MOV). Note GET /attempts/<id> alone returns an error 500-ish JSON. Annotated output lives at gs://.../lifting/<attempt_id>/annotated.mp4. writable.
+
+Canary: bundle-before/ holds index.html + 82 js (entry index-B1xisKAd.js + recursively followed chunks). you-row-unknown=0, "Not logged yet"=1 (canary ok, fetch valid), "you-row"=3.
+Baselines: backend gate 402 passed, 0 failed; tsc rc=0; jest 786 tests, 0 failed (jest-baseline.json).
+Live (live-before.json, live-scores.txt): caleb.li.larson:375:1:147:14,Toka:350:2:162.5:14
+Reporter (read-only): never touch. Challenge rows never edited.

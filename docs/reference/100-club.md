@@ -1,6 +1,6 @@
 # The 100 Club (consistency challenge, shipped 2026-10-31)
 
-Live challenge: `32ca7bad-a970-4a09-acec-02b768793063` (start 2026-10-31, end 2026-12-27T23:59:59-05:00, week 1 starts Mon 2026-11-02). Branch `feat/100-club`, backend `my-python-backend-00196-mtt`, frontend `my-frontend-00199-qfz` (week-1 fixes, 2026-11-07; shipped at 2026-10-31 as 00194-8wr / 00197-h8f).
+Live challenge: `32ca7bad-a970-4a09-acec-02b768793063` (start 2026-10-31, end 2026-12-27T23:59:59-05:00, week 1 starts Mon 2026-11-02). Branch `feat/100-club`, backend `my-python-backend-00196-mtt`, frontend `my-frontend-00205-95c` (friend-feedback fixes, 2026-11-13; 00199-qfz was week-1 fixes 2026-11-07; shipped at 2026-10-31 as 00194-8wr / 00197-h8f).
 
 Design contract: `docs/superpowers/specs/2026-10-31-100-club-design.md`. This file holds the operational notes.
 
@@ -13,7 +13,7 @@ Design contract: `docs/superpowers/specs/2026-10-31-100-club-design.md`. This fi
   they show as `warmup_lifts` and score nothing.
 - Quota: 100 in week 1. After a met week the next quota is +25; after a miss it resets to 100. Nobody is
   eliminated.
-- Weekly points: `min(lifts, quota)` + 50 when met + 25 extra for each lift type where nobody logs more than you that week
+- Weekly points: `min(lifts, quota)` + 50 when met + 25 extra for each lift type you log that week where nobody logs more, up to +100
   (plank judged on seconds); any mix of types fills the quota. Everyone tied at the top gets the full 25, and zero never wins. The week in progress scores lifts and the quota bonus live; its
   type leaders are provisional and lock when the week ends.
 - Ranking: points, then current streak, then weeks met, then this week's lifts, then name. Zero-point rows go last.
@@ -148,6 +148,16 @@ frontend `my-frontend-00203-7gg`, APK `/s/7uv33h`).
   whose inline upload form lists exactly the four lifts. A typed URL still reaches the old page.
 - No reminder emails, no admin UI for `mode`/`rules`.
 
+## Friend feedback fixes (2026-11-13)
+
+Log `docs/sessions/2026-11-13-caleb-feedback/bugs.md`; session doc `docs/sessions/2026-11-13-caleb-feedback.md`.
+
+- C1 fixed (frontend): the board's inline upload form now stores `user_id` from the response when no id is saved (a different saved id is kept, toast says so, "Not me" undoes an adoption). No viewerId shows `you-row-unknown` linking to `/find-profile?next=/challenges/<id>` (`next` must be a challenge board); a known viewer with no row still sees "Not logged yet".
+- C2 fixed (frontend): rules line and hero note share one clause in `metric.ts` (`typeBonusClause`). Live copy: "+25 extra for each lift type you log that week where nobody logs more, up to +100; any mix counts toward the quota." Prod Competition description has no bonus wording; nothing edited.
+- C3 not shipped (engine): fix on `fix/squat-rep-count` (73852de, worktree `~/code/bowling-app/squat-engine`, not pushed, not deployed). His 12 reads 10 offline; the cause was two walk-in/walk-out strides counted as reps. Only one labelled squat clip exists, so the regression gate cannot fail. Live attempt still reads 12; points unchanged.
+- D1 deferred: auto-detect the lift type (feature, needs Tom's design call).
+- APK (not installed on any device yet): `gs://jtr-lift-u-4ever-cool-bucket/apk/tomsgym-debug-20261113-221223.apk`, short link `/s/oVzVrt` (302 verified). It has the same fixes.
+
 ## Open follow-ups
 
 - B1b unproven in prod: after the next real bodyweight upload read the `weight_kg=` log line (gcloud logging command in `docs/sessions/2026-11-07-100-club-week1/notes-fix-2.md`).
@@ -162,3 +172,9 @@ frontend `my-frontend-00203-7gg`, APK `/s/7uv33h`).
 - Pre-existing: `GET /attempts/<id>` returns 500 for an existing attempt.
 - Multi-category legacy challenges still show only their first lift on `/challenges`; the BottomTabBar covers the sticky CTA on phones.
 - Local backend venv is missing `coverage`; `deploy.py` leaves `frontend/.env.production` dirty (build timestamp).
+- Decision needed (Tom): deploy the squat fix on one clip, or collect 3+ labelled squat clips first (E1-E3). The pose fixture is the reporter's keypoints; his id and name sit in unpushed history at 589dfb3.
+- Decision needed (Tom): `you-row-unknown` shows on legacy boards too; limiting it to consistency boards is a one-line change.
+- Open identity gaps (backend handoff): the analysis-ready email link and the upload-by-email confirmation link are the public video URL, so they cannot set identity; needs a one-time magic token. Also open: APK WebView vs phone browser and t30g.com vs run.app (separate localStorage), Forget Me, cleared storage. The prompt to Find Profile mitigates these.
+- P2-2: after an inline board upload the URL keeps `?upload=1`, so a reload reopens the form.
+- Copy risk (refute round 2): the bonus line may still read as "log each type"; Find Profile says "straight to your profile" though it returns to the board.
+- Podium viewers get no YOU marker (product decision).

@@ -1,0 +1,8 @@
+1 plain visit: you-row-unknown=1 href=/find-profile?next=%2Fchallenges%2F32ca7bad-a970-4a09-acec-02b768793063 "Not logged yet"=0 form("Lift Type")=2 email input=0
+  scoring note: Every rep is a lift (sloppy situps count half) and every 10 s of plank is one. Hit the weekly quota for +50 and next week's goes up 25; miss it and it resets to 100. +25 extra for each lift type where nobody logs more than you that week, up to +100; any mix counts toward the quota.
+  bonus note: +25 extra for each lift type where nobody logs more than you that week, locked in when the week ends on Sunday.
+2 after tapping the row: http://localhost:5199/find-profile?next=%2Fchallenges%2F32ca7bad-a970-4a09-acec-02b768793063
+  not-found "Upload something" href: /challenges/32ca7bad-a970-4a09-acec-02b768793063?upload=1
+3 back on the board: http://localhost:5199/challenges/32ca7bad-a970-4a09-acec-02b768793063?upload=1 form("Lift Type")=3 email input=1
+4 next=/<tab>/evil.example: "Upload something" href=/upload
+api GETs proxied to prod: 66; non-GETs stubbed: 1; page errors: 0 

@@ -1,0 +1,4 @@
+toast texts: ["Upload Successful!\nAnalyzing your form automatically. This device now logs as nobody@example.invalid.\nNot me"]
+Not me buttons: 1; userId after upload: 00000000-0000-4000-8000-0000000000b2; you-row-unknown: 0
+after Not me: userId=null; you-row-unknown: 1
+non-GETs stubbed: 5 [POST localhost:5000/log-error, POST localhost:5000/upload/signed-url, PUT fake-gcs.invalid/put, POST localhost:5000/upload/finalize, POST localhost:5000/lifting/analyze/00000000-0000-4000-8000-00000000fa7e]; page errors: 0 
