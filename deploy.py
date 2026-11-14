@@ -690,8 +690,8 @@ class DeploymentManager:
             "ANALYSIS_TASKS_QUEUE=projects/toms-gym/locations/us-east1/queues/analysis-jobs",
             "TASKS_TARGET_BASE_URL=https://my-python-backend-quyiiugyoq-ue.a.run.app",
             "TASKS_SERVICE_ACCOUNT=toms-gym-service@toms-gym.iam.gserviceaccount.com",
-            # Automatic lift type: "1" only once the engine with auto support is deployed.
-            "AUTO_LIFT_TYPE=0",
+            # Automatic lift type. Set back to "0" before rolling the engine back past bowling-service-00057-qag.
+            "AUTO_LIFT_TYPE=1",
         ]
 
         # Secrets from GCP Secret Manager (format: ENV_VAR=secret-name:version)
