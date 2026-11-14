@@ -666,20 +666,52 @@ def test_analyze_route_still_uses_the_same_helper(client, monkeypatch, enqueued)
 # Migration 020
 # --------------------------------------------------------------------------- #
 
-def test_migration_020_is_additive_and_isolated(monkeypatch):
+def _migrate(monkeypatch, columns_present):
     import toms_gym.db as db
     from toms_gym.app import run_startup_migrations
-    session = MagicMock()
+
+    def probe(r):
+        r.scalar.return_value = columns_present
+    session = _dispatch_session([("information_schema.columns", probe)])
     monkeypatch.setattr(db, "get_db_connection", lambda: session)
     run_startup_migrations()
-    calls = [str(c.args[0]) for c in session.execute.call_args_list]
+    return [str(c.args[0]) for c in session.execute.call_args_list]
+
+
+def test_migration_020_is_additive_and_isolated(monkeypatch):
+    calls = _migrate(monkeypatch, 0)
     enum = [s for s in calls if "ADD VALUE IF NOT EXISTS 'Auto'" in s]
-    cols = [s for s in calls if "lift_type_source" in s]
+    cols = [s for s in calls if "ADD COLUMN IF NOT EXISTS lift_type_source" in s]
     assert len(enum) == 1 and "ALTER TYPE lift_type" in enum[0]
     assert len(cols) == 1
     assert "ADD COLUMN IF NOT EXISTS lift_type_source TEXT NOT NULL DEFAULT 'user'" in cols[0]
     assert "ADD COLUMN IF NOT EXISTS lift_type_confidence REAL" in cols[0]
     assert "lift_type_source" not in enum[0]
+    alter_at = calls.index(cols[0])
+    assert "lock_timeout" in calls[alter_at - 1]
+
+
+def test_migration_020_skips_the_alter_once_the_columns_exist(monkeypatch):
+    calls = _migrate(monkeypatch, 2)
+    assert any("information_schema.columns" in s and "'Attempt'" in s for s in calls)
+    assert [s for s in calls if 'ALTER TABLE "Attempt"' in s and "lift_type_source" in s] == []
+
+
+def test_job_commits_before_the_engine_call(monkeypatch):
+    order = []
+    session = _job_session()
+    session.commit.side_effect = lambda: order.append("commit")
+    engine = _Engine(_report(detected_lift_type="pushup", lift_type_confidence=0.9))
+
+    def post(*a, **k):
+        order.append("engine")
+        return engine(*a, **k)
+    monkeypatch.setattr(lifting_processor, "_get_id_token", lambda: "tok")
+    monkeypatch.setattr(lifting_processor.requests, "post", post)
+    import toms_gym.integrations.analysis_notify as notify
+    monkeypatch.setattr(notify, "notify_analysis_complete", lambda *a, **k: None)
+    lifting_processor._process_job(lambda: session, RESULT_ID, ATTEMPT_ID, "https://x/v.mp4", "Auto")
+    assert order[:2] == ["commit", "engine"]
 
 
 # --------------------------------------------------------------------------- #

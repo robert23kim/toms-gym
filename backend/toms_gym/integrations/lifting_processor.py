@@ -204,6 +204,8 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             payload["candidates"] = lift_type_auto.engine_candidates(declared)
         elif lift_type:
             payload["lift_type"] = _normalize_lift_type(lift_type)
+        # Release the read locks before the engine call (up to 890 s) so a startup ALTER never waits on it.
+        session.commit()
 
         timer.stage("engine")
         response = requests.post(

@@ -99,12 +99,21 @@ def run_startup_migrations():
 
         # Who set Attempt.lift_type and how sure the engine was (migration 020)
         try:
-            session.execute(sqlalchemy.text("""
-                ALTER TABLE "Attempt"
-                    ADD COLUMN IF NOT EXISTS lift_type_source TEXT NOT NULL DEFAULT 'user',
-                    ADD COLUMN IF NOT EXISTS lift_type_confidence REAL
-            """))
+            present = session.execute(sqlalchemy.text("""
+                SELECT count(*) FROM information_schema.columns
+                WHERE table_schema = current_schema() AND table_name = 'Attempt'
+                  AND column_name IN ('lift_type_source', 'lift_type_confidence')
+            """)).scalar()
             session.commit()
+            if present != 2:
+                # ALTER takes ACCESS EXCLUSIVE even when the columns exist; never queue every Attempt reader behind it.
+                session.execute(sqlalchemy.text("SET LOCAL lock_timeout = '5s'"))
+                session.execute(sqlalchemy.text("""
+                    ALTER TABLE "Attempt"
+                        ADD COLUMN IF NOT EXISTS lift_type_source TEXT NOT NULL DEFAULT 'user',
+                        ADD COLUMN IF NOT EXISTS lift_type_confidence REAL
+                """))
+                session.commit()
             logging.info("Attempt lift_type_source 020 migration complete")
         except Exception as e:
             session.rollback()

@@ -37,6 +37,7 @@ exec "$PYTHON" -m pytest \
   tests/test_bowling_score.py \
   tests/test_bowling_insights.py \
   tests/test_lift_type_auto.py \
+  tests/test_lift_type_auto_pg.py \
   tests/test_bowling_sheet_parser.py \
   --noconftest -q \
   --deselect tests/test_golf_parser.py::test_rate_limit_bypass_is_wired \
