@@ -5,6 +5,9 @@ import argparse, json, os, statistics as st, sys, time
 
 ARMS = {"off": {}, "off2": {}, "np1": {"num_poses": 1}, "stride2": {"frame_stride": 2},
         "side640": {"max_side": 640}, "np1+stride2": {"num_poses": 1, "frame_stride": 2}}
+ARMS.update({"np3": {"num_poses": 3}, "np2": {"num_poses": 2}})
+if os.environ.get("IBENCH_ARMS"):
+    ARMS = {k: ARMS[k] for k in os.environ["IBENCH_ARMS"].split(",")}
 
 ap = argparse.ArgumentParser()
 ap.add_argument("--worktree", required=True); ap.add_argument("--fixture", required=True)

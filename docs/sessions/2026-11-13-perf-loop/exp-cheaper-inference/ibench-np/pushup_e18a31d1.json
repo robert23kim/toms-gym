@@ -1,0 +1,98 @@
+{
+ "fixture": "pushup_e18a31d1.mp4",
+ "frames": 1022,
+ "chunks": 22,
+ "chunk": 48,
+ "arms": {
+  "off": {
+   "wall_ms_per_frame": 21.9,
+   "cpu_ms_per_frame": 23.17,
+   "ratio_vs_off_total": 1.0,
+   "ratio_vs_off_chunk_median": 1.0,
+   "ratio_vs_off_chunk_p10_p90": [
+    1.0,
+    1.0
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1011
+   }
+  },
+  "off2": {
+   "wall_ms_per_frame": 21.71,
+   "cpu_ms_per_frame": 23.08,
+   "ratio_vs_off_total": 0.991,
+   "ratio_vs_off_chunk_median": 0.999,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.987,
+    1.006
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1011
+   }
+  },
+  "np3": {
+   "wall_ms_per_frame": 21.66,
+   "cpu_ms_per_frame": 23.05,
+   "ratio_vs_off_total": 0.989,
+   "ratio_vs_off_chunk_median": 0.995,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.979,
+    1.013
+   ],
+   "stats": {
+    "num_poses": 3,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1011
+   }
+  },
+  "np2": {
+   "wall_ms_per_frame": 21.77,
+   "cpu_ms_per_frame": 23.11,
+   "ratio_vs_off_total": 0.994,
+   "ratio_vs_off_chunk_median": 0.999,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.981,
+    1.026
+   ],
+   "stats": {
+    "num_poses": 2,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1015
+   }
+  },
+  "np1": {
+   "wall_ms_per_frame": 13.51,
+   "cpu_ms_per_frame": 14.99,
+   "ratio_vs_off_total": 0.617,
+   "ratio_vs_off_chunk_median": 0.626,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.608,
+    0.639
+   ],
+   "stats": {
+    "num_poses": 1,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 1022,
+    "resized": 0,
+    "poses": 1022
+   }
+  }
+ }
+}

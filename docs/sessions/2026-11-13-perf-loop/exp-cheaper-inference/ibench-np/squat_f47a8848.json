@@ -1,0 +1,98 @@
+{
+ "fixture": "squat_f47a8848.mov",
+ "frames": 767,
+ "chunks": 16,
+ "chunk": 48,
+ "arms": {
+  "off": {
+   "wall_ms_per_frame": 19.19,
+   "cpu_ms_per_frame": 19.61,
+   "ratio_vs_off_total": 1.0,
+   "ratio_vs_off_chunk_median": 1.0,
+   "ratio_vs_off_chunk_p10_p90": [
+    1.0,
+    1.0
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 767,
+    "resized": 0,
+    "poses": 643
+   }
+  },
+  "off2": {
+   "wall_ms_per_frame": 19.3,
+   "cpu_ms_per_frame": 19.68,
+   "ratio_vs_off_total": 1.006,
+   "ratio_vs_off_chunk_median": 1.0,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.99,
+    1.037
+   ],
+   "stats": {
+    "num_poses": 5,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 767,
+    "resized": 0,
+    "poses": 643
+   }
+  },
+  "np3": {
+   "wall_ms_per_frame": 19.27,
+   "cpu_ms_per_frame": 19.66,
+   "ratio_vs_off_total": 1.004,
+   "ratio_vs_off_chunk_median": 1.005,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.993,
+    1.021
+   ],
+   "stats": {
+    "num_poses": 3,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 767,
+    "resized": 0,
+    "poses": 643
+   }
+  },
+  "np2": {
+   "wall_ms_per_frame": 19.22,
+   "cpu_ms_per_frame": 19.65,
+   "ratio_vs_off_total": 1.002,
+   "ratio_vs_off_chunk_median": 0.999,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.986,
+    1.018
+   ],
+   "stats": {
+    "num_poses": 2,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 767,
+    "resized": 0,
+    "poses": 643
+   }
+  },
+  "np1": {
+   "wall_ms_per_frame": 12.47,
+   "cpu_ms_per_frame": 12.93,
+   "ratio_vs_off_total": 0.65,
+   "ratio_vs_off_chunk_median": 0.623,
+   "ratio_vs_off_chunk_p10_p90": [
+    0.616,
+    0.954
+   ],
+   "stats": {
+    "num_poses": 1,
+    "max_side": 0,
+    "frame_stride": 1,
+    "inferred": 767,
+    "resized": 0,
+    "poses": 642
+   }
+  }
+ }
+}

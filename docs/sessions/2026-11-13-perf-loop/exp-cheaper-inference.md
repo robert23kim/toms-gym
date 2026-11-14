@@ -7,8 +7,8 @@
 | setting (flag) | pose-pass time vs flag-off (laptop, interleaved) | prod-image gate vs `base-image/` | native gate vs native base |
 |---|---|---|---|
 | all flags unset | CPU 0.97-1.00x of base 93378b0 | **8/8 MATCH** (incl. plank) | 7/7 MATCH, skeletons bitwise identical |
-| `POSE_NUM_POSES=1` | 0.63-0.66x (-34 to -37%) | **0/7 pass**, rep count changes on 6 of 7 | 0/7 pass |
-| `POSE_NUM_POSES=3` / `=2` | no saving seen (n=1, loaded machine) | not run | 3: skeletons bitwise identical on 3/3; 2: differs on 1/3 |
+| `POSE_NUM_POSES=1` | 0.54-0.66x (-34 to -46%; most on the fixture with 1.3 poses/frame) | **0/7 pass**, rep count changes on 6 of 7 | 0/7 pass |
+| `POSE_NUM_POSES=3` / `=2` | 3: 1.00x on 3/3 fixtures; 2: 0.96-1.00x (both inside the noise floor) | not run (nothing to gain) | 3: skeletons bitwise identical on 3/4, different on `situp_667a8480`, where compare.py fails on metric_status, rep_timing, score_drift; 2: differs on 1/3 |
 | `POSE_FRAME_STRIDE=2` | 0.49-0.51x (-50%) | **0/3 pass** (3 of 7 rep fixtures run) | 0/7 pass |
 | `POSE_MAX_SIDE=640` | 0.98x on 720p (inside the 0.97-1.01 noise floor) | **0/2 pass** (2 of 4 720p fixtures run) | 0/4 pass |
 | `POSE_NUM_POSES=1` + `POSE_FRAME_STRIDE=2` | 0.31-0.32x (-68%) | not run (both parts fail alone) | not run |
@@ -23,7 +23,7 @@ The flag code is on branch `perf/exp-cheaper-inference` (commit `d0ba36d`), defa
 - **Subset runs in the prod image:** stride 2 ran on squat, `pushup_3c66c85e`, `situp_c9dec98b`; max-side 640 ran on `pushup_e18a31d1`, `situp_667a8480`. Both failed on every fixture run, and failed on every fixture in the native screen, so the rest were not run.
 - **Prod-image pose seconds are not a timing source.** Those runs overlapped other agents' jobs (flag-off pose 147 s vs 124 s in `base-image/` for the same code path).
 - **No ground truth.** "Fails the gate" means "differs from the current engine", not "less accurate".
-- The combination and `num_poses` 2/3 were timed only.
+- The combination was timed only. `num_poses` 2/3 were timed and screened natively, not run in the prod image, because they save nothing.
 - Decode at reduced resolution was not built: decode is 1-2 ms/frame here (0.5-2.7 s per job in the Cloud Run profile), the render passes need full-size frames anyway, and a smaller landmarker input already fails the gate.
 
 ## Gate results
@@ -81,7 +81,7 @@ If the gate were waived, and pose is 52-84% of analyze on Cloud Run (baseline.md
 
 ## Why each one fails or does not pay
 
-- **`num_poses` 5 -> 1.** Reading of the evidence (MediaPipe source not opened here): with one person in frame the landmarker holds fewer poses than `num_poses`, so it runs the person detector on every frame. `num_poses=1` stops that while a pose is tracked. That is the whole saving and the whole behaviour change: keypoints differ on every frame that has a pose. `num_poses=3` still runs the detector every frame: skeletons are bitwise identical to base on 3/3 fixtures and no time is saved (squat 17.0 s vs 16.9/15.8, pushup 28.6 vs 30.1/23.7, situp 41.4 vs 41.5/45.0; single runs on a loaded machine). So there is no middle setting.
+- **`num_poses` 5 -> 1.** Reading of the evidence (MediaPipe source not opened here): with one person in frame the landmarker holds fewer poses than `num_poses`, so it runs the person detector on every frame. `num_poses=1` stops that while a pose is tracked. That is the whole saving and the whole behaviour change: keypoints differ on every frame that has a pose. `num_poses=3` still runs the detector every frame, so it saves nothing: 1.00 / 1.00 / 1.00x of flag-off on squat, pushup_e18a31d1 and situp_667a8480 in a second interleaved run on a quieter machine (load average 6-10; `ibench-np/`, noise floor 0.99-1.01), and `num_poses=2` gives 1.00 / 1.00 / 0.96x. Their skeletons are bitwise identical to base only while a video never holds more than the allowed number of candidates: `num_poses=3` differs on `situp_667a8480` (1.29 poses/frame). So there is no middle setting. The same run put `num_poses=1` at 0.62-0.63x on squat and pushup and 0.54x on `situp_667a8480`.
 - **Frame stride 2.** Situps leave skipped frames empty for `clean_pose_track` to interpolate; pushup/squat interpolate between neighbours after the per-frame selector. The landmarker sees half the frames and the smoothing sees a doubled step, and rep boundaries move.
 - **Max side 640.** The model input size is fixed, so a smaller source only saves the colour conversion and copy (about 1.5 ms of 33 ms at 720p) and adds a resize. No gain, and results still change.
 - **BGR->RGB / copy.** Measured at 720p: `cvtColor` 0.55 ms + `mp.Image` 1.0 ms of 33.3 ms per frame (4.6%); at 360p 0.19 ms of 26.8 ms. Both are required inputs. Nothing to skip.
@@ -100,5 +100,5 @@ If the gate were waived, and pose is 52-84% of analyze on Cloud Run (baseline.md
 - `screen.py`, `sweep.sh`, `skdiff.py`: native screen. Outputs in `screen/<tag>/` (`*.summary.json`, `*.screen.json` with the skeleton hash and pose stats; the 30 MB of skeleton dumps were deleted).
 - `image_gate.sh`, `image_all.sh`, `image.log`, `image/<tag>/`: prod-image gate outputs and logs.
 - `ibench.py`, `ibench_all.sh`, `ibench/*.json`, `ibench.log`: interleaved speed bench.
-- `timing_base.sh`, `timing-base-vs-off.jsonl`: base vs flag-off. `timing.sh`, `timing.jsonl`: an earlier process-level A/B, too noisy to use except for the `num_poses` 2/3 rows.
+- `timing_base.sh`, `timing-base-vs-off.jsonl`: base vs flag-off. `timing.sh`, `timing.jsonl`: an earlier process-level A/B, too noisy to use. `ibench_np.sh`, `ibench-np/*.json`, `screen/np3/`: the `num_poses` 3/2 check.
 - `mutation_check.py`, `mutation_check.txt`.
