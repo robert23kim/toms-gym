@@ -6,6 +6,12 @@ research. "(unverified)" beside a number means no checker could confirm it. px =
 unit, a gyroscope and accelerometer chip that logs head motion; Gen 1 / Gen 2 = the first and second Ray-Ban Meta
 models.
 
+**Correction, 2026-11-14 (lead session, after the workflow):** the "4 to 13 px" figure is the ball's radius over the
+far part of the lane, not a measurement at the pin row. The requirements file handed to the agents said "at the
+pins"; this file and REQUIREMENTS.md are fixed, while candidates.md and the two verify files still carry the old
+wording. No cost or recommendation depends on it. If the 4 px end of that range is the pin row, today's camera is
+below the 5.4 px estimate used here, which stage 0(c) settles.
+
 ## 1. The answer in five lines
 
 1. **First, spend nothing for two weeks:** in your existing clips, measure one known far-end length to learn the
@@ -26,8 +32,9 @@ models.
 
 ## 2. The options compared
 
-"Ball at the pins" is the ball's radius in pixels at the head pin, at the centre of the frame: today's clips measure
-4 to 13 px there, and the tracker's weakest stage is the pin-row crossing. Every figure in that column assumes the
+"Ball at the pins" is the ball's radius in pixels at the head pin, at the centre of the frame. Today's clips measure
+4 to 13 px over the far part of the lane (the tracking notes' "far ball" range, not the pin row alone), and the
+tracker's weakest stage is the pin-row crossing. Every figure in that column assumes the
 Gen 1 lens covers about 100 degrees diagonally (claim C5, unverified), so all of them are unverified until stage 0.
 
 | Option | Per-unit cost | Total to first working unit | Calendar weeks | Ball at the pins vs Meta today (all unverified, C5) | How clips reach the app | Feasibility verdict |
@@ -55,8 +62,8 @@ section 6 (shoot-out), [lane-app-integration.md](lane-app-integration.md) sectio
 pixel width of something of known size at the pin deck and compute the focal length in pixels (the lens's zoom, in
 pixels). (d) Measure how far the pin deck wanders from the frame centre across the 32 clips of 2026-11-08; that sets
 the narrowest safe view. (e) Speed-test the hotspot on the lane. Skills: yours. **Done:** a measured focal length
-replacing the 959 px guess, and a measured uplink. **Gate:** always continue; if (c) shows today's camera is already
-near 13 px at the pins, the pixel case for a custom camera is gone.
+replacing the 959 px guess, and a measured uplink. **Gate:** always continue; if (c) shows today's camera already
+gives about 9 px at the pins (the custom camera's estimate), the pixel case for a custom camera is gone.
 
 ### Stage 1. App half ($0, nothing to buy, 6 to 10 weeks), alongside stage 2
 

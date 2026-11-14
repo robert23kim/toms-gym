@@ -37,7 +37,9 @@ Nothing reaches t30g on its own, and the POV tracker is research code, not a pro
 
 From the three loops' `RULES.md` files:
 
-1. **Pixels on the far end.** At the pins the ball is 4 to 13 px in radius at native size. Upscaled 2x/3x crops did
+1. **Pixels on the far end.** Over the far part of the lane the ball is 4 to 13 px in radius at native size. (That is
+   the "far ball" range in the 2026-10-10 `RULES.md`; the radius at the pin row itself was not recorded. An earlier
+   version of this line said "at the pins", which the source does not say.) Upscaled 2x/3x crops did
    not help (16-20 % far recall against 91 % native). The pin-row crossing is the weakest stage. A new camera must give
    at least the same pixels per degree down the lane, and more is the single most useful improvement.
 2. **Less blur at release.** In the first ~10 frames after release the ball is 60 to 135 px in radius and smeared.
