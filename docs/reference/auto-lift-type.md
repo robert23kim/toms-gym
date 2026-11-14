@@ -36,7 +36,7 @@ Eval (51 labelled clips, rule-based, rules frozen before the held-out half): ove
 
 Proof on Cloud Run 2026-11-14 (no-traffic tag, then the live URL; throwaway `auto-proof-*` attempt ids): explicit squat/pushup/situp/plank reports equal the `00054` deploy proof apart from clip URLs; the plank from the feet returns no detection with `lift_type_rejected` (164 against 40 on Linux pose); the 10 s plank fixture reads plank at 0.556 (asks).
 
-**Auto is slower than an explicit type**: its pose pass may stop early for a plank, so it runs on one worker and does not use `LIFT_POSE_WORKERS`. Cloud Run, same clip, explicit vs auto: pushup 23 s vs 60 s, squat 19 s vs 40 s, plank (82 s hold) 40 s vs 60 s; a misread 141 s plank took 231 s. Follow-up: let the candidates pass use the parallel workers once the clip is known not to be a hold.
+**Auto is slower than an explicit type**: its pose pass may stop early for a plank, so it runs on one worker and does not use `LIFT_POSE_WORKERS`. Cloud Run, same clip, explicit vs auto: pushup 23 s vs 60 s, situp 65 s vs 155 s, squat 19 s vs 40 s, plank (82 s hold) 40 s vs 60 s; a misread 141 s plank took 231 s. Follow-up: let the candidates pass use the parallel workers once the clip is known not to be a hold.
 
 ## Tests
 `tests/test_lift_type_auto.py` (DB-free) and `tests/test_lift_type_auto_pg.py` (7 tests, skipped unless `AUTO_LIFT_PG_URL` points at a throwaway local Postgres; refuses ports 5432/5433 and a database named `postgres`), both in `tools/run_ci_tests.sh`. Frontend: `lib/identity` tests, page tests for the line and sheet, `main.test.tsx`, `emailPrefill.test.tsx`.
