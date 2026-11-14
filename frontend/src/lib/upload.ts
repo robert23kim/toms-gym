@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_URL } from "../config";
+import { PhaseTimer, untimed } from "./uploadTiming";
 
 export interface UploadFields {
   competition_id: string;
@@ -48,16 +49,19 @@ function failAtStage(err: unknown, stage: UploadStage): never {
 export async function uploadVideoViaSignedUrl(
   file: File,
   fields: UploadFields,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  time: PhaseTimer = untimed
 ): Promise<FinalizeResponse> {
   const contentType = file.type || "application/octet-stream";
 
   let signed: SignedUrlResponse;
   try {
-    const res = await axios.post<SignedUrlResponse>(`${API_URL}/upload/signed-url`, {
-      filename: file.name,
-      content_type: contentType,
-    });
+    const res = await time("sign", () =>
+      axios.post<SignedUrlResponse>(`${API_URL}/upload/signed-url`, {
+        filename: file.name,
+        content_type: contentType,
+      })
+    );
     signed = res.data;
   } catch (err) {
     return failAtStage(err, "signed-url");
@@ -66,24 +70,28 @@ export async function uploadVideoViaSignedUrl(
   try {
     // PUT raw bytes straight to GCS. Content-Type MUST match what was signed,
     // or GCS rejects the request with a 403 SignatureDoesNotMatch.
-    await axios.put(signed.upload_url, file, {
-      headers: { "Content-Type": signed.content_type },
-      onUploadProgress: (e) => {
-        if (onProgress && e.total) {
-          onProgress(Math.round((e.loaded / e.total) * 100));
-        }
-      },
-    });
+    await time("put", () =>
+      axios.put(signed.upload_url, file, {
+        headers: { "Content-Type": signed.content_type },
+        onUploadProgress: (e) => {
+          if (onProgress && e.total) {
+            onProgress(Math.round((e.loaded / e.total) * 100));
+          }
+        },
+      })
+    );
   } catch (err) {
     return failAtStage(err, "gcs-put");
   }
 
   try {
-    const res = await axios.post<FinalizeResponse>(`${API_URL}/upload/finalize`, {
-      object_name: signed.object_name,
-      public_url: signed.public_url,
-      ...fields,
-    });
+    const res = await time("finalize", () =>
+      axios.post<FinalizeResponse>(`${API_URL}/upload/finalize`, {
+        object_name: signed.object_name,
+        public_url: signed.public_url,
+        ...fields,
+      })
+    );
     return res.data;
   } catch (err) {
     return failAtStage(err, "finalize");

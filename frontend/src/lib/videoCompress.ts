@@ -37,6 +37,8 @@ export interface CompressOptions {
    * costs more than the transfer bytes it saves. Default false.
    */
   fastPathOnly?: boolean;
+  /** Called with the pipeline whose output is being returned (never for the original). */
+  onPipeline?: (pipeline: "webcodecs" | "mediarecorder") => void;
 }
 
 const DEFAULT_MAX_HEIGHT = 720;
@@ -104,12 +106,21 @@ export async function compressVideo(
 
   report(0);
 
+  const notifyPipeline = (pipeline: "webcodecs" | "mediarecorder"): void => {
+    try {
+      opts?.onPipeline?.(pipeline);
+    } catch {
+      // An observer must never turn a finished encode into a fallback.
+    }
+  };
+
   // Primary path: WebCodecs + mp4box demux + mp4-muxer mux.
   if (canCompressVideo()) {
     try {
       const compressed = await compressWithWebCodecs(file, maxHeight, videoBitrate, report);
       if (compressed && isWorthwhile(compressed, file)) {
         report(100);
+        notifyPipeline("webcodecs");
         return compressed;
       }
     } catch {
@@ -125,6 +136,7 @@ export async function compressVideo(
       const recorded = await compressWithMediaRecorder(file, maxHeight, videoBitrate, report);
       if (recorded && isWorthwhile(recorded, file)) {
         report(100);
+        notifyPipeline("mediarecorder");
         return recorded;
       }
     } catch {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { UploadFields, FinalizeResponse } from "./upload";
 import { API_URL } from "../config";
+import { PhaseTimer, untimed } from "./uploadTiming";
 
 /** 16 MiB parts — large enough to keep per-part overhead low, small enough to
  * keep the 4-wide concurrency pool busy on typical phone videos. */
@@ -102,20 +103,20 @@ async function runPool<T>(
 export async function uploadVideoParallel(
   file: File,
   fields: UploadFields,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  time: PhaseTimer = untimed
 ): Promise<FinalizeResponse> {
   const contentType = file.type || "application/octet-stream";
   const parts = Math.max(1, Math.ceil(file.size / PART_SIZE));
 
   let signed: CompositeSignResponse;
   try {
-    const res = await axios.post<CompositeSignResponse>(
-      `${API_URL}/upload/composite/sign`,
-      {
+    const res = await time("sign", () =>
+      axios.post<CompositeSignResponse>(`${API_URL}/upload/composite/sign`, {
         filename: file.name,
         content_type: contentType,
         parts,
-      }
+      })
     );
     signed = res.data;
   } catch (err) {
@@ -132,7 +133,7 @@ export async function uploadVideoParallel(
   };
 
   try {
-    await runPool(signed.parts, CONCURRENCY, async (part, index) => {
+    await time("put", () => runPool(signed.parts, CONCURRENCY, async (part, index) => {
       const start = index * PART_SIZE;
       const end = Math.min(start + PART_SIZE, file.size);
       const chunk = file.slice(start, end);
@@ -154,7 +155,7 @@ export async function uploadVideoParallel(
       // progress event under-reported.
       loadedPerPart[index] = end - start;
       reportProgress();
-    });
+    }));
   } catch (err) {
     return failAtStage(err, "gcs-parts");
   }
@@ -166,24 +167,25 @@ export async function uploadVideoParallel(
     .map((p) => p.object_name);
 
   try {
-    await axios.post<CompositeCompleteResponse>(
-      `${API_URL}/upload/composite/complete`,
-      {
+    await time("complete", () =>
+      axios.post<CompositeCompleteResponse>(`${API_URL}/upload/composite/complete`, {
         final_object: signed.final_object,
         content_type: signed.content_type,
         part_object_names: partObjectNames,
-      }
+      })
     );
   } catch (err) {
     return failAtStage(err, "composite-complete");
   }
 
   try {
-    const res = await axios.post<FinalizeResponse>(`${API_URL}/upload/finalize`, {
-      object_name: signed.final_object,
-      public_url: signed.public_url,
-      ...fields,
-    });
+    const res = await time("finalize", () =>
+      axios.post<FinalizeResponse>(`${API_URL}/upload/finalize`, {
+        object_name: signed.final_object,
+        public_url: signed.public_url,
+        ...fields,
+      })
+    );
     return res.data;
   } catch (err) {
     return failAtStage(err, "finalize");

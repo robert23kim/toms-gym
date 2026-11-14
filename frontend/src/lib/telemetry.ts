@@ -14,6 +14,7 @@ import { takeDeadJourney } from "./uploadJourney";
 
 const MAX_GLOBAL_REPORTS_PER_PAGE = 10;
 const BOOT_PING_KEY = "tg:boot-pinged";
+const MAX_FIELD_CHARS = 300;
 
 interface CapacitorGlobal {
   isNativePlatform?: () => boolean;
@@ -89,8 +90,9 @@ export function reportError(
       action,
       error: errorMessage,
       details: details || {},
-      userAgent: navigator.userAgent,
-      url: window.location.href,
+      // The backend drops any body over 2 KB without logging it.
+      userAgent: navigator.userAgent.slice(0, MAX_FIELD_CHARS),
+      url: window.location.href.slice(0, MAX_FIELD_CHARS),
       build: APP_BUILD,
       platform: platform(),
     });
@@ -152,6 +154,14 @@ export function reportUploadError(
     fileName: file?.name ?? null,
     ...extra,
   });
+}
+
+/**
+ * Report how long a successful upload took, phase by phase. Rides the same
+ * route as errors, so it shows up as `FRONTEND_ERROR action=upload-timing`.
+ */
+export function reportUploadTiming(details: Record<string, string | number | null>): void {
+  reportError("upload", "upload-timing", "-", details);
 }
 
 let initialized = false;

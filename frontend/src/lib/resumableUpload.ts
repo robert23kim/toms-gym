@@ -9,6 +9,18 @@ import { canCompressVideo, compressVideo } from "./videoCompress";
 import { uploadVideoParallel } from "./parallelUpload";
 import { shouldCompress } from "./compressionPolicy";
 import { beginJourney, markStage, endJourney } from "./uploadJourney";
+import {
+  CompressPipeline,
+  PhaseTimer,
+  TransferPath,
+  UploadTimingInput,
+  buildUploadTiming,
+  createUploadTimer,
+  networkHints,
+  untimed,
+  watchHidden,
+} from "./uploadTiming";
+import { reportUploadTiming } from "./telemetry";
 
 const CHUNK_SIZE = 8 * 1024 * 1024; // 8 MiB per chunk (must be a multiple of 256 KiB)
 const MAX_CHUNK_RETRIES = 5;
@@ -127,31 +139,36 @@ async function putChunks(
 export async function uploadVideoResumable(
   file: File,
   fields: UploadFields,
-  onProgress?: (pct: number) => void
+  onProgress?: (pct: number) => void,
+  time: PhaseTimer = untimed
 ): Promise<FinalizeResponse> {
   let session: ResumableSession;
   try {
-    const res = await axios.post<ResumableSession>(`${API_URL}/upload/resumable-url`, {
-      filename: file.name,
-      content_type: file.type || "application/octet-stream",
-    });
+    const res = await time("sign", () =>
+      axios.post<ResumableSession>(`${API_URL}/upload/resumable-url`, {
+        filename: file.name,
+        content_type: file.type || "application/octet-stream",
+      })
+    );
     session = res.data;
   } catch (err) {
     return failAtStage(err, "resumable-init");
   }
 
   try {
-    await putChunks(session.session_uri, file, onProgress);
+    await time("put", () => putChunks(session.session_uri, file, onProgress));
   } catch (err) {
     return failAtStage(err, "gcs-chunk");
   }
 
   try {
-    const res = await axios.post<FinalizeResponse>(`${API_URL}/upload/finalize`, {
-      object_name: session.object_name,
-      public_url: session.public_url,
-      ...fields,
-    });
+    const res = await time("finalize", () =>
+      axios.post<FinalizeResponse>(`${API_URL}/upload/finalize`, {
+        object_name: session.object_name,
+        public_url: session.public_url,
+        ...fields,
+      })
+    );
     return res.data;
   } catch (err) {
     return failAtStage(err, "finalize");
@@ -164,9 +181,10 @@ export async function uploadVideoResumable(
  * 1. Compress large videos client-side (downscale to 720p) so there's less to
  *    send — best-effort, falls back to the original on any failure.
  * 2. Pick the transfer method by the resulting size:
- *      - >= 48 MiB  → parallel composite (4 parallel connections), falling back
- *                     to the resumable path if the parallel transfer fails
- *      - >= 32 MiB  → resumable chunked (survives mobile network drops)
+ *      - >= 32 MiB  → parallel composite (4 parallel connections), falling back
+ *                     to the resumable chunked path if the parallel transfer fails
+ *                     (PARALLEL_THRESHOLD and RESUMABLE_THRESHOLD are equal today,
+ *                     so the plain resumable tier is only that fallback)
  *      - otherwise  → single-PUT signed URL (simplest)
  * All paths upload directly to GCS, bypassing Cloud Run's 32 MiB request cap.
  */
@@ -219,6 +237,9 @@ async function runUpload(
   // and on very large files anywhere. Skipped files upload as originals via
   // the chunked paths below, which slice the Blob and are memory-safe.
   const mode = options?.compression ?? 'auto';
+  const startedAt = performance.now();
+  const stopWatchingHidden = watchHidden();
+  const timer = createUploadTimer();
   const decision = shouldCompress(
     file.size,
     navigator.userAgent,
@@ -230,23 +251,33 @@ async function runUpload(
     canCompressVideo() &&
     file.size >= COMPRESS_THRESHOLD;
   let toUpload = file;
+  let compress: UploadTimingInput["compress"] = `skipped:${skipReason(mode, decision, file.size)}`;
   if (attemptCompress) {
     markStage("compress-start", { compressDecision: decision.reason });
+    const used: { pipeline: CompressPipeline | null } = { pipeline: null };
     try {
       toUpload = await compressVideo(
         file,
-        { maxHeight: 720, fastPathOnly: mode === 'fast-only' },
+        {
+          maxHeight: 720,
+          fastPathOnly: mode === 'fast-only',
+          onPipeline: (pipeline) => {
+            used.pipeline = pipeline;
+          },
+        },
         (pct) => onProgress?.(Math.round(pct * COMPRESS_PROGRESS_SHARE))
       );
     } catch {
       toUpload = file;
     }
+    compress = toUpload === file ? "kept-original" : used.pipeline ?? "webcodecs";
     markStage("compress-done", {
       compressedMB: Number((toUpload.size / (1024 * 1024)).toFixed(2)),
     });
   } else {
     markStage("compress-skipped", { compressDecision: decision.reason });
   }
+  const compressMs = performance.now() - startedAt;
 
   // Phase 2 — map the upload's 0..100 into the remaining progress band.
   const base = attemptCompress ? COMPRESS_PROGRESS_SHARE * 100 : 0;
@@ -262,21 +293,73 @@ async function runUpload(
     onProgress?.(Math.round(base + (pct * span) / 100));
   };
 
-  if (toUpload.size >= PARALLEL_THRESHOLD) {
-    markStage("transfer-start", { method: "parallel" });
-    try {
-      return await uploadVideoParallel(toUpload, fields, up);
-    } catch {
-      // Parallel parts don't resume mid-part; fall back to the resilient
-      // resumable path (per-chunk retry + resume) if the parallel transfer fails.
-      markStage("transfer-start", { method: "resumable-fallback" });
-      return await uploadVideoResumable(toUpload, fields, up);
+  let path: TransferPath = "single-put";
+  const transfer = async (): Promise<FinalizeResponse> => {
+    if (toUpload.size >= PARALLEL_THRESHOLD) {
+      path = "parallel";
+      markStage("transfer-start", { method: "parallel" });
+      try {
+        return await uploadVideoParallel(toUpload, fields, up, timer.time);
+      } catch {
+        // Parallel parts don't resume mid-part; fall back to the resilient
+        // resumable path (per-chunk retry + resume) if the parallel transfer fails.
+        path = "resumable-fallback";
+        markStage("transfer-start", { method: "resumable-fallback" });
+        return await uploadVideoResumable(toUpload, fields, up, timer.time);
+      }
     }
+    if (toUpload.size >= RESUMABLE_THRESHOLD) {
+      path = "resumable";
+      markStage("transfer-start", { method: "resumable" });
+      return uploadVideoResumable(toUpload, fields, up, timer.time);
+    }
+    markStage("transfer-start", { method: "single-put" });
+    return uploadVideoViaSignedUrl(toUpload, fields, up, timer.time);
+  };
+
+  let result: FinalizeResponse;
+  let hiddenCount = 0;
+  try {
+    result = await transfer();
+  } finally {
+    hiddenCount = stopWatchingHidden();
   }
-  if (toUpload.size >= RESUMABLE_THRESHOLD) {
-    markStage("transfer-start", { method: "resumable" });
-    return uploadVideoResumable(toUpload, fields, up);
+
+  try {
+    const finishedAt = performance.now();
+    reportUploadTiming({
+      ...networkHints(),
+      ...buildUploadTiming({
+        liftType: fields.lift_type,
+        mode,
+        compress,
+        compressMs: attemptCompress ? compressMs : 0,
+        path,
+        srcBytes: file.size,
+        sentBytes: toUpload.size,
+        srcType: file.type || "unknown",
+        sentType: toUpload.type || "unknown",
+        phases: timer.phases(),
+        transferMs: finishedAt - startedAt - compressMs,
+        totalMs: finishedAt - startedAt,
+        hiddenCount,
+      }),
+    });
+  } catch {
+    // Timing is best-effort; a finished upload must still return its result.
   }
-  markStage("transfer-start", { method: "single-put" });
-  return uploadVideoViaSignedUrl(toUpload, fields, up);
+  return result;
+}
+
+/** Why compression was not attempted, for the timing event. */
+function skipReason(
+  mode: string,
+  decision: { compress: boolean; reason: string },
+  sizeBytes: number
+): string {
+  if (mode === 'off') return "off";
+  if (!decision.compress) return decision.reason;
+  if (!canCompressVideo()) return "no-webcodecs";
+  if (sizeBytes < COMPRESS_THRESHOLD) return "small";
+  return "none";
 }
