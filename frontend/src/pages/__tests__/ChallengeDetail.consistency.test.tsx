@@ -13,6 +13,7 @@ import {
   consistencyRules,
   upcomingConsistencyLeaderboard,
 } from "../../__fixtures__/consistencyLeaderboard";
+import { liveClubBoard, REPORTER_ID } from "../../__fixtures__/liveClubBoard";
 
 jest.mock("../../config", () => ({ API_URL: "https://test-api.example", APP_BUILD: "test" }));
 jest.mock("../../components/Layout", () => ({
@@ -120,13 +121,87 @@ describe("ChallengeDetail on a 100 Club board", () => {
     expect(within(hero).getByTestId("consistency-week-line")).toHaveTextContent("Week 3 of 8");
     expect(within(hero).getByTestId("consistency-leader-Plank")).toHaveTextContent("Ben 100 s");
     expect(within(hero).queryByTestId("consistency-ring-count")).toBeNull();
-    expect(screen.getByTestId("you-row")).toHaveAttribute("data-entered", "false");
+    expect(screen.getByTestId("you-row-unknown")).toBeInTheDocument();
+    expect(screen.queryByText("Not logged yet")).toBeNull();
+  });
+
+  it("on the live board with the reporter's row but no saved userId, asks who he is instead of saying nothing is logged", async () => {
+    setup(liveClubBoard, null);
+    await screen.findByTestId("podium");
+    const unknown = screen.getByTestId("you-row-unknown");
+    expect(screen.queryByText("Not logged yet")).toBeNull();
+    expect(screen.queryByTestId("you-row")).toBeNull();
+    expect(unknown.closest("a")).toHaveAttribute(
+      "href",
+      `/find-profile?next=${encodeURIComponent(`/challenges/${ID}`)}`,
+    );
+  });
+
+  it("on the live board with the reporter's userId, shows his week and no empty-state row", async () => {
+    setup(liveClubBoard, REPORTER_ID);
+    const hero = await screen.findByTestId("consistency-hero");
+    expect(within(hero).getByTestId("consistency-ring-count")).toHaveTextContent("147 / 125");
+    expect(screen.queryByTestId("you-row-unknown")).toBeNull();
+    expect(screen.queryByText("Not logged yet")).toBeNull();
+  });
+
+  it("keeps Not logged yet for a known viewer with no row and nothing analysing", async () => {
+    setup(liveClubBoard, "someone-new");
+    await screen.findByTestId("podium");
+    expect(screen.getByTestId("you-row")).toHaveTextContent("Not logged yet");
+    expect(screen.queryByTestId("you-row-unknown")).toBeNull();
+  });
+
+  it("says the upload is analysing for a known viewer with no row and a processing attempt", async () => {
+    (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
+    const lifts: LiftRow[] = [
+      { id: "new-1", participant_id: "someone-new", lift_type: "Squat", created_at: "2026-11-13T12:00:00+00:00", video_url: "https://storage.example/new-1.mp4", status: "pending" },
+    ];
+    setup(liveClubBoard, "someone-new", competition, lifts);
+    await waitFor(() => expect(screen.getByTestId("you-row")).toHaveTextContent("Analysing your upload…"));
+    expect(screen.getByTestId("you-row")).not.toHaveTextContent("Not logged yet");
+  });
+
+  it("remembers the uploader from the inline form's response when this browser had no userId", async () => {
+    const lifts: LiftRow[] = [];
+    (uploadVideo as jest.Mock).mockImplementation(async () => {
+      lifts.push({ id: "new-1", participant_id: "u-new", lift_type: "Squat", created_at: "2026-11-13T12:00:00+00:00", video_url: "https://storage.example/new-1.mp4", status: "pending" });
+      return { url: "https://storage.example/new-1.mp4", attempt_id: "new-1", user_id: "u-new" };
+    });
+    (api.triggerLiftingAnalysis as jest.Mock).mockResolvedValue({});
+    (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
+    setup(liveClubBoard, null, competition, lifts);
+    await screen.findByTestId("you-row-unknown");
+    fireEvent.click(screen.getAllByText("Log this week's lifts")[0]);
+    const form = (await screen.findByText("Lift Type")).closest("form")!;
+    fireEvent.change(form.querySelector('input[type="email"]')!, { target: { value: "new@example.com" } });
+    fireEvent.change(form.querySelector('input[type="file"]')!, { target: { files: [new File(["x"], "s.mp4", { type: "video/mp4" })] } });
+    fireEvent.submit(form);
+    await waitFor(() => expect(localStorage.setItem).toHaveBeenCalledWith("userId", "u-new"));
+    await waitFor(() => expect(screen.getByTestId("you-row")).toHaveTextContent("Analysing your upload…"));
+    expect(screen.queryByTestId("you-row-unknown")).toBeNull();
+  });
+
+  it("does not replace a different saved userId with the uploader's", async () => {
+    (uploadVideo as jest.Mock).mockResolvedValue({ url: "https://storage.example/new-1.mp4", attempt_id: "new-1", user_id: "u-other" });
+    (api.triggerLiftingAnalysis as jest.Mock).mockResolvedValue({});
+    (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
+    setup(liveClubBoard, "someone-new");
+    await screen.findByTestId("podium");
+    fireEvent.click(screen.getAllByText("Log this week's lifts")[0]);
+    const form = (await screen.findByText("Lift Type")).closest("form")!;
+    fireEvent.change(form.querySelector('input[type="email"]')!, { target: { value: "other@example.com" } });
+    fireEvent.change(form.querySelector('input[type="file"]')!, { target: { files: [new File(["x"], "s.mp4", { type: "video/mp4" })] } });
+    fireEvent.submit(form);
+    await waitFor(() => expect(uploadVideo).toHaveBeenCalled());
+    await waitFor(() => expect(api.triggerLiftingAnalysis).toHaveBeenCalled());
+    expect(localStorage.setItem).not.toHaveBeenCalledWith("userId", expect.anything());
   });
 
   it("drops the Everyone else header when the podium holds everyone", async () => {
     setup({ ...consistencyLeaderboard, rows: consistencyLeaderboard.rows.slice(0, 2) }, null);
     await screen.findByTestId("consistency-hero");
-    expect(await screen.findByTestId("you-row")).toHaveAttribute("data-entered", "false");
+    expect(await screen.findByTestId("you-row-unknown")).toBeInTheDocument();
     expect(screen.queryByText("Everyone else")).toBeNull();
     expect(screen.queryByTestId("leaderboard-header")).toBeNull();
   });
@@ -167,7 +242,7 @@ describe("ChallengeDetail on a 100 Club board", () => {
     };
     setup(legacyBoard, null, { id: ID, name: "Plank Off", start_date: "2026-01-01", end_date: "2099-12-27", description: legacyDescription, lifttypes: ["Plank"] });
     await screen.findByTestId("podium");
-    expect(await screen.findByTestId("you-row")).toHaveAttribute("data-entered", "false");
+    expect(await screen.findByTestId("you-row-unknown")).toBeInTheDocument();
     expect(screen.queryByText("Everyone else")).toBeNull();
     expect(screen.queryByTestId("leaderboard-header")).toBeNull();
     expect(screen.queryByTestId("consistency-hero")).toBeNull();

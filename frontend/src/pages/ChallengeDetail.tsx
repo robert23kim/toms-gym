@@ -92,7 +92,9 @@ const ChallengeDetail: React.FC = () => {
   const [liftingResults, setLiftingResults] = useState<Record<string, LiftingResult>>({});
   const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboard | null>(null);
   const [leaderboardError, setLeaderboardError] = useState<string | null>(null);
-  const viewerId = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+  const [viewerId, setViewerId] = useState<string | null>(() =>
+    typeof window !== "undefined" ? localStorage.getItem("userId") : null,
+  );
   const [rankShift, setRankShift] = useState<RankShift | null>(null);
   const rankSeen = useRef(false);
   useEffect(() => {
@@ -236,6 +238,12 @@ const ChallengeDetail: React.FC = () => {
       );
 
       if (data.url) {
+        const storedId = localStorage.getItem("userId");
+        const otherProfile = !!storedId && !!data.user_id && String(data.user_id) !== String(storedId);
+        if (!storedId && data.user_id) {
+          localStorage.setItem("userId", String(data.user_id));
+          setViewerId(String(data.user_id));
+        }
         // Kick off analysis first — it's the long pole; UI refreshes can wait
         // the extra second.
         const attemptId = data.attempt_id;
@@ -250,7 +258,9 @@ const ChallengeDetail: React.FC = () => {
 
         toast({
           title: "Upload Successful!",
-          description: "Analyzing your form automatically...",
+          description: otherProfile
+            ? `Logged to ${email}'s profile. This device stays on its current profile.`
+            : "Analyzing your form automatically...",
           duration: 5000,
         });
 
@@ -1026,7 +1036,16 @@ const ChallengeDetail: React.FC = () => {
                           </Fragment>
                         );
                       })}
-                      {!viewerEntered && <YouRow entered={false} onUpload={openUpload} />}
+                      {!viewerEntered &&
+                        (viewerId ? (
+                          <YouRow
+                            entered={false}
+                            onUpload={openUpload}
+                            analysing={viewerProcessingAttempts(videoData, liftingResults, viewerId).length > 0}
+                          />
+                        ) : (
+                          <YouRow findProfileHref={`/find-profile?next=${encodeURIComponent(`/challenges/${id}`)}`} />
+                        ))}
                     </div>
                   </div>
                 )}

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { Search, User } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import Layout from "../components/Layout";
 import GhibliAvatar from "../components/GhibliAvatar";
@@ -26,6 +26,9 @@ const FindProfilePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [found, setFound] = useState<Found | null>(null);
+  const [searchParams] = useSearchParams();
+  const nextParam = searchParams.get("next");
+  const next = nextParam && /^\/(?![/\\])/.test(nextParam) ? nextParam : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +95,14 @@ const FindProfilePage: React.FC = () => {
               </div>
             </div>
             <div className="mt-5 flex flex-col gap-2">
+              {next && (
+                <Link
+                  to={next}
+                  className="w-full text-center px-4 py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90"
+                >
+                  Back to the challenge →
+                </Link>
+              )}
               <Link
                 to={`/profile/${found.id}`}
                 className="w-full text-center px-4 py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90"

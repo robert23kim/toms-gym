@@ -27,9 +27,9 @@ const lookup = (lifts: object[]) =>
       : Promise.resolve({ data: { lifts } }),
   );
 
-const submit = () => {
+const submit = (entry = "/find-profile") => {
   render(
-    <MemoryRouter>
+    <MemoryRouter initialEntries={[entry]}>
       <FindProfilePage />
     </MemoryRouter>,
   );
@@ -57,5 +57,18 @@ describe("FindProfilePage", () => {
     lookup([]);
     submit();
     expect(await screen.findByText("Your profile is ready.")).toBeInTheDocument();
+  });
+
+  it("offers the way back to the board it was sent from", async () => {
+    lookup([]);
+    submit(`/find-profile?next=${encodeURIComponent("/challenges/c1")}`);
+    expect(await screen.findByRole("link", { name: /Back to the challenge/i })).toHaveAttribute("href", "/challenges/c1");
+  });
+
+  it("ignores a next that leaves the site", async () => {
+    lookup([]);
+    submit(`/find-profile?next=${encodeURIComponent("//evil.example/x")}`);
+    await screen.findByText("Your profile is ready.");
+    expect(screen.queryByRole("link", { name: /Back to the challenge/i })).toBeNull();
   });
 });

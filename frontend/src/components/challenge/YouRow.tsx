@@ -12,7 +12,8 @@ import { StreakFlame, hasWeeks, thisWeekText } from "./ConsistencyMeta";
 // Mobile is a flex row; desktop (lg:) becomes a 4-column grid aligned to the
 // "Everyone else" table header + rows (#1b).
 type YouRowProps =
-  | { entered: false; onUpload: () => void }
+  | { findProfileHref: string }
+  | { entered: false; onUpload: () => void; analysing?: boolean }
   | {
       entered: true;
       row: ChallengeLeaderboardRow;
@@ -44,6 +45,31 @@ const YouAvatar: React.FC<{ className?: string }> = ({ className = "" }) => (
 const YouRow: React.FC<YouRowProps> = (props) => {
   // Narrow via `in` — a boolean discriminant doesn't narrow under the repo's
   // strictNullChecks:false config, but the operator narrowing does.
+  if ("findProfileHref" in props) {
+    return (
+      <Link
+        to={props.findProfileHref}
+        data-testid="you-row-unknown"
+        className={`w-full text-left ${LAYOUT} ${HIGHLIGHT}`}
+      >
+        <div className="w-[18px] text-center text-[13px] font-bold text-[#7fb0ff] lg:col-start-1 lg:row-start-1 lg:w-auto lg:text-left lg:text-[15px]">
+          ?
+        </div>
+        <div className="flex min-w-0 flex-1 items-center gap-3 lg:col-start-2 lg:row-start-1 lg:gap-2.5">
+          <YouAvatar />
+          <div className="min-w-0">
+            <div className="truncate text-[12.5px] font-semibold text-[#7fb0ff] lg:text-[14.5px]">
+              Find your profile
+            </div>
+            <div className="truncate text-[11px] text-[#7fb0ff]/70">
+              This device doesn't know who you are yet
+            </div>
+          </div>
+        </div>
+      </Link>
+    );
+  }
+
   if ("onUpload" in props) {
     return (
       <button
@@ -59,7 +85,7 @@ const YouRow: React.FC<YouRowProps> = (props) => {
         <div className="flex min-w-0 flex-1 items-center gap-3 lg:col-start-2 lg:row-start-1 lg:gap-2.5">
           <YouAvatar />
           <span className="truncate text-[12.5px] font-semibold text-[#7fb0ff] lg:text-[14.5px]">
-            Not logged yet
+            {props.analysing ? "Analysing your upload…" : "Not logged yet"}
           </span>
         </div>
         <div className="hidden text-[13px] font-medium text-white/50 lg:col-start-3 lg:row-start-1 lg:block">

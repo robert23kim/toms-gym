@@ -40,6 +40,30 @@ describe("YouRow", () => {
     expect(onUpload).toHaveBeenCalledTimes(1);
   });
 
+  test("not-entered variant says the viewer's upload is analysing", () => {
+    render(
+      <MemoryRouter>
+        <YouRow entered={false} onUpload={jest.fn()} analysing />
+      </MemoryRouter>,
+    );
+    const row = screen.getByTestId("you-row");
+    expect(row).toHaveTextContent("Analysing your upload…");
+    expect(row).not.toHaveTextContent("Not logged yet");
+  });
+
+  test("unknown-viewer variant never claims nothing is logged and links to Find Profile", () => {
+    render(
+      <MemoryRouter>
+        <YouRow findProfileHref="/find-profile?next=%2Fchallenges%2Fc1" />
+      </MemoryRouter>,
+    );
+    const row = screen.getByTestId("you-row-unknown");
+    expect(row).not.toHaveTextContent("Not logged yet");
+    expect(row).toHaveTextContent("Find your profile");
+    expect(row.closest("a")).toHaveAttribute("href", "/find-profile?next=%2Fchallenges%2Fc1");
+    expect(screen.queryByTestId("you-row")).toBeNull();
+  });
+
   test("entered variant shows the viewer's rank and score", () => {
     render(
       <MemoryRouter>
