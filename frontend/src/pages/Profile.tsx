@@ -2,7 +2,7 @@ import React, { useEffect, useState, useCallback } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import Layout from "../components/Layout";
-import { Calendar, ArrowLeft, User, Dumbbell, TrendingUp, CircleDot, Flag, Upload, Camera } from "lucide-react";
+import { Calendar, ArrowLeft, User, Dumbbell, TrendingUp, CircleDot, Flag, Upload, Camera, X, LogOut } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { useIsOwner } from "../hooks/useIsOwner";
 import axios from "axios";
@@ -14,7 +14,7 @@ import TrophyCase, { championTitle } from "../components/profile/TrophyCase";
 import ChampionConfetti from "../components/profile/ChampionConfetti";
 import AvatarPicker from "../components/profile/AvatarPicker";
 import { GolfRoundListItem, BowlingResult } from "../lib/types";
-import { getUserId, remember } from "../lib/identity";
+import { forget, getUserId, remember } from "../lib/identity";
 
 // Interfaces for API response data
 interface UserData {
@@ -78,7 +78,7 @@ type SportTab = "lift" | "bowl" | "golf";
 const Profile = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated, loading: authLoading, logout } = useAuth();
   const isAppOwner = useIsOwner();
   const [profileData, setProfileData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -99,6 +99,23 @@ const Profile = () => {
 
   const resolvedUserId = id || getUserId() || null;
   const isOwner = resolvedUserId === getUserId();
+
+  const handleForgetMe = async () => {
+    localStorage.removeItem('last_attempt_id');
+    await forget();
+    window.location.href = '/';
+  };
+  // Phones hide the navbar (hidden md:flex), so the owner's own profile carries the control there.
+  const forgetControl = isOwner && getUserId() ? (
+    <button
+      type="button"
+      onClick={isAuthenticated ? logout : handleForgetMe}
+      className="md:hidden mt-2 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground transition-colors"
+    >
+      {isAuthenticated ? <LogOut size={14} /> : <X size={14} />}
+      {isAuthenticated ? "Logout" : "Forget Me"}
+    </button>
+  ) : null;
 
   const fetchProfileData = useCallback(async () => {
     try {
@@ -180,6 +197,7 @@ const Profile = () => {
           >
             Try Again
           </button>
+          {forgetControl}
         </div>
       </Layout>
     );
@@ -216,6 +234,7 @@ const Profile = () => {
       <Layout>
         <div className="flex justify-center items-center h-[60vh]">
           <p>No profile data found</p>
+          {forgetControl}
         </div>
       </Layout>
     );
@@ -289,6 +308,7 @@ const Profile = () => {
                   {showAvatarPicker ? "Hide avatars" : "Change avatar"}
                 </button>
               )}
+              {forgetControl && <span className="ml-4">{forgetControl}</span>}
             </div>
           </div>
           <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">

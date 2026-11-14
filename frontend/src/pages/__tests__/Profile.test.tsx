@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { MemoryRouter, Routes, Route } from "react-router-dom";
 import axios from "axios";
 import Profile from "../Profile";
@@ -14,15 +14,17 @@ jest.mock("../../components/Layout", () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }));
 
+const mockLogout = jest.fn();
+const mockAuth = { isAuthenticated: false };
 jest.mock("../../auth/AuthContext", () => ({
   useAuth: () => ({
-    isAuthenticated: false,
+    isAuthenticated: mockAuth.isAuthenticated,
     user: null,
     loading: false,
     error: null,
     hasLocalUserId: false,
     handleLoginSuccess: jest.fn(),
-    logout: jest.fn(),
+    logout: mockLogout,
   }),
 }));
 
@@ -194,5 +196,67 @@ describe("Profile — Lift tab", () => {
     await waitFor(() =>
       expect(screen.getByText("wonder725@example.com")).toBeInTheDocument()
     );
+  });
+});
+
+describe("Profile — Forget Me on a phone", () => {
+  const remembered = (id: string) => (k: string) => (k === "userId" ? id : k === "userEmail" ? "owner@example.com" : null);
+
+  beforeEach(() => {
+    (axios.get as jest.Mock).mockReset();
+    (localStorage.removeItem as jest.Mock).mockClear();
+    mockLogout.mockClear();
+    mockAuth.isAuthenticated = false;
+    (api.fetchRounds as jest.Mock).mockResolvedValue(null);
+    (api.fetchBowlingResultsByUser as jest.Mock).mockResolvedValue([]);
+    (api.fetchBowlingGames as jest.Mock).mockResolvedValue(null);
+    (api.fetchChampions as jest.Mock).mockResolvedValue([]);
+  });
+
+  afterEach(() => {
+    (localStorage.getItem as jest.Mock).mockReset();
+  });
+
+  it("gives the owner a phone-only Forget Me that clears the remembered identity", async () => {
+    (localStorage.getItem as jest.Mock).mockImplementation(remembered("u1"));
+    (axios.get as jest.Mock).mockResolvedValue({ data: profilePayload() });
+    renderProfile();
+
+    const button = await screen.findByRole("button", { name: "Forget Me" });
+    expect(button).toHaveClass("md:hidden");
+    fireEvent.click(button);
+    await waitFor(() => expect(localStorage.removeItem).toHaveBeenCalledWith("userId"));
+    expect(localStorage.removeItem).toHaveBeenCalledWith("userEmail");
+    expect(localStorage.removeItem).toHaveBeenCalledWith("last_attempt_id");
+  });
+
+  it("does not offer Forget Me on someone else's profile", async () => {
+    (localStorage.getItem as jest.Mock).mockImplementation(remembered("someone-else"));
+    (axios.get as jest.Mock).mockResolvedValue({ data: profilePayload() });
+    renderProfile();
+
+    await waitFor(() => expect(screen.getByText("wonder725")).toBeInTheDocument());
+    expect(screen.queryByRole("button", { name: "Forget Me" })).toBeNull();
+  });
+
+  it("still offers Forget Me when the remembered profile fails to load", async () => {
+    (localStorage.getItem as jest.Mock).mockImplementation(remembered("u1"));
+    (axios.get as jest.Mock).mockRejectedValue(Object.assign(new Error("Not Found"), { response: { status: 404, data: { error: "User not found" } } }));
+    jest.spyOn(console, "error").mockImplementation(() => {});
+    renderProfile();
+
+    expect(await screen.findByRole("button", { name: "Forget Me" })).toBeInTheDocument();
+    (console.error as jest.Mock).mockRestore();
+  });
+
+  it("offers Logout instead to a signed-in owner", async () => {
+    mockAuth.isAuthenticated = true;
+    (localStorage.getItem as jest.Mock).mockImplementation(remembered("u1"));
+    (axios.get as jest.Mock).mockResolvedValue({ data: profilePayload() });
+    renderProfile();
+
+    fireEvent.click(await screen.findByRole("button", { name: "Logout" }));
+    expect(mockLogout).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole("button", { name: "Forget Me" })).toBeNull();
   });
 });
