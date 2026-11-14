@@ -1,0 +1,27 @@
+{
+  "fixture": "plank_9600f455",
+  "meta": {
+    "frames": 2586,
+    "fps": 29.907478797224364,
+    "w": 1280,
+    "h": 720
+  },
+  "analyze_total_s": 22.59,
+  "clips_written": 0,
+  "total_reps": null,
+  "total_in_plank_s": 82.45429234338746,
+  "stages": {
+    "encode_write[plank]": 0.0,
+    "encode_write[plank_render]": 3.0,
+    "plank_analyze_total": 22.59,
+    "plank_pose_parallel_total": 19.08,
+    "plank_render_total": 3.46
+  },
+  "counts": {
+    "plank_pose_parallel_total": 1,
+    "encode_write[plank_render]": 1293,
+    "plank_render_total": 1,
+    "encode_write[plank]": 1,
+    "plank_analyze_total": 1
+  }
+}

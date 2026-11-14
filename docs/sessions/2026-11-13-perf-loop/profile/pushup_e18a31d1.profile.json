@@ -1,0 +1,50 @@
+{
+  "fixture": "pushup_e18a31d1",
+  "meta": {
+    "frames": 1022,
+    "fps": 29.970674486803517,
+    "w": 1280,
+    "h": 720
+  },
+  "analyze_total_s": 46.92,
+  "clips_written": 96,
+  "total_reps": 24,
+  "total_in_plank_s": null,
+  "stages": {
+    "active_arm": 0.0,
+    "alerts": 0.0,
+    "camera_view": 0.0,
+    "decode[pose]": 0.28,
+    "decode[render_clips]": 0.41,
+    "decode[render_video]": 1.17,
+    "draw_skeleton": 0.17,
+    "encode_write[render_clips]": 17.55,
+    "encode_write[render_video]": 1.56,
+    "model_init": 0.14,
+    "pose_inference": 20.98,
+    "pose_pass_total": 21.55,
+    "render_clips_total": 20.81,
+    "render_video_total": 4.37,
+    "rep_detect_score": 0.04,
+    "seek[render_clips]": 0.2
+  },
+  "counts": {
+    "model_init": 1,
+    "decode[pose]": 1023,
+    "pose_inference": 1022,
+    "poses_returned": 1011,
+    "pose_pass_total": 1,
+    "camera_view": 1,
+    "active_arm": 1,
+    "rep_detect_score": 1,
+    "alerts": 1,
+    "decode[render_video]": 1022,
+    "draw_skeleton": 1022,
+    "encode_write[render_video]": 1023,
+    "render_video_total": 1,
+    "seek[render_clips]": 24,
+    "decode[render_clips]": 1001,
+    "encode_write[render_clips]": 4100,
+    "render_clips_total": 1
+  }
+}
