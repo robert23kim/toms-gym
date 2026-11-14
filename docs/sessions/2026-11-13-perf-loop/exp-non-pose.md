@@ -21,19 +21,20 @@ Engine branch `perf/exp-non-pose` (worktree `/Users/toka/code/bowling-app/perf-e
 | squat_f47a8848 (360p) | 48.1 (n=2, one cold) | 46.3 (n=2) | 40.1 (n=3, 36.9-43.2) | 1.20x | 1.15x |
 | plank_9600f455 (720p) | 41.4 (n=1) | 55.1 (n=3) | 33.7 (n=4, 31.1-36.8) | 1.23x | 1.64x |
 
-- **What those ratios do and do not prove.** Off and on ran on different instances (a revision's env is fixed), and instances that give the same result still differ in speed: flags-off against base on the same class ranges from -8% to +33%. So the totals carry that much instance noise. The part that does not depend on the instance is the stage split, which held on all 27 flags-on requests: `reencode_s` 0.7-7.3 -> 0.0, `clips_s` 6-23 -> 0.0 for pushup and situp (4.1 -> 0.8 for squat), and `analyze_s` for the 720p pushup pushup_e18a31d1 on class B 94.5-102.5 -> 55.0-61.9.
-- **Results did not change.** Flags off: all 8 summaries are byte-identical to the base image's. Flags on: `compare.py` passes on all 8 in the prod image, and all 27 Cloud Run responses match the base run of their host class under the strict gates (50 of 50 responses across base/off/on classified, 0 matched neither class).
-- **Output videos pass a new artifact gate on all 8 fixtures**: H.264, yuv420p, moov before mdat, same frame count / size / fps as the old upload, every plane SSIM >= 0.9715 against the old upload, 4-19% smaller. Against a lossless render of the same frames the new 720p pushup video is marginally closer than the old one (SSIM 0.9795 vs 0.9784, PSNR 39.78 vs 39.64 dB).
+- **What those ratios do and do not prove.** Off and on ran on different instances (a revision's env is fixed), and instances that give the same result still differ in speed: flags-off against base on the same class ranges from -8% to +33%. So the totals carry that much instance noise. The part that does not depend on the instance is the stage split, which held on all 17 flags-on requests against the 17 flags-off ones: `reencode_s` 0.7-7.3 -> 0.0, `clips_s` 6.0-20.9 -> 0.0 for pushup and situp (4.0-4.1 -> 0.7-0.8 for squat), and `analyze_s` for the 720p pushup pushup_e18a31d1 on class B 94.5-102.5 -> 55.0-61.9.
+- **Results did not change.** Flags off: all 8 summaries are byte-identical to the base image's. Flags on: `compare.py` passes on all 8 in the prod image, and all 17 flags-on Cloud Run responses match the base run of their host class under the strict gates (50 responses classified: 16 base, 17 off, 17 on; 0 matched neither class).
+- **Output videos pass a new artifact gate on all 8 fixtures**: H.264 High at the same level as the old upload, yuv420p, moov before mdat, same frame count / size / fps as the old upload, every plane SSIM >= 0.9715 against the old upload, 4-19% smaller. Against a lossless render of the same frames the new 720p pushup video is marginally closer than the old one (SSIM 0.9795 vs 0.9784, PSNR 39.78 vs 39.64 dB).
 
 ## What is NOT covered
 
+- **The encoder flag without the clip gate ran once, on the laptop image only.** `LIFT_VIDEO_ENCODER=ffmpeg` alone on pushup_e18a31d1 (96 clips through pipes, up to 12 encoders alive) passes `compare.py`, keeps all 96 `clip_url` paths, and its annotated video and 8 kept clips pass the artifact gate (SSIM 0.9789-0.9799, 13-18% smaller), with no fallback. Its non-pose time was 68.4 s against 86.3 and 101.2 s for flags off (n=1, different load). It did not run on Cloud Run, and memory with 12 encoders at 720p was not measured. On Cloud Run the encoder flag was only ever on together with the clip gate, so squat and plank are the only Cloud Run evidence for the encoder by itself. Enable the pair.
 - **No on-run landed on a class-A host.** Both flags-on instances gave class-B results. Nothing in the change is host dependent, but it was not observed there.
 - **Old APK web assets.** The proof that pushup/situp clips are never shown is from the current frontend source (`perf/upload-analysis-2026-11-13` and `feat/100-club` are identical in the three files). An older build that still showed per-rep cards for those lifts would fall back to seeking in the annotated video, because `hasClips` is also true when `best_time_s` and `worst_time_s` exist. I did not run an old build.
-- **Rendered in a browser: not done.** The gate is ffprobe + SSIM + three side-by-side crops I looked at (old | new | lossless: same frame, same overlay, same colours). No file was played in Chrome or on a phone.
+- **Rendered in a browser: not done.** The gate is ffprobe + SSIM + three side-by-side crops I looked at (old | new | lossless: same frame, same overlay, same colours). Old and new uploads have the same codec parameters (`h264, High, avc1, yuv420p`, level 3.1 for the 720p annotated video and 2.1 for a squat clip, 2 B-frames). No file was played in Chrome or on a phone.
 - **Squat on the laptop shows no gain** (wall 0.91x-0.96x, pose noise of +-15% under a load average of 50 swamps a 5 s effect). The squat claim rests on Cloud Run only (n=3 vs n=2).
 - **Plank fallback branches** (ffmpeg dies mid-render, zero sampled frames) are code-read only; the plank happy path has a unit test and 4 Cloud Run runs.
 - **Unit tests ran on the laptop venv** (Python 3.13, ffmpeg 9), not inside the image (Python 3.10, Debian ffmpeg). The image path is covered by the 8-fixture runs, not by pytest.
-- **The ~9 s upload stall** (4 of 50 perf requests: 2 off, 2 on; 1 of the last 30 prod lifting requests, 2026-11-12) is not caused by the flags and not explained. It is inside `upload_from_filename`.
+- **The ~9 s upload stall** (4 of my 34 perf requests: 2 off, 2 on; 0 of the 16 base requests; 1 of the last 30 prod lifting requests, 2026-11-12) is not caused by the flags and not explained. It is inside `upload_from_filename`.
 - `run_local.py` does not run the Flask route. The route branch is covered by two new tests in `tests/test_service_app.py` and by the Cloud Run runs.
 
 ## Env flags
@@ -73,7 +74,7 @@ All run on outputs of the prod image with the worktree mounted (`run_prod_image.
 | B `compare.py` vs base image (strict) | pass, 8 of 8 |
 | B key-path diff | pass, 8 of 8 |
 | B annotated video artifact gate vs A | pass, 8 of 8; min plane SSIM 0.9786-0.9848; bytes -3.8% to -19.2% |
-| Cloud Run responses vs same-class base reference | off 23 of 23, on 27 of 27 |
+| Cloud Run responses vs same-class base reference | off 17 of 17, on 17 of 17 |
 | Cloud Run artifact gate (downloaded uploads) | pass: annotated squat, pushup_e18a31d1, situp_667a8480 and the 4 rep-1 squat clips |
 | flag really on, laptop | A logs: 0 `H264_DIRECT`/`METRIC_CLIPS skipped` lines and 29-105 ffmpeg re-encodes per rep-lift fixture; B logs: 0 re-encodes, no `clips/` dir for pushup and situp, squat uploads 48 clips with 0 re-encodes |
 | flag really on, Cloud Run logs | `np-on2`: 0 `Re-encoding to H.264`, 255 `H264_DIRECT wrote`, 9 `METRIC_CLIPS skipped` at count time, no WARNING lines; `np-off`: 539 re-encodes, 0 of the others |
@@ -83,7 +84,7 @@ The two gates I wrote were mutation-checked, and both first versions had a hole:
 - `artifact_check.py`: dropped frames, mp4v codec, no faststart, yuv444p, 30 fps and a horizontal flip all FAIL. A 40 degree hue shift first PASSED (ffmpeg's `All` SSIM is luma weighted); the gate now takes the worst plane and it fails at 0.9227 < 0.95. Pairing frames by timestamp also under-reported old vs new as 0.90, because the two muxers' timestamps differ by microseconds; frames are now paired by index.
 - `keydiff.py`: a report missing `form_score`, or missing `clip_url` without `--expect-no-clips`, FAILS. One metric losing `status` first PASSED (list indexes were collapsed); paths are now indexed and it fails.
 
-Flags off equals base timing: on the laptop round 2 the non-pose seconds are 105.2 (image code) vs 101.2 (worktree, off) on pushup_e18a31d1 and 100.8 vs 95.9 on situp_667a8480. On Cloud Run class A, flags off vs base is 135.6 vs 147.2, 159.5 vs 166.5, 213.7 vs 213.6, 140.1 vs 148.3 (pushup_e18a31d1, situp_16b6ca35, situp_667a8480, situp_c9dec98b).
+Flags off against base timing: on the laptop round 2 the non-pose seconds are 105.2 (image code) vs 101.2 (worktree, off) on pushup_e18a31d1, 100.8 vs 95.9 on situp_667a8480 and 15.3 vs 18.0 on squat. On Cloud Run, flags off vs base on class A is 135.6 vs 147.2, 159.5 vs 166.5, 213.7 vs 213.6, 140.1 vs 148.3 and 45.3 vs 49.3 (pushup_e18a31d1, situp_16b6ca35, situp_667a8480, situp_c9dec98b, plank), and on class B 67.0 vs 73.2, 120.8 vs 130.0, 46.3 vs 48.1, but 209.9 vs 185.3 and 55.1 vs 41.4 (pushup_3c66c85e, pushup_e18a31d1, squat, then situp_667a8480 and plank). The flags-off code is the base code path, so that -8% to +33% spread is the instance, and it is the error bar on every Cloud Run total above.
 
 ## Timing detail
 
@@ -106,6 +107,20 @@ Emulated prod image on the laptop, 4 CPUs, sequential base, A, B. wall / pose / 
 | plank_9600f455 | 1 | - | 85.9 wall | 80.7 wall | - |
 
 All rounds: `exp-non-pose/image/summary.md`.
+
+Which flag saves what, from the same laptop runs (seconds; the clip gate removes the clip path, the encoder shortens the annotated path):
+
+| fixture | round | annotated path off: render + re-encode | on: render | clip path off: render + clips stage | on |
+|---|---|---|---|---|---|
+| pushup_e18a31d1 | 1 | 8.1 + 9.2 = 17.3 | 13.3 | 24.6 + 44.0 = 68.7 | 0.0 (gate) |
+| pushup_e18a31d1 | 2 | 14.1 + 9.9 = 24.0 | 13.4 | 29.6 + 47.1 = 76.7 | 0.0 (gate) |
+| pushup_e18a31d1, encoder flag only | 1 | - | 14.9 | - | 53.1 (pipes, 96 clips) |
+| situp_667a8480 | 1 | 27.0 + 21.5 = 48.5 | 25.9 | 33.1 + 35.4 = 68.5 | 0.0 (gate) |
+| situp_667a8480 | 2 | 17.6 + 16.0 = 33.6 | 23.1 | 30.6 + 30.5 = 61.2 | 0.0 (gate) |
+| squat_f47a8848 | 1 | 1.4 + 1.2 = 2.6 | 1.5 | 3.3 + 7.5 = 10.8 | 6.8 (pipes) |
+| squat_f47a8848 | 2 | 1.9 + 3.0 = 4.9 | 3.5 | 4.5 + 8.3 = 12.8 | 13.8 (pipes) |
+
+So the clip gate is most of the pushup and situp win, the encoder takes a further quarter to a half off the annotated path at 720p, and the encoder's clip path is a wash for squat in emulation.
 
 ## What I tried, including what failed
 
@@ -159,4 +174,4 @@ Mutation check, each restored from an in-memory copy and re-read:
 
 - `exp-non-pose/harness/`: private copies of `run_local.py` (adds the uploaded-file record, re-encode counter, kept annotated video and rep-1/2 clips), `run_local.sh`, `run_prod_image.sh`, `compare.py`; new `artifact_check.py`, `keydiff.py`, `classify_cloudrun.py`, `summarize_cloudrun.py`, `summarize_image.py`, `sweep_image.sh`, `ffmpeg_lossless.py`.
 - `exp-non-pose/cloudrun/`: bench outputs per tag (`np-off-all`, `np-off-key`, `np-off-plank`, `np-on-all`, `np-on-key`, `np-on-plank`), `classify.tsv`, `summary.md`, `revisions/`.
-- `exp-non-pose/image/`: summaries and timings per config and round, `sweep.progress`, `summary.md`. `exp-non-pose/image-gates.txt`.
+- `exp-non-pose/image/`: summaries and timings per config and round (`E-r1` = encoder flag only), `sweep.progress`, `summary.md`. `exp-non-pose/image-gates.txt`.

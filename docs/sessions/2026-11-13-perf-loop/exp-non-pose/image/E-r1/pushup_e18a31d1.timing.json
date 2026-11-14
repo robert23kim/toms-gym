@@ -1,0 +1,35 @@
+{
+  "fixture": "pushup_e18a31d1",
+  "lift_type": "pushup",
+  "worktree": "/app",
+  "code_hash": "dbd08903c0b9eda2",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true",
+    "LIFT_VIDEO_ENCODER": "ffmpeg"
+  },
+  "stages": {
+    "download": 0.01,
+    "analyze": 128.91,
+    "reencode": 0.0,
+    "artifact_copy": 0.01,
+    "clips": 0.03
+  },
+  "analyze_breakdown": {
+    "pose": 60.57,
+    "render_video": 14.89,
+    "render_clips": 53.05
+  },
+  "wall_s": 128.96,
+  "artifact": {
+    "ffmpeg_reencode_runs": 0,
+    "clips_uploaded": 96,
+    "clips_reencoded": 0,
+    "annotated_uploaded_from": "annotated.mp4",
+    "annotated_bytes": 8055905,
+    "clips_dir_exists": true,
+    "clip_bytes": 24806182
+  },
+  "total_reps": 24,
+  "total_in_plank_s": null
+}
