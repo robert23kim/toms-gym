@@ -55,11 +55,15 @@ export interface Identity {
 export const remember = ({ userId, email }: Identity): void => {
   const id = userId != null && userId !== "" ? String(userId) : null;
   const mail = email && email.includes("@") ? email.trim() : null;
+  const previous = getUserId();
+  const someoneElse = !!id && !!previous && previous !== id && !mail;
   if (id) write(USER_ID_KEY, id);
   if (mail) write(EMAIL_KEY, mail);
+  if (someoneElse) drop(EMAIL_KEY);
   if (!isNative()) return;
   if (id) Preferences.set({ key: USER_ID_KEY, value: id }).catch(() => {});
   if (mail) Preferences.set({ key: EMAIL_KEY, value: mail }).catch(() => {});
+  if (someoneElse) Preferences.remove({ key: EMAIL_KEY }).catch(() => {});
 };
 
 /** Clears identity everywhere; await it before reloading or the APK restores it on boot. */

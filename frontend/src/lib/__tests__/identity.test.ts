@@ -141,3 +141,38 @@ describe("identity in the APK", () => {
     expect(getUserId()).toBeNull();
   });
 });
+
+describe("a different athlete signs in on this device", () => {
+  test("the previous athlete's email is dropped when only the new id is known", () => {
+    store.set("userId", "B");
+    store.set("userEmail", "b@example.com");
+    remember({ userId: "A" });
+    expect(getUserId()).toBe("A");
+    expect(getEmail()).toBeNull();
+  });
+
+  test("the same athlete keeps the remembered email", () => {
+    store.set("userId", "A");
+    store.set("userEmail", "a@example.com");
+    remember({ userId: "A" });
+    expect(getEmail()).toBe("a@example.com");
+  });
+
+  test("a first id on a device that only knew an email keeps it", () => {
+    store.set("userEmail", "a@example.com");
+    remember({ userId: "A" });
+    expect(getEmail()).toBe("a@example.com");
+  });
+
+  test("native: the mirror drops the old email too", async () => {
+    mockIsNative.mockReturnValue(true);
+    store.set("userId", "B");
+    store.set("userEmail", "b@example.com");
+    mockPrefs.set("userId", "B");
+    mockPrefs.set("userEmail", "b@example.com");
+    remember({ userId: "A" });
+    await Promise.resolve();
+    expect(mockPrefs.get("userId")).toBe("A");
+    expect(mockPrefs.has("userEmail")).toBe(false);
+  });
+});
