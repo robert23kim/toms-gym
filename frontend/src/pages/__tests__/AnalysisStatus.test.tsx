@@ -135,6 +135,16 @@ describe("AnalysisStatus", () => {
     expect(screen.getByText(/3 athletes on the board/)).toBeInTheDocument();
   });
 
+  it("says 1 athlete, not 1 athletes, when one athlete is on the board", async () => {
+    (axios.get as jest.Mock).mockImplementation((url: string) =>
+      url.includes("/leaderboard")
+        ? Promise.resolve({ data: { ...board, rows: board.rows.slice(0, 1) } })
+        : Promise.resolve({ data: { processing_status: "processing" } }),
+    );
+    renderAt("lifting", "a13", "?challenge=c1");
+    expect(await screen.findByText(/1 athlete on the board/)).toBeInTheDocument();
+  });
+
   it("sends Upload Another on a challenge result back to that board's form, not the generic upload page", async () => {
     routeGet({ processing_status: "completed", user_id: "u9", competition_id: "c1" });
     renderAt("lifting", "a10", "?challenge=c1");

@@ -235,7 +235,7 @@ describe("Profile — Forget Me on a phone", () => {
     (axios.get as jest.Mock).mockResolvedValue({ data: profilePayload() });
     renderProfile();
 
-    await waitFor(() => expect(screen.getByText("wonder725")).toBeInTheDocument());
+    await waitFor(() => expect(screen.getByText("lift-history")).toBeInTheDocument());
     expect(screen.queryByRole("button", { name: "Forget Me" })).toBeNull();
   });
 
