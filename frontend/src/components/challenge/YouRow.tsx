@@ -6,6 +6,7 @@ import { formatScoreValue, scoreUnit } from "./metric";
 import { athleteNickname } from "../../lib/plankStats";
 import NicknameBadge from "./NicknameBadge";
 import { StreakFlame, hasWeeks, thisWeekText } from "./ConsistencyMeta";
+import { getEmail } from "../../lib/identity";
 
 // Highlighted "You" row. When the viewer has an entry it sits inline at their
 // actual rank showing rank + score; when they don't, it's an upload prompt.
@@ -46,6 +47,7 @@ const YouRow: React.FC<YouRowProps> = (props) => {
   // Narrow via `in` — a boolean discriminant doesn't narrow under the repo's
   // strictNullChecks:false config, but the operator narrowing does.
   if ("findProfileHref" in props) {
+    const email = getEmail();
     return (
       <Link
         to={props.findProfileHref}
@@ -62,7 +64,7 @@ const YouRow: React.FC<YouRowProps> = (props) => {
               Find your profile
             </div>
             <div className="truncate text-[11px] text-[#7fb0ff]/70">
-              This device doesn't know who you are yet
+              {email ? `Is this you? ${email}` : "This device doesn't know who you are yet"}
             </div>
           </div>
         </div>

@@ -145,3 +145,18 @@ describe("YouRow", () => {
     );
   });
 });
+
+describe("YouRow for a device that knows an email but no profile", () => {
+  afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
+
+  it("asks whether the remembered email is you instead of saying the device knows nobody", () => {
+    (localStorage.getItem as jest.Mock).mockImplementation((k: string) => (k === "userEmail" ? "sam@example.com" : null));
+    render(
+      <MemoryRouter>
+        <YouRow findProfileHref="/find-profile" />
+      </MemoryRouter>,
+    );
+    expect(screen.getByTestId("you-row-unknown")).toHaveTextContent("Is this you? sam@example.com");
+    expect(screen.queryByText("This device doesn't know who you are yet")).toBeNull();
+  });
+});
