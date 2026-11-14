@@ -31,6 +31,10 @@ def shape_lift_row(row: Mapping) -> dict:
     report_lift_type = get("report_lift_type")
     if isinstance(report_lift_type, str) and report_lift_type.strip().lower() == "auto":
         report_lift_type = None
+    # An attempt still waiting for its lift type counts nothing yet.
+    pending_type = get("lift_type") == "Auto"
+    if pending_type:
+        report_lift_type = None
     return {
         "attempt_id": get("attempt_id"),
         "competition_id": get("competition_id"),
@@ -41,7 +45,7 @@ def shape_lift_row(row: Mapping) -> dict:
         "status": get("status"),
         "analysis_status": get("analysis_status"),
         "grade": get("grade"),
-        "total_reps": _to_int(get("total_reps")),
-        "hold_s": _to_float(get("hold_s")),
+        "total_reps": None if pending_type else _to_int(get("total_reps")),
+        "hold_s": None if pending_type else _to_float(get("hold_s")),
         "steadiness": _to_float(get("steadiness")),
     }

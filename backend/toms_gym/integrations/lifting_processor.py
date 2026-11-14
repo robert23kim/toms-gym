@@ -264,9 +264,8 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
                 logger.info(f"No lift type detected for attempt {attempt_id}; stays Auto")
         session.commit()
         status = 'completed'
-        if detected:
-            from toms_gym.routes.competition_routes import invalidate_champions_cache
-            invalidate_champions_cache()
+        from toms_gym.routes.competition_routes import invalidate_champions_cache
+        invalidate_champions_cache()
         logger.info(f"Lifting analysis completed: result={result_id}")
 
         # Best-effort: email the uploader a short link. Never blocks/fails

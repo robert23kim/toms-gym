@@ -301,7 +301,9 @@ def test_dispatch_sends_auto_and_the_competition_candidates(monkeypatch):
 
 
 def test_explicit_lift_type_payload_is_unchanged(monkeypatch):
+    competition_routes._champions_cache.update(at=1e12, data=[{"stale": True}])
     session, engine = _run_job(monkeypatch, "Pushup", _report())
+    assert competition_routes._champions_cache["data"] is None
     assert engine.calls[0] == {"video_url": "https://x/v.mp4", "attempt_id": ATTEMPT_ID,
                                "lift_type": "pushup"}
     assert _sqls(session, 'JOIN "Competition"') == []
@@ -399,6 +401,16 @@ def test_lift_history_never_shows_the_engine_auto_label():
     assert shape_lift_row(row)["lift_type"] == "Pushup"
     assert shape_lift_row({"lift_type": "Auto"})["lift_type"] == "Auto"
     assert shape_lift_row({"lift_type": "Pushup", "report_lift_type": "pushup"})["lift_type"] == "pushup"
+
+
+def test_lift_history_auto_attempt_counts_nothing_whatever_the_report_says():
+    row = shape_lift_row({"lift_type": "Auto", "report_lift_type": "pushup",
+                          "total_reps": "12", "hold_s": "30"})
+    assert row["lift_type"] == "Auto"
+    assert row["total_reps"] is None
+    assert row["hold_s"] is None
+    kept = shape_lift_row({"lift_type": "Pushup", "total_reps": "12"})
+    assert kept["total_reps"] == 12
 
 
 # --------------------------------------------------------------------------- #
@@ -509,7 +521,9 @@ def _change(client, monkeypatch, session, lift_type="Situp", user_id=USER_ID, at
 
 def test_change_404_on_unknown_attempt(client, monkeypatch, enqueued):
     assert _change(client, monkeypatch, _change_session(None)).status_code == 404
-    assert _change(client, monkeypatch, _change_session(None), attempt_id="not-a-uuid").status_code == 404
+    session = _change_session(_owner_row())
+    assert _change(client, monkeypatch, session, attempt_id="not-a-uuid").status_code == 404
+    session.execute.assert_not_called()
     assert enqueued == []
 
 
