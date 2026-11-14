@@ -14,6 +14,22 @@ import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
 
+def code_hash(root):
+    """sha256 over every .py under src/ and service/ (relative path + bytes)."""
+    import hashlib
+    h = hashlib.sha256()
+    for sub in ("src", "service"):
+        for dp, dns, fns in sorted(os.walk(os.path.join(root, sub))):
+            dns[:] = sorted(d for d in dns if d != "__pycache__")
+            for fn in sorted(fns):
+                if fn.endswith(".py"):
+                    fp = os.path.join(dp, fn)
+                    h.update(os.path.relpath(fp, root).encode())
+                    with open(fp, "rb") as f:
+                        h.update(f.read())
+    return h.hexdigest()[:16]
+
+
 LIFT_TYPES = {"situp", "pushup", "squat", "plank", "deadlift", "bicep_curl", "bench_press"}
 
 
@@ -24,6 +40,7 @@ def main():
     ap.add_argument("--lift-type")
     ap.add_argument("--out-dir", required=True)
     ap.add_argument("--keep-tmp", action="store_true")
+    ap.add_argument("--expect-code-hash")
     a = ap.parse_args()
 
     worktree = os.path.realpath(a.worktree)
@@ -33,6 +50,9 @@ def main():
     if lift_type not in LIFT_TYPES:
         sys.exit(f"unknown lift type {lift_type!r}")
 
+    chash = code_hash(worktree)
+    if a.expect_code_hash and a.expect_code_hash != chash:
+        sys.exit(f"CODE HASH FAIL: {worktree} has {chash}, expected {a.expect_code_hash} (mount missing?)")
     from src.lifting import pipeline
     from src.lifting import plank_analyzer
     from src.lifting.pose import estimator as est_mod
@@ -109,7 +129,7 @@ def main():
     summary_path = os.path.join(a.out_dir, f"{name}.summary.json")
     with open(summary_path, "w") as f:
         json.dump(report, f, indent=2, default=str)
-    timing = {"fixture": name, "lift_type": lift_type, "worktree": worktree,
+    timing = {"fixture": name, "lift_type": lift_type, "worktree": worktree, "code_hash": chash,
               "env": {k: os.environ.get(k) for k in os.environ.get("PERF_FLAGS", "").split() if k},
               "stages": stages, "analyze_breakdown": sub, "wall_s": total,
               "total_reps": report.get("total_reps"), "total_in_plank_s": report.get("total_in_plank_s")}
