@@ -1,7 +1,9 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
+import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter, Route, Routes } from "react-router-dom";
+import axios from "axios";
+import BowlingChallenge from "../BowlingChallenge";
 import FindProfilePage from "../FindProfilePage";
 import FindProfile from "../../components/FindProfile";
 import SignIn from "../SignIn";
@@ -74,5 +76,37 @@ describe("email pre-fill from the remembered identity", () => {
       </MemoryRouter>,
     );
     expect(screen.getByRole("textbox")).toHaveValue("");
+  });
+});
+
+describe("BowlingChallenge upload email", () => {
+  beforeAll(() => {
+    Element.prototype.scrollIntoView = jest.fn();
+  });
+  afterEach(() => (localStorage.getItem as jest.Mock).mockReset());
+
+  test.each([
+    ["pre-fills the remembered email", { userEmail: REMEMBERED }, REMEMBERED],
+    ["stays empty on a first run", {}, ""],
+  ])("%s", async (_name, values, want) => {
+    storage(values);
+    (axios.get as jest.Mock).mockResolvedValue({
+      data: {
+        competition: { id: "c1", name: "Bowl", lifttypes: ["Bowling"], start_date: "2026-01-01", end_date: "2099-01-01" },
+        results: [],
+        participants: [],
+      },
+    });
+    const { container } = render(
+      <MemoryRouter initialEntries={["/bowling/c1"]}>
+        <Routes>
+          <Route path="/bowling/:id" element={<BowlingChallenge />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    await new Promise((r) => setTimeout(r, 80));
+    for (const b of Array.from(container.querySelectorAll("button"))) if (/upload/i.test(b.textContent || "")) b.click();
+    await waitFor(() => expect(emailInput(container)).not.toBeNull());
+    expect(emailInput(container)!.value).toBe(want);
   });
 });
