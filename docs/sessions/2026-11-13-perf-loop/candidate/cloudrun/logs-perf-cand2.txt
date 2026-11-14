@@ -1,0 +1,704 @@
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-plank_9600f455-perf-cand2-r1 download_s=0.37 analyze_s=35.23 reencode_s=0.0 upload_s=0.23 clips_s=0.0 total_s=35.84
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-plank_9600f455-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_55qi2jm6/annotated.mp4
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_55qi2jm6/annotated.mp4 frames=1293
+W0000 00:00:1794635841.230080     859 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.223285     894 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.211609     893 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.210509     875 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.210205     867 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.185649     846 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.185338     903 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635841.182290     876 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635840.982700     866 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.981126     862 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.980683     897 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.976980     893 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.975937     852 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.975110     901 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.974360     877 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.973389     890 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635840.630060     879 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.629841     852 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.628149     900 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.626166     877 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.624724     897 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.622669     857 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.619996     858 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635840.619063     885 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 24 SKIPPED: valid_ratio=0.26 < 0.5 (frames=23, valid=6)
+[ANALYZE] rep 23 ACCEPTED: valid_ratio=0.60, angles=12
+[ANALYZE] rep 22 ACCEPTED: valid_ratio=1.00, angles=56
+[ANALYZE] rep 21 ACCEPTED: valid_ratio=1.00, angles=44
+[ANALYZE] rep 20 ACCEPTED: valid_ratio=1.00, angles=45
+[ANALYZE] rep 19 ACCEPTED: valid_ratio=1.00, angles=39
+[ANALYZE] rep 18 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 17 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 16 ACCEPTED: valid_ratio=1.00, angles=36
+[ANALYZE] rep 15 ACCEPTED: valid_ratio=1.00, angles=37
+[ANALYZE] rep 14 ACCEPTED: valid_ratio=1.00, angles=38
+[ANALYZE] rep 13 ACCEPTED: valid_ratio=1.00, angles=39
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=37
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=1.00, angles=37
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=1.00, angles=38
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=1.00, angles=39
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=1.00, angles=43
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=1.00, angles=43
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=41
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=1.00, angles=42
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=1.00, angles=64
+[ANALYZE] rep 0 ACCEPTED: valid_ratio=1.00, angles=66
+[ANALYZE] chosen view=front arm=both reps=25
+[ANALYZE] alt view=side arm=left: 22 reps
+[REP_SEG] peaks found (after boundary): 23
+[REP_SEG] camera=side arm=left signal: n=1022 nan%=4 min=48.6 max=179.7 range=131.1
+[ANALYZE] primary view=front arm=both: 25 reps
+[REP_SEG] peaks found (after boundary): 26
+[REP_SEG] camera=front arm=left signal: n=1022 nan%=3 min=32.5 max=543.9 range=511.4
+INFO:service.app:Downloaded video to /tmp/lifting_55qi2jm6/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-situp_c9dec98b-perf-cand2-r1 download_s=0.3 analyze_s=37.39 reencode_s=0.0 upload_s=0.24 clips_s=0.0 total_s=37.93
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-situp_c9dec98b-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_tz4gmwul/annotated.mp4
+INFO:src.lifting.pipeline:METRIC_CLIPS skipped lift_type=situp (SKIP_METRIC_CLIPS_FOR)
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_tz4gmwul/annotated.mp4 frames=1719
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=1719 bounds=[0,429,859,1289] sync_offsets=[0,0,0] extended_frames=0 worker_ready_s=[0.97,27.17,27.17,27.17] worker_init_s=[0.44,1.32,1.63,2.04] parallel_s=27.18 splice_s=0.22
+W0000 00:00:1794635802.833798    2659 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635802.447489    2672 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635802.204576    2668 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635801.304006    2687 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635801.199887    2673 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635801.117869    2688 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635801.110941    2658 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635801.104826    2680 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635801.070942    2669 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635800.998675    2687 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635800.985739    2680 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635800.978556    2663 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 30 ACCEPTED: valid_ratio=0.88, angles=43
+[ANALYZE] rep 29 ACCEPTED: valid_ratio=0.98, angles=63
+[ANALYZE] rep 28 ACCEPTED: valid_ratio=0.92, angles=71
+[ANALYZE] rep 27 ACCEPTED: valid_ratio=1.00, angles=46
+[ANALYZE] rep 26 ACCEPTED: valid_ratio=1.00, angles=46
+[ANALYZE] rep 25 ACCEPTED: valid_ratio=1.00, angles=104
+[ANALYZE] rep 24 ACCEPTED: valid_ratio=1.00, angles=39
+[ANALYZE] rep 23 ACCEPTED: valid_ratio=1.00, angles=68
+[ANALYZE] rep 22 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 21 ACCEPTED: valid_ratio=1.00, angles=67
+[ANALYZE] rep 20 ACCEPTED: valid_ratio=1.00, angles=59
+[ANALYZE] rep 19 ACCEPTED: valid_ratio=1.00, angles=55
+[ANALYZE] rep 18 ACCEPTED: valid_ratio=1.00, angles=37
+[ANALYZE] rep 17 ACCEPTED: valid_ratio=1.00, angles=64
+[ANALYZE] rep 16 ACCEPTED: valid_ratio=1.00, angles=48
+[ANALYZE] rep 15 ACCEPTED: valid_ratio=1.00, angles=97
+[ANALYZE] rep 14 ACCEPTED: valid_ratio=1.00, angles=70
+[ANALYZE] rep 13 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=68
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=1.00, angles=45
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=1.00, angles=50
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=1.00, angles=52
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=1.00, angles=59
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=59
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=1.00, angles=54
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=0.98, angles=52
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=59
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=49
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=1.00, angles=44
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=1.00, angles=42
+[ANALYZE] rep 0 ACCEPTED: valid_ratio=1.00, angles=52
+[ANALYZE] chosen view=side arm=right reps=31
+[ANALYZE] primary view=side arm=right: 33 reps
+[REP_SEG] peaks found (after boundary): 34
+[REP_SEG] camera=side arm=right signal: n=1976 nan%=1 min=0.0 max=177.1 range=177.1
+W0000 00:00:1794635800.131278    2522 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635800.077672    2523 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:service.app:Downloaded video to /tmp/lifting_tz4gmwul/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-situp_667a8480-perf-cand2-r1 download_s=0.36 analyze_s=50.97 reencode_s=0.0 upload_s=0.28 clips_s=0.0 total_s=51.6
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-situp_667a8480-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_au978llb/annotated.mp4
+INFO:src.lifting.pipeline:METRIC_CLIPS skipped lift_type=situp (SKIP_METRIC_CLIPS_FOR)
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_au978llb/annotated.mp4 frames=1976
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=1976 bounds=[0,494,988,1482] sync_offsets=[13,0,1] extended_frames=48 worker_ready_s=[0.95,32.6,35.52,35.52] worker_init_s=[0.42,1.16,1.9,2.26] parallel_s=35.53 splice_s=3.12
+W0000 00:00:1794635750.630903    2381 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635750.245191    2385 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635749.522588    2391 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635748.786378    2404 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635748.630669    2391 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635748.626992    2398 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635748.625548    2386 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635748.625299    2380 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635748.516451    2391 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635748.514387    2398 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635748.513262    2386 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635748.504663    2380 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 31 ACCEPTED: valid_ratio=1.00, angles=63
+[ANALYZE] rep 30 ACCEPTED: valid_ratio=0.87, angles=72
+[ANALYZE] rep 29 ACCEPTED: valid_ratio=0.88, angles=71
+[ANALYZE] rep 28 ACCEPTED: valid_ratio=0.90, angles=80
+[ANALYZE] rep 27 ACCEPTED: valid_ratio=1.00, angles=79
+[ANALYZE] rep 26 ACCEPTED: valid_ratio=1.00, angles=78
+[ANALYZE] rep 25 ACCEPTED: valid_ratio=0.97, angles=76
+[ANALYZE] rep 24 ACCEPTED: valid_ratio=0.95, angles=73
+[ANALYZE] rep 23 ACCEPTED: valid_ratio=0.91, angles=67
+[ANALYZE] rep 22 ACCEPTED: valid_ratio=1.00, angles=64
+[ANALYZE] rep 21 ACCEPTED: valid_ratio=0.92, angles=66
+[ANALYZE] rep 20 ACCEPTED: valid_ratio=0.92, angles=68
+[ANALYZE] rep 19 ACCEPTED: valid_ratio=0.89, angles=65
+[ANALYZE] rep 18 ACCEPTED: valid_ratio=0.92, angles=70
+[ANALYZE] rep 17 ACCEPTED: valid_ratio=0.96, angles=73
+[ANALYZE] rep 16 ACCEPTED: valid_ratio=1.00, angles=73
+[ANALYZE] rep 15 ACCEPTED: valid_ratio=1.00, angles=71
+[ANALYZE] rep 14 ACCEPTED: valid_ratio=1.00, angles=75
+[ANALYZE] rep 13 ACCEPTED: valid_ratio=0.92, angles=68
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=78
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=0.96, angles=75
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=0.92, angles=71
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=0.84, angles=31
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=0.91, angles=40
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=76
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=0.93, angles=79
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=0.94, angles=79
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=82
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=79
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=0.90, angles=74
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=0.95, angles=97
+[ANALYZE] rep 0 ACCEPTED: valid_ratio=0.69, angles=68
+[ANALYZE] chosen view=side arm=right reps=32
+[ANALYZE] primary view=side arm=right: 33 reps
+[REP_SEG] peaks found (after boundary): 34
+[REP_SEG] camera=side arm=right signal: n=2618 nan%=13 min=10.5 max=179.5 range=169.0
+W0000 00:00:1794635747.660494    2241 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635747.608823    2245 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:service.app:Downloaded video to /tmp/lifting_au978llb/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-situp_16b6ca35-perf-cand2-r1 download_s=0.2 analyze_s=37.27 reencode_s=0.0 upload_s=0.2 clips_s=0.0 total_s=37.67
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-situp_16b6ca35-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_iaxamq2l/annotated.mp4
+INFO:src.lifting.pipeline:METRIC_CLIPS skipped lift_type=situp (SKIP_METRIC_CLIPS_FOR)
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_iaxamq2l/annotated.mp4 frames=2618
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=2618 bounds=[0,654,1309,1963] sync_offsets=[0,0,0] extended_frames=0 worker_ready_s=[0.94,30.71,31.86,31.89] worker_init_s=[0.41,0.7,0.94,1.09] parallel_s=31.9 splice_s=0.21
+W0000 00:00:1794635711.246712    2101 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635710.772345    2129 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635710.612707    2110 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635710.413324    2098 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635710.016982    2113 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635710.015736    2122 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635710.010654    2108 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635710.006062    2105 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635709.901331    2113 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635709.899243    2108 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635709.896944    2122 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635709.886685    2117 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 18 SKIPPED: valid_ratio=0.25 < 0.5 (frames=16, valid=4)
+[ANALYZE] rep 17 ACCEPTED: valid_ratio=0.57, angles=13
+[ANALYZE] rep 16 ACCEPTED: valid_ratio=0.84, angles=31
+[ANALYZE] rep 15 ACCEPTED: valid_ratio=1.00, angles=61
+[ANALYZE] rep 14 ACCEPTED: valid_ratio=1.00, angles=75
+[ANALYZE] rep 13 ACCEPTED: valid_ratio=1.00, angles=65
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=58
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=1.00, angles=67
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=1.00, angles=64
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=1.00, angles=73
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=1.00, angles=51
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=74
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=1.00, angles=43
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=1.00, angles=76
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=56
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=54
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=1.00, angles=68
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=1.00, angles=133
+[ANALYZE] rep 0 ACCEPTED: valid_ratio=0.98, angles=43
+[ANALYZE] chosen view=side arm=right reps=19
+[ANALYZE] alt view=front arm=both: 10 reps
+[REP_SEG] peaks found (after boundary): 12
+[REP_SEG] camera=front arm=left signal: n=1232 nan%=44 min=11.8 max=169.3 range=157.5
+[ANALYZE] primary view=side arm=right: 19 reps
+[REP_SEG] peaks found (after boundary): 20
+[REP_SEG] camera=side arm=right signal: n=1232 nan%=11 min=16.2 max=179.5 range=163.3
+W0000 00:00:1794635709.061748    1963 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635708.944071    1963 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:service.app:Downloaded video to /tmp/lifting_iaxamq2l/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-pushup_e18a31d1-perf-cand2-r1 download_s=0.22 analyze_s=25.68 reencode_s=0.0 upload_s=0.22 clips_s=0.0 total_s=26.12
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-pushup_e18a31d1-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_twc4oiab/annotated.mp4
+INFO:src.lifting.pipeline:METRIC_CLIPS skipped lift_type=pushup (SKIP_METRIC_CLIPS_FOR)
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_twc4oiab/annotated.mp4 frames=1022
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=1022 bounds=[0,255,511,766] sync_offsets=[0,0,0] extended_frames=0 worker_ready_s=[0.98,16.26,16.27,16.46] worker_init_s=[0.43,0.82,1.22,1.43] parallel_s=16.48 splice_s=0.23
+W0000 00:00:1794635684.150019     459 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635683.947642     454 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635683.620474     476 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635683.211728     471 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635683.045183     456 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635683.044618     477 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635683.040057     462 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635683.031836     471 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635682.930135     481 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635682.927493     462 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635682.925562     450 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635682.920925     474 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 24 ACCEPTED: valid_ratio=0.87, angles=20
+[ANALYZE] rep 23 ACCEPTED: valid_ratio=0.65, angles=11
+[ANALYZE] rep 22 ACCEPTED: valid_ratio=1.00, angles=21
+[ANALYZE] rep 21 ACCEPTED: valid_ratio=1.00, angles=56
+[ANALYZE] rep 20 ACCEPTED: valid_ratio=1.00, angles=31
+[ANALYZE] rep 19 ACCEPTED: valid_ratio=1.00, angles=33
+[ANALYZE] rep 18 ACCEPTED: valid_ratio=1.00, angles=33
+[ANALYZE] rep 17 ACCEPTED: valid_ratio=1.00, angles=29
+[ANALYZE] rep 16 ACCEPTED: valid_ratio=1.00, angles=30
+[ANALYZE] rep 15 ACCEPTED: valid_ratio=1.00, angles=32
+[ANALYZE] rep 14 ACCEPTED: valid_ratio=1.00, angles=30
+[ANALYZE] rep 13 ACCEPTED: valid_ratio=1.00, angles=32
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=36
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=1.00, angles=31
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=1.00, angles=30
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=1.00, angles=35
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=1.00, angles=35
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=34
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=1.00, angles=33
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=1.00, angles=42
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=40
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=35
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=1.00, angles=45
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=1.00, angles=51
+[ANALYZE] rep 0 ACCEPTED: valid_ratio=0.70, angles=30
+[ANALYZE] chosen view=front arm=both reps=25
+[ANALYZE] alt view=side arm=left: 22 reps
+[REP_SEG] peaks found (after boundary): 23
+[REP_SEG] camera=side arm=left signal: n=847 nan%=4 min=53.4 max=179.8 range=126.5
+[ANALYZE] primary view=front arm=both: 25 reps
+[REP_SEG] peaks found (after boundary): 26
+[REP_SEG] camera=front arm=left signal: n=847 nan%=2 min=15.9 max=557.3 range=541.4
+W0000 00:00:1794635682.035395     321 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635681.936820     316 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:service.app:Downloaded video to /tmp/lifting_twc4oiab/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-pushup_97b4aaf2-perf-cand2-r1 download_s=0.32 analyze_s=28.4 reencode_s=0.0 upload_s=0.21 clips_s=0.0 total_s=28.93
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-pushup_97b4aaf2-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_znaxdgf7/annotated.mp4
+INFO:src.lifting.pipeline:METRIC_CLIPS skipped lift_type=pushup (SKIP_METRIC_CLIPS_FOR)
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_znaxdgf7/annotated.mp4 frames=847
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=847 bounds=[0,211,423,635] sync_offsets=[0,1,0] extended_frames=0 worker_ready_s=[1.0,13.99,14.5,14.56] worker_init_s=[0.41,0.83,1.13,1.31] parallel_s=14.6 splice_s=0.27
+W0000 00:00:1794635659.826164     174 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635659.733380     179 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635659.557304     200 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635659.402918     196 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635658.840829     183 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635658.840427     181 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635658.836155     174 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635658.833445     187 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635658.720607     181 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635658.714829     172 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635658.714724     193 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635658.714289     183 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1794635657.604329      38 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635657.485506      37 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO:service.app:Downloaded video to /tmp/lifting_znaxdgf7/input.mp4
+  warnings.warn(message, FutureWarning)
+/usr/local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:212: FutureWarning: You are using a non-supported Python version (3.10.22). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-pushup_3c66c85e-perf-cand2-r1 download_s=0.16 analyze_s=18.29 reencode_s=0.0 upload_s=0.14 clips_s=0.0 total_s=18.59
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-pushup_3c66c85e-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_1fieult8/annotated.mp4
+INFO:src.lifting.pipeline:METRIC_CLIPS skipped lift_type=pushup (SKIP_METRIC_CLIPS_FOR)
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_1fieult8/annotated.mp4 frames=1232
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=1232 bounds=[0,308,616,924] sync_offsets=[0,0,0] extended_frames=0 worker_ready_s=[0.93,13.95,15.41,15.57] worker_init_s=[0.41,0.53,0.62,0.73] parallel_s=15.57 splice_s=0.21
+W0000 00:00:1794635633.461534    1836 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635632.647228    1851 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635632.606343    1824 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635632.510002    1827 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635632.298675    1824 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635632.294202    1841 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635632.289213    1845 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635632.272274    1848 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635632.173453    1830 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635632.169450    1823 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635632.166582    1831 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635632.155487    1835 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=53
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=1.00, angles=45
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=1.00, angles=53
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=1.00, angles=47
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=1.00, angles=48
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=53
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=1.00, angles=55
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=1.00, angles=55
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=63
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=60
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=1.00, angles=64
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=1.00, angles=46
+[ANALYZE] rep 0 SKIPPED: valid_ratio=0.48 < 0.5 (frames=21, valid=10)
+[ANALYZE] chosen view=side arm=right reps=13
+[ANALYZE] alt view=front arm=both: 1 reps
+[REP_SEG] peaks found (after boundary): 2
+[REP_SEG] camera=front arm=left signal: n=767 nan%=21 min=12.3 max=209.3 range=197.0
+[ANALYZE] primary view=side arm=right: 13 reps
+[REP_SEG] peaks found (after boundary): 14
+[REP_SEG] camera=side arm=right signal: n=767 nan%=17 min=75.8 max=180.0 range=104.2
+W0000 00:00:1794635631.363237    1686 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635631.274815    1685 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:service.app:Downloaded video to /tmp/lifting_1fieult8/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-squat_f47a8848-perf-cand2-r1 download_s=0.11 analyze_s=15.79 reencode_s=0.0 upload_s=0.12 clips_s=0.7 total_s=16.72
+INFO:service.app:Uploaded 60 metric clips for perf-bench-squat_f47a8848-perf-cand2-r1
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep12_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep12_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep12_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep12_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep11_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep11_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep11_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep11_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep10_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep10_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep10_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep10_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep9_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep9_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep9_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep9_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep8_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep8_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep8_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep8_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep7_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep7_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep7_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep7_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep6_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep6_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep6_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep6_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep5_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep5_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep5_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep5_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep4_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep4_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep4_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep4_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep3_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep3_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep3_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep3_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep2_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep2_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep2_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep2_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep1_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep1_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep1_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/clips/rep1_rom.mp4
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-squat_f47a8848-perf-cand2-r1/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting__8finujc/annotated.mp4
+INFO:src.lifting.pipeline:Generated metric clips in /tmp/lifting__8finujc/clips
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep12_shoulder_swing.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep12_elbow_stability.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep12_control.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep12_rom.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep11_shoulder_swing.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep11_elbow_stability.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep11_control.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep11_rom.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep10_shoulder_swing.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep10_elbow_stability.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep10_control.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep10_rom.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep9_shoulder_swing.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep9_elbow_stability.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep9_control.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep9_rom.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep8_shoulder_swing.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep8_elbow_stability.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep8_control.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep8_rom.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep7_shoulder_swing.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep7_elbow_stability.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep7_control.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep7_rom.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep6_shoulder_swing.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep6_elbow_stability.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep6_control.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep6_rom.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep5_shoulder_swing.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep5_elbow_stability.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep5_control.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep5_rom.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep4_shoulder_swing.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep4_elbow_stability.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep4_control.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep4_rom.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep3_shoulder_swing.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep3_elbow_stability.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep3_control.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep3_rom.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep2_shoulder_swing.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep2_elbow_stability.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep2_control.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep2_rom.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep1_shoulder_swing.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep1_elbow_stability.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep1_control.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/clips/rep1_rom.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting__8finujc/annotated.mp4 frames=767
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=767 bounds=[0,191,383,575] sync_offsets=[0,0,0] extended_frames=0 worker_ready_s=[0.96,8.66,10.22,10.22] worker_init_s=[0.4,0.5,0.52,0.57] parallel_s=10.23 splice_s=0.2
+W0000 00:00:1794635615.701940     998 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+[2026-11-14 05:53:35 +0000] [2] [INFO] Booting worker with pid: 2
+Default STARTUP TCP probe succeeded after 1 attempt for container "bowling-service-1" on port 8080.
+[2026-11-14 05:53:35 +0000] [1] [INFO] Using worker: sync
+[2026-11-14 05:53:35 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-11-14 05:53:35 +0000] [1] [INFO] Starting gunicorn 21.2.0
+W0000 00:00:1794635614.941878    1011 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635614.898077     996 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635614.847484    1001 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+Starting new instance. Reason: AUTOSCALING - Instance started due to configured scaling factors (e.g. CPU utilization, request throughput, etc.) or no existing capacity for current traffic.
+W0000 00:00:1794635614.702627    1009 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635614.689935    1024 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635614.689263    1008 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635614.685547    1019 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635614.577696    1008 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635614.575867    1020 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635614.572308    1019 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635614.568851    1001 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+[ANALYZE] rep 12 ACCEPTED: valid_ratio=1.00, angles=53
+[ANALYZE] rep 11 ACCEPTED: valid_ratio=1.00, angles=45
+[ANALYZE] rep 10 ACCEPTED: valid_ratio=1.00, angles=53
+[ANALYZE] rep 9 ACCEPTED: valid_ratio=1.00, angles=47
+[ANALYZE] rep 8 ACCEPTED: valid_ratio=1.00, angles=48
+[ANALYZE] rep 7 ACCEPTED: valid_ratio=1.00, angles=53
+[ANALYZE] rep 6 ACCEPTED: valid_ratio=1.00, angles=55
+[ANALYZE] rep 5 ACCEPTED: valid_ratio=1.00, angles=55
+[ANALYZE] rep 4 ACCEPTED: valid_ratio=1.00, angles=63
+[ANALYZE] rep 3 ACCEPTED: valid_ratio=1.00, angles=60
+[ANALYZE] rep 2 ACCEPTED: valid_ratio=1.00, angles=64
+[ANALYZE] rep 1 ACCEPTED: valid_ratio=1.00, angles=46
+[ANALYZE] rep 0 SKIPPED: valid_ratio=0.48 < 0.5 (frames=21, valid=10)
+[ANALYZE] chosen view=side arm=right reps=13
+[ANALYZE] alt view=front arm=both: 1 reps
+[REP_SEG] peaks found (after boundary): 2
+[REP_SEG] camera=front arm=left signal: n=767 nan%=21 min=12.3 max=209.3 range=197.0
+[ANALYZE] primary view=side arm=right: 13 reps
+[REP_SEG] peaks found (after boundary): 14
+[REP_SEG] camera=side arm=right signal: n=767 nan%=17 min=75.8 max=180.0 range=104.2
+W0000 00:00:1794635613.725105     861 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635613.619327     859 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+INFO:service.app:Downloaded video to /tmp/lifting__8finujc/input.mp4
+
+INFO:service.app:ANALYSIS_STAGES kind=lifting attempt=perf-bench-warmup-perf-cand2 download_s=0.21 analyze_s=22.79 reencode_s=0.0 upload_s=0.15 clips_s=0.77 total_s=23.91
+INFO:service.app:Uploaded 60 metric clips for perf-bench-warmup-perf-cand2
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep12_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep12_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep12_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep12_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep11_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep11_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep11_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep11_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep10_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep10_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep10_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep10_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep9_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep9_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep9_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep9_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep8_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep8_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep8_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep8_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep7_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep7_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep7_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep7_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep6_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep6_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep6_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep6_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep5_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep5_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep5_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep5_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep4_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep4_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep4_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep4_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep3_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep3_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep3_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep3_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep2_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep2_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep2_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep2_rom.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep1_control.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep1_shoulder_swing.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep1_elbow_stability.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/clips/rep1_rom.mp4
+INFO:service.app:Uploaded annotated video: https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/perf-bench-warmup-perf-cand2/annotated.mp4
+INFO:service.app:H264_DIRECT already H.264, no re-encode: /tmp/lifting_7dy5ntbd/annotated.mp4
+INFO:src.lifting.pipeline:Generated metric clips in /tmp/lifting_7dy5ntbd/clips
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep12_shoulder_swing.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep12_elbow_stability.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep12_control.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep12_rom.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep11_shoulder_swing.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep11_elbow_stability.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep11_control.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep11_rom.mp4 frames=45
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep10_shoulder_swing.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep10_elbow_stability.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep10_control.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep10_rom.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep9_shoulder_swing.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep9_elbow_stability.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep9_control.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep9_rom.mp4 frames=47
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep8_shoulder_swing.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep8_elbow_stability.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep8_control.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep8_rom.mp4 frames=48
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep7_shoulder_swing.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep7_elbow_stability.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep7_control.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep7_rom.mp4 frames=53
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep6_shoulder_swing.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep6_elbow_stability.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep6_control.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep6_rom.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep5_shoulder_swing.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep5_elbow_stability.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep5_control.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep5_rom.mp4 frames=55
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep4_shoulder_swing.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep4_elbow_stability.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep4_control.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep4_rom.mp4 frames=63
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep3_shoulder_swing.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep3_elbow_stability.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep3_control.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep3_rom.mp4 frames=60
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep2_shoulder_swing.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep2_elbow_stability.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep2_control.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep2_rom.mp4 frames=64
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep1_shoulder_swing.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep1_elbow_stability.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep1_control.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/clips/rep1_rom.mp4 frames=46
+INFO:src.lifting.video_writer:H264_DIRECT wrote /tmp/lifting_7dy5ntbd/annotated.mp4 frames=767
+INFO:src.lifting.pose.parallel:LIFT_POSE_PARALLEL workers=4 frames=767 bounds=[0,191,383,575] sync_offsets=[0,0,0] extended_frames=0 worker_ready_s=[1.0,8.81,10.28,10.28] worker_init_s=[0.44,0.45,0.54,0.55] parallel_s=10.32 splice_s=0.24
+W0000 00:00:1794635596.740256     198 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635595.889395     191 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635595.878869     175 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635595.877809     180 landmark_projection_calculator.cc:78] Using NORM_RECT without IMAGE_DIMENSIONS is only supported for the square ROI. Provide IMAGE_DIMENSIONS or use PROJECTION_MATRIX.
+W0000 00:00:1794635595.668117     192 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635595.651736     194 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635595.630618     175 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635595.607958     182 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635595.548784     184 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635595.519704     197 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635595.507754     170 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+W0000 00:00:1794635595.487374     178 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+W0000 00:00:1794635594.339668      39 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+W0000 00:00:1794635594.222568      37 inference_feedback_manager.cc:114] Feedback manager requires a model with a single signature inference. Disabling support for feedback tensors.
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+INFO:service.app:Downloaded video to /tmp/lifting_7dy5ntbd/input.mp4
+
+  warnings.warn(message, FutureWarning)
+/usr/local/lib/python3.10/site-packages/google/api_core/_python_version_support.py:212: FutureWarning: You are using a non-supported Python version (3.10.22). Google will not post any further updates to google.api_core supporting this Python version. Please upgrade to the latest Python version, or at least Python 3.11, and then update google.api_core.
+
+
+[2026-11-14 05:52:58 +0000] [2] [INFO] Booting worker with pid: 2
+Default STARTUP TCP probe succeeded after 1 attempt for container "bowling-service-1" on port 8080.
+[2026-11-14 05:52:58 +0000] [1] [INFO] Using worker: sync
+[2026-11-14 05:52:58 +0000] [1] [INFO] Listening at: http://0.0.0.0:8080 (1)
+[2026-11-14 05:52:58 +0000] [1] [INFO] Starting gunicorn 21.2.0
+Starting new instance. Reason: DEPLOYMENT_ROLLOUT - Instance started due to traffic shifting between revisions due to deployment, traffic split adjustment, or deployment health check.
+

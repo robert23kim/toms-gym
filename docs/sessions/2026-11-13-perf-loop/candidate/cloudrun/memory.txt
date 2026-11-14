@@ -1,0 +1,3 @@
+bowling-service-perf-perf-cand p99/min max=0.270 of limit (2.16 GiB of 8) n=44 | p50/min max=0.135
+bowling-service-perf-perf-base p99/min max=0.160 of limit (1.28 GiB of 8) n=44 | p50/min max=0.08
+{"bowling-service-perf-perf-cand": {"ALIGN_PERCENTILE_99": {"points": 44, "max": 0.26980000000000004}, "ALIGN_PERCENTILE_50": {"points": 44, "max": 0.135}}, "bowling-service-perf-perf-base": {"ALIGN_PERCENTILE_99": {"points": 44, "max": 0.1598}, "ALIGN_PERCENTILE_50": {"points": 44, "max": 0.08}}}

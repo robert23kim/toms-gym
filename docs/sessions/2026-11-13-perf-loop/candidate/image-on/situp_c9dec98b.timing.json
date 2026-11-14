@@ -1,0 +1,35 @@
+{
+  "fixture": "situp_c9dec98b",
+  "lift_type": "situp",
+  "worktree": "/app",
+  "code_hash": "89a45db4f7e36f40",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true",
+    "LIFT_POSE_WORKERS": "4",
+    "SKIP_METRIC_CLIPS_FOR": "pushup,situp",
+    "LIFT_VIDEO_ENCODER": "ffmpeg"
+  },
+  "stages": {
+    "download": 0.01,
+    "analyze": 41.02,
+    "reencode": 0.0,
+    "artifact_copy": 0.01,
+    "clips": 0.0
+  },
+  "analyze_breakdown": {
+    "pose": 29.79,
+    "render_video": 10.59
+  },
+  "wall_s": 41.03,
+  "artifact": {
+    "ffmpeg_reencode_runs": 0,
+    "clips_uploaded": 0,
+    "clips_reencoded": 0,
+    "annotated_uploaded_from": "annotated.mp4",
+    "annotated_bytes": 7143698,
+    "clips_dir_exists": false
+  },
+  "total_reps": 14,
+  "total_in_plank_s": null
+}

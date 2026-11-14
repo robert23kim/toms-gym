@@ -1,0 +1,37 @@
+{
+  "fixture": "squat_f47a8848",
+  "lift_type": "squat",
+  "worktree": "/app",
+  "code_hash": "89a45db4f7e36f40",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true",
+    "LIFT_POSE_WORKERS": "4",
+    "SKIP_METRIC_CLIPS_FOR": "pushup,situp",
+    "LIFT_VIDEO_ENCODER": "ffmpeg"
+  },
+  "stages": {
+    "download": 0.0,
+    "analyze": 19.96,
+    "reencode": 0.0,
+    "artifact_copy": 0.0,
+    "clips": 0.01
+  },
+  "analyze_breakdown": {
+    "pose": 13.02,
+    "render_video": 1.13,
+    "render_clips": 5.55
+  },
+  "wall_s": 19.98,
+  "artifact": {
+    "ffmpeg_reencode_runs": 0,
+    "clips_uploaded": 48,
+    "clips_reencoded": 0,
+    "annotated_uploaded_from": "annotated.mp4",
+    "annotated_bytes": 792867,
+    "clips_dir_exists": true,
+    "clip_bytes": 2124425
+  },
+  "total_reps": 12,
+  "total_in_plank_s": null
+}
