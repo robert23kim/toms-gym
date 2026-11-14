@@ -21,22 +21,22 @@ export const liveClubBoard: ChallengeLeaderboard = {
       "Plank": [
         {
           "amount": 180.3530257154494,
-          "name": "Toka",
-          "user_id": "7844e26d-e65c-4e9e-a4f6-9678041e61b4"
+          "name": "athlete.two",
+          "user_id": "00000000-0000-4000-8000-0000000000a2"
         }
       ],
       "Pushup": [
         {
           "amount": 71,
-          "name": "Toka",
-          "user_id": "7844e26d-e65c-4e9e-a4f6-9678041e61b4"
+          "name": "athlete.two",
+          "user_id": "00000000-0000-4000-8000-0000000000a2"
         }
       ],
       "Situp": [
         {
           "amount": 75.5,
-          "name": "Toka",
-          "user_id": "7844e26d-e65c-4e9e-a4f6-9678041e61b4"
+          "name": "athlete.two",
+          "user_id": "00000000-0000-4000-8000-0000000000a2"
         }
       ],
       "Squat": [
@@ -265,7 +265,7 @@ export const liveClubBoard: ChallengeLeaderboard = {
           "score": 25
         }
       ],
-      "name": "Toka",
+      "name": "athlete.two",
       "rank": 2,
       "score": 350,
       "steadiness": null,
@@ -290,7 +290,7 @@ export const liveClubBoard: ChallengeLeaderboard = {
         "quota": 125
       },
       "thumbnail_url": null,
-      "user_id": "7844e26d-e65c-4e9e-a4f6-9678041e61b4",
+      "user_id": "00000000-0000-4000-8000-0000000000a2",
       "warmup_lifts": 0,
       "weeks": [
         {
