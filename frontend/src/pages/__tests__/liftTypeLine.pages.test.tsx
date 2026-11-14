@@ -136,6 +136,21 @@ describe("result line on the challenge video page", () => {
   });
 });
 
+describe("weighted boards keep today's pages", () => {
+  beforeEach(() => jest.clearAllMocks());
+  const weighted = { ...consistencyLeaderboard, metric: "weight", consistency: undefined, lift_types: ["Squat", "Bench Press"] };
+
+  test.each([["video page", openVideo], ["status page", openStatus]])("%s shows no line", async (_n, open) => {
+    viewer(OWNER);
+    routeGets(result({ lift_type: "Squat", lift_type_source: "user", lift_type_confidence: null }));
+    (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(weighted);
+    open();
+    await waitFor(() => expect(api.getChallengeLeaderboard).toHaveBeenCalled());
+    await new Promise((r) => setTimeout(r, 50));
+    expect(screen.queryByTestId("lift-type-line")).toBeNull();
+  });
+});
+
 describe("result line on the status page", () => {
   beforeEach(() => jest.clearAllMocks());
 

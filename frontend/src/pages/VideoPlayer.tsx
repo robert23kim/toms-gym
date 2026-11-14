@@ -15,7 +15,7 @@ import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
 import ConsistencyResult, { consistencyShareText } from '../components/challenge/ConsistencyResult';
 import LiftTypeLine from '../components/challenge/LiftTypeLine';
-import { isAutoLiftType, pickLiftTypeFields, type LiftTypeFields } from '../lib/autoLiftType';
+import { isAutoLiftType, offersAutomatic, pickLiftTypeFields, type LiftTypeFields } from '../lib/autoLiftType';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription, metricAppliesToLift } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
@@ -562,7 +562,7 @@ const VideoPlayer: React.FC = () => {
                           {isCreatingShortLink ? 'Creating...' : 'Share'}
                         </button>
                       </div>
-                      {liftLine.present && videoId && !isAnalyzing && liftingResult?.processing_status !== 'queued' && liftingResult?.processing_status !== 'processing' && (board?.lift_types?.length ?? 0) >= 2 && (
+                      {liftLine.present && videoId && !isAnalyzing && liftingResult?.processing_status !== 'queued' && liftingResult?.processing_status !== 'processing' && !!board && offersAutomatic(true, board.lift_types, board.metric) && (
                         <div className="-mt-1 mb-2">
                           <LiftTypeLine
                             attemptId={videoId}

@@ -13,7 +13,7 @@ import ConsistencyResult from "../components/challenge/ConsistencyResult";
 import { cleanRepCount, isQualityScoredLift } from "../lib/cleanReps";
 import { getUserId } from "../lib/identity";
 import LiftTypeLine from "../components/challenge/LiftTypeLine";
-import { isAutoLiftType, pickLiftTypeFields, type LiftTypeFields } from "../lib/autoLiftType";
+import { isAutoLiftType, offersAutomatic, pickLiftTypeFields, type LiftTypeFields } from "../lib/autoLiftType";
 
 // T8 — Post-upload status page. Survives reload via its URL (attemptId is in the
 // path) and polls the existing per-attempt result endpoints. Covers LIFTING and
@@ -158,7 +158,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
     restartPolling();
   };
   const renderLiftLine = () =>
-    kind === "lifting" && liftLine.present && attemptId && candidates.length >= 2 ? (
+    kind === "lifting" && liftLine.present && attemptId && !!board && offersAutomatic(true, candidates, board.metric) ? (
       <LiftTypeLine
         attemptId={attemptId}
         viewerId={userId}

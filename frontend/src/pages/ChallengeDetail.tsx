@@ -34,7 +34,7 @@ import { scoreColumnLabel, scoringNote } from "../components/challenge/metric";
 import { deriveStanding, ctaLabelFor } from "../lib/standing";
 import { rankChange, readRank, writeRank, RankShift } from "../lib/rankMemory";
 import { forget, getEmail, getUserId, remember } from "../lib/identity";
-import { AUTO_HELPER, AUTO_LIFT_TYPE, autoLiftTypeEnabled, offersAutomatic } from "../lib/autoLiftType";
+import { AUTO_HELPER, AUTO_LIFT_TYPE, autoLiftTypeEnabled, isAutoLiftType, offersAutomatic } from "../lib/autoLiftType";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -154,6 +154,10 @@ const ChallengeDetail: React.FC = () => {
           setLiftingResults(prev => ({ ...prev, [attemptId]: result }));
           fetchLeaderboard();
           const isPlank = result.report?.lift_type === 'plank';
+          if (isAutoLiftType(result.report?.lift_type)) {
+            toast({ title: "Analysis Complete", description: "Tell us which lift it was to count it.", duration: 6000 });
+            return;
+          }
           toast({
             title: isPlank
               ? "Plank Analyzed"
