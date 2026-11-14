@@ -1,6 +1,6 @@
 import React from "react";
 import "@testing-library/jest-dom";
-import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import ChallengeDetail from "../ChallengeDetail";
@@ -195,6 +195,36 @@ describe("ChallengeDetail on a 100 Club board", () => {
     fireEvent.change(form.querySelector('input[type="file"]')!, { target: { files: [new File(["x"], "s.mp4", { type: "video/mp4" })] } });
     fireEvent.submit(form);
   };
+
+  it("says this device now logs as the uploader, and Not me forgets them", async () => {
+    (uploadVideo as jest.Mock).mockResolvedValue({ url: "https://storage.example/new-1.mp4", attempt_id: "new-1", user_id: "u-new" });
+    (api.triggerLiftingAnalysis as jest.Mock).mockResolvedValue({});
+    (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
+    const store: Record<string, string> = {};
+    setup(liveClubBoard, null);
+    (localStorage.getItem as jest.Mock).mockImplementation((key: string) => store[key] ?? null);
+    (localStorage.setItem as jest.Mock).mockImplementation((key: string, value: string) => {
+      store[key] = value;
+    });
+    (localStorage.removeItem as jest.Mock).mockImplementation((key: string) => {
+      delete store[key];
+    });
+    try {
+      await screen.findByTestId("you-row-unknown");
+      await submitInlineUpload("friend@example.com");
+      await waitFor(() => expect(mockToast).toHaveBeenCalled());
+      const shown = mockToast.mock.calls[0][0];
+      expect(shown.description).toMatch(/This device now logs as friend@example\.com\./);
+      expect(shown.action.props.children).toBe("Not me");
+      expect(store.userId).toBe("u-new");
+      act(() => shown.action.props.onClick());
+      expect(store.userId).toBeUndefined();
+      expect(await screen.findByTestId("you-row-unknown")).toBeInTheDocument();
+    } finally {
+      (localStorage.setItem as jest.Mock).mockImplementation(() => undefined);
+      (localStorage.removeItem as jest.Mock).mockImplementation(() => undefined);
+    }
+  });
 
   it("does not fail a finished upload when this browser cannot save the userId", async () => {
     (uploadVideo as jest.Mock).mockResolvedValue({ url: "https://storage.example/new-1.mp4", attempt_id: "new-1", user_id: "u-new" });

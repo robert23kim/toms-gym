@@ -10,6 +10,7 @@ import { API_URL } from "../config";
 import { getChallengeLeaderboard, getLiftingResult, triggerLiftingAnalysis, fetchChampions, getModeFromMetadata } from "../lib/api";
 // VideoGallery replaced by inline unified lift feed
 import { useToast } from "../components/ui/use-toast";
+import { ToastAction } from "../components/ui/toast";
 import { reportUploadError } from "../lib/telemetry";
 import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
@@ -247,9 +248,11 @@ const ChallengeDetail: React.FC = () => {
       if (data.url) {
         const storedId = readStoredUserId();
         const otherProfile = !!storedId && !!data.user_id && String(data.user_id) !== String(storedId);
+        let adoptedId: string | null = null;
         if (!storedId && data.user_id) {
           try {
             localStorage.setItem("userId", String(data.user_id));
+            adoptedId = String(data.user_id);
           } catch {
             // Storage full or blocked: the upload still stands.
           }
@@ -267,12 +270,29 @@ const ChallengeDetail: React.FC = () => {
           }
         }
 
+        const forgetAdopted = (forget: string) => () => {
+          try {
+            if (localStorage.getItem("userId") === forget) localStorage.removeItem("userId");
+          } catch {
+            // Nothing stored to forget.
+          }
+          setViewerId(null);
+        };
         toast({
           title: "Upload Successful!",
           description: otherProfile
             ? `Logged to ${email}'s profile. This device stays on its current profile.`
-            : "Analyzing your form automatically...",
-          duration: 5000,
+            : adoptedId
+              ? `Analyzing your form automatically. This device now logs as ${email}.`
+              : "Analyzing your form automatically...",
+          ...(adoptedId && {
+            action: (
+              <ToastAction altText="Not me: forget this profile on this device" onClick={forgetAdopted(adoptedId)}>
+                Not me
+              </ToastAction>
+            ),
+          }),
+          duration: adoptedId ? 10000 : 5000,
         });
 
         // Reset form
