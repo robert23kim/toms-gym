@@ -37,6 +37,9 @@ jest.mock("../../lib/api", () => ({
   fetchChampions: jest.fn(),
 }));
 
+// jsdom has no scrollIntoView; the upload form scrolls itself into view on a timer.
+Element.prototype.scrollIntoView = jest.fn();
+
 const ID = CONSISTENCY_COMPETITION_ID;
 const LIFTS = ["Situp", "Pushup", "Squat", "Plank"];
 const description = `100 lifts a week. Situps, pushups, squats or planks. Hit it and the bar rises. - ${JSON.stringify({

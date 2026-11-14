@@ -40,7 +40,7 @@ const forms: [string, React.ReactElement][] = [
   ["Bowling upload", <BowlingUpload />],
   ["Bowling sheet upload", <BowlingSheetUpload />],
   ["Registration", <RegistrationForm />],
-  ["Create profile", <CreateProfile onClose={() => {}} />],
+  ["Create profile", <CreateProfile onClose={() => {}} onSubmit={async () => true} />],
   ["Password reset request", <PasswordResetForm />],
 ];
 
