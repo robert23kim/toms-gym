@@ -194,10 +194,10 @@ export async function uploadVideo(
   onProgress?: (pct: number) => void,
   options?: {
     /**
-     * 'auto' (default) — hardware WebCodecs encode when supported, slow
-     *   MediaRecorder fallback otherwise;
-     * 'fast-only' — hardware encode or nothing: never pay the realtime
-     *   MediaRecorder fallback (right for analyzers that downsample anyway);
+     * 'fast-only' (default) — hardware WebCodecs encode, or the original bytes
+     *   when that fails or does not shrink the file;
+     * 'auto' — same as 'fast-only'. It used to add a MediaRecorder fallback
+     *   that plays the whole clip in realtime before sending a byte;
      * 'off' — always upload the original bytes.
      */
     compression?: 'auto' | 'fast-only' | 'off';
@@ -236,7 +236,7 @@ async function runUpload(
   // memory, which OOM-kills the tab on iOS (Safari then auto-reloads the page)
   // and on very large files anywhere. Skipped files upload as originals via
   // the chunked paths below, which slice the Blob and are memory-safe.
-  const mode = options?.compression ?? 'auto';
+  const mode = options?.compression ?? 'fast-only';
   const startedAt = performance.now();
   const stopWatchingHidden = watchHidden();
   const timer = createUploadTimer();
@@ -260,7 +260,7 @@ async function runUpload(
         file,
         {
           maxHeight: 720,
-          fastPathOnly: mode === 'fast-only',
+          fastPathOnly: true,
           onPipeline: (pipeline) => {
             used.pipeline = pipeline;
           },

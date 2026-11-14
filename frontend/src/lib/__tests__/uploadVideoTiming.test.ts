@@ -129,7 +129,7 @@ describe("uploadVideo timing telemetry", () => {
     expect(event.action).toBe("upload-timing");
     expect(event.details).toMatchObject({
       liftType: "Pushup",
-      mode: "auto",
+      mode: "fast-only",
       compress: "skipped:no-webcodecs",
       path: "single-put",
       srcBytes: 4096,
