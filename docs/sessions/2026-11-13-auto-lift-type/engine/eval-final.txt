@@ -1,0 +1,122 @@
+# Automatic lift type: labelled-set result
+
+Candidates: situp,pushup,squat,plank. Clips are numbered; the manifest that maps them to uploads is not in the repository.
+
+- All clips with a person: 48/51 (94.1%): plank 21/22, pushup 16/17, situp 10/11, squat 1/1
+- Held-out: 29/32 (90.6%): plank 14/15, pushup 9/10, situp 5/6, squat 1/1
+- Held-out, athletes with no development clip: 12/14 (85.7%): plank 9/10, pushup 3/4
+- Development: 19/19 (100.0%): plank 7/7, pushup 7/7, situp 5/5
+- Correct but below the 0.6 confirm threshold (the app asks): 1
+- Wrong at or above the threshold (silent): 2
+- Clips with nobody in them, expected no detection: 2/2 (100.0%): none 2/2
+- Clips left out because they have no pose cache: 0
+
+| clip | label | split | athlete | detected | confidence | asks | read (s) | result |
+|---|---|---|---|---|---|---|---|---|
+| c01 | plank | dev | club-b | plank | 1.00 |  | 22 of 76 | ok |
+| c02 | plank | holdout | club-b | plank | 1.00 |  | 16 of 73 | ok |
+| c03 | plank | dev | club-a | plank | 1.00 |  | 12 of 86 | ok |
+| c04 | plank | dev | club-b | plank | 1.00 |  | 14 of 92 | ok |
+| c05 | plank | holdout | club-a | plank | 1.00 |  | 12 of 71 | ok |
+| c06 | plank | dev | club-a | plank | 1.00 |  | 10 of 62 | ok |
+| c07 | plank | holdout | club-a | plank | 1.00 |  | 10 of 66 | ok |
+| c08 | plank | holdout | club-b | plank | 1.00 |  | 16 of 68 | ok |
+| c09 | pushup | dev | club-a | pushup | 1.00 |  | 34 of 34 | ok |
+| c10 | pushup | dev | club-b | pushup | 1.00 |  | 49 of 49 | ok |
+| c11 | pushup | holdout | club-b | pushup | 1.00 |  | 58 of 58 | ok |
+| c12 | pushup | dev | club-b | pushup | 1.00 |  | 57 of 57 | ok |
+| c13 | pushup | holdout | club-a | pushup | 1.00 |  | 34 of 34 | ok |
+| c14 | pushup | holdout | club-b | pushup | 1.00 |  | 37 of 37 | ok |
+| c15 | pushup | dev | club-a | pushup | 1.00 |  | 28 of 28 | ok |
+| c16 | pushup | holdout | club-a | pushup | 1.00 |  | 29 of 29 | ok |
+| c17 | pushup | dev | club-b | pushup | 1.00 |  | 65 of 65 | ok |
+| c18 | pushup | dev | club-a | pushup | 1.00 |  | 33 of 33 | ok |
+| c19 | pushup | holdout | club-b | pushup | 1.00 |  | 51 of 51 | ok |
+| c20 | situp | dev | club-b | situp | 1.00 |  | 112 of 112 | ok |
+| c21 | situp | dev | club-a | situp | 1.00 |  | 56 of 56 | ok |
+| c22 | situp | holdout | club-a | None | 0.00 |  | 57 of 57 | MISS |
+| c23 | situp | dev | club-a | situp | 1.00 |  | 66 of 66 | ok |
+| c24 | situp | holdout | club-a | situp | 1.00 |  | 48 of 48 | ok |
+| c25 | situp | holdout | club-b | situp | 1.00 |  | 129 of 129 | ok |
+| c26 | situp | dev | club-a | situp | 1.00 |  | 58 of 58 | ok |
+| c27 | situp | holdout | club-b | situp | 1.00 |  | 109 of 109 | ok |
+| c28 | squat | holdout | club-b | squat | 1.00 |  | 32 of 32 | ok |
+| c29 | plank | dev | club-a | plank | 0.86 |  | 10 of 10 | ok |
+| c30 | plank | holdout | other | plank | 1.00 |  | 12 of 71 | ok |
+| c31 | plank | holdout | other | plank | 1.00 |  | 14 of 75 | ok |
+| c32 | plank | holdout | other | pushup | 1.00 |  | 141 of 141 | MISS |
+| c33 | plank | holdout | club-a | plank | 1.00 |  | 18 of 122 | ok |
+| c34 | plank | holdout | other | plank | 1.00 |  | 12 of 75 | ok |
+| c35 | plank | dev | club-a | plank | 1.00 |  | 10 of 75 | ok |
+| c36 | plank | holdout | other | plank | 0.57 | yes | 18 of 75 | ok |
+| c37 | plank | holdout | other | plank | 0.75 |  | 16 of 75 | ok |
+| c40 | none | - | - | None | 0.00 |  | 60 of 75 | ok |
+| c41 | plank | holdout | other | plank | 1.00 |  | 20 of 75 | ok |
+| c42 | plank | dev | club-b | plank | 1.00 |  | 16 of 75 | ok |
+| c43 | plank | holdout | other | plank | 1.00 |  | 14 of 75 | ok |
+| c45 | plank | holdout | other | plank | 1.00 |  | 14 of 75 | ok |
+| c46 | plank | holdout | other | plank | 1.00 |  | 12 of 75 | ok |
+| c47 | pushup | holdout | club-a | pushup | 1.00 |  | 20 of 20 | ok |
+| c48 | pushup | holdout | other | plank | 0.91 |  | 9 of 9 | MISS |
+| c49 | pushup | dev | club-a | pushup | 1.00 |  | 39 of 39 | ok |
+| c50 | pushup | holdout | other | pushup | 1.00 |  | 45 of 45 | ok |
+| c51 | pushup | holdout | other | pushup | 1.00 |  | 58 of 58 | ok |
+| c52 | pushup | holdout | other | pushup | 1.00 |  | 26 of 26 | ok |
+| c53 | situp | holdout | club-a | situp | 1.00 |  | 101 of 101 | ok |
+| c54 | situp | dev | club-a | situp | 1.00 |  | 66 of 66 | ok |
+| c55 | situp | holdout | club-a | situp | 1.00 |  | 85 of 85 | ok |
+| c56 | none | - | - | None | 0.00 |  | 1 of 1 | ok |
+
+c01 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=22s still=0.82 hold=9s elbow:n=1 cov=0.84 rest=106 open=149 knee:n=1 cov=1.00 rest=163 open=168 hip:n=3 cov=1.00 rest=166 open=174
+c02 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=16s still=0.78 hold=9s elbow:n=0 cov=1.00 rest=100 open=145 knee:n=2 cov=0.78 rest=168 open=174 hip:n=1 cov=0.78 rest=172 open=175
+c03 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=12s still=0.76 hold=9s elbow:n=0 cov=1.00 rest=109 open=119 knee:n=1 cov=0.94 rest=166 open=169 hip:n=1 cov=1.00 rest=172 open=174
+c04 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=14s still=0.78 hold=9s elbow:n=0 cov=0.83 rest=106 open=165 knee:n=1 cov=1.00 rest=168 open=173 hip:n=2 cov=1.00 rest=171 open=174
+c05 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=12s still=0.83 hold=10s elbow:n=0 cov=1.00 rest=92 open=106 knee:n=0 cov=0.90 rest=164 open=166 hip:n=0 cov=0.90 rest=164 open=169
+c06 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=10s still=0.84 hold=8s elbow:n=0 cov=1.00 rest=93 open=102 knee:n=1 cov=0.03 rest=173 open=178 hip:n=1 cov=0.99 rest=170 open=173
+c07 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=10s still=0.81 hold=8s elbow:n=0 cov=0.98 rest=91 open=96 knee:n=0 cov=0.98 rest=165 open=167 hip:n=1 cov=1.00 rest=163 open=168
+c08 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=16s still=0.79 hold=10s elbow:n=0 cov=1.00 rest=108 open=160 knee:n=1 cov=1.00 rest=166 open=176 hip:n=2 cov=1.00 rest=158 open=166
+c09 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=34s still=0.04 hold=1s elbow:n=22 cov=1.00 rest=132 open=167 knee:n=1 cov=0.98 rest=163 open=168 hip:n=3 cov=1.00 rest=176 open=179
+c10 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=49s still=0.34 hold=4s elbow:n=16 cov=0.98 rest=148 open=170 knee:n=2 cov=1.00 rest=167 open=169 hip:n=14 cov=1.00 rest=169 open=179
+c11 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=58s still=0.18 hold=3s elbow:n=21 cov=0.94 rest=157 open=171 knee:n=2 cov=0.94 rest=173 open=178 hip:n=4 cov=0.94 rest=176 open=179
+c12 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=57s still=0.08 hold=2s elbow:n=26 cov=0.99 rest=145 open=170 knee:n=3 cov=1.00 rest=171 open=178 hip:n=3 cov=1.00 rest=176 open=179
+c13 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=34s still=0.02 hold=0s elbow:n=27 cov=1.00 rest=158 open=173 knee:n=3 cov=0.97 rest=167 open=170 hip:n=2 cov=1.00 rest=176 open=179
+c14 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=37s still=0.25 hold=3s elbow:n=12 cov=0.89 rest=152 open=167 knee:n=3 cov=0.96 rest=170 open=176 hip:n=3 cov=0.96 rest=176 open=179
+c15 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=28s still=0.04 hold=0s elbow:n=21 cov=0.98 rest=148 open=165 knee:n=2 cov=0.90 rest=163 open=167 hip:n=1 cov=0.91 rest=176 open=179
+c16 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=29s still=0.06 hold=1s elbow:n=20 cov=0.96 rest=166 open=178 knee:n=1 cov=0.91 rest=170 open=174 hip:n=4 cov=0.99 rest=176 open=179
+c17 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=65s still=0.31 hold=3s elbow:n=22 cov=1.00 rest=156 open=166 knee:n=1 cov=0.96 rest=173 open=178 hip:n=5 cov=0.96 rest=175 open=179
+c18 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=33s still=0.14 hold=2s elbow:n=18 cov=1.00 rest=161 open=171 knee:n=1 cov=0.68 rest=174 open=179 hip:n=5 cov=0.96 rest=172 open=179
+c19 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=51s still=0.32 hold=2s elbow:n=16 cov=0.95 rest=158 open=168 knee:n=3 cov=0.95 rest=171 open=175 hip:n=6 cov=0.95 rest=173 open=179
+c20 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=112s still=0.08 hold=4s elbow:n=47 cov=0.90 rest=64 open=152 knee:n=24 cov=1.00 rest=101 open=120 hip:n=34 cov=1.00 rest=90 open=148
+c21 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=56s still=0.10 hold=0s elbow:n=28 cov=0.89 rest=43 open=116 knee:n=8 cov=0.96 rest=46 open=62 hip:n=11 cov=1.00 rest=120 open=123
+c22 situp  ->None   0.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=57s still=0.74 hold=12s elbow:n=5 cov=0.99 rest=38 open=74 knee:n=1 cov=0.95 rest=46 open=51 hip:n=3 cov=0.97 rest=122 open=126
+c23 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=66s still=0.34 hold=4s elbow:n=20 cov=0.76 rest=48 open=70 knee:n=5 cov=0.96 rest=46 open=55 hip:n=6 cov=0.99 rest=118 open=121
+c24 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=48s still=0.07 hold=1s elbow:n=26 cov=0.53 rest=69 open=151 knee:n=19 cov=0.73 rest=77 open=113 hip:n=15 cov=0.86 rest=125 open=133
+c25 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=129s still=0.06 hold=3s elbow:n=18 cov=0.96 rest=55 open=82 knee:n=21 cov=1.00 rest=95 open=111 hip:n=38 cov=1.00 rest=88 open=144
+c26 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=58s still=0.02 hold=1s elbow:n=33 cov=0.88 rest=69 open=159 knee:n=4 cov=0.98 rest=54 open=63 hip:n=25 cov=1.00 rest=122 open=125
+c27 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=109s still=0.05 hold=2s elbow:n=27 cov=0.93 rest=54 open=131 knee:n=17 cov=0.95 rest=99 open=115 hip:n=32 cov=0.98 rest=91 open=144
+c28 squat  ->squat  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 1.0, 'plank': 0.0} pose=32s still=0.15 hold=2s elbow:n=4 cov=0.90 rest=39 open=172 knee:n=12 cov=0.97 rest=159 open=179 hip:n=11 cov=0.97 rest=151 open=168
+c29 plank  ->plank  0.86 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.865} pose=10s still=0.63 hold=4s elbow:n=0 cov=1.00 rest=80 open=176 knee:n=2 cov=0.13 rest=120 open=138 hip:n=2 cov=0.97 rest=147 open=152
+c30 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=12s still=0.81 hold=9s elbow:n=0 cov=1.00 rest=90 open=144 knee:n=1 cov=0.42 rest=165 open=175 hip:n=2 cov=1.00 rest=169 open=173
+c31 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=14s still=0.78 hold=9s elbow:n=0 cov=1.00 rest=96 open=173 knee:n=1 cov=0.98 rest=168 open=175 hip:n=1 cov=0.98 rest=166 open=171
+c32 plank  ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=141s still=0.20 hold=2s elbow:n=38 cov=1.00 rest=96 open=122 knee:n=0 cov=0.99 rest=167 open=169 hip:n=4 cov=1.00 rest=163 open=167
+c33 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=18s still=0.79 hold=9s elbow:n=0 cov=0.93 rest=98 open=101 knee:n=2 cov=0.09 rest=84 open=143 hip:n=1 cov=0.92 rest=157 open=163
+c34 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=12s still=0.75 hold=9s elbow:n=0 cov=1.00 rest=85 open=146 knee:n=0 cov=1.00 rest=174 open=176 hip:n=1 cov=1.00 rest=161 open=166
+c35 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=10s still=0.81 hold=8s elbow:n=0 cov=1.00 rest=95 open=131 knee:n=0 cov=0.91 rest=162 open=166 hip:n=1 cov=0.99 rest=161 open=163
+c36 plank  ->plank  0.57 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.111, 'plank': 0.667} pose=18s still=0.52 hold=9s elbow:n=2 cov=1.00 rest=84 open=103 knee:n=2 cov=0.99 rest=171 open=176 hip:n=4 cov=1.00 rest=169 open=175
+c37 plank  ->plank  0.75 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.068, 'plank': 0.813} pose=16s still=0.56 hold=9s elbow:n=0 cov=0.91 rest=102 open=171 knee:n=3 cov=0.97 rest=161 open=173 hip:n=5 cov=0.97 rest=153 open=158
+c40 none   ->None   0.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=0s still=0.00 hold=0s elbow:n=0 cov=0.00 rest=nan open=nan knee:n=0 cov=0.00 rest=nan open=nan hip:n=0 cov=0.00 rest=nan open=nan
+c41 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=20s still=0.80 hold=9s elbow:n=0 cov=0.97 rest=77 open=159 knee:n=1 cov=0.94 rest=169 open=171 hip:n=1 cov=1.00 rest=167 open=170
+c42 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=16s still=0.60 hold=10s elbow:n=1 cov=0.99 rest=102 open=157 knee:n=2 cov=0.93 rest=175 open=178 hip:n=4 cov=0.99 rest=169 open=177
+c43 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=14s still=0.71 hold=10s elbow:n=0 cov=1.00 rest=103 open=169 knee:n=1 cov=1.00 rest=167 open=168 hip:n=2 cov=1.00 rest=161 open=167
+c45 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=14s still=0.71 hold=10s elbow:n=0 cov=1.00 rest=103 open=141 knee:n=1 cov=0.96 rest=169 open=171 hip:n=1 cov=1.00 rest=166 open=169
+c46 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=12s still=0.72 hold=9s elbow:n=0 cov=0.94 rest=84 open=116 knee:n=1 cov=0.96 rest=172 open=173 hip:n=1 cov=1.00 rest=177 open=178
+c47 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=20s still=0.07 hold=1s elbow:n=10 cov=0.88 rest=150 open=169 knee:n=3 cov=0.88 rest=164 open=169 hip:n=2 cov=0.97 rest=173 open=178
+c48 pushup ->plank  0.91 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.905} pose=9s still=0.73 hold=4s elbow:n=0 cov=1.00 rest=158 open=165 knee:n=0 cov=1.00 rest=76 open=89 hip:n=0 cov=1.00 rest=148 open=155
+c49 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=39s still=0.01 hold=0s elbow:n=34 cov=1.00 rest=135 open=162 knee:n=1 cov=1.00 rest=169 open=171 hip:n=3 cov=1.00 rest=174 open=179
+c50 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=45s still=0.20 hold=1s elbow:n=20 cov=1.00 rest=166 open=179 knee:n=1 cov=1.00 rest=173 open=176 hip:n=4 cov=1.00 rest=176 open=179
+c51 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=58s still=0.25 hold=3s elbow:n=21 cov=1.00 rest=158 open=175 knee:n=1 cov=1.00 rest=170 open=173 hip:n=5 cov=1.00 rest=176 open=179
+c52 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=26s still=0.01 hold=0s elbow:n=20 cov=1.00 rest=131 open=169 knee:n=0 cov=1.00 rest=176 open=179 hip:n=0 cov=1.00 rest=177 open=179
+c53 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=101s still=0.01 hold=0s elbow:n=72 cov=0.99 rest=57 open=122 knee:n=5 cov=0.98 rest=47 open=52 hip:n=9 cov=1.00 rest=127 open=130
+c54 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=66s still=0.27 hold=2s elbow:n=29 cov=0.95 rest=41 open=100 knee:n=1 cov=0.97 rest=47 open=52 hip:n=30 cov=1.00 rest=120 open=125
+c55 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=85s still=0.50 hold=4s elbow:n=17 cov=0.85 rest=48 open=64 knee:n=9 cov=0.98 rest=55 open=62 hip:n=30 cov=1.00 rest=127 open=130
+c56 none   ->None   0.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=0s still=0.00 hold=0s elbow:n=0 cov=0.00 rest=nan open=nan knee:n=0 cov=0.00 rest=nan open=nan hip:n=0 cov=0.00 rest=nan open=nan

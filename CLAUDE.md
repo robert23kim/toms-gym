@@ -96,7 +96,7 @@ Consistency challenge shipped 2026-10-31, id `32ca7bad-a970-4a09-acec-02b7687930
 - **Gates:** backend `PYTHON=venv/bin/python tools/run_ci_tests.sh` (DB-free; register new suites there); frontend `npx tsc --noEmit` + jest. There is no eslint config in `frontend/`. Read jest results via `node node_modules/jest/bin/jest.js --json --outputFile=<path>` (the shell hook rewrites jest stdout). `jest.setup.js` stubs `localStorage` with `jest.fn()`: mock `getItem`'s return value, `setItem` is a no-op. Page tests mock `../../config` (Vite `import.meta`) and stub `Layout`/`Navbar`.
 - **tsc does not catch scope bugs.** A block-scoped name read from component scope shipped `metric is not defined` to prod. Render changed pages in a browser, especially `ChallengeDetail`.
 - **Bare ISO dates parse as UTC** and render a day early. Use `` new Date(`${iso}T00:00:00`) `` or `lib/dates.ts` (`formatDay`, `todayLocal`).
-- **Migrations** are startup migrations inline in `app.py` (latest: **019**, `Situp` lift type). pg8000 binds ints as ints: use `make_interval(days => :days)`, not `CURRENT_DATE - :days`.
+- **Migrations** are startup migrations inline in `app.py` (latest: **020**, `Auto` lift type + `Attempt.lift_type_source`/`lift_type_confidence`). pg8000 binds ints as ints: use `make_interval(days => :days)`, not `CURRENT_DATE - :days`.
 - **Leaderboards:** build through `_leaderboard_payload(session, competition_id)` in `competition_routes.py`, never a second query (it carries the `is_test` exclusion and metric selection). Adding a column to the leaderboard SQL means updating `_prow` in `tests/test_competition_routes.py` in the same change.
 - **Test accounts** (`User.is_test`) are excluded from boards and emails, not from their own profile reads.
 - **Playwright prod checks:** call `page.unrouteAll` first (routes persist across runs); wait ~1 s after the first navigation post-deploy (`lib/staleChunk.ts` self-reloads); use a *function* matcher in `page.route` (a glob `*` does not cross `/`); never let a verification write: fulfil the PUT.
@@ -124,6 +124,7 @@ Each file holds the full notes that used to live here: design decisions, endpoin
 | Auth history | `docs/reference/auth-key-files.md` | Files touched by the passwordless change. |
 | Owner-only Bowl/Golf, past-challenges fold | `docs/reference/finch-shell.md` (2026-11-07 section) | `useIsOwner` hides bowling and golf surfaces unless the viewer's email is the owner's; `/challenges` folds ended challenges behind a toggle. |
 | The 100 Club (consistency challenge) | `docs/reference/100-club.md` | `mode: "consistency"` metadata; weekly quota 100 (+25 / reset), points = capped lifts + 50 + 25 per type led; admin `?as_of=` preview; prod proof, cleanup recipe, open follow-ups. |
+| Automatic lift type | `docs/reference/auto-lift-type.md` | `Auto` pick on all-bodyweight boards, engine classifier, Change + re-analyse, `lib/identity.ts`; switch `AUTO_LIFT_TYPE` is **off** until the engine branch `feat/auto-lift-type` deploys. |
 
 ### Rules that bite without reading the doc
 

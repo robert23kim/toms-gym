@@ -178,3 +178,4 @@ Log `docs/sessions/2026-11-13-caleb-feedback/bugs.md`; session doc `docs/session
 - P2-2: after an inline board upload the URL keeps `?upload=1`, so a reload reopens the form.
 - Copy risk (refute round 2): the bonus line may still read as "log each type"; Find Profile says "straight to your profile" though it returns to the board.
 - Podium viewers get no YOU marker (product decision).
+- **Automatic lift type (2026-11-14):** the club upload form defaults to Automatic once `AUTO_LIFT_TYPE=1`; it is currently **off** because the auto-capable engine is not deployed. Auto attempts bank nothing until a type is set. See `auto-lift-type.md`.

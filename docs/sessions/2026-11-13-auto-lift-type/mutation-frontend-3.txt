@@ -1,0 +1,7 @@
+KILLED | boot never seeds the mirror | mutated=true failed=1 passed=12 restored=true
+KILLED | remember skips the native write-through | mutated=true failed=1 passed=12 restored=true
+KILLED | video page line on weighted boards | mutated=true failed=1 passed=12 restored=true
+KILLED | status page line on weighted boards | mutated=true failed=1 passed=12 restored=true
+KILLED | line without the source field | mutated=true failed=1 passed=12 restored=true
+KILLED | UploadVideo ignores the switch | mutated=true failed=1 passed=3 restored=true
+KILLED | CreateProfile ignores the remembered email | mutated=true failed=1 passed=20 restored=true

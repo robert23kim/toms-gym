@@ -1,0 +1,30 @@
+# Automatic lift type: labelled-set result
+
+Candidates: situp,pushup,squat,plank. Clips are numbered; the manifest that maps them to uploads is not in the repository.
+
+- All clips with a person: 6/7 (85.7%): plank 3/3, pushup 1/2, situp 1/1, squat 1/1
+- Held-out: 4/5 (80.0%): plank 2/2, pushup 0/1, situp 1/1, squat 1/1
+- Held-out, athletes with no development clip: 1/2 (50.0%): plank 1/1, pushup 0/1
+- Development: 2/2 (100.0%): plank 1/1, pushup 1/1
+- Correct but below the 0.6 confirm threshold (the app asks): 2
+- Wrong at or above the threshold (silent): 1
+- Clips with nobody in them, expected no detection: 0 clips
+- Clips left out because they have no pose cache: 46 (c01, c02, c03, c04, c05, c06, c07, c09, c10, c11, c12, c13, c14, c16, c17, c18, c19, c20, c21, c22, c23, c25, c26, c27, c30, c31, c32, c33, c34, c35, c37, c40, c41, c42, c43, c45, c46, c47, c49, c50, c51, c52, c53, c54, c55, c56)
+
+| clip | label | split | athlete | detected | confidence | asks | read (s) | result |
+|---|---|---|---|---|---|---|---|---|
+| c08 | plank | holdout | club-b | plank | 1.00 |  | 16 of 30 | ok |
+| c15 | pushup | dev | club-a | pushup | 1.00 |  | 28 of 28 | ok |
+| c24 | situp | holdout | club-a | situp | 1.00 |  | 48 of 48 | ok |
+| c28 | squat | holdout | club-b | squat | 1.00 |  | 32 of 32 | ok |
+| c29 | plank | dev | club-a | plank | 0.56 | yes | 10 of 10 | ok |
+| c36 | plank | holdout | other | plank | 0.57 | yes | 18 of 30 | ok |
+| c48 | pushup | holdout | other | plank | 0.89 |  | 9 of 9 | MISS |
+
+c08 plank  ->plank  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 1.0} pose=16s still=0.74 hold=10s elbow:n=0 cov=0.82 rest=106 open=167 knee:n=1 cov=0.82 rest=165 open=170 hip:n=2 cov=0.82 rest=159 open=166
+c15 pushup ->pushup 1.00 {'situp': 0.0, 'pushup': 1.0, 'squat': 0.0, 'plank': 0.0} pose=28s still=0.04 hold=1s elbow:n=20 cov=0.99 rest=148 open=165 knee:n=2 cov=0.91 rest=162 open=167 hip:n=2 cov=0.91 rest=176 open=179
+c24 situp  ->situp  1.00 {'situp': 1.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.0} pose=48s still=0.04 hold=1s elbow:n=31 cov=0.62 rest=66 open=150 knee:n=20 cov=0.81 rest=74 open=115 hip:n=13 cov=0.91 rest=127 open=132
+c28 squat  ->squat  1.00 {'situp': 0.0, 'pushup': 0.0, 'squat': 1.0, 'plank': 0.0} pose=32s still=0.15 hold=2s elbow:n=4 cov=0.86 rest=38 open=159 knee:n=12 cov=0.97 rest=164 open=179 hip:n=12 cov=0.97 rest=156 open=169
+c29 plank  ->plank  0.56 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.557} pose=10s still=0.53 hold=4s elbow:n=0 cov=1.00 rest=79 open=176 knee:n=2 cov=0.13 rest=122 open=141 hip:n=1 cov=0.91 rest=147 open=151
+c36 plank  ->plank  0.57 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.111, 'plank': 0.667} pose=18s still=0.53 hold=9s elbow:n=1 cov=1.00 rest=84 open=99 knee:n=2 cov=0.99 rest=171 open=176 hip:n=5 cov=1.00 rest=169 open=175
+c48 pushup ->plank  0.89 {'situp': 0.0, 'pushup': 0.0, 'squat': 0.0, 'plank': 0.891} pose=9s still=0.68 hold=4s elbow:n=0 cov=1.00 rest=158 open=165 knee:n=0 cov=1.00 rest=75 open=89 hip:n=0 cov=1.00 rest=148 open=154

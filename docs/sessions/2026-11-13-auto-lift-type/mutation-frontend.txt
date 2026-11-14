@@ -1,0 +1,20 @@
+KILLED | forget skips the native clear | mutated=true failed=1 passed=11 restored=true
+SURVIVED | restore overwrites a web id | mutated=true failed=0 passed=12 restored=true
+KILLED | getEmail accepts non-emails | mutated=true failed=1 passed=11 restored=true
+KILLED | Navbar Forget Me bypasses forget() | mutated=true failed=1 passed=0 restored=true
+KILLED | SignIn ignores the remembered email | mutated=true failed=1 passed=14 restored=true
+KILLED | board form never defaults to Automatic | mutated=true failed=4 passed=3 restored=true
+KILLED | board form ignores the switch | mutated=true failed=1 passed=6 restored=true
+KILLED | board form keeps a manual pick after upload | mutated=true failed=1 passed=6 restored=true
+SURVIVED | board Auto upload posts the stale weight | mutated=true failed=0 passed=7 restored=true
+KILLED | UploadVideo fetches a competition on /lift/upload | mutated=true failed=1 passed=3 restored=true
+KILLED | UploadVideo never offers Automatic | mutated=true failed=2 passed=2 restored=true
+KILLED | club squats not bodyweight | mutated=true failed=5 passed=8 restored=true
+KILLED | threshold inclusive | mutated=true failed=1 passed=9 restored=true
+KILLED | Change shown to non-owners | mutated=true failed=1 passed=9 restored=true
+KILLED | Yes re-analyses | mutated=true failed=1 passed=9 restored=true
+KILLED | status page treats a visitor as owner | mutated=true failed=1 passed=10 restored=true
+KILLED | video page change does not re-enter analysing | mutated=true failed=1 passed=10 restored=true
+KILLED | status page change does not re-queue | mutated=true failed=1 passed=10 restored=true
+KILLED | Auto banks zero in the club block | mutated=true failed=1 passed=14 restored=true
+ANCHOR(3) fixture real name back
