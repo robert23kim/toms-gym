@@ -55,6 +55,23 @@ describe("UploadVideo lift type picker", () => {
     expect((screen.getByPlaceholderText("Enter your email to link this upload") as HTMLInputElement).value).toBe("sam@example.com");
   });
 
+  it("a pick made before the competition loads is kept", async () => {
+    let resolve: (v: object) => void = () => {};
+    (localStorage.getItem as jest.Mock).mockImplementation(() => null);
+    (axios.get as jest.Mock).mockImplementation(() => new Promise((r) => { resolve = r; }));
+    render(
+      <MemoryRouter initialEntries={[`/challenges/${CID}/upload`]}>
+        <Routes>
+          <Route path="/challenges/:id/upload" element={<UploadVideo />} />
+        </Routes>
+      </MemoryRouter>,
+    );
+    fireEvent.change(select(), { target: { value: "Pushup" } });
+    resolve({ data: { competition: { ...club, auto_lift_type_enabled: true } } });
+    await waitFor(() => expect(screen.queryByTestId("lift-type-automatic")).not.toBeNull());
+    expect(select().value).toBe("Pushup");
+  });
+
   it("posts lift_type Auto with weight 0 after only picking a video", async () => {
     (uploadVideo as jest.Mock).mockResolvedValue({ url: "u", attempt_id: "a-1", user_id: "u-1" });
     const { container } = setup(`/challenges/${CID}/upload`, { ...club, auto_lift_type_enabled: true });

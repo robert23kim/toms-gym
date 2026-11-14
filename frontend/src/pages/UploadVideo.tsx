@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Upload, Dumbbell } from "lucide-react";
@@ -44,6 +44,7 @@ const UploadVideo: React.FC = () => {
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [email, setEmail] = useState<string>(() => getEmail() ?? "");
   const [autoOffered, setAutoOffered] = useState(false);
+  const pickedRef = useRef(false);
 
   useEffect(() => {
     if (!id) return;
@@ -54,7 +55,7 @@ const UploadVideo: React.FC = () => {
         const comp = res.data?.competition ?? {};
         if (cancelled || !offersAutomatic(autoLiftTypeEnabled(res.data), comp.lifttypes, comp.mode)) return;
         setAutoOffered(true);
-        setLiftType(AUTO_LIFT_TYPE);
+        if (!pickedRef.current) setLiftType(AUTO_LIFT_TYPE);
       })
       .catch(() => {});
     return () => {
@@ -114,6 +115,7 @@ const UploadVideo: React.FC = () => {
 
   const handleLiftTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newLiftType = e.target.value;
+    pickedRef.current = true;
     setLiftType(newLiftType);
     setWeight(getWeightForLiftType(newLiftType));
   };
