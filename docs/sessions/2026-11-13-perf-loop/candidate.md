@@ -20,7 +20,7 @@ LIFT_VIDEO_ENCODER=ffmpeg
 ```
 - The comma in `SKIP_METRIC_CLIPS_FOR` breaks gcloud's default parser, so use a custom delimiter.
 - Prod recipe: `gcloud run services update bowling-service --region us-east1 --project toms-gym --image gcr.io/toms-gym/bowling-service:perf-cand-f198bac --update-env-vars '^@^LIFT_POSE_WORKERS=4@SKIP_METRIC_CLIPS_FOR=pushup,situp@LIFT_VIDEO_ENCODER=ffmpeg'`. Never use `deploy.sh`.
-- **Before deploying, re-check the prod revision.** At 06:00Z prod was still `bowling-service-00053-fxm`, which runs base 93378b0. If another session has since deployed an engine change, rebase `perf/engine-2026-11-13` onto that change and rebuild.
+- **Before deploying, re-check the prod revision.** At 2026-11-14T06:01:19Z, after the whole bench, prod was still `bowling-service-00053-fxm` (100%), which runs base 93378b0. If another session has since deployed an engine change, rebase `perf/engine-2026-11-13` onto that change and rebuild.
 - **Rollback:** unset the three flags (the old code path in the same image), or roll back to the 00053 digest.
 
 ## Equivalence
@@ -63,10 +63,10 @@ Flags live on Cloud Run (revision logs):
 - Cand stages: `reencode` 0.0 everywhere, `clips` 0.0 on pushup and situp, 0.7-0.85 s on squat.
 
 **The two changes add up on 720p pushups.** The per-rep clip render that `SKIP_METRIC_CLIPS_FOR` removes lived inside `analyze`. For pushup_e18a31d1:
-- class-B base analyze: 102-122 s
+- base analyze: 102.5 s (class B, baseline) and 122.7 s (class A, today)
 - minus the clip render (about 42 s)
 - minus the pose saving (about 26 s at 4 workers)
-- = about 30 s left, against 26-32 s observed.
+- = about 30-50 s left, against 26-32 s observed.
 
 **Memory:** Cloud Monitoring `container/memory/utilizations`, p99 per minute, max over the window.
 
@@ -79,7 +79,11 @@ Flags live on Cloud Run (revision logs):
 The 60 s sampling can miss short peaks. No OOM, kill or worker-timeout lines appeared in any revision log.
 
 ## Risks carried into prod
-- Pushup and situp results lose `clip_url`. The 2026-09-05 finding F1 says nothing displays them; if a later page shows per-rep cards, it falls back to seeking in the annotated video. Re-verify on the current frontend.
+- Pushup and situp results lose `clip_url`. I re-checked this against the frontend source at `feat/100-club` 9ebbd3d, which is newer than the non-pose check, with a read-only `git show`:
+  - `VideoPlayer.tsx` shows these lifts as one "Whole set" card built by `summarizeSet`. Its `SetMetric` has no `clip_url` and no best/worst times, so `hasClips` (line 840) is false.
+  - The rep-by-rep table is hidden for them (`!usesSetSummary`).
+  - Every other `clip_url` reader in `frontend/src` is the leaderboard row's annotated-video field.
+  - An old APK build was not checked. It would fall back to seeking in the annotated video.
 - The rest are unchanged from the part reports:
   - Multi-person videos gain less from pose-parallel.
   - The chunk sync rule is empirical.
