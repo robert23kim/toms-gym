@@ -1,0 +1,6 @@
+[
+ {"id":"F1-auto-keeps-mediarecorder","file":"src/lib/resumableUpload.ts","old":"          fastPathOnly: true,\n","new":"          fastPathOnly: mode === 'fast-only',\n","tests":["src/lib/__tests__/uploadVideoCompression.test.ts"],"expect":"'auto': a failed hardware encode"},
+ {"id":"F2-default-auto-label","file":"src/lib/resumableUpload.ts","old":"const mode = options?.compression ?? 'fast-only';","new":"const mode = options?.compression ?? 'auto';","tests":["src/lib/__tests__/uploadVideoCompression.test.ts"],"expect":"default mode is reported as fast-only"},
+ {"id":"F3-mediarecorder-always","file":"src/lib/resumableUpload.ts","old":"          fastPathOnly: true,\n","new":"          fastPathOnly: false,\n","tests":["src/lib/__tests__/uploadVideoCompression.test.ts"],"expect":"no option (default): a failed hardware encode"},
+ {"id":"F4-off-still-compresses","file":"src/lib/resumableUpload.ts","old":"    mode !== 'off' &&\n","new":"","tests":["src/lib/__tests__/uploadVideoCompression.test.ts"],"expect":"'off' skips compression"}
+]

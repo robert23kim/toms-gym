@@ -1,0 +1,269 @@
+[
+ {
+  "label": "U1 already-720p plank fixture 27.3MB, lift Situp, compression auto (what ChallengeDetail passes)",
+  "chrome": "157.0.8103.51",
+  "wallMs": 6887,
+  "attempt": "perf-bench-local-attempt",
+  "mediaRecorderStarts": 0,
+  "puts": [
+   {
+    "target": "/gcs/single",
+    "bytes": 27290628
+   }
+  ],
+  "requestsOutsideLocalhost": [],
+  "telemetry": [
+   {
+    "bytes": 632,
+    "contentType": "text/plain",
+    "body": {
+     "page": "upload",
+     "action": "upload-timing",
+     "error": "-",
+     "details": {
+      "netType": null,
+      "netEffective": "4g",
+      "netDownMbps": 1.5,
+      "liftType": "Situp",
+      "mode": "auto",
+      "compress": "kept-original",
+      "path": "single-put",
+      "srcBytes": 27290628,
+      "sentBytes": 27290628,
+      "srcType": "video/mp4",
+      "sentType": "video/mp4",
+      "compressMs": 6826,
+      "signMs": 11,
+      "putMs": 47,
+      "completeMs": null,
+      "finalizeMs": 2,
+      "transferMs": 60,
+      "totalMs": 6886,
+      "putMbps": 4645.21,
+      "hiddenCount": 0
+     },
+     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "url": "http://127.0.0.1:47613/",
+     "build": 1794000000,
+     "platform": "web"
+    }
+   }
+  ]
+ },
+ {
+  "label": "U2 synth 1080p/17Mbps pushup 59.7MB, compression auto",
+  "chrome": "157.0.8103.51",
+  "wallMs": 2515,
+  "attempt": "perf-bench-local-attempt",
+  "mediaRecorderStarts": 0,
+  "puts": [
+   {
+    "target": "/gcs/single",
+    "bytes": 8866236
+   }
+  ],
+  "requestsOutsideLocalhost": [],
+  "telemetry": [
+   {
+    "bytes": 627,
+    "contentType": "text/plain",
+    "body": {
+     "page": "upload",
+     "action": "upload-timing",
+     "error": "-",
+     "details": {
+      "netType": null,
+      "netEffective": "4g",
+      "netDownMbps": 1.7,
+      "liftType": "Pushup",
+      "mode": "auto",
+      "compress": "webcodecs",
+      "path": "single-put",
+      "srcBytes": 59662916,
+      "sentBytes": 8866236,
+      "srcType": "video/mp4",
+      "sentType": "video/mp4",
+      "compressMs": 2493,
+      "signMs": 11,
+      "putMs": 9,
+      "completeMs": null,
+      "finalizeMs": 1,
+      "transferMs": 21,
+      "totalMs": 2514,
+      "putMbps": 8344.69,
+      "hiddenCount": 0
+     },
+     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "url": "http://127.0.0.1:47613/",
+     "build": 1794000000,
+     "platform": "web"
+    }
+   }
+  ]
+ },
+ {
+  "label": "U3 pushup fixture 9.2MB, no option",
+  "chrome": "157.0.8103.51",
+  "wallMs": 16,
+  "attempt": "perf-bench-local-attempt",
+  "mediaRecorderStarts": 0,
+  "puts": [
+   {
+    "target": "/gcs/single",
+    "bytes": 9173010
+   }
+  ],
+  "requestsOutsideLocalhost": [],
+  "telemetry": [
+   {
+    "bytes": 630,
+    "contentType": "text/plain",
+    "body": {
+     "page": "upload",
+     "action": "upload-timing",
+     "error": "-",
+     "details": {
+      "netType": null,
+      "netEffective": "4g",
+      "netDownMbps": 1.75,
+      "liftType": "Pushup",
+      "mode": "fast-only",
+      "compress": "skipped:small",
+      "path": "single-put",
+      "srcBytes": 9173010,
+      "sentBytes": 9173010,
+      "srcType": "video/mp4",
+      "sentType": "video/mp4",
+      "compressMs": 0,
+      "signMs": 4,
+      "putMs": 9,
+      "completeMs": null,
+      "finalizeMs": 2,
+      "transferMs": 14,
+      "totalMs": 15,
+      "putMbps": 8434.95,
+      "hiddenCount": 0
+     },
+     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "url": "http://127.0.0.1:47613/",
+     "build": 1794000000,
+     "platform": "web"
+    }
+   }
+  ]
+ },
+ {
+  "label": "U4 synth 1080p/17Mbps plank 185MB, no option",
+  "chrome": "157.0.8103.51",
+  "wallMs": 7379,
+  "attempt": "perf-bench-local-attempt",
+  "mediaRecorderStarts": 0,
+  "puts": [
+   {
+    "target": "/gcs/single",
+    "bytes": 26809203
+   }
+  ],
+  "requestsOutsideLocalhost": [],
+  "telemetry": [
+   {
+    "bytes": 635,
+    "contentType": "text/plain",
+    "body": {
+     "page": "upload",
+     "action": "upload-timing",
+     "error": "-",
+     "details": {
+      "netType": null,
+      "netEffective": "4g",
+      "netDownMbps": 1.65,
+      "liftType": "Plank",
+      "mode": "fast-only",
+      "compress": "webcodecs",
+      "path": "single-put",
+      "srcBytes": 185103337,
+      "sentBytes": 26809203,
+      "srcType": "video/mp4",
+      "sentType": "video/mp4",
+      "compressMs": 7299,
+      "signMs": 12,
+      "putMs": 66,
+      "completeMs": null,
+      "finalizeMs": 1,
+      "transferMs": 79,
+      "totalMs": 7378,
+      "putMbps": 3259.48,
+      "hiddenCount": 0
+     },
+     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "url": "http://127.0.0.1:47613/",
+     "build": 1794000000,
+     "platform": "web"
+    }
+   }
+  ]
+ },
+ {
+  "label": "U5 synth 1080p/17Mbps pushup 59.7MB, compression off (parallel path)",
+  "chrome": "157.0.8103.51",
+  "wallMs": 123,
+  "attempt": "perf-bench-local-attempt",
+  "mediaRecorderStarts": 0,
+  "puts": [
+   {
+    "target": "/gcs/part4",
+    "bytes": 9331268
+   },
+   {
+    "target": "/gcs/part2",
+    "bytes": 16777216
+   },
+   {
+    "target": "/gcs/part1",
+    "bytes": 16777216
+   },
+   {
+    "target": "/gcs/part3",
+    "bytes": 16777216
+   }
+  ],
+  "requestsOutsideLocalhost": [],
+  "telemetry": [
+   {
+    "bytes": 624,
+    "contentType": "text/plain",
+    "body": {
+     "page": "upload",
+     "action": "upload-timing",
+     "error": "-",
+     "details": {
+      "netType": null,
+      "netEffective": "4g",
+      "netDownMbps": 1.65,
+      "liftType": "Pushup",
+      "mode": "off",
+      "compress": "skipped:off",
+      "path": "parallel",
+      "srcBytes": 59662916,
+      "sentBytes": 59662916,
+      "srcType": "video/mp4",
+      "sentType": "video/mp4",
+      "compressMs": 0,
+      "signMs": 3,
+      "putMs": 103,
+      "completeMs": 2,
+      "finalizeMs": 12,
+      "transferMs": 121,
+      "totalMs": 121,
+      "putMbps": 4625.03,
+      "hiddenCount": 0
+     },
+     "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
+     "url": "http://127.0.0.1:47613/",
+     "build": 1794000000,
+     "platform": "web"
+    }
+   }
+  ]
+ }
+]

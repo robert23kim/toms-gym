@@ -1,0 +1,136 @@
+[
+ {
+  "id": "M1-no-ua-url-cap",
+  "file": "src/lib/telemetry.ts",
+  "killed": true,
+  "failed": [
+   "the event fits the backend's 2 KB body cap even with a huge UA and URL"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M2-no-report",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "a single-PUT upload returns the finalize result and reports one timing event",
+   "the event never carries the file name",
+   "the event fits the backend's 2 KB body cap even with a huge UA and URL",
+   "going to the background mid-upload is counted",
+   "a telemetry failure does not fail a finished upload",
+   "a 40 MiB file takes the parallel path and times the compose step",
+   "when the parallel path fails, the resumable fallback is what gets reported"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M3-report-error-escapes",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "a telemetry failure does not fail a finished upload"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M4-single-put-untimed",
+  "file": "src/lib/upload.ts",
+  "killed": true,
+  "failed": [
+   "a single-PUT upload returns the finalize result and reports one timing event"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M5-compose-untimed",
+  "file": "src/lib/parallelUpload.ts",
+  "killed": true,
+  "failed": [
+   "a 40 MiB file takes the parallel path and times the compose step"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M6-resumable-put-untimed",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "when the parallel path fails, the resumable fallback is what gets reported"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M7-hidden-never-counted",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "going to the background mid-upload is counted",
+   "counts each time the page goes to the background, and stops when told"
+  ],
+  "suite_fail": [],
+  "total": 18
+ },
+ {
+  "id": "M8-phase-not-summed",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "a phase run twice (parallel attempt, then resumable fallback) sums"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "M9-filename-leaks",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "the event never carries the file name"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M10-bits-wrong",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "10 MB in 8 s is 10 Mbit/s",
+   "flattens a compressed single-PUT upload into rounded, labelled fields"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "M11-wrong-path-label",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "when the parallel path fails, the resumable fallback is what gets reported"
+  ],
+  "suite_fail": [],
+  "total": 8
+ },
+ {
+  "id": "M12-event-on-failure",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "a single-PUT upload returns the finalize result and reports one timing event",
+   "the event fits the backend's 2 KB body cap even with a huge UA and URL",
+   "going to the background mid-upload is counted",
+   "a failed PUT rejects with its stage tag and reports no timing event",
+   "a telemetry failure does not fail a finished upload",
+   "a 40 MiB file takes the parallel path and times the compose step",
+   "when the parallel path fails, the resumable fallback is what gets reported"
+  ],
+  "suite_fail": [],
+  "total": 8
+ }
+]

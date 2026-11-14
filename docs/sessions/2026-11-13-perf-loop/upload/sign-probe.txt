@@ -1,0 +1,13 @@
+signed-url POST new-conn  status=200 connect=0.019085 tls=0.046906 ttfb=0.178371 total=0.178674
+signed-url POST new-conn  status=200 connect=0.017118 tls=0.041667 ttfb=0.147404 total=0.147669
+signed-url POST new-conn  status=200 connect=0.014683 tls=0.036806 ttfb=0.139941 total=0.140256
+signed-url POST new-conn  status=200 connect=0.019415 tls=0.041813 ttfb=0.153065 total=0.153383
+signed-url POST new-conn  status=200 connect=0.017299 tls=0.043453 ttfb=0.157877 total=0.158134
+signed-url POST new-conn  status=200 connect=0.017109 tls=0.040064 ttfb=0.154990 total=0.155172
+signed-url POST new-conn  status=200 connect=0.020061 tls=0.042263 ttfb=0.147706 total=0.147988
+composite/sign parts=4 new-conn status=200 ttfb=0.197456 total=0.198731
+composite/sign parts=4 new-conn status=200 ttfb=0.202820 total=0.203683
+composite/sign parts=4 new-conn status=200 ttfb=0.165011 total=0.167380
+reused-conn: OPTIONS total=0.094947
+reused-conn: POST total=0.106323 (starttransfer=0.106105)
+reused-conn: POST total=0.104931

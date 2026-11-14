@@ -1,0 +1,66 @@
+[
+ {
+  "lift": "Pushup",
+  "device": "Android-webview",
+  "clip_s": 34.1,
+  "gap_s": 9.1,
+  "per_clip_s": 0.27,
+  "meaning": "mp4-muxer stamps creation_time when the encode starts, so this is decode+scale+encode+mux (+ sign round trip), +-1 s"
+ },
+ {
+  "lift": "Plank",
+  "device": "Android-webview",
+  "clip_s": 86.5,
+  "gap_s": 20.9,
+  "per_clip_s": 0.24,
+  "meaning": "mp4-muxer stamps creation_time when the encode starts, so this is decode+scale+encode+mux (+ sign round trip), +-1 s"
+ },
+ {
+  "lift": "Situp",
+  "device": "Android-webview",
+  "clip_s": 57.5,
+  "gap_s": 14.3,
+  "per_clip_s": 0.25,
+  "meaning": "mp4-muxer stamps creation_time when the encode starts, so this is decode+scale+encode+mux (+ sign round trip), +-1 s"
+ },
+ {
+  "lift": "Situp",
+  "device": "Android-webview",
+  "clip_s": 66.2,
+  "gap_s": 16.8,
+  "per_clip_s": 0.25,
+  "meaning": "mp4-muxer stamps creation_time when the encode starts, so this is decode+scale+encode+mux (+ sign round trip), +-1 s"
+ },
+ {
+  "lift": "Pushup",
+  "device": "Android-webview",
+  "clip_s": 28.4,
+  "gap_s": 7.4,
+  "per_clip_s": 0.26,
+  "meaning": "mp4-muxer stamps creation_time when the encode starts, so this is decode+scale+encode+mux (+ sign round trip), +-1 s"
+ },
+ {
+  "lift": "Squat",
+  "device": "iOS",
+  "clip_s": 32.0,
+  "gap_s": 16.1,
+  "per_clip_s": 0.5,
+  "meaning": "creation_time is recording start, so this is recording end -> sign: taps plus the iOS picker export"
+ },
+ {
+  "lift": "Pushup",
+  "device": "iOS",
+  "clip_s": 51.3,
+  "gap_s": 4.0,
+  "per_clip_s": 0.08,
+  "meaning": "creation_time is recording start, so this is recording end -> sign: taps plus the iOS picker export"
+ },
+ {
+  "lift": "Situp",
+  "device": "iOS",
+  "clip_s": 109.1,
+  "gap_s": 23.3,
+  "per_clip_s": 0.21,
+  "meaning": "creation_time is recording start, so this is recording end -> sign: taps plus the iOS picker export"
+ }
+]

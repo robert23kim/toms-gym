@@ -1,0 +1,44 @@
+[
+ {
+  "id": "F1-auto-keeps-mediarecorder",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "'auto': a failed hardware encode sends the original and never tries MediaRecorder"
+  ],
+  "suite_fail": [],
+  "total": 6
+ },
+ {
+  "id": "F2-default-auto-label",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "the default mode is reported as fast-only"
+  ],
+  "suite_fail": [],
+  "total": 6
+ },
+ {
+  "id": "F3-mediarecorder-always",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "no option (default): a failed hardware encode sends the original and never tries MediaRecorder",
+   "'auto': a failed hardware encode sends the original and never tries MediaRecorder",
+   "'fast-only': a failed hardware encode sends the original and never tries MediaRecorder"
+  ],
+  "suite_fail": [],
+  "total": 6
+ },
+ {
+  "id": "F4-off-still-compresses",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "'off' skips compression entirely"
+  ],
+  "suite_fail": [],
+  "total": 6
+ }
+]
