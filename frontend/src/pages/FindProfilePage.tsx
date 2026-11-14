@@ -21,6 +21,10 @@ interface Found {
  * dedicated route so a user who lost their localStorage session has a page to
  * land on, not just a modal.
  */
+const CHALLENGE_NEXT = /^\/challenges\/[A-Za-z0-9-]+$/;
+const RESULT_NEXT =
+  /^\/(challenges\/[A-Za-z0-9-]+\/participants\/[A-Za-z0-9-]+\/video\/[A-Za-z0-9-]+|lift\/status\/[A-Za-z0-9-]+(\?challenge=[A-Za-z0-9-]+)?)$/;
+
 const FindProfilePage: React.FC = () => {
   const [email, setEmail] = useState(() => getEmail() ?? "");
   const [loading, setLoading] = useState(false);
@@ -29,7 +33,8 @@ const FindProfilePage: React.FC = () => {
   const [found, setFound] = useState<Found | null>(null);
   const [searchParams] = useSearchParams();
   const nextParam = searchParams.get("next");
-  const next = nextParam && /^\/challenges\/[A-Za-z0-9-]+$/.test(nextParam) ? nextParam : null;
+  const next = nextParam && (CHALLENGE_NEXT.test(nextParam) || RESULT_NEXT.test(nextParam)) ? nextParam : null;
+  const nextIsChallenge = !!next && CHALLENGE_NEXT.test(next);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,7 +106,7 @@ const FindProfilePage: React.FC = () => {
                   to={next}
                   className="w-full text-center px-4 py-2.5 bg-primary text-primary-foreground rounded-md font-medium hover:bg-primary/90"
                 >
-                  Back to the challenge →
+                  {nextIsChallenge ? "Back to the challenge →" : "Back to your lift →"}
                 </Link>
               )}
               <Link
@@ -162,7 +167,7 @@ const FindProfilePage: React.FC = () => {
                 signup required.
               </p>
               <Link
-                to={next ? `${next}?upload=1` : "/upload"}
+                to={nextIsChallenge ? `${next}?upload=1` : "/upload"}
                 className="inline-block px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90"
               >
                 Upload something
