@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Mail, Send } from "lucide-react";
 import axios from "axios";
 import { API_URL } from "../config";
+import { getEmail } from "../lib/identity";
 
 /**
  * Request a magic sign-in link (T15). Minimal entry point to the passwordless
@@ -10,7 +11,7 @@ import { API_URL } from "../config";
  * generic ("if an account exists…").
  */
 const SignIn: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => getEmail() ?? "");
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState<string | null>(null);

@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Dumbbell, Upload, Crown, Flame, Timer } from "lucide-react";
 import HubPage from "../components/HubPage";
 import { getCompetitions } from "../lib/api";
+import { getUserId } from "../lib/identity";
 
 const LiftHub: React.FC = () => {
-  const localUserId = localStorage.getItem("userId");
+  const localUserId = getUserId();
   const [plank, setPlank] = useState<{ id: string; title: string } | null>(null);
   const [club, setClub] = useState<{ id: string; title: string } | null>(null);
 

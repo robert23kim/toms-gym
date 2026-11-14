@@ -8,6 +8,7 @@ import { useMediaUpload } from "../hooks/useMediaUpload";
 import { uploadBowlingSheet, BowlingSheetType } from "../lib/api";
 import { buildSheetForm } from "../lib/bowlingSheetForm";
 import { todayLocal } from "../lib/dates";
+import { getEmail, getUserId, remember } from "../lib/identity";
 
 const MAX_BYTES = 20 * 1024 * 1024;
 
@@ -28,11 +29,11 @@ const uploadErrorMessage = (err: unknown): string => {
 const BowlingSheetUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) => {
   const navigate = useNavigate();
   const cameraInputRef = useRef<HTMLInputElement>(null);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => getEmail() ?? "");
   const [sheetType, setSheetType] = useState<BowlingSheetType>("night");
   const [playedOn, setPlayedOn] = useState(() => todayLocal());
   const [isUploading, setIsUploading] = useState(false);
-  const storedUserId = localStorage.getItem("userId");
+  const storedUserId = getUserId();
 
   const {
     file: selectedFile,
@@ -58,7 +59,7 @@ const BowlingSheetUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = f
       setError("Please select a score sheet photo");
       return;
     }
-    const userId = localStorage.getItem("userId");
+    const userId = getUserId();
     if (!userId && !email) {
       setError("Please enter your email address");
       return;
@@ -70,6 +71,7 @@ const BowlingSheetUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = f
       const sheet = await uploadBowlingSheet(
         buildSheetForm(selectedFile, { sheetType, playedOn, userId, email }),
       );
+      if (!userId) remember({ email });
       navigate(`/bowling/scoresheet/${sheet.sheet_id}`);
     } catch (err) {
       setError(uploadErrorMessage(err));

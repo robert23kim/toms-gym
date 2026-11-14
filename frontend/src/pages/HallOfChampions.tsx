@@ -7,9 +7,10 @@ import NextToBeCrowned from "../components/champions/NextToBeCrowned";
 import ChampionConfetti from "../components/profile/ChampionConfetti";
 import { Champion, fetchChampions, getGolfAvatar } from "../lib/api";
 import { championTally, dynastyLabel, groupByYear, ordinalWin } from "../lib/championStats";
+import { getUserId } from "../lib/identity";
 
 const HallOfChampions: React.FC = () => {
-  const viewerId = localStorage.getItem("userId");
+  const viewerId = getUserId();
   const [champions, setChampions] = useState<Champion[] | null>(null);
   const [failed, setFailed] = useState(false);
 

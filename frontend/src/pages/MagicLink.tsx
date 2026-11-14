@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../config";
 import { setTokens } from "../auth/tokenUtils";
+import { remember } from "../lib/identity";
 
 /**
  * Magic-link consume page (T15). Opening the emailed link lands here; we call
@@ -39,7 +40,7 @@ const MagicLink: React.FC = () => {
           setTokens(access_token, "", user_id);
         } else {
           // Passwordless account — just restore the userId.
-          localStorage.setItem("userId", user_id);
+          remember({ userId: user_id });
         }
 
         // Full reload so AuthContext re-reads localStorage on mount.

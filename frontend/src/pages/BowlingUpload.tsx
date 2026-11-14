@@ -6,11 +6,12 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { useMediaUpload } from "../hooks/useMediaUpload";
+import { getEmail, getUserId, remember } from "../lib/identity";
 
 const BowlingUpload: React.FC = () => {
   const { competitionId } = useParams<{ competitionId: string }>();
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(() => getEmail() ?? "");
   const [isUploading, setIsUploading] = useState(false);
   const {
     file: selectedFile,
@@ -30,7 +31,7 @@ const BowlingUpload: React.FC = () => {
       return;
     }
 
-    const userId = localStorage.getItem("userId");
+    const userId = getUserId();
     if (!userId && !email) {
       setError("Please enter your email address");
       return;
@@ -58,6 +59,7 @@ const BowlingUpload: React.FC = () => {
       // Analysis is enqueued server-side on upload. Send the user to the status
       // page instead of a dead-end wait; it polls by attempt id and survives
       // reload via its URL (T8).
+      if (!userId) remember({ email });
       navigate(`/bowling/status/${response.data.attempt_id}`);
     } catch (err: any) {
       console.error("Upload error:", err);
@@ -110,7 +112,7 @@ const BowlingUpload: React.FC = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {!localStorage.getItem("userId") && (
+                {!getUserId() && (
                   <div>
                     <label className="block text-sm font-medium mb-2">Email Address</label>
                     <input

@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Bug, Lightbulb, CheckCircle2 } from "lucide-react";
 import Layout from "../components/Layout";
 import { createTicket, TicketType } from "../lib/api";
+import { getEmail, getUserId, remember } from "../lib/identity";
 
 const FileTicket: React.FC = () => {
   const [searchParams] = useSearchParams();
@@ -12,7 +13,7 @@ const FileTicket: React.FC = () => {
   );
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => getEmail() ?? "");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [submitted, setSubmitted] = useState<{ ticketId: string } | null>(null);
@@ -41,7 +42,7 @@ const FileTicket: React.FC = () => {
     setError(null);
 
     try {
-      const userId = localStorage.getItem("userId");
+      const userId = getUserId();
       const pageUrl = document.referrer;
       const { ticket_id } = await createTicket({
         type,

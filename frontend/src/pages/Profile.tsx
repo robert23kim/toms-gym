@@ -14,6 +14,7 @@ import TrophyCase, { championTitle } from "../components/profile/TrophyCase";
 import ChampionConfetti from "../components/profile/ChampionConfetti";
 import AvatarPicker from "../components/profile/AvatarPicker";
 import { GolfRoundListItem, BowlingResult } from "../lib/types";
+import { getUserId, remember } from "../lib/identity";
 
 // Interfaces for API response data
 interface UserData {
@@ -96,15 +97,15 @@ const Profile = () => {
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null);
   const [showAvatarPicker, setShowAvatarPicker] = useState(false);
 
-  const resolvedUserId = id || localStorage.getItem('userId') || null;
-  const isOwner = resolvedUserId === localStorage.getItem('userId');
+  const resolvedUserId = id || getUserId() || null;
+  const isOwner = resolvedUserId === getUserId();
 
   const fetchProfileData = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
 
-      const userId = id || localStorage.getItem('userId');
+      const userId = id || getUserId();
 
       if (!userId) {
         setError("No user ID found");
@@ -123,6 +124,9 @@ const Profile = () => {
       ]);
 
       setProfileData(profileRes.data);
+      if (String(userId) === getUserId() && profileRes.data?.user?.email) {
+        remember({ email: profileRes.data.user.email });
+      }
       if (golfRes) {
         setGolfRounds(golfRes.rounds || []);
         setGolfHandicap(golfRes.handicap_index ?? null);
@@ -142,7 +146,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (!authLoading) {
-      const userId = id || localStorage.getItem('userId');
+      const userId = id || getUserId();
       if (userId || isAuthenticated) {
         fetchProfileData();
       }
@@ -182,7 +186,7 @@ const Profile = () => {
   }
 
   // Check if we have any way to identify a user (via URL, localStorage, or auth)
-  const hasUserId = id || localStorage.getItem('userId');
+  const hasUserId = id || getUserId();
   if (!isAuthenticated && !hasUserId) {
     return (
       <Layout>

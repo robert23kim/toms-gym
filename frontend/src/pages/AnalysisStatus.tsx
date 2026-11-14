@@ -11,6 +11,7 @@ import { deriveStanding, personalBest, attemptScore, metricForLift, formatWithUn
 import ResultLadder from "../components/challenge/ResultLadder";
 import ConsistencyResult from "../components/challenge/ConsistencyResult";
 import { cleanRepCount, isQualityScoredLift } from "../lib/cleanReps";
+import { getUserId } from "../lib/identity";
 
 // T8 — Post-upload status page. Survives reload via its URL (attemptId is in the
 // path) and polls the existing per-attempt result endpoints. Covers LIFTING and
@@ -120,7 +121,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
   }, [poll]);
 
   const status: ProcessingStatus = result?.processing_status ?? "queued";
-  const userId = localStorage.getItem("userId");
+  const userId = getUserId();
   const [searchParams] = useSearchParams();
   const challengeParam = searchParams.get("challenge");
   const [board, setBoard] = useState<ChallengeLeaderboard | null>(null);

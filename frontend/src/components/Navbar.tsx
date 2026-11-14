@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import { X, Dumbbell, ShoppingBag, LogOut, User, Search, Trophy, CircleDot, Flag } from "lucide-react";
 import { useAuth } from "../auth/AuthContext";
 import { useIsOwner } from "../hooks/useIsOwner";
+import { forget, getUserId } from "../lib/identity";
 
 const Navbar: React.FC = () => {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -12,13 +13,13 @@ const Navbar: React.FC = () => {
   const isOwner = useIsOwner();
 
   // Check if user has a userId in localStorage (passwordless user)
-  const hasLocalUserId = !!localStorage.getItem('userId');
-  const localUserId = localStorage.getItem('userId');
+  const hasLocalUserId = !!getUserId();
+  const localUserId = getUserId();
 
   // Handler for passwordless users to "forget" their session
-  const handleForgetMe = () => {
-    localStorage.removeItem('userId');
+  const handleForgetMe = async () => {
     localStorage.removeItem('last_attempt_id');
+    await forget();
     window.location.href = '/';
   };
 

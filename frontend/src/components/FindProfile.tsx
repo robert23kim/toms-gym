@@ -4,6 +4,7 @@ import { X, Search, User } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { API_URL } from '../config';
+import { getEmail, remember } from '../lib/identity';
 
 interface FindProfileProps {
   onClose: () => void;
@@ -11,7 +12,7 @@ interface FindProfileProps {
 
 const FindProfile: React.FC<FindProfileProps> = ({ onClose }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState(() => getEmail() ?? '');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -32,8 +33,7 @@ const FindProfile: React.FC<FindProfileProps> = ({ onClose }) => {
       const response = await axios.get(`${API_URL}/users/by-email/${encodeURIComponent(email)}`);
 
       if (response.data && response.data.id) {
-        // Store userId in localStorage for future use
-        localStorage.setItem('userId', response.data.id);
+        remember({ userId: response.data.id, email });
 
         // Navigate to profile
         onClose();

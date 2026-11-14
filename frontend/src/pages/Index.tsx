@@ -11,6 +11,7 @@ import { getChallengeLeaderboard, getCompetitions } from "../lib/api";
 import { Competition } from "../lib/types";
 import { useIsOwner } from "../hooks/useIsOwner";
 import { visibleChallenges } from "../lib/owner";
+import { getUserId } from "../lib/identity";
 
 const LIFT_VERTICAL = {
     to: "/lift",
@@ -35,7 +36,7 @@ const SPORT_VERTICALS = [
 
 const readUserId = (): string | null => {
   try {
-    return localStorage.getItem("userId");
+    return getUserId();
   } catch {
     return null;
   }

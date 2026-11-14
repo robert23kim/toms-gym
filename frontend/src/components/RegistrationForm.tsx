@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config';
 import { setTokens } from '../auth/tokenUtils';
+import { remember } from '../lib/identity';
 import { useAuth } from '../auth/AuthContext';
 
 interface RegistrationFormProps {
@@ -67,6 +68,8 @@ export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess, o
             if (!response.ok) {
                 throw new Error(data.error || 'Registration failed');
             }
+
+            remember({ userId: data.user_id, email: formData.email });
 
             // Use auth context to handle login after successful registration
             if (data.access_token && data.refresh_token && data.user_id) {

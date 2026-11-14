@@ -19,6 +19,7 @@ import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
 import PlankSteadiness from '../components/lifting/PlankSteadiness';
 import SetStats from '../components/lifting/SetStats';
+import { getUserId } from "../lib/identity";
 
 // Lifts scored by the body, not the bar — no weight is shown for these.
 // Module-level so it can never be shadowed inside the render tree.
@@ -117,7 +118,7 @@ const VideoPlayer: React.FC = () => {
 
   const { toast } = useToast();
   const standing = board && participantId ? deriveStanding(board, participantId) : null;
-  const isOwner = !!participantId && participantId === localStorage.getItem('userId');
+  const isOwner = !!participantId && participantId === getUserId();
 
   const handleShare = async () => {
     if (isCreatingShortLink) return;

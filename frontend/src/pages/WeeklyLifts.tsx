@@ -7,6 +7,7 @@ import Layout from '../components/Layout';
 import WeeklyLiftsTable from '../components/WeeklyLiftsTable';
 import WeeklyLiftsChart from '../components/WeeklyLiftsChart';
 import { API_URL } from '../config';
+import { getUserId } from "../lib/identity";
 
 interface WeekData {
   week_start_date: string;
@@ -25,7 +26,7 @@ const WeeklyLifts: React.FC = () => {
   const [userName, setUserName] = useState<string>('');
 
   // Use the id from URL params or localStorage
-  const userId = id || localStorage.getItem('userId');
+  const userId = id || getUserId();
 
   const fetchWeeklyLifts = useCallback(async () => {
     if (!userId) return;

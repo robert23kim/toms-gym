@@ -17,6 +17,7 @@ import {
   deleteBowlingSheet,
   fetchBowlingSheet,
 } from "../lib/api";
+import { getUserId } from "../lib/identity";
 
 interface EditableGame {
   gameNumber: number;
@@ -125,7 +126,7 @@ const BowlingSheetReview: React.FC = () => {
       .then((data) => {
         if (cancelled) return;
         setSheet(data);
-        setPlayers(toEditable(data, localStorage.getItem("userId")));
+        setPlayers(toEditable(data, getUserId()));
       })
       .catch(() => {
         if (!cancelled) setLoadError("Could not load this score sheet.");
@@ -136,7 +137,7 @@ const BowlingSheetReview: React.FC = () => {
   }, [id]);
 
   useEffect(() => {
-    const userId = localStorage.getItem("userId");
+    const userId = getUserId();
     if (!userId || players.length === 0 || players.some((p) => p.saveAs === "me")) return;
     let cancelled = false;
     axios
@@ -242,7 +243,7 @@ const BowlingSheetReview: React.FC = () => {
           })),
       };
       await confirmBowlingSheet(id, body);
-      const userId = localStorage.getItem("userId");
+      const userId = getUserId();
       const savedMe = players.some((p) => p.saveAs === "me");
       navigate(savedMe && userId ? `/bowling/insights/${userId}?sheet=${id}` : "/bowl");
     } catch {
@@ -373,7 +374,7 @@ const BowlingSheetReview: React.FC = () => {
                     >
                       <option value="">Don't save</option>
                       <option value="me">Me</option>
-                      {player.linkedUser && player.linkedUser.id !== localStorage.getItem("userId") ? (
+                      {player.linkedUser && player.linkedUser.id !== getUserId() ? (
                         <option value={player.linkedUser.id}>{player.linkedUser.name}'s profile</option>
                       ) : (
                         <option value="new">New profile{player.name ? ` for ${player.name}` : ""}</option>

@@ -11,6 +11,7 @@ import { useToast } from "../components/ui/use-toast";
 import { createAndCopyShareLink } from "../lib/share";
 import { fetchRound } from "../lib/api";
 import { GolfRoundDetail, GolfHole } from "../lib/types";
+import { getUserId } from "../lib/identity";
 
 const GolfRound: React.FC = () => {
   const { roundId } = useParams<{ roundId: string }>();
@@ -181,7 +182,7 @@ const GolfRound: React.FC = () => {
                   <Share2 className="w-3.5 h-3.5" />
                   {sharing ? "Creating..." : "Share"}
                 </button>
-                {round && round.user_id === (localStorage.getItem("userId") || "") && (
+                {round && round.user_id === (getUserId() || "") && (
                   <Link
                     to={`/golf/review/${roundId}`}
                     data-testid="edit-round-link"

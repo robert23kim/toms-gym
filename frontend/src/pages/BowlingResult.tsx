@@ -19,6 +19,7 @@ import {
   deriveHook,
   isLowDetection,
 } from "../lib/bowlingStats";
+import { getUserId } from "../lib/identity";
 
 const HOOK_ARROW: Record<"left" | "right" | "straight", string> = {
   left: "←",
@@ -32,7 +33,7 @@ const BowlingResult: React.FC = () => {
   const [result, setResult] = useState<BowlingResultType | null>(null);
   const [comparison, setComparison] = useState<ThrowComparison | null>(null);
   useEffect(() => {
-    const viewer = localStorage.getItem("userId");
+    const viewer = getUserId();
     if (!result || !attemptId || !viewer) return;
     let cancelled = false;
     fetchBowlingResultsByUser(viewer)

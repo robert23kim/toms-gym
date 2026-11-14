@@ -6,6 +6,7 @@ import Layout from "../components/Layout";
 import FairwayScope from "../components/FairwayScope";
 import { getGolfAvatar } from "../lib/api";
 import { apiErrorMessage, useGolfLeaderboard } from "../lib/queries";
+import { getUserId } from "../lib/identity";
 
 const GolfLeaderboard: React.FC = () => {
   const { data: entries = [], isLoading, error } = useGolfLeaderboard();
@@ -72,9 +73,9 @@ const GolfLeaderboard: React.FC = () => {
                     <Upload className="w-4 h-4" />
                     Upload Scorecard
                   </Link>
-                  {localStorage.getItem("userId") && (
+                  {getUserId() && (
                     <Link
-                      to={`/golf/profile/${localStorage.getItem("userId")}`}
+                      to={`/golf/profile/${getUserId()}`}
                       className="h-9 px-6 rounded-md border border-[var(--fw-border-secondary)] text-sm inline-flex items-center gap-2 hover:bg-[var(--fw-bg-secondary)]"
                     >
                       My Golf Profile
@@ -140,10 +141,10 @@ const GolfLeaderboard: React.FC = () => {
             )}
 
             {/* Quick links — populated state only; empty-state has its own CTA above. */}
-            {entries.length > 0 && localStorage.getItem("userId") && (
+            {entries.length > 0 && getUserId() && (
               <div className="mt-8 flex justify-center">
                 <Link
-                  to={`/golf/profile/${localStorage.getItem("userId")}`}
+                  to={`/golf/profile/${getUserId()}`}
                   className="h-9 px-6 rounded-md border border-[var(--fw-border-secondary)] text-sm inline-flex items-center gap-2 hover:bg-[var(--fw-bg-secondary)]"
                 >
                   My Golf Profile

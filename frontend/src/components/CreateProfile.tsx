@@ -4,6 +4,7 @@ import { X, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { API_URL } from '../config';
 import { useAuth } from '../auth/AuthContext';
+import { remember } from '../lib/identity';
 
 interface CreateProfileProps {
   onClose: () => void;
@@ -59,6 +60,8 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
       // Handle successful registration
       setMessage('Profile created successfully!');
       
+      remember({ userId: response.data.user_id, email: formData.email });
+
       // Login the user automatically
       if (response.data.access_token && response.data.user_id) {
         // Use refresh token if available, otherwise use access token as refresh token too

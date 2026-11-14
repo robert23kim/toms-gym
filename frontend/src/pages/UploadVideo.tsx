@@ -10,6 +10,7 @@ import { reportUploadError } from "../lib/telemetry";
 import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
 import { triggerLiftingAnalysis } from "../lib/api";
+import { getEmail, getUserId, remember } from "../lib/identity";
 
 interface UserProfile {
   best_lifts: {
@@ -40,7 +41,7 @@ const UploadVideo: React.FC = () => {
   // Keep the device awake + warn before navigating away during an upload.
   useUploadGuard(isUploading);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(() => getEmail() ?? "");
 
   // Default weights for each lift type
   const defaultWeights = {
@@ -62,7 +63,7 @@ const UploadVideo: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const userId = localStorage.getItem('userId');
+        const userId = getUserId();
         if (!userId) {
           // Set default weight if no user profile
           setWeight(getWeightForLiftType(liftType));
@@ -127,7 +128,7 @@ const UploadVideo: React.FC = () => {
       }
 
       // Check for user_id or email
-      const userId = localStorage.getItem('userId');
+      const userId = getUserId();
       if (!userId && !email) {
         setError("Please enter your email address to upload.");
         return;
@@ -155,7 +156,7 @@ const UploadVideo: React.FC = () => {
       if (data.url) {
         // Store user_id in localStorage for future uploads (especially for email-based uploads)
         if (data.user_id) {
-          localStorage.setItem('userId', data.user_id);
+          remember({ userId: data.user_id, email: userId ? null : email });
           console.log("Stored user_id:", data.user_id);
         }
 
@@ -267,7 +268,7 @@ const UploadVideo: React.FC = () => {
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">
-                {!localStorage.getItem('userId') && (
+                {!getUserId() && (
                   <div>
                     <label className="block text-sm font-medium mb-2">Email Address</label>
                     <input

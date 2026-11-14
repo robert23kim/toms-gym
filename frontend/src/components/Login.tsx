@@ -4,6 +4,7 @@ import { X } from 'lucide-react';
 import axios from 'axios';
 import { API_URL } from '../config';
 import { useAuth } from '../auth/AuthContext';
+import { remember } from '../lib/identity';
 
 interface LoginProps {
   onClose: () => void;
@@ -37,7 +38,7 @@ const Login: React.FC<LoginProps> = ({ onClose, onSubmit }) => {
       if (response.status === 200) {
         // Store auth token and user ID
         localStorage.setItem('auth_token', response.data.access_token);
-        localStorage.setItem('userId', response.data.user_id);
+        remember({ userId: response.data.user_id, email: formData.username });
         
         // Update auth context
         await handleLoginSuccess(response.data.access_token, response.data.user_id);

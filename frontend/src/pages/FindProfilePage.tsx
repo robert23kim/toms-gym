@@ -7,6 +7,7 @@ import Layout from "../components/Layout";
 import GhibliAvatar from "../components/GhibliAvatar";
 import { API_URL } from "../config";
 import { LastLift, lastLiftCopy, sinceCopy } from "../lib/welcome";
+import { getEmail, remember } from "../lib/identity";
 
 interface Found {
   id: string;
@@ -21,7 +22,7 @@ interface Found {
  * land on, not just a modal.
  */
 const FindProfilePage: React.FC = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(() => getEmail() ?? "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
@@ -48,7 +49,7 @@ const FindProfilePage: React.FC = () => {
       );
 
       if (response.data && response.data.id) {
-        localStorage.setItem("userId", response.data.id);
+        remember({ userId: response.data.id, email });
         const lastLift: LastLift | null = await axios
           .get(`${API_URL}/users/${response.data.id}/lifts?limit=1`)
           .then((r) => r.data?.lifts?.[0] ?? null)

@@ -3,12 +3,13 @@ import axios from "axios";
 import { API_URL } from "../config";
 import { useAuth } from "../auth/AuthContext";
 import { isOwnerEmail, readOwnerCache, writeOwnerCache } from "../lib/owner";
+import { getUserId } from "../lib/identity";
 
 const inflight = new Map<string, Promise<boolean>>();
 
 const readUserId = (): string | null => {
   try {
-    return localStorage.getItem("userId");
+    return getUserId();
   } catch {
     return null;
   }

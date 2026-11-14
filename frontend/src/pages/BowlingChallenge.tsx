@@ -6,6 +6,7 @@ import axios from "axios";
 import Layout from "../components/Layout";
 import { API_URL } from "../config";
 import { BowlingResult } from "../lib/types";
+import { getEmail, getUserId, remember } from "../lib/identity";
 
 function timeAgo(dateStr: string): string {
   const seconds = Math.floor((Date.now() - new Date(dateStr).getTime()) / 1000);
@@ -28,7 +29,7 @@ const BowlingChallenge: React.FC = () => {
 
   // Upload state
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(() => getEmail() ?? "");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
@@ -123,7 +124,7 @@ const BowlingChallenge: React.FC = () => {
       return;
     }
 
-    const userId = localStorage.getItem("userId");
+    const userId = getUserId();
     if (!userId && !email) {
       setUploadError("Please enter your email address");
       return;
@@ -145,6 +146,8 @@ const BowlingChallenge: React.FC = () => {
       const response = await axios.post(`${API_URL}/bowling/upload`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
+
+      if (!userId) remember({ email });
 
       // Start polling for this result
       setActiveAttemptId(response.data.attempt_id);
@@ -390,7 +393,7 @@ const BowlingChallenge: React.FC = () => {
                     </div>
 
                     <form onSubmit={handleSubmit} className="space-y-4">
-                      {!localStorage.getItem("userId") && (
+                      {!getUserId() && (
                         <div>
                           <label className="block text-sm font-medium mb-1">Email Address</label>
                           <input

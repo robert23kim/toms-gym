@@ -3,12 +3,13 @@ import { Flame, Share2 } from "lucide-react";
 import { fetchUserActivity } from "../lib/api";
 import { computeStreak, milestoneCopy, milestoneReached, Streak } from "../lib/streak";
 import { createAndCopyShareLink } from "../lib/share";
+import { getUserId } from "../lib/identity";
 
 const StreakCard: React.FC = () => {
   const [streak, setStreak] = useState<Streak | null>(null);
   const [shareState, setShareState] = useState<"idle" | "copied" | "failed">("idle");
   const [milestone, setMilestone] = useState<number | null>(null);
-  const userId = typeof localStorage !== "undefined" ? localStorage.getItem("userId") : null;
+  const userId = typeof localStorage !== "undefined" ? getUserId() : null;
 
   useEffect(() => {
     if (!userId) return;

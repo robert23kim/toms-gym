@@ -13,6 +13,7 @@ import {
   fetchBowlingInsights,
   fetchBowlingGames,
 } from "../lib/api";
+import { getUserId } from "../lib/identity";
 
 type Payload = BowlingInsightsPayload & { recent: BowlingGameRow[] };
 
@@ -69,7 +70,7 @@ const BowlingInsights: React.FC = () => {
   const [night, setNight] = useState<Night | null>(null);
 
   const resolvedUserId =
-    userIdParam === "me" ? localStorage.getItem("userId") : userIdParam ?? null;
+    userIdParam === "me" ? getUserId() : userIdParam ?? null;
 
   useEffect(() => {
     if (!resolvedUserId) {

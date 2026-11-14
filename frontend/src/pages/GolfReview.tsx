@@ -23,6 +23,7 @@ import {
   GolfCourse,
   GolfCourseSearchResult,
 } from "../lib/types";
+import { getUserId } from "../lib/identity";
 
 const buildFullHoles = (partial: GolfHole[] | undefined): GolfHole[] => {
   const src = partial || [];
@@ -75,7 +76,7 @@ const GolfReview: React.FC = () => {
         // delta. Snapshot history is untouched by this read; failure is
         // non-fatal.
         try {
-          const uid = data.round.user_id || localStorage.getItem("userId");
+          const uid = data.round.user_id || getUserId();
           if (uid) {
             const h = await axios.get(`${API_URL}/golf/handicap/${uid}`);
             setPrevIndex(h.data?.handicap_index ?? null);
@@ -112,7 +113,7 @@ const GolfReview: React.FC = () => {
 
   useEffect(() => {
     if (!confirmed || !roundId) return;
-    const uid = round?.user_id || localStorage.getItem("userId");
+    const uid = round?.user_id || getUserId();
     if (!uid) return;
     let cancelled = false;
     fetchGolfRounds(uid, { limit: 100 })
@@ -258,7 +259,7 @@ const GolfReview: React.FC = () => {
     setError(null);
 
     try {
-      const userId = round?.user_id || localStorage.getItem("userId") || "";
+      const userId = round?.user_id || getUserId() || "";
       const body: Record<string, unknown> = {
         user_id: userId,
         holes: holes.map((h) => ({
@@ -342,7 +343,7 @@ const GolfReview: React.FC = () => {
   }
 
   if (confirmed && resultData) {
-    const userId = round?.user_id || localStorage.getItem("userId");
+    const userId = round?.user_id || getUserId();
     return (
       <Layout>
         <FairwayScope>

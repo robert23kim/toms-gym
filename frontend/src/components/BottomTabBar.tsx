@@ -3,10 +3,11 @@ import { Link, useLocation } from "react-router-dom";
 import { Home, Dumbbell, CircleDot, Flag, Trophy, User } from "lucide-react";
 import { activeTab, meTarget, TabKey } from "../lib/tabs";
 import { useIsOwner } from "../hooks/useIsOwner";
+import { getUserId } from "../lib/identity";
 
 const readUserId = (): string | null => {
   try {
-    return localStorage.getItem("userId");
+    return getUserId();
   } catch {
     return null;
   }

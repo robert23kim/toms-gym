@@ -8,10 +8,11 @@ import { API_URL } from "../config";
 import FairwayScope from "../components/FairwayScope";
 import StagedParseProgress from "../components/golf/StagedParseProgress";
 import { useMediaUpload } from "../hooks/useMediaUpload";
+import { getEmail, getUserId, remember } from "../lib/identity";
 
 const GolfUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(() => getEmail() ?? "");
   const [isUploading, setIsUploading] = useState(false);
   const cameraInputRef = useRef<HTMLInputElement>(null);
 
@@ -39,7 +40,7 @@ const GolfUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) 
       return;
     }
 
-    const userId = localStorage.getItem("userId");
+    const userId = getUserId();
     if (!userId && !email) {
       setError("Please enter your email address");
       return;
@@ -62,7 +63,7 @@ const GolfUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) 
       });
 
       if (response.data.user_id) {
-        localStorage.setItem("userId", response.data.user_id);
+        remember({ userId: response.data.user_id, email: userId ? null : email });
       }
 
       navigate(`/golf/review/${response.data.round_id}`);
@@ -107,7 +108,7 @@ const GolfUpload: React.FC<{ autoCamera?: boolean }> = ({ autoCamera = false }) 
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-5">
-                {!localStorage.getItem("userId") && (
+                {!getUserId() && (
                   <div>
                     <label className="block text-sm font-medium mb-1.5">Email</label>
                     <input

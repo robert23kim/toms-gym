@@ -1,9 +1,10 @@
 import React from "react";
 import { Flag, Camera, Trophy, User } from "lucide-react";
 import HubPage from "../components/HubPage";
+import { getUserId } from "../lib/identity";
 
 const GolfHub: React.FC = () => {
-  const localUserId = localStorage.getItem("userId");
+  const localUserId = getUserId();
 
   return (
     <HubPage

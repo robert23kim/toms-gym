@@ -9,10 +9,11 @@ import FairwayScope from "../components/FairwayScope";
 import { API_URL } from "../config";
 import { getGolfAvatar, fetchRounds } from "../lib/api";
 import { GolfRoundListItem, GolfHole } from "../lib/types";
+import { getUserId } from "../lib/identity";
 
 const GolfProfile: React.FC = () => {
   const { userId: paramUserId } = useParams<{ userId: string }>();
-  const userId = paramUserId || localStorage.getItem("userId") || "";
+  const userId = paramUserId || getUserId() || "";
   const [rounds, setRounds] = useState<GolfRoundListItem[]>([]);
   const [handicapIndex, setHandicapIndex] = useState<number | null>(null);
   const [userName, setUserName] = useState<string>("");

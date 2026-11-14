@@ -33,6 +33,7 @@ import RankChangeBanner from "../components/challenge/RankChangeBanner";
 import { scoreColumnLabel, scoringNote } from "../components/challenge/metric";
 import { deriveStanding, ctaLabelFor } from "../lib/standing";
 import { rankChange, readRank, writeRank, RankShift } from "../lib/rankMemory";
+import { forget, getEmail, getUserId, remember } from "../lib/identity";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -74,14 +75,7 @@ function isBodyweightLift(liftType: string): boolean {
   return liftType === 'Plank' || liftType === 'Pushup' || liftType === 'Situp';
 }
 
-function readStoredUserId(): string | null {
-  try {
-    const id = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
-    return id && id !== "undefined" && id !== "null" ? id : null;
-  } catch {
-    return null;
-  }
-}
+const readStoredUserId = getUserId;
 
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -122,7 +116,7 @@ const ChallengeDetail: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [liftType, setLiftType] = useState<string>("Squat");
   const [weight, setWeight] = useState<string>("60");
-  const [email, setEmail] = useState<string>("");
+  const [email, setEmail] = useState<string>(() => getEmail() ?? "");
   const [isUploading, setIsUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -250,13 +244,11 @@ const ChallengeDetail: React.FC = () => {
         const otherProfile = !!storedId && !!data.user_id && String(data.user_id) !== String(storedId);
         let adoptedId: string | null = null;
         if (!storedId && data.user_id) {
-          try {
-            localStorage.setItem("userId", String(data.user_id));
-            adoptedId = String(data.user_id);
-          } catch {
-            // Storage full or blocked: the upload still stands.
-          }
+          remember({ userId: String(data.user_id), email });
+          adoptedId = String(data.user_id);
           setViewerId(String(data.user_id));
+        } else if (storedId && !otherProfile) {
+          remember({ email });
         }
         // Kick off analysis first — it's the long pole; UI refreshes can wait
         // the extra second.
@@ -270,12 +262,8 @@ const ChallengeDetail: React.FC = () => {
           }
         }
 
-        const forgetAdopted = (forget: string) => () => {
-          try {
-            if (localStorage.getItem("userId") === forget) localStorage.removeItem("userId");
-          } catch {
-            // Nothing stored to forget.
-          }
+        const forgetAdopted = (forgetId: string) => () => {
+          if (getUserId() === forgetId) void forget();
           setViewerId(null);
         };
         toast({
