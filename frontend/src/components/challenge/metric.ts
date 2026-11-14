@@ -46,7 +46,7 @@ export function scoringNote(
   liftTypes?: string[],
   rules?: Partial<ConsistencyRules>,
 ): string | null {
-  if (metric === "consistency") return consistencyNote(rules);
+  if (metric === "consistency") return consistencyNote(rules, liftTypes?.length ?? 0);
   if (metric !== "reps") return null;
   if (!liftTypes?.some((t) => t.toLowerCase() === "situp")) return null;
   return "Clean reps count in full and sloppy reps count half — a rep is clean when its form grades C or better.";
@@ -60,11 +60,12 @@ const CONSISTENCY_DEFAULTS = {
   plank_seconds_per_lift: 10,
 };
 
-function consistencyNote(rules?: Partial<ConsistencyRules>): string {
+function consistencyNote(rules: Partial<ConsistencyRules> | undefined, typeCount: number): string {
   const r = { ...CONSISTENCY_DEFAULTS, ...rules };
+  const cap = typeCount > 0 ? `, up to +${r.type_bonus * typeCount}` : "";
   return (
     `Every rep is a lift (sloppy situps count half) and every ${r.plank_seconds_per_lift} s of plank is one. ` +
     `Hit the weekly quota for +${r.quota_bonus} and next week's goes up ${r.ramp}; miss it and it resets to ${r.base_quota}. ` +
-    `Most of a lift type in a week: +${r.type_bonus}.`
+    `Lead a lift type (most logged that week) for +${r.type_bonus} extra each${cap}; any mix counts toward the quota.`
   );
 }

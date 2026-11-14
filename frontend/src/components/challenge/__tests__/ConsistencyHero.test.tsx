@@ -150,10 +150,10 @@ describe("ConsistencyHero", () => {
     expect(screen.queryByText("The 100 Club")).toBeNull();
   });
 
-  it("says type bonuses are added when the week ends", () => {
+  it("says each led type is an extra +25 that locks when the week ends", () => {
     renderHero(consistencyLeaderboard, null);
     expect(screen.getByTestId("consistency-bonus-note")).toHaveTextContent(
-      "Type bonuses (+25 each) are added when the week ends on Sunday.",
+      /^Each type you lead is \+25 extra, locked in when the week ends on Sunday\.$/,
     );
   });
 
