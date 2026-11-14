@@ -207,6 +207,10 @@ def rank_consistency(participants, rules, now, lift_types=None) -> Tuple[List[di
             w = week_of(a.get("created_at"), rules)
             if w is None or w > cap:
                 continue
+            if a.get("lift_type") == "Auto":
+                if w >= 1:
+                    weeks[w]["pending"] += 1
+                continue
             lifts = attempt_lifts(a, rules)
             if w < 1:
                 if lifts is not None and a.get("lift_type") in scoring:

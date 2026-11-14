@@ -20,6 +20,8 @@ import time
 import requests
 import sqlalchemy
 
+from toms_gym.services import lift_type_auto
+
 
 def _sanitize_for_json(value):
     """Recursively replace NaN/Infinity floats with None.
@@ -155,6 +157,19 @@ def _normalize_lift_type(db_lift_type):
     return mapping.get(db_lift_type, 'bicep_curl')
 
 
+def _competition_lifttypes(session, attempt_id):
+    """Declared lift types of the attempt's competition ([] when none)."""
+    from toms_gym.routes.competition_routes import _parse_lifttypes
+    row = session.execute(sqlalchemy.text("""
+        SELECT c.description
+        FROM "Attempt" a
+        JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+        JOIN "Competition" c ON uc.competition_id = c.id
+        WHERE a.id = :attempt_id
+    """), {"attempt_id": attempt_id}).fetchone()
+    return _parse_lifttypes(row[0]) if row else []
+
+
 def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=None):
     """Call the analysis service and store results."""
     from toms_gym.services.analysis_timing import (
@@ -181,7 +196,13 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             "video_url": video_url,
             "attempt_id": str(attempt_id),
         }
-        if lift_type:
+        auto = lift_type_auto.is_auto(lift_type)
+        declared = []
+        if auto:
+            declared = _competition_lifttypes(session, attempt_id)
+            payload["lift_type"] = "auto"
+            payload["candidates"] = lift_type_auto.engine_candidates(declared)
+        elif lift_type:
             payload["lift_type"] = _normalize_lift_type(lift_type)
 
         timer.stage("engine")
@@ -227,8 +248,25 @@ def _process_job(get_connection, result_id, attempt_id, video_url, lift_type=Non
             ),
             {"attempt_id": attempt_id},
         )
+        detected = None
+        if auto:
+            detected, confidence = lift_type_auto.detection(result, declared)
+            if detected:
+                session.execute(sqlalchemy.text("""
+                    UPDATE "Attempt"
+                    SET lift_type = :lift_type, lift_type_source = 'auto',
+                        lift_type_confidence = :confidence
+                    WHERE id = :attempt_id AND lift_type = 'Auto'
+                """), {"attempt_id": attempt_id, "lift_type": detected,
+                       "confidence": confidence})
+                logger.info(f"Detected lift type {detected} ({confidence}) for attempt {attempt_id}")
+            else:
+                logger.info(f"No lift type detected for attempt {attempt_id}; stays Auto")
         session.commit()
         status = 'completed'
+        if detected:
+            from toms_gym.routes.competition_routes import invalidate_champions_cache
+            invalidate_champions_cache()
         logger.info(f"Lifting analysis completed: result={result_id}")
 
         # Best-effort: email the uploader a short link. Never blocks/fails

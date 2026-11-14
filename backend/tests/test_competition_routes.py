@@ -547,6 +547,40 @@ def test_leaderboard_same_lifts_without_mode_stay_legacy(test_client):
     assert "consistency" not in data
 
 
+def test_auto_attempt_on_the_club_board_scores_nothing_and_is_pending(test_client, monkeypatch):
+    """An attempt still waiting for its lift type never counts as a default lift."""
+    monkeypatch.setenv("ADMIN_TOKEN", "s3cret")
+    auto = _prow(user_id="u1", name="alice", attempt_id="a2", lift_type="Auto",
+                 weight_kg=0, status="completed", created_at="2026-11-03T18:00:00+00:00",
+                 video_url="v2", reps="40")
+    resp = _as_of_get(test_client, "2026-11-04T12:00:00-05:00", token="s3cret",
+                      rows=[_squat_row("2026-11-03T17:00:00+00:00"), auto])
+    assert resp.status_code == 200
+    data = resp.get_json()
+    row = data["rows"][0]
+    assert row["score"] == 30
+    assert row["this_week"]["lifts"] == 30
+    assert row["this_week"]["pending"] == 1
+    assert row["this_week"]["by_type"] == {"Situp": 0, "Pushup": 0, "Squat": 30, "Plank": 0}
+    assert data["lift_types"] == ["Situp", "Pushup", "Squat", "Plank"]
+
+
+def test_auto_attempt_never_drives_metric_inference(test_client):
+    rows = [
+        _prow(user_id="u1", name="alice", attempt_id="a1", lift_type="Pushup",
+              weight_kg=0, status="completed", created_at="2026-07-01T10:00:00",
+              video_url="v1", reps="12"),
+        _prow(user_id="u1", name="alice", attempt_id="a2", lift_type="Auto",
+              weight_kg=0, status="pending", created_at="2026-07-02T10:00:00", video_url="v2"),
+    ]
+    session = _make_session("Gym", rows)
+    with patch("toms_gym.routes.competition_routes.get_db_connection", return_value=session):
+        data = test_client.get("/competitions/comp1/leaderboard").get_json()
+    assert data["metric"] == "reps"
+    assert data["lift_types"] == ["Pushup"]
+    assert data["rows"][0]["score"] == 12
+
+
 def _as_of_get(test_client, as_of, token=None, rows=None):
     session = _make_session(_CONSISTENCY_DESC, rows if rows is not None else [
         _squat_row("2026-11-03T17:00:00+00:00")])

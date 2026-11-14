@@ -28,11 +28,14 @@ def shape_lift_row(row: Mapping) -> dict:
     get = row.get if hasattr(row, "get") else lambda k, d=None: getattr(row, k, d)
 
     created_at = get("created_at")
+    report_lift_type = get("report_lift_type")
+    if isinstance(report_lift_type, str) and report_lift_type.strip().lower() == "auto":
+        report_lift_type = None
     return {
         "attempt_id": get("attempt_id"),
         "competition_id": get("competition_id"),
         "competition_name": get("competition_name"),
-        "lift_type": get("report_lift_type") or get("lift_type"),
+        "lift_type": report_lift_type or get("lift_type"),
         "weight": _to_float(get("weight")),
         "created_at": created_at.isoformat() if created_at is not None else None,
         "status": get("status"),

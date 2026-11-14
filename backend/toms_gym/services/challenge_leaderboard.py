@@ -13,7 +13,8 @@ A challenge is ranked by exactly one metric:
   single-attempt rep count (``reps``) across their rep-lift attempts, descending.
 * ``"weight"`` (lifting challenges) — rank by best-lift total: per athlete, the
   max ``weight_kg`` per lift type among completed attempts, summed. Planks are
-  excluded from a weight board (you can't add seconds to kilograms).
+  excluded from a weight board (you can't add seconds to kilograms), and so is
+  an ``Auto`` attempt whose lift type is not known yet.
 """
 from __future__ import annotations
 
@@ -281,7 +282,7 @@ def _rank_weight(participants) -> List[dict]:
         # Planks carry a weight_kg but never belong on a weight board.
         qualifying = [
             a for a in submitted
-            if a.get("weight_kg") is not None and a.get("lift_type") != "Plank"
+            if a.get("weight_kg") is not None and a.get("lift_type") not in ("Plank", "Auto")
         ]
 
         chrono = sorted(qualifying, key=lambda a: _created_key(a["created_at"]))

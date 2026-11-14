@@ -268,6 +268,9 @@ def get_competition_by_id(competition_id):
         
         competition_data.setdefault('mode', None)
         competition_data.setdefault('rules', None)
+        from toms_gym.services.lift_type_auto import enabled_for
+        competition_data['auto_lift_type_enabled'] = enabled_for(
+            competition_data.get('lifttypes'), competition_data.get('mode'))
         logger.info(f"Successfully processed competition data for ID: {competition_id}")
         return {"competition": competition_data}
     except Exception as e:
@@ -484,7 +487,8 @@ def _leaderboard_payload(session, competition_id, now=None):
             }
             order.append(uid)
         if row['attempt_id'] is not None:
-            completed_lift_types.add(row['lift_type'])
+            if row['lift_type'] != "Auto":
+                completed_lift_types.add(row['lift_type'])
             participants[uid]["attempts"].append({
                 "attempt_id": str(row['attempt_id']),
                 "lift_type": row['lift_type'],
@@ -615,6 +619,11 @@ def get_competition_leaderboard(competition_id):
 # self-correct on the next recompute. No Champion table.
 _champions_cache = {"at": 0.0, "data": None}
 _CHAMPIONS_TTL_S = 600
+
+
+def invalidate_champions_cache():
+    """Drop this instance's champions cache after a lift type changes."""
+    _champions_cache.update(at=0.0, data=None)
 
 
 @competition_bp.route('/champions')

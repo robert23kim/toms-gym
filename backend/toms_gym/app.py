@@ -88,6 +88,28 @@ def run_startup_migrations():
             session.rollback()
             logging.info(f"Situp enum migration note: {e}")
 
+        # Add 'Auto' to lift_type enum if not exists (migration 020)
+        try:
+            session.execute(sqlalchemy.text("ALTER TYPE lift_type ADD VALUE IF NOT EXISTS 'Auto'"))
+            session.commit()
+            logging.info("Added 'Auto' to lift_type enum")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Auto enum migration note: {e}")
+
+        # Who set Attempt.lift_type and how sure the engine was (migration 020)
+        try:
+            session.execute(sqlalchemy.text("""
+                ALTER TABLE "Attempt"
+                    ADD COLUMN IF NOT EXISTS lift_type_source TEXT NOT NULL DEFAULT 'user',
+                    ADD COLUMN IF NOT EXISTS lift_type_confidence REAL
+            """))
+            session.commit()
+            logging.info("Attempt lift_type_source 020 migration complete")
+        except Exception as e:
+            session.rollback()
+            logging.info(f"Attempt lift_type_source 020 migration note: {e}")
+
         # Create BowlingResult table if not exists
         try:
             session.execute(sqlalchemy.text("""

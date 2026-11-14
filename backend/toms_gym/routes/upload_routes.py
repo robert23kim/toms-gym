@@ -11,6 +11,7 @@ import threading
 from concurrent.futures import ThreadPoolExecutor
 import traceback
 import sys
+from toms_gym.services import lift_type_auto
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
@@ -32,6 +33,7 @@ LIFT_TYPE_MAPPING = {
     "Plank": "Plank",
     "Pushup": "Pushup",
     "Situp": "Situp",
+    "Auto": "Auto",
 }
 
 _LIFT_TYPE_BY_KEY = {k.lower(): v for k, v in LIFT_TYPE_MAPPING.items()}
@@ -49,9 +51,24 @@ BODYWEIGHT_LIFT_TYPES = {"pushup", "situp", "plank"}
 
 def bodyweight_weight_kg(lift_type, weight_kg):
     """Bodyweight lifts store 0 so a stale client's default weight never lands."""
-    if (lift_type or "").strip().lower() in BODYWEIGHT_LIFT_TYPES:
+    if (lift_type or "").strip().lower() in BODYWEIGHT_LIFT_TYPES or lift_type_auto.is_auto(lift_type):
         return 0
     return weight_kg
+
+
+def auto_lift_type_error(session, competition_id):
+    """None when an Auto upload may land in this competition, else the 400 message."""
+    if not lift_type_auto.switch_on():
+        return "Automatic lift type is not available yet. Pick a lift type."
+    from toms_gym.routes.competition_routes import _parse_metadata
+    row = session.execute(
+        sqlalchemy.text('SELECT description FROM "Competition" WHERE id = :id'),
+        {"id": competition_id}
+    ).fetchone()
+    metadata = _parse_metadata(row[0]) if row else {}
+    if not lift_type_auto.eligible(metadata.get("lifttypes"), metadata.get("mode")):
+        return "Automatic lift type only works for bodyweight challenges. Pick a lift type."
+    return None
 
 
 def allowed_file(filename):
@@ -228,6 +245,15 @@ def upload_video():
     if not allowed_file(file.filename):
         logger.error(f"File type not allowed: {file.filename}")
         return jsonify({'error': 'File type not allowed'}), 400
+
+    if lift_type_auto.is_auto(database_lift_type):
+        session = get_db_connection()
+        try:
+            auto_error = auto_lift_type_error(session, competition_id)
+        finally:
+            session.close()
+        if auto_error:
+            return jsonify({'error': auto_error}), 400
 
     # Handle email-based upload: find or create user by email
     if email and not user_id:
@@ -592,6 +618,10 @@ def finalize_upload():
 
     session = get_db_connection()
     try:
+        if lift_type_auto.is_auto(database_lift_type):
+            auto_error = auto_lift_type_error(session, competition_id)
+            if auto_error:
+                return jsonify({'error': auto_error}), 400
         resolved_user_id = _resolve_user_id(session, user_id, email)
         attempt_id, user_competition_id = _create_attempt_record(
             session, resolved_user_id, competition_id, database_lift_type, weight, public_url

@@ -1,7 +1,8 @@
 from flask import Blueprint, request, jsonify
 import sqlalchemy
 from toms_gym.db import get_db_connection, Session
-from toms_gym.routes.upload_routes import bodyweight_weight_kg
+from toms_gym.routes.upload_routes import auto_lift_type_error, bodyweight_weight_kg
+from toms_gym.services import lift_type_auto
 from google.cloud import storage
 import random
 import datetime
@@ -74,6 +75,15 @@ def create_attempt():
         }
         
         session = get_db_connection()
+        if lift_type_auto.is_auto(data["lift_type"]):
+            data["lift_type"] = lift_type_auto.AUTO
+            uc = session.execute(
+                sqlalchemy.text('SELECT competition_id FROM "UserCompetition" WHERE id = :id'),
+                {"id": data["user_competition_id"]}
+            ).fetchone()
+            auto_error = auto_lift_type_error(session, uc[0] if uc else None)
+            if auto_error:
+                return {"error": auto_error}, 400
         result = session.execute(
             sqlalchemy.text("""
                 INSERT INTO "Attempt" (id, user_competition_id, lift_type, weight_kg, status, video_url)
@@ -120,6 +130,8 @@ def update_attempt(attempt_id):
             return {"error": "Invalid attempt ID format"}, 400
             
         request_data = request.json
+        if lift_type_auto.is_auto(request_data.get("lift_type")):
+            return {"error": "Automatic lift type can only be chosen at upload"}, 400
         data = {
             "attempt_id": attempt_id,
             "lift_type": request_data.get("lift_type"),
