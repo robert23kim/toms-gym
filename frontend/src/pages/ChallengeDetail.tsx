@@ -73,6 +73,15 @@ function isBodyweightLift(liftType: string): boolean {
   return liftType === 'Plank' || liftType === 'Pushup' || liftType === 'Situp';
 }
 
+function readStoredUserId(): string | null {
+  try {
+    const id = typeof window !== "undefined" ? localStorage.getItem("userId") : null;
+    return id && id !== "undefined" && id !== "null" ? id : null;
+  } catch {
+    return null;
+  }
+}
+
 const ChallengeDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { toast } = useToast();
@@ -92,9 +101,7 @@ const ChallengeDetail: React.FC = () => {
   const [liftingResults, setLiftingResults] = useState<Record<string, LiftingResult>>({});
   const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboard | null>(null);
   const [leaderboardError, setLeaderboardError] = useState<string | null>(null);
-  const [viewerId, setViewerId] = useState<string | null>(() =>
-    typeof window !== "undefined" ? localStorage.getItem("userId") : null,
-  );
+  const [viewerId, setViewerId] = useState<string | null>(readStoredUserId);
   const [rankShift, setRankShift] = useState<RankShift | null>(null);
   const rankSeen = useRef(false);
   useEffect(() => {
@@ -238,10 +245,14 @@ const ChallengeDetail: React.FC = () => {
       );
 
       if (data.url) {
-        const storedId = localStorage.getItem("userId");
+        const storedId = readStoredUserId();
         const otherProfile = !!storedId && !!data.user_id && String(data.user_id) !== String(storedId);
         if (!storedId && data.user_id) {
-          localStorage.setItem("userId", String(data.user_id));
+          try {
+            localStorage.setItem("userId", String(data.user_id));
+          } catch {
+            // Storage full or blocked: the upload still stands.
+          }
           setViewerId(String(data.user_id));
         }
         // Kick off analysis first — it's the long pole; UI refreshes can wait
@@ -377,7 +388,7 @@ const ChallengeDetail: React.FC = () => {
         setLoading(true);
         setError(null);
 
-        const userId = localStorage.getItem('userId');
+        const userId = readStoredUserId();
 
         // Fire the leaderboard fetch alongside the challenge load.
         fetchLeaderboard();
@@ -544,7 +555,7 @@ const ChallengeDetail: React.FC = () => {
       setIsJoining(true);
       setJoinError(null);
 
-      const userId = localStorage.getItem('userId');
+      const userId = readStoredUserId();
       if (!userId) {
         setJoinError('Please create a profile before joining a challenge');
         return;

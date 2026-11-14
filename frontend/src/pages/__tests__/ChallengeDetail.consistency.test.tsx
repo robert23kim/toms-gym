@@ -6,6 +6,7 @@ import axios from "axios";
 import ChallengeDetail from "../ChallengeDetail";
 import * as api from "../../lib/api";
 import { uploadVideo } from "../../lib/resumableUpload";
+import { reportUploadError } from "../../lib/telemetry";
 import type { ChallengeLeaderboard } from "../../lib/types";
 import {
   CONSISTENCY_COMPETITION_ID,
@@ -61,8 +62,11 @@ const mockGet = axios.get as jest.Mock;
 
 type LiftRow = { id: string; participant_id: string; lift_type: string; created_at: string; video_url: string; status: string };
 
-const setup = (board: ChallengeLeaderboard | null, viewer: string | null, comp: object = competition, lifts: LiftRow[] = []) => {
-  (localStorage.getItem as jest.Mock).mockImplementation((key: string) => (key === "userId" ? viewer : null));
+const setup = (board: ChallengeLeaderboard | null, viewer: string | null | Error, comp: object = competition, lifts: LiftRow[] = []) => {
+  (localStorage.getItem as jest.Mock).mockImplementation((key: string) => {
+    if (viewer instanceof Error) throw viewer;
+    return key === "userId" ? viewer : null;
+  });
   if (board) (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
   else (api.getChallengeLeaderboard as jest.Mock).mockReturnValue(new Promise(() => {}));
   (api.fetchChampions as jest.Mock).mockResolvedValue([]);
@@ -182,6 +186,51 @@ describe("ChallengeDetail on a 100 Club board", () => {
     await waitFor(() => expect(localStorage.setItem).toHaveBeenCalledWith("userId", "u-new"));
     await waitFor(() => expect(screen.getByTestId("you-row")).toHaveTextContent("Analysing your upload…"));
     expect(screen.queryByTestId("you-row-unknown")).toBeNull();
+  });
+
+  const submitInlineUpload = async (email: string) => {
+    fireEvent.click(screen.getAllByText("Log this week's lifts")[0]);
+    const form = (await screen.findByText("Lift Type")).closest("form")!;
+    fireEvent.change(form.querySelector('input[type="email"]')!, { target: { value: email } });
+    fireEvent.change(form.querySelector('input[type="file"]')!, { target: { files: [new File(["x"], "s.mp4", { type: "video/mp4" })] } });
+    fireEvent.submit(form);
+  };
+
+  it("does not fail a finished upload when this browser cannot save the userId", async () => {
+    (uploadVideo as jest.Mock).mockResolvedValue({ url: "https://storage.example/new-1.mp4", attempt_id: "new-1", user_id: "u-new" });
+    (api.triggerLiftingAnalysis as jest.Mock).mockResolvedValue({});
+    (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
+    const setItem = localStorage.setItem as jest.Mock;
+    setItem.mockImplementation((key: string) => {
+      if (key === "userId") throw new DOMException("full", "QuotaExceededError");
+    });
+    try {
+      setup(liveClubBoard, null);
+      await screen.findByTestId("you-row-unknown");
+      await submitInlineUpload("new@example.com");
+      await waitFor(() => expect(api.triggerLiftingAnalysis).toHaveBeenCalledWith("new-1"));
+      await waitFor(() => expect(mockToast).toHaveBeenCalled());
+      expect(screen.queryByText("Upload failed. Please try again.")).toBeNull();
+      expect(reportUploadError).not.toHaveBeenCalled();
+    } finally {
+      setItem.mockImplementation(() => undefined);
+    }
+  });
+
+  it.each(["undefined", "null", ""])("treats a saved userId of %j as no userId and replaces it on upload", async (stored) => {
+    (uploadVideo as jest.Mock).mockResolvedValue({ url: "https://storage.example/new-1.mp4", attempt_id: "new-1", user_id: "u-new" });
+    (api.triggerLiftingAnalysis as jest.Mock).mockResolvedValue({});
+    (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
+    setup(liveClubBoard, stored);
+    await screen.findByTestId("you-row-unknown");
+    expect(screen.queryByText("Not logged yet")).toBeNull();
+    await submitInlineUpload("new@example.com");
+    await waitFor(() => expect(localStorage.setItem).toHaveBeenCalledWith("userId", "u-new"));
+  });
+
+  it("still renders the board when this browser's storage cannot be read", async () => {
+    setup(liveClubBoard, new DOMException("denied", "SecurityError"));
+    expect(await screen.findByTestId("you-row-unknown")).toBeInTheDocument();
   });
 
   it("does not replace a different saved userId with the uploader's", async () => {
