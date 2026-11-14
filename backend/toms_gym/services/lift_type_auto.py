@@ -24,8 +24,8 @@ def is_auto(lift_type) -> bool:
 
 
 def eligible(lifttypes, mode) -> bool:
-    """Every declared type is bodyweight; club squats are air squats."""
-    if not isinstance(lifttypes, list) or not lifttypes:
+    """Two or more declared types, every one bodyweight; club squats are air squats."""
+    if not isinstance(lifttypes, list) or len(lifttypes) < 2:
         return False
     bodyweight = _BODYWEIGHT | ({"squat"} if mode == "consistency" else frozenset())
     return all(isinstance(t, str) and t.strip().lower() in bodyweight for t in lifttypes)

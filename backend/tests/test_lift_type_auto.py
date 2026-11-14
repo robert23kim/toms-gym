@@ -32,6 +32,7 @@ CLUB_DESC = ('Gym - {"lifttypes": ["Situp", "Pushup", "Squat", "Plank"], '
 BODYWEIGHT_DESC = 'Gym - {"lifttypes": ["Pushup", "Plank"], "weightclasses": [], "gender": ""}'
 WEIGHTED_DESC = 'Gym - {"lifttypes": ["Squat", "Deadlift"], "weightclasses": [], "gender": ""}'
 SQUAT_NO_MODE_DESC = 'Gym - {"lifttypes": ["Squat", "Pushup"], "weightclasses": [], "gender": ""}'
+SINGLE_DESC = 'Gym - {"lifttypes": ["Pushup"], "weightclasses": [], "gender": ""}'
 
 
 @pytest.fixture(autouse=True)
@@ -245,6 +246,7 @@ def _comp_by_id(client, monkeypatch, description):
     ("1", WEIGHTED_DESC, False),
     ("1", SQUAT_NO_MODE_DESC, False),
     ("1", "Just a gym", False),
+    ("1", SINGLE_DESC, False),
 ])
 def test_competition_detail_reports_auto_lift_type_enabled(client, monkeypatch, env, desc, expected):
     if env is None:
@@ -511,7 +513,12 @@ def enqueued(monkeypatch):
     return calls
 
 
-def _change(client, monkeypatch, session, lift_type="Situp", user_id=USER_ID, attempt_id=ATTEMPT_ID):
+def _change(client, monkeypatch, session, lift_type="Situp", user_id=USER_ID, attempt_id=ATTEMPT_ID,
+            switch="1"):
+    if switch is None:
+        monkeypatch.delenv("AUTO_LIFT_TYPE", raising=False)
+    else:
+        monkeypatch.setenv("AUTO_LIFT_TYPE", switch)
     _use(monkeypatch, session)
     body = {"lift_type": lift_type}
     if user_id is not None:
@@ -552,6 +559,38 @@ def test_change_409_while_analysis_runs(client, monkeypatch, enqueued, status):
     assert resp.status_code == 409
     assert _writes(session, 'UPDATE "Attempt"') == []
     assert enqueued == []
+
+
+@pytest.mark.parametrize("switch", [None, "0"])
+def test_change_400_when_the_switch_is_off(client, monkeypatch, enqueued, switch):
+    session = _change_session(_owner_row())
+    resp = _change(client, monkeypatch, session, switch=switch)
+    assert resp.status_code == 400
+    assert "not available" in resp.get_json()["error"]
+    assert _writes(session, 'UPDATE "Attempt"') == []
+    assert _sqls(session, 'UPDATE "LiftingResult"') == []
+    assert enqueued == []
+
+
+@pytest.mark.parametrize("desc, target", [(WEIGHTED_DESC, "Squat"), (SQUAT_NO_MODE_DESC, "Squat"),
+                                          (SINGLE_DESC, "Pushup")])
+def test_change_400_on_a_board_without_automatic(client, monkeypatch, enqueued, desc, target):
+    session = _change_session(_owner_row(lift_type="Deadlift" if desc == WEIGHTED_DESC else "Pushup",
+                                         description=desc, processing_status="failed"))
+    resp = _change(client, monkeypatch, session, lift_type=target)
+    assert resp.status_code == 400
+    assert _writes(session, 'UPDATE "Attempt"') == []
+    assert enqueued == []
+
+
+def test_change_409_when_the_shared_helper_finds_analysis_running(client, monkeypatch, enqueued):
+    session = _change_session(_owner_row(processing_status="completed"),
+                              lr=SimpleNamespace(id=RESULT_ID, processing_status="processing"))
+    resp = _change(client, monkeypatch, session, lift_type="Situp")
+    assert resp.status_code == 409
+    assert enqueued == []
+    session.rollback.assert_called()
+    session.commit.assert_not_called()
 
 
 def test_change_same_type_completed_is_unchanged_and_not_requeued(client, monkeypatch, enqueued):
@@ -641,3 +680,23 @@ def test_migration_020_is_additive_and_isolated(monkeypatch):
     assert "ADD COLUMN IF NOT EXISTS lift_type_source TEXT NOT NULL DEFAULT 'user'" in cols[0]
     assert "ADD COLUMN IF NOT EXISTS lift_type_confidence REAL" in cols[0]
     assert "lift_type_source" not in enum[0]
+
+
+# --------------------------------------------------------------------------- #
+# Profile aggregates never count Auto as a lift type
+# --------------------------------------------------------------------------- #
+
+def test_profile_aggregates_exclude_auto(monkeypatch):
+    from toms_gym.routes import user_routes
+    app = Flask(__name__)
+    app.register_blueprint(user_routes.user_bp)
+    session = MagicMock()
+    session.execute.return_value.fetchone.return_value = SimpleNamespace(_mapping={"id": USER_ID})
+    session.execute.return_value.fetchall.return_value = []
+    monkeypatch.setattr(user_routes, "get_db_connection", lambda: session)
+    app.test_client().get(f"/users/{USER_ID}/profile")
+    sqls = [str(c.args[0]) for c in session.execute.call_args_list]
+    successful = [s for s in sqls if "successful_lifts" in s]
+    best = [s for s in sqls if "best_weight" in s]
+    assert successful and "a.lift_type <> 'Auto'" in successful[0]
+    assert best and "a.lift_type <> 'Auto'" in best[0]

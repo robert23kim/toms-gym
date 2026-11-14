@@ -227,10 +227,13 @@ def change_lift_type(attempt_id):
         ).fetchone()
         if row is None:
             return {"error": "Attempt not found"}, 404
+        metadata = _parse_metadata(row.description)
+        declared = metadata.get("lifttypes")
+        if not lift_type_auto.enabled_for(declared, metadata.get("mode")):
+            return {"error": "Changing the lift type is not available on this challenge"}, 400
         user_id = body.get("user_id")
         if not user_id or str(user_id) != str(row.user_id):
             return {"error": "Only the athlete who uploaded this lift can change it"}, 403
-        declared = _parse_metadata(row.description).get("lifttypes")
         lift_type = lift_type_auto.match_declared(body.get("lift_type"), declared)
         if lift_type is None:
             return {"error": "lift_type must be one of this challenge's lift types"}, 400
@@ -261,7 +264,10 @@ def change_lift_type(attempt_id):
             {"id": attempt_id, "lift_type": lift_type,
              "weight_kg": bodyweight_weight_kg(lift_type, row.weight_kg), "status": "pending"}
         )
-        queue_lifting_analysis(session, attempt_id)
+        _, _, outcome = queue_lifting_analysis(session, attempt_id)
+        if outcome == "in_progress":
+            session.rollback()
+            return {"error": "Analysis is still running; try again when it finishes"}, 409
         session.commit()
         invalidate_champions_cache()
         return {"attempt_id": attempt_id, "lift_type": lift_type, "status": "queued"}, 200

@@ -264,7 +264,7 @@ def get_user_profile(user_id):
                     SELECT c.id, c.name, c.start_date, c.end_date, c.description,
                            uc.weight_class, c.status,
                            COALESCE(SUM(CASE WHEN a.status = 'completed' THEN a.weight_kg ELSE 0 END), 0) as total_weight,
-                           COUNT(DISTINCT CASE WHEN a.status = 'completed' THEN a.lift_type END) as successful_lifts
+                           COUNT(DISTINCT CASE WHEN a.status = 'completed' AND a.lift_type <> 'Auto' THEN a.lift_type END) as successful_lifts
                     FROM "UserCompetition" uc
                     JOIN "Competition" c ON uc.competition_id = c.id
                     LEFT JOIN "Attempt" a ON uc.id = a.user_competition_id
@@ -309,6 +309,7 @@ def get_user_profile(user_id):
                     JOIN "Competition" c ON uc.competition_id = c.id
                     WHERE uc.user_id = :user_id
                     AND a.status = 'completed'
+                    AND a.lift_type <> 'Auto'
                     GROUP BY a.lift_type, c.name, c.id
                 """),
                 {"user_id": user_id}
