@@ -1,6 +1,6 @@
 # 2026-11-14 Automatic lift type: rep-count guard, switch on, auto on the parallel pose workers
 
-**Status first:** Automatic lift type is **on in prod** (`AUTO_LIFT_TYPE=1`, backend `my-python-backend-00199-tg7`, engine `bowling-service-00061-ram`). Nothing was blocked. Not covered: no real athlete has uploaded with Automatic yet (canary only), no squat went through the backend, the Change sheet was never clicked in a browser (Chrome tooling failed after sign-in; Change is proven by API only), no phone and no phone width. Knee pushups read as a plank still score silently. Plank is not faster. `00061-ram` was deployed although Tom only asked whether a speedup existed.
+**Status first:** Automatic lift type is **on in prod** (`AUTO_LIFT_TYPE=1`, backend `my-python-backend-00199-tg7`, engine `bowling-service-00061-ram`). Blocked: the Change sheet click in Chrome (the tooling failed after sign-in), so Change and re-analyse are proven by API only. Not covered: no real athlete's Automatic upload was checked or observed (canary only; prod was not queried for one), no squat went through the backend, no phone and no phone width. Knee pushups read as a plank still score silently. Plank is not faster. `00061-ram` was deployed although Tom only asked whether a speedup existed.
 
 Numbers, contract and proofs live in `docs/reference/auto-lift-type.md`; this file is the log.
 
@@ -54,7 +54,7 @@ Tom asked why Automatic was missing from the upload form (the switch was off bec
 6. The guard's threshold was chosen knowing its only positive example. The nice-10 tweak has no test of its own.
 7. **Rollback order:** set `AUTO_LIFT_TYPE=0` before routing the engine to anything older than `00057-qag` (older revisions treat `auto` as bicep curl).
 8. Three glasses-research commits from another session (`c6a2eba`, `66c42f7`, `d30b72f`) were already on the branch and went to `main` with this work.
-9. Chrome is still signed in as the deleted canary on the gym site: click "Forget Me". The stale proxy (PID 13926) is still on port 5433.
+9. Chrome was left signed in as the deleted canary on the gym site (not re-checked at save time): click "Forget Me". The stale proxy (PID 13926) still listens on port 5433 (`lsof` at save time).
 10. Laptop only in toms_gym: `.claude/settings.json`, `frontend/.env.production`, 109 untracked files. Decision needed (Tom): which go up. Never the clips, sheets, pose caches or engine summaries under `docs/sessions/2026-11-13-auto-lift-type/`.
 11. Outside `main`: engine `fix/squat-rep-count` (needs rebasing onto `f4d0059`); toms_gym `feat/analysis-pipeline-hardening`, `test`.
 12. The proof scripts lived in the session scratchpad and are not preserved.
