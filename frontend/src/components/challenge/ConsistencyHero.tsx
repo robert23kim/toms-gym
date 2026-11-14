@@ -345,7 +345,7 @@ const ConsistencyHero: React.FC<ConsistencyHeroProps> = ({ block, liftTypes, vie
       )}
       {leaders.length > 0 && (
         <div data-testid="consistency-bonus-note" className="mt-2 text-[11.5px] text-white/50">
-          Each type you lead is +{block.rules.type_bonus} extra, locked in when the week ends on Sunday.
+          Each type you log more of than anyone else is +{block.rules.type_bonus} extra, locked in when the week ends on Sunday.
         </div>
       )}
     </div>

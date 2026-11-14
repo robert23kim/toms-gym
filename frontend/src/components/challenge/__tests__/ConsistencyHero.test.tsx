@@ -153,7 +153,7 @@ describe("ConsistencyHero", () => {
   it("says each led type is an extra +25 that locks when the week ends", () => {
     renderHero(consistencyLeaderboard, null);
     expect(screen.getByTestId("consistency-bonus-note")).toHaveTextContent(
-      /^Each type you lead is \+25 extra, locked in when the week ends on Sunday\.$/,
+      /^Each type you log more of than anyone else is \+25 extra, locked in when the week ends on Sunday\.$/,
     );
   });
 

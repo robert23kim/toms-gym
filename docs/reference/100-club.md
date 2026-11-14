@@ -13,7 +13,7 @@ Design contract: `docs/superpowers/specs/2026-10-31-100-club-design.md`. This fi
   they show as `warmup_lifts` and score nothing.
 - Quota: 100 in week 1. After a met week the next quota is +25; after a miss it resets to 100. Nobody is
   eliminated.
-- Weekly points: `min(lifts, quota)` + 50 when met + 25 extra for each type led, i.e. the most of that type logged that week, on top of a quota any mix fills (plank judged on seconds). Ties at the
+- Weekly points: `min(lifts, quota)` + 50 when met + 25 extra for each type where you log more than anyone else that week, on top of a quota any mix fills (plank judged on seconds). Ties at the
   top share a bonus and zero never wins. The week in progress scores lifts and the quota bonus live; its
   type leaders are provisional and lock when the week ends.
 - Ranking: points, then current streak, then weeks met, then this week's lifts, then name. Zero-point rows go last.

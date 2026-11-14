@@ -66,6 +66,6 @@ function consistencyNote(rules: Partial<ConsistencyRules> | undefined, typeCount
   return (
     `Every rep is a lift (sloppy situps count half) and every ${r.plank_seconds_per_lift} s of plank is one. ` +
     `Hit the weekly quota for +${r.quota_bonus} and next week's goes up ${r.ramp}; miss it and it resets to ${r.base_quota}. ` +
-    `Lead a lift type (most logged that week) for +${r.type_bonus} extra each${cap}; any mix counts toward the quota.`
+    `Log more of a lift type than anyone else that week for +${r.type_bonus} extra each${cap}; any mix counts toward the quota.`
   );
 }
