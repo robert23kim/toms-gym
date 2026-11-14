@@ -135,6 +135,30 @@ describe("AnalysisStatus", () => {
     expect(screen.getByText(/3 on the board/)).toBeInTheDocument();
   });
 
+  it("sends Upload Another on a challenge result back to that board's form, not the generic upload page", async () => {
+    routeGet({ processing_status: "completed", user_id: "u9", competition_id: "c1" });
+    renderAt("lifting", "a10", "?challenge=c1");
+    expect(await screen.findByRole("link", { name: /Upload Another/i })).toHaveAttribute(
+      "href",
+      "/challenges/c1?upload=1",
+    );
+  });
+
+  it("sends Upload Again on a failed challenge upload back to that board's form", async () => {
+    routeGet({ processing_status: "failed", error_message: "pose model crashed" });
+    renderAt("lifting", "a11", "?challenge=c1");
+    expect(await screen.findByRole("link", { name: /Upload Again/i })).toHaveAttribute(
+      "href",
+      "/challenges/c1?upload=1",
+    );
+  });
+
+  it("keeps Upload Another on the generic page for a lift uploaded outside a challenge", async () => {
+    routeGet({ processing_status: "completed", user_id: "u9", competition_id: "c3" });
+    renderAt("lifting", "a12");
+    expect(await screen.findByRole("link", { name: /Upload Another/i })).toHaveAttribute("href", "/lift/upload");
+  });
+
   it("reveals the number, the grade and the ladder when a lift completes", async () => {
     routeGet({
       processing_status: "completed",

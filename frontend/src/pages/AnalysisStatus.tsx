@@ -129,6 +129,10 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
   const [board, setBoard] = useState<ChallengeLeaderboard | null>(null);
   const reduceMotion = useReducedMotion();
   const boardId = kind === "lifting" ? result?.competition_id || challengeParam : null;
+  // A challenge upload goes back to that board's own form, never the generic page (competition '1').
+  const uploadPath = kind === "lifting" && challengeParam
+    ? `/challenges/${encodeURIComponent(challengeParam)}?upload=1`
+    : config.uploadPath;
 
   useEffect(() => {
     if (!boardId) return;
@@ -303,7 +307,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                       "Something went wrong while analyzing your video. Please try uploading again."}
                   </p>
                   <Link
-                    to={config.uploadPath}
+                    to={uploadPath}
                     className="inline-block w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
                   >
                     Upload Again
@@ -352,7 +356,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                       </Link>
                     )}
                     <Link
-                      to={config.uploadPath}
+                      to={uploadPath}
                       className="w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90 text-center"
                     >
                       Upload Another
