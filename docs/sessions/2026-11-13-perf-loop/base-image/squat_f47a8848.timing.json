@@ -1,0 +1,23 @@
+{
+  "fixture": "squat_f47a8848",
+  "lift_type": "squat",
+  "worktree": "/app",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true"
+  },
+  "stages": {
+    "download": 0.0,
+    "analyze": 38.36,
+    "reencode": 0.89,
+    "clips": 5.92
+  },
+  "analyze_breakdown": {
+    "pose": 34.71,
+    "render_video": 0.99,
+    "render_clips": 2.4
+  },
+  "wall_s": 45.17,
+  "total_reps": 12,
+  "total_in_plank_s": null
+}

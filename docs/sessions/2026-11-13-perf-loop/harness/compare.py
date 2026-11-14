@@ -42,10 +42,8 @@ def num(v):
 
 
 def align(ra, rb, add):
-    """Pair reps positionally when counts match, else by time overlap so one
-    extra rep is reported once instead of shifting every later rep."""
-    if len(ra) == len(rb):
-        return [(i, x, y) for i, (x, y) in enumerate(zip(ra, rb), 1)]
+    """Pair reps by time overlap so one extra or missing rep is reported once
+    instead of shifting every later rep (equal counts can still hide one)."""
 
     def span(r):
         return num(r.get("start_s")) or 0.0, num(r.get("end_s")) or 0.0

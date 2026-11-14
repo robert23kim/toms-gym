@@ -1,0 +1,623 @@
+{
+  "lift_type": "plank",
+  "total_in_plank_s": 83.18989430265532,
+  "longest_run_s": 80.3143593709719,
+  "forearm_s": 1.3374581077597318,
+  "high_s": 1.5380768239236917,
+  "overall_form_score": 0.7838637781243998,
+  "body_line_median_deg": 177.47178505848387,
+  "body_line_stdev_deg": 3.9530287418434913,
+  "plank_type": "transitioning",
+  "pose_detection_rate": 1.0,
+  "per_second": [
+    {
+      "t": 0.0,
+      "state": "in_plank",
+      "body_line_deg": 169.67472235691037,
+      "elbow_deg": 174.33953666259274,
+      "form_score": 0.2780408092016136
+    },
+    {
+      "t": 1.0,
+      "state": "settling",
+      "body_line_deg": 154.83922121075932,
+      "elbow_deg": 106.6605678936703,
+      "form_score": 0.0
+    },
+    {
+      "t": 2.0,
+      "state": "settling",
+      "body_line_deg": 164.30659858052246,
+      "elbow_deg": NaN,
+      "form_score": 0.0009458569059309714
+    },
+    {
+      "t": 3.0,
+      "state": "in_plank",
+      "body_line_deg": 168.76552551469405,
+      "elbow_deg": NaN,
+      "form_score": 0.1542272042672323
+    },
+    {
+      "t": 4.0,
+      "state": "in_plank",
+      "body_line_deg": 176.8717366183488,
+      "elbow_deg": NaN,
+      "form_score": 0.8457478528117655
+    },
+    {
+      "t": 5.0,
+      "state": "in_plank",
+      "body_line_deg": 177.9982798691029,
+      "elbow_deg": 111.87439896031817,
+      "form_score": 0.911044568926211
+    },
+    {
+      "t": 6.0,
+      "state": "in_plank",
+      "body_line_deg": 178.6713609643077,
+      "elbow_deg": NaN,
+      "form_score": 0.8479246100619536
+    },
+    {
+      "t": 7.0,
+      "state": "in_plank",
+      "body_line_deg": 177.6866496005649,
+      "elbow_deg": NaN,
+      "form_score": 0.9251766640876568
+    },
+    {
+      "t": 8.0,
+      "state": "in_plank",
+      "body_line_deg": 178.23473902492645,
+      "elbow_deg": NaN,
+      "form_score": 0.9078695977494061
+    },
+    {
+      "t": 9.0,
+      "state": "in_plank",
+      "body_line_deg": 178.4375769406236,
+      "elbow_deg": NaN,
+      "form_score": 0.8783376286470402
+    },
+    {
+      "t": 10.0,
+      "state": "in_plank",
+      "body_line_deg": 178.1721325651568,
+      "elbow_deg": NaN,
+      "form_score": 0.9239218247491711
+    },
+    {
+      "t": 11.0,
+      "state": "in_plank",
+      "body_line_deg": 177.07237906909697,
+      "elbow_deg": NaN,
+      "form_score": 0.9333742982301746
+    },
+    {
+      "t": 12.0,
+      "state": "in_plank",
+      "body_line_deg": 178.42299712671638,
+      "elbow_deg": NaN,
+      "form_score": 0.9053092621081722
+    },
+    {
+      "t": 13.0,
+      "state": "in_plank",
+      "body_line_deg": 178.29976512663276,
+      "elbow_deg": NaN,
+      "form_score": 0.8934577996405932
+    },
+    {
+      "t": 14.0,
+      "state": "in_plank",
+      "body_line_deg": 177.8968159703958,
+      "elbow_deg": NaN,
+      "form_score": 0.9463443647275904
+    },
+    {
+      "t": 15.0,
+      "state": "in_plank",
+      "body_line_deg": 178.48616164489832,
+      "elbow_deg": NaN,
+      "form_score": 0.8535409998303235
+    },
+    {
+      "t": 16.0,
+      "state": "in_plank",
+      "body_line_deg": 177.00394547309017,
+      "elbow_deg": NaN,
+      "form_score": 0.932021180302296
+    },
+    {
+      "t": 17.0,
+      "state": "in_plank",
+      "body_line_deg": 175.29240088061596,
+      "elbow_deg": NaN,
+      "form_score": 0.7178387030386049
+    },
+    {
+      "t": 18.0,
+      "state": "in_plank",
+      "body_line_deg": 175.3721882455604,
+      "elbow_deg": NaN,
+      "form_score": 0.7235268219925842
+    },
+    {
+      "t": 19.0,
+      "state": "in_plank",
+      "body_line_deg": 176.60228561267215,
+      "elbow_deg": NaN,
+      "form_score": 0.8020975303438554
+    },
+    {
+      "t": 20.0,
+      "state": "in_plank",
+      "body_line_deg": 177.88243609927335,
+      "elbow_deg": 115.73787998349113,
+      "form_score": 0.9236020839726301
+    },
+    {
+      "t": 21.0,
+      "state": "in_plank",
+      "body_line_deg": 175.2248001317252,
+      "elbow_deg": 120.56880837996293,
+      "form_score": 0.7018445051496942
+    },
+    {
+      "t": 22.0,
+      "state": "in_plank",
+      "body_line_deg": 172.38262918928172,
+      "elbow_deg": NaN,
+      "form_score": 0.39303978411835794
+    },
+    {
+      "t": 23.0,
+      "state": "in_plank",
+      "body_line_deg": 173.2297427939515,
+      "elbow_deg": NaN,
+      "form_score": 0.4650609527758187
+    },
+    {
+      "t": 24.0,
+      "state": "in_plank",
+      "body_line_deg": 175.98597229252155,
+      "elbow_deg": 117.41984744452802,
+      "form_score": 0.7933004671726404
+    },
+    {
+      "t": 25.0,
+      "state": "in_plank",
+      "body_line_deg": 175.72147289093277,
+      "elbow_deg": 112.93489029412554,
+      "form_score": 0.7847334702801021
+    },
+    {
+      "t": 26.0,
+      "state": "in_plank",
+      "body_line_deg": 175.7600921080925,
+      "elbow_deg": NaN,
+      "form_score": 0.7639613694415395
+    },
+    {
+      "t": 27.0,
+      "state": "in_plank",
+      "body_line_deg": 176.04734843113098,
+      "elbow_deg": NaN,
+      "form_score": 0.827245256841721
+    },
+    {
+      "t": 28.0,
+      "state": "in_plank",
+      "body_line_deg": 176.14135018510632,
+      "elbow_deg": NaN,
+      "form_score": 0.8314614186454833
+    },
+    {
+      "t": 29.0,
+      "state": "in_plank",
+      "body_line_deg": 177.426592672833,
+      "elbow_deg": NaN,
+      "form_score": 0.8974098901302746
+    },
+    {
+      "t": 30.0,
+      "state": "in_plank",
+      "body_line_deg": 177.06125343253206,
+      "elbow_deg": NaN,
+      "form_score": 0.9452772949092086
+    },
+    {
+      "t": 31.0,
+      "state": "in_plank",
+      "body_line_deg": 177.29181238750414,
+      "elbow_deg": 106.47335188008685,
+      "form_score": 0.9321485447113557
+    },
+    {
+      "t": 32.0,
+      "state": "in_plank",
+      "body_line_deg": 177.83456270306098,
+      "elbow_deg": 111.23256158270937,
+      "form_score": 0.938137886965931
+    },
+    {
+      "t": 33.0,
+      "state": "in_plank",
+      "body_line_deg": 176.25252443377508,
+      "elbow_deg": 112.96525273562553,
+      "form_score": 0.8801618317709353
+    },
+    {
+      "t": 34.0,
+      "state": "in_plank",
+      "body_line_deg": 176.14285141503592,
+      "elbow_deg": 112.8248663751317,
+      "form_score": 0.8276091330684241
+    },
+    {
+      "t": 35.0,
+      "state": "in_plank",
+      "body_line_deg": 176.40019052953957,
+      "elbow_deg": NaN,
+      "form_score": 0.8612479819157904
+    },
+    {
+      "t": 36.0,
+      "state": "in_plank",
+      "body_line_deg": 177.07780889303663,
+      "elbow_deg": 112.80015626844805,
+      "form_score": 0.9510284635437931
+    },
+    {
+      "t": 37.0,
+      "state": "in_plank",
+      "body_line_deg": 174.8932328472901,
+      "elbow_deg": NaN,
+      "form_score": 0.7069780441152924
+    },
+    {
+      "t": 38.0,
+      "state": "in_plank",
+      "body_line_deg": 178.02172020327254,
+      "elbow_deg": NaN,
+      "form_score": 0.8600371778014915
+    },
+    {
+      "t": 39.0,
+      "state": "in_plank",
+      "body_line_deg": 178.37678964124245,
+      "elbow_deg": NaN,
+      "form_score": 0.8283867114163094
+    },
+    {
+      "t": 40.0,
+      "state": "in_plank",
+      "body_line_deg": 176.4884481520101,
+      "elbow_deg": NaN,
+      "form_score": 0.8053893457474142
+    },
+    {
+      "t": 41.0,
+      "state": "in_plank",
+      "body_line_deg": 177.28247604474205,
+      "elbow_deg": NaN,
+      "form_score": 0.9167733063164057
+    },
+    {
+      "t": 42.0,
+      "state": "in_plank",
+      "body_line_deg": 177.63117935475597,
+      "elbow_deg": 112.20736104007689,
+      "form_score": 0.9543099572533026
+    },
+    {
+      "t": 43.0,
+      "state": "in_plank",
+      "body_line_deg": 178.03992010024314,
+      "elbow_deg": NaN,
+      "form_score": 0.9284921669592828
+    },
+    {
+      "t": 44.0,
+      "state": "in_plank",
+      "body_line_deg": 177.00998375494046,
+      "elbow_deg": NaN,
+      "form_score": 0.9343910765100522
+    },
+    {
+      "t": 45.0,
+      "state": "in_plank",
+      "body_line_deg": 176.54501925964826,
+      "elbow_deg": 115.32747382418967,
+      "form_score": 0.8642421860201509
+    },
+    {
+      "t": 46.0,
+      "state": "in_plank",
+      "body_line_deg": 177.36600540909447,
+      "elbow_deg": NaN,
+      "form_score": 0.9459735797206202
+    },
+    {
+      "t": 47.0,
+      "state": "in_plank",
+      "body_line_deg": 177.76163691687842,
+      "elbow_deg": NaN,
+      "form_score": 0.884164934619231
+    },
+    {
+      "t": 48.0,
+      "state": "in_plank",
+      "body_line_deg": 175.9180192314732,
+      "elbow_deg": NaN,
+      "form_score": 0.8314428014837757
+    },
+    {
+      "t": 49.0,
+      "state": "in_plank",
+      "body_line_deg": 176.39217268966473,
+      "elbow_deg": NaN,
+      "form_score": 0.8744516929799696
+    },
+    {
+      "t": 50.0,
+      "state": "in_plank",
+      "body_line_deg": 176.64598649476378,
+      "elbow_deg": 117.19748198118496,
+      "form_score": 0.8084489375293215
+    },
+    {
+      "t": 51.0,
+      "state": "in_plank",
+      "body_line_deg": 172.27791481783774,
+      "elbow_deg": NaN,
+      "form_score": 0.375584369201911
+    },
+    {
+      "t": 52.0,
+      "state": "in_plank",
+      "body_line_deg": 173.13322497806544,
+      "elbow_deg": NaN,
+      "form_score": 0.45537646805558796
+    },
+    {
+      "t": 53.0,
+      "state": "in_plank",
+      "body_line_deg": 172.78717099915607,
+      "elbow_deg": NaN,
+      "form_score": 0.42087621772224704
+    },
+    {
+      "t": 54.0,
+      "state": "in_plank",
+      "body_line_deg": 175.03192529011994,
+      "elbow_deg": NaN,
+      "form_score": 0.6799543593794383
+    },
+    {
+      "t": 55.0,
+      "state": "in_plank",
+      "body_line_deg": 175.0874305460751,
+      "elbow_deg": 116.2249217762731,
+      "form_score": 0.7095208014828541
+    },
+    {
+      "t": 56.0,
+      "state": "in_plank",
+      "body_line_deg": 176.3107178278454,
+      "elbow_deg": 114.29805402570176,
+      "form_score": 0.859629798486511
+    },
+    {
+      "t": 57.0,
+      "state": "in_plank",
+      "body_line_deg": 176.65742649454776,
+      "elbow_deg": NaN,
+      "form_score": 0.8808752878472482
+    },
+    {
+      "t": 58.0,
+      "state": "in_plank",
+      "body_line_deg": 175.52269887871157,
+      "elbow_deg": NaN,
+      "form_score": 0.7563639577656509
+    },
+    {
+      "t": 59.0,
+      "state": "in_plank",
+      "body_line_deg": 177.91870061384208,
+      "elbow_deg": NaN,
+      "form_score": 0.914042727379919
+    },
+    {
+      "t": 60.0,
+      "state": "in_plank",
+      "body_line_deg": 178.5936677619112,
+      "elbow_deg": NaN,
+      "form_score": 0.8457504300192947
+    },
+    {
+      "t": 61.0,
+      "state": "in_plank",
+      "body_line_deg": 179.20889982928057,
+      "elbow_deg": NaN,
+      "form_score": 0.7787219506405949
+    },
+    {
+      "t": 62.0,
+      "state": "in_plank",
+      "body_line_deg": 178.76190705557343,
+      "elbow_deg": NaN,
+      "form_score": 0.84028031434057
+    },
+    {
+      "t": 63.0,
+      "state": "in_plank",
+      "body_line_deg": 179.41261203938134,
+      "elbow_deg": NaN,
+      "form_score": 0.7581919758892907
+    },
+    {
+      "t": 64.0,
+      "state": "in_plank",
+      "body_line_deg": 179.66541933663115,
+      "elbow_deg": NaN,
+      "form_score": 0.7302915220831883
+    },
+    {
+      "t": 65.0,
+      "state": "in_plank",
+      "body_line_deg": 179.69628168564208,
+      "elbow_deg": NaN,
+      "form_score": 0.756565187680826
+    },
+    {
+      "t": 66.0,
+      "state": "in_plank",
+      "body_line_deg": 178.89239900836012,
+      "elbow_deg": NaN,
+      "form_score": 0.8173624591441374
+    },
+    {
+      "t": 67.0,
+      "state": "in_plank",
+      "body_line_deg": 178.53806114695257,
+      "elbow_deg": NaN,
+      "form_score": 0.8566143469036066
+    },
+    {
+      "t": 68.0,
+      "state": "in_plank",
+      "body_line_deg": 178.6100237265683,
+      "elbow_deg": NaN,
+      "form_score": 0.847863364542827
+    },
+    {
+      "t": 69.0,
+      "state": "in_plank",
+      "body_line_deg": 179.36549844915166,
+      "elbow_deg": NaN,
+      "form_score": 0.7723569977840861
+    },
+    {
+      "t": 70.0,
+      "state": "in_plank",
+      "body_line_deg": 179.4417718841453,
+      "elbow_deg": 110.7248429762075,
+      "form_score": 0.7673702989965946
+    },
+    {
+      "t": 71.0,
+      "state": "in_plank",
+      "body_line_deg": 179.67967462323486,
+      "elbow_deg": 111.32118615544852,
+      "form_score": 0.7292705867009156
+    },
+    {
+      "t": 72.0,
+      "state": "in_plank",
+      "body_line_deg": 179.51143349166426,
+      "elbow_deg": 111.13800319883556,
+      "form_score": 0.7554199522758509
+    },
+    {
+      "t": 73.0,
+      "state": "in_plank",
+      "body_line_deg": 179.5872227952644,
+      "elbow_deg": 112.2761482327864,
+      "form_score": 0.7426031857010166
+    },
+    {
+      "t": 74.0,
+      "state": "in_plank",
+      "body_line_deg": 179.19434008974554,
+      "elbow_deg": 113.25531899751861,
+      "form_score": 0.7780150025422493
+    },
+    {
+      "t": 75.0,
+      "state": "in_plank",
+      "body_line_deg": 178.99648502405188,
+      "elbow_deg": 117.643526474719,
+      "form_score": 0.7927785406301185
+    },
+    {
+      "t": 76.0,
+      "state": "in_plank",
+      "body_line_deg": 178.832130375049,
+      "elbow_deg": 117.13580187059627,
+      "form_score": 0.8195120481683242
+    },
+    {
+      "t": 77.0,
+      "state": "in_plank",
+      "body_line_deg": 179.39520931918523,
+      "elbow_deg": 115.56585478656187,
+      "form_score": 0.7855204634069276
+    },
+    {
+      "t": 78.0,
+      "state": "in_plank",
+      "body_line_deg": 179.4089705133681,
+      "elbow_deg": 114.41329333390047,
+      "form_score": 0.7630090826524961
+    },
+    {
+      "t": 79.0,
+      "state": "in_plank",
+      "body_line_deg": 179.7374095116834,
+      "elbow_deg": NaN,
+      "form_score": 0.7395871350146793
+    },
+    {
+      "t": 80.0,
+      "state": "in_plank",
+      "body_line_deg": 179.06553391798192,
+      "elbow_deg": NaN,
+      "form_score": 0.8212703848375618
+    },
+    {
+      "t": 81.0,
+      "state": "in_plank",
+      "body_line_deg": 178.1826560928321,
+      "elbow_deg": NaN,
+      "form_score": 0.9300615553072442
+    },
+    {
+      "t": 82.0,
+      "state": "in_plank",
+      "body_line_deg": 178.29294305809316,
+      "elbow_deg": 114.26318542052569,
+      "form_score": 0.8996389664780691
+    },
+    {
+      "t": 83.0,
+      "state": "settling",
+      "body_line_deg": 152.0292416303723,
+      "elbow_deg": 106.38598035513007,
+      "form_score": 0.2525045233090523
+    },
+    {
+      "t": 84.0,
+      "state": "in_plank",
+      "body_line_deg": 156.0238916731144,
+      "elbow_deg": 114.84208207499417,
+      "form_score": 0.10746384176685973
+    },
+    {
+      "t": 85.0,
+      "state": "in_plank",
+      "body_line_deg": 156.22825994501397,
+      "elbow_deg": 170.659598618177,
+      "form_score": 0.0235419437456495
+    },
+    {
+      "t": 86.0,
+      "state": "settling",
+      "body_line_deg": 170.50337839229545,
+      "elbow_deg": 172.1211185229629,
+      "form_score": 0.19085188656416716
+    }
+  ]
+}

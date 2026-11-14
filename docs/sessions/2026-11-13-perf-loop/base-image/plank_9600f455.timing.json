@@ -1,0 +1,21 @@
+{
+  "fixture": "plank_9600f455",
+  "lift_type": "plank",
+  "worktree": "/app",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true"
+  },
+  "stages": {
+    "download": 0.02,
+    "analyze": 55.89,
+    "reencode": 8.23,
+    "clips": 0.0
+  },
+  "analyze_breakdown": {
+    "plank_analyze": 55.87
+  },
+  "wall_s": 64.14,
+  "total_reps": null,
+  "total_in_plank_s": 82.7886568703274
+}
