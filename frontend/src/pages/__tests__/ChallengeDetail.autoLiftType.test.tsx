@@ -43,11 +43,11 @@ const club = {
   rules: consistencyRules,
 };
 
-const setup = (comp: object, extra: object = {}) => {
+const setup = (comp: object, extra: object = {}, board: object = liveClubBoard) => {
   (localStorage.getItem as jest.Mock).mockImplementation((k: string) =>
     k === "userEmail" ? "sam@example.com" : null,
   );
-  (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(liveClubBoard);
+  (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(board);
   (api.fetchChampions as jest.Mock).mockResolvedValue([]);
   (api.triggerLiftingAnalysis as jest.Mock).mockResolvedValue({});
   (api.getLiftingResult as jest.Mock).mockResolvedValue({ processing_status: "processing" });
@@ -139,5 +139,28 @@ describe("Automatic lift type on the board's upload form", () => {
     const { select } = await liftSelect();
     await waitFor(() => expect(select.value).toBe("Squat"));
     expect(screen.queryByTestId("lift-type-automatic")).toBeNull();
+  });
+});
+
+describe("Automatic on a bodyweight board outside the club", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  it("still posts weight 0 after a manual pick sets a default weight and Automatic is picked again", async () => {
+    (uploadVideo as jest.Mock).mockResolvedValue({ url: "https://storage.example/a.mp4", attempt_id: "a-1", user_id: "u-1" });
+    setup(
+      { ...club, mode: undefined, lifttypes: ["Pushup", "Situp"], auto_lift_type_enabled: true },
+      {},
+      { ...liveClubBoard, metric: "reps", consistency: undefined },
+    );
+    const { form, select } = await liftSelect();
+    await waitFor(() => expect(select.value).toBe("Auto"));
+    fireEvent.change(select, { target: { value: "Pushup" } });
+    fireEvent.change(select, { target: { value: "Auto" } });
+    fireEvent.change(form.querySelector('input[type="file"]')!, {
+      target: { files: [new File(["x"], "s.mp4", { type: "video/mp4" })] },
+    });
+    fireEvent.submit(form);
+    await waitFor(() => expect(uploadVideo).toHaveBeenCalled());
+    expect((uploadVideo as jest.Mock).mock.calls[0][1]).toMatchObject({ lift_type: "Auto", weight: "0" });
   });
 });
