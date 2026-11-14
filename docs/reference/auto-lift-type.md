@@ -1,15 +1,15 @@
 # Automatic lift type
 
-Design: `docs/plans/2026-11-13-auto-lift-type.md`. Session: `docs/sessions/2026-11-13-auto-lift-type.md`. Backend and frontend deployed 2026-11-14 with the **switch off** (`AUTO_LIFT_TYPE=0`), so nothing here is visible to athletes yet; the auto-capable engine went live the same day (see Engine).
+Design: `docs/plans/2026-11-13-auto-lift-type.md`. Session: `docs/sessions/2026-11-13-auto-lift-type.md`. Backend, frontend and the auto-capable engine deployed 2026-11-14; the **switch was turned on the same day** (`AUTO_LIFT_TYPE=1`, backend `my-python-backend-00199-tg7`), so athletes on the 100 Club see Automatic.
 
 ## What it does
 An athlete on an all-bodyweight board with 2+ lift types picks "Automatic" (first option, default) and posts `lift_type: Auto`, weight 0. The engine classifies the clip, the backend writes the detected type, and the result page says "Counted as X · Automatic". Below 0.6 confidence it asks "Is this a X?" with Yes / Change. The owner can Change the type, which re-queues analysis.
 
 ## The switch
-- Env `AUTO_LIFT_TYPE`, read per call, default off. `deploy.py` commits `AUTO_LIFT_TYPE=0` as a non-secret env var.
+- Env `AUTO_LIFT_TYPE`, read per call, default off in code. `deploy.py` commits `AUTO_LIFT_TYPE=1` as a non-secret env var (pinned by `test_deploy_py_commits_the_switch_on`).
 - `GET /competitions/<id>` returns `competition.auto_lift_type_enabled` = switch AND eligible (all bodyweight, 2+ types). The frontend shows Automatic only when it is exactly `true`.
 - With the switch off every insert site (`/upload`, `/upload/finalize`, `POST /attempts`, `/submit_attempt`) answers 400 to `Auto`, and `POST /attempts/<id>/lift-type` also answers 400 (so Change and re-analyse are off too; the 403 owner check is unreachable until it is on).
-- Flip: `gcloud run services update my-python-backend --region=us-east1 --update-env-vars AUTO_LIFT_TYPE=1`, and change the value in `deploy.py` so the next deploy does not revert it. The auto-capable engine is live since 2026-11-14 (`bowling-service-00057-qag`); any earlier revision treats `auto` as bicep curl, so set the switch back to 0 before rolling the engine back.
+- Turn off: `gcloud run services update my-python-backend --region=us-east1 --update-env-vars AUTO_LIFT_TYPE=0`, and change the value in `deploy.py` (and its test) so the next deploy does not revert it. Engine revisions before `bowling-service-00057-qag` treat `auto` as bicep curl, so turn the switch off before rolling the engine back past it.
 
 ## Backend
 - Migration 020 (inline in `app.py`): `ALTER TYPE lift_type ADD VALUE IF NOT EXISTS 'Auto'`, `Attempt.lift_type_source TEXT NOT NULL DEFAULT 'user'`, `Attempt.lift_type_confidence REAL`. Checks `information_schema` first and takes `SET LOCAL lock_timeout 5s`; if the first-boot ALTER times out the instance 500s on result endpoints until a later boot lands it. Check both columns exist after deploy.
@@ -26,7 +26,7 @@ An athlete on an all-bodyweight board with 2+ lift types picks "Automatic" (firs
 - Native mirror: `@capacitor/preferences` 7.0.4, native-only, every call in try/catch, restore gives up after 1.5 s; `main.tsx` renders after `restoreIdentity()`. Forget Me clears both stores. Phones now get Forget Me on their own profile.
 
 ## Engine
-**Deployed 2026-11-14**: `bowling-service-00057-qag`, image `gcr.io/toms-gym/bowling-service:auto-7e0169c` (digest `sha256:919848fb…a251`), branch `feat/auto-lift-type-perf` at `7e0169c` (worktree `~/code/bowling-app/auto-perf-engine`), which is `feat/auto-lift-type` rebased onto `perf/engine-2026-11-13` `f198bac` plus the rep-count guard, and is now the engine repo's `main`. The three perf env flags carried over. Rollback: route traffic to `bowling-service-00054-zj5`. The backend switch is still `AUTO_LIFT_TYPE=0`.
+**Deployed 2026-11-14**: `bowling-service-00057-qag`, image `gcr.io/toms-gym/bowling-service:auto-7e0169c` (digest `sha256:919848fb…a251`), branch `feat/auto-lift-type-perf` at `7e0169c` (worktree `~/code/bowling-app/auto-perf-engine`), which is `feat/auto-lift-type` rebased onto `perf/engine-2026-11-13` `f198bac` plus the rep-count guard, and is now the engine repo's `main`. The three perf env flags carried over. Superseded the same day by `00061-ram` (below), which only changes how fast auto runs.
 
 `POST /analyze-lift` takes `lift_type: "auto"` + `candidates`; only situp, pushup, squat, plank are classified. Auto adds `detected_lift_type`, `lift_type_confidence`, `lift_type_scores` to the report. No detection: HTTP 200, `annotated_video_url` null, detected null, confidence 0. `auto` without candidates: 400. Details and wire clarifications: `docs/sessions/2026-11-13-auto-lift-type/contract-deviations.md`.
 
@@ -36,14 +36,18 @@ Eval (51 labelled clips, rule-based, rules frozen before the held-out half): ove
 
 Proof on Cloud Run 2026-11-14 (no-traffic tag, then the live URL; throwaway `auto-proof-*` attempt ids): explicit squat/pushup/situp/plank reports equal the `00054` deploy proof apart from clip URLs; the plank from the feet returns no detection with `lift_type_rejected` (164 against 40 on Linux pose); the 10 s plank fixture reads plank at 0.556 (asks).
 
-**Auto is slower than an explicit type**: its pose pass may stop early for a plank, so it runs on one worker and does not use `LIFT_POSE_WORKERS`. Cloud Run, same clip, explicit vs auto: pushup 23 s vs 60 s, situp 65 s vs 155 s, squat 19 s vs 40 s, plank (82 s hold) 40 s vs 60 s; a misread 141 s plank took 231 s. Follow-up: let the candidates pass use the parallel workers once the clip is known not to be a hold.
+**Auto uses the parallel pose workers since `bowling-service-00061-ram`** (engine `main` at `f4d0059`, image `auto-f4d0059`, 2026-11-14; rollback `00057-qag`). The chunked pass takes the same stop hook as the sequential one: the first chunk is true as it is read, so it is checked live every 2 s and a plank decision there kills the other workers; later prefixes are checked after the splice. The hook sees exactly the prefixes a sequential pass offers, so the decision and the report are the same. Later-chunk workers run at nice 10 while a stop is possible, or the first chunk reads at about two thirds speed.
+
+Proof: 9 labelled clips on the laptop, 4 workers vs 1, byte-identical summaries; on Cloud Run 7 auto and 4 explicit reports equal `00057` apart from clip URLs. Cloud Run, same clip, explicit / auto before / auto now: pushup 23 / 60 / 26 s, situp (31 reps) 65 / 154 / 63 s, squat 19 / 40 / 23 s, misread 141 s plank n/a / 231 / 100 s. **Plank is not faster and may be a few seconds slower**: 82 s hold, three alternating runs each, 60-63 s now against 50-63 s before (the same call on one revision varied 49 to 74 s). Auto still costs a rep lift a few seconds over explicit (classification) and a plank about 20 s (the prefix pass).
+
+**Practice board** (2026-11-14, after the switch): competition `78167bbc-286d-401e-9153-acf393d53752` "Practice: Automatic lift type" (consistency mode, same four types), canary user `auto-practice-canary-2026-11-14@example.com`, seven uploads of Tom's own labelled clips through signed URL + finalize with `lift_type: Auto`. Pushup, situp and plank came back `source: auto` at 1.0 and scored on the board; the 10 s plank came back at 0.556 and Yes (`lift-type` with the same type) set source `user` without a re-queue; a crunch-depth situp stayed `Auto` with `needs_lift_type` true and was absent from the board until Change to Situp re-queued it (13 reps, board 17.5 -> 30.5). `lift-type` answered 403 to a non-owner, 400 to Auto and to an undeclared type, 409 while analysis ran. In Chrome the upload page defaults to Automatic and the status page reads "Counted as Pushups · Automatic". Not run: a squat, the Change sheet clicked in a browser as the owner, a phone. The board and its canary are still there; cleanup is the 100 Club recipe (`docs/reference/100-club.md`) plus `DELETE /competitions/<id>`.
 
 ## Tests
 `tests/test_lift_type_auto.py` (DB-free) and `tests/test_lift_type_auto_pg.py` (7 tests, skipped unless `AUTO_LIFT_PG_URL` points at a throwaway local Postgres; refuses ports 5432/5433 and a database named `postgres`), both in `tools/run_ci_tests.sh`. Frontend: `lib/identity` tests, page tests for the line and sheet, `main.test.tsx`, `emailPrefill.test.tsx`.
 
 ## Open follow-ups
-- Flip the switch (Tom's call), then run one real automatic upload and one re-analysis with a test account (the backend path was never exercised in prod; only direct engine calls were).
-- Knee pushups read as a plank stay silent; auto does not use the parallel pose workers.
+- Knee pushups read as a plank stay silent. Squat rests on one labelled clip.
+- Delete the practice board and its canary once Tom has tried it.
 - New SQL was proven on a throwaway Postgres, not prod beyond the migration columns.
 - Install the new APK on a real phone (emulator only).
 - Reword "Is this a pushup?" is Tom's call. Pre-existing: `/profile` overflows at 390 with a long email handle; `/challenges/<id>/upload` submit sits under the tab bar at 390.
