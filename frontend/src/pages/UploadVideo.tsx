@@ -11,6 +11,7 @@ import { uploadVideo } from "../lib/resumableUpload";
 import { useUploadGuard } from "../lib/useUploadGuard";
 import { triggerLiftingAnalysis } from "../lib/api";
 import { getEmail, getUserId, remember } from "../lib/identity";
+import { AUTO_HELPER, AUTO_LIFT_TYPE, autoLiftTypeEnabled, offersAutomatic } from "../lib/autoLiftType";
 
 interface UserProfile {
   best_lifts: {
@@ -24,7 +25,7 @@ interface UserProfile {
 // Rep lifts (pushups, situps) collect no weight. Module-level so
 // it can never be shadowed by a block-scoped binding inside the render tree.
 function isBodyweightLift(liftType: string): boolean {
-  return liftType === 'Pushup' || liftType === 'Situp';
+  return liftType === 'Pushup' || liftType === 'Situp' || liftType === AUTO_LIFT_TYPE;
 }
 
 const UploadVideo: React.FC = () => {
@@ -42,6 +43,24 @@ const UploadVideo: React.FC = () => {
   useUploadGuard(isUploading);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [email, setEmail] = useState<string>(() => getEmail() ?? "");
+  const [autoOffered, setAutoOffered] = useState(false);
+
+  useEffect(() => {
+    if (!id) return;
+    let cancelled = false;
+    axios
+      .get(`${API_URL}/competitions/${id}`)
+      .then((res) => {
+        const comp = res.data?.competition ?? {};
+        if (cancelled || !offersAutomatic(autoLiftTypeEnabled(res.data), comp.lifttypes, comp.mode)) return;
+        setAutoOffered(true);
+        setLiftType(AUTO_LIFT_TYPE);
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [id]);
 
   // Default weights for each lift type
   const defaultWeights = {
@@ -291,12 +310,18 @@ const UploadVideo: React.FC = () => {
                     onChange={handleLiftTypeChange}
                     className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                   >
+                    {autoOffered && (
+                      <option data-testid="lift-type-automatic" value={AUTO_LIFT_TYPE}>Automatic</option>
+                    )}
                     <option value="Squat">Squat</option>
                     <option value="Bench">Bench Press</option>
                     <option value="Deadlift">Deadlift</option>
                     <option value="Pushup">Pushup</option>
                     <option value="Situp">Situp</option>
                   </select>
+                  {liftType === AUTO_LIFT_TYPE && (
+                    <p className="text-xs text-muted-foreground mt-1">{AUTO_HELPER}</p>
+                  )}
                 </div>
 
                 {!isBodyweightLift(liftType) && (

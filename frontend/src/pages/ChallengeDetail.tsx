@@ -34,6 +34,7 @@ import { scoreColumnLabel, scoringNote } from "../components/challenge/metric";
 import { deriveStanding, ctaLabelFor } from "../lib/standing";
 import { rankChange, readRank, writeRank, RankShift } from "../lib/rankMemory";
 import { forget, getEmail, getUserId, remember } from "../lib/identity";
+import { AUTO_HELPER, AUTO_LIFT_TYPE, autoLiftTypeEnabled, offersAutomatic } from "../lib/autoLiftType";
 
 // Use the local API URL for competitions
 const COMPETITIONS_API_URL = API_URL;
@@ -72,7 +73,7 @@ function genderToCategories(gender: string | null | undefined): string[] {
 // field for these. Module-level so it can never be shadowed by a block-scoped
 // binding inside the render tree.
 function isBodyweightLift(liftType: string): boolean {
-  return liftType === 'Plank' || liftType === 'Pushup' || liftType === 'Situp';
+  return liftType === 'Plank' || liftType === 'Pushup' || liftType === 'Situp' || liftType === AUTO_LIFT_TYPE;
 }
 
 const readStoredUserId = getUserId;
@@ -92,6 +93,7 @@ const ChallengeDetail: React.FC = () => {
   const [selectedWeightClass, setSelectedWeightClass] = useState<string>("");
   const [challengeName, setChallengeName] = useState<string>("");
   const [showUpload, setShowUpload] = useState(false);
+  const [autoOffered, setAutoOffered] = useState(false);
   const uploadRef = useRef<HTMLDivElement>(null);
   const [liftingResults, setLiftingResults] = useState<Record<string, LiftingResult>>({});
   const [leaderboard, setLeaderboard] = useState<ChallengeLeaderboard | null>(null);
@@ -228,7 +230,7 @@ const ChallengeDetail: React.FC = () => {
         {
           competition_id: id || '1',
           lift_type: liftType,
-          weight,
+          weight: liftType === AUTO_LIFT_TYPE ? "0" : weight,
           email,
         },
         (pct) => setUploadProgress(pct),
@@ -236,7 +238,7 @@ const ChallengeDetail: React.FC = () => {
         // 1080p → 720p ≈ 3-5× fewer bytes) and near-free, but the realtime
         // MediaRecorder fallback costs more than it saves — the analyzer only
         // samples 15fps pose, so ship the original when hardware is missing.
-        { compression: liftType === 'Plank' ? 'fast-only' : 'auto' }
+        { compression: liftType === 'Plank' || liftType === AUTO_LIFT_TYPE ? 'fast-only' : 'auto' }
       );
 
       if (data.url) {
@@ -283,8 +285,9 @@ const ChallengeDetail: React.FC = () => {
           duration: adoptedId ? 10000 : 5000,
         });
 
-        // Reset form
+        // Reset form; Automatic is the default every time.
         setSelectedFile(null);
+        if (autoOffered) setLiftType(AUTO_LIFT_TYPE);
         setUploadError(null);
         setShowUpload(false);
 
@@ -492,6 +495,13 @@ const ChallengeDetail: React.FC = () => {
           }
         }
 
+        setAutoOffered(
+          offersAutomatic(
+            autoLiftTypeEnabled(challengeData.data),
+            backendData.lifttypes ?? transformedChallenge.categories,
+            transformedChallenge.mode ?? backendData.mode,
+          ),
+        );
         setChallenge(transformedChallenge);
       } catch (err: any) {
         console.error("Error fetching data:", err);
@@ -534,7 +544,10 @@ const ChallengeDetail: React.FC = () => {
         'Situp': 'Situp',
       };
       const allowedFormIds = allowedDbValues.map(d => dbToFormId[d]).filter(Boolean);
-      if (allowedFormIds.length > 0 && !allowedFormIds.includes(liftType)) {
+      if (autoOffered) {
+        setLiftType(AUTO_LIFT_TYPE);
+        setWeight("0");
+      } else if (allowedFormIds.length > 0 && !allowedFormIds.includes(liftType)) {
         setLiftType(allowedFormIds[0]);
         setWeight(defaultWeights[allowedFormIds[0]] || "60");
       }
@@ -1134,10 +1147,16 @@ const ChallengeDetail: React.FC = () => {
                             onChange={handleLiftTypeChange}
                             className="w-full px-3 py-2 bg-background border border-input rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
                           >
+                            {autoOffered && (
+                              <option data-testid="lift-type-automatic" value={AUTO_LIFT_TYPE}>Automatic</option>
+                            )}
                             {liftOptions.map(opt => (
                               <option key={opt.id} value={opt.id}>{opt.label}</option>
                             ))}
                           </select>
+                        )}
+                        {!onlyOne && liftType === AUTO_LIFT_TYPE && (
+                          <p className="mt-1 text-xs text-muted-foreground">{AUTO_HELPER}</p>
                         )}
                       </div>
 
