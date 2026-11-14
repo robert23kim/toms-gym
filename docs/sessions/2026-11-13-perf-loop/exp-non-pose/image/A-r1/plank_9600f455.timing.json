@@ -1,0 +1,31 @@
+{
+  "fixture": "plank_9600f455",
+  "lift_type": "plank",
+  "worktree": "/app",
+  "code_hash": "dbd08903c0b9eda2",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true"
+  },
+  "stages": {
+    "download": 0.01,
+    "analyze": 74.58,
+    "reencode": 11.25,
+    "artifact_copy": 0.05,
+    "clips": 0.0
+  },
+  "analyze_breakdown": {
+    "plank_analyze": 74.56
+  },
+  "wall_s": 85.9,
+  "artifact": {
+    "ffmpeg_reencode_runs": 1,
+    "clips_uploaded": 0,
+    "clips_reencoded": 0,
+    "annotated_uploaded_from": "annotated_h264.mp4",
+    "annotated_bytes": 7758378,
+    "clips_dir_exists": false
+  },
+  "total_reps": null,
+  "total_in_plank_s": 82.7886568703274
+}

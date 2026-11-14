@@ -1,0 +1,88 @@
+== squat_f47a8848 r1 vs prod
+MATCH /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/squat_f47a8848.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/squat_f47a8848.r1.json
+exit=0
+== squat_f47a8848 r1 vs base-image
+MATCH /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/squat_f47a8848.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/squat_f47a8848.r1.json
+exit=0
+== pushup_3c66c85e r1 vs prod
+FAIL [score_drift] rep 1 shoulder_swing value: 50.2 vs 56.0 (tol 2.0)
+FAIL [score_drift] rep 1 tempo value: 3.9 vs 7.6 (tol 2.0)
+FAIL [score_drift] rep 18 form_score: 90.45669527591544 vs 93.31484900275714 (tol 2.0)
+FAIL [score_drift] rep 18 control value: 71.4 vs 79.9 (tol 2.0)
+FAIL [metric_status] rep 18 shoulder_swing status: warn vs fail
+FAIL [score_drift] rep 18 shoulder_swing value: 44.2 vs 50.4 (tol 2.0)
+DIFF /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/pushup_3c66c85e.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/pushup_3c66c85e.r1.json failing gates: metric_status,score_drift
+exit=1
+== pushup_3c66c85e r1 vs base-image
+FAIL [score_drift] rep 1 shoulder_swing value: 50.2 vs 56.0 (tol 2.0)
+FAIL [score_drift] rep 1 tempo value: 3.9 vs 7.6 (tol 2.0)
+FAIL [score_drift] rep 18 form_score: 90.45669527591548 vs 93.31484900275714 (tol 2.0)
+FAIL [score_drift] rep 18 control value: 71.4 vs 79.9 (tol 2.0)
+FAIL [metric_status] rep 18 shoulder_swing status: warn vs fail
+FAIL [score_drift] rep 18 shoulder_swing value: 44.2 vs 50.4 (tol 2.0)
+DIFF /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/pushup_3c66c85e.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/pushup_3c66c85e.r1.json failing gates: metric_status,score_drift
+exit=1
+== pushup_97b4aaf2 r1 vs prod
+FAIL [reps] total_reps: 25 vs 26 (rep_metrics 25 vs 26)
+FAIL [grade] overall_grade: C vs D
+FAIL [reps] rep B#1 (0.4-0.97s) only in B
+FAIL [score_drift] rep 1 form_score: 63.147937327248364 vs 42.13429571417825 (tol 2.0)
+FAIL [grade] rep 1 form_grade: D vs F
+FAIL [rep_timing] rep 1 start_s: 0.4 vs 0.97 (tol 0.25)
+FAIL [metric_status] rep 1 control status: pass vs warn
+FAIL [score_drift] rep 1 control value: 72.3 vs 63.8 (tol 2.0)
+FAIL [metric_status] rep 1 rom status: pass vs fail
+FAIL [score_drift] rep 1 rom value: 90.1 vs 52.4 (tol 2.0)
+FAIL [score_drift] rep 1 shoulder_swing value: 95.1 vs 102.8 (tol 2.0)
+FAIL [score_drift] rep 23 form_score: 42.423087630277244 vs 49.51875767094026 (tol 2.0)
+FAIL [score_drift] rep 23 rom value: 34.8 vs 49.0 (tol 2.0)
+FAIL [score_drift] rep 24 shoulder_swing value: 61.5 vs 64.1 (tol 2.0)
+FAIL [score_drift] rep 25 control value: 98.4 vs 91.1 (tol 2.0)
+DIFF /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/pushup_97b4aaf2.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/pushup_97b4aaf2.r1.json failing gates: grade,metric_status,rep_timing,reps,score_drift
+exit=1
+== pushup_97b4aaf2 r1 vs base-image
+MATCH /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/pushup_97b4aaf2.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/pushup_97b4aaf2.r1.json
+exit=0
+== pushup_e18a31d1 r1 vs prod
+MATCH /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/pushup_e18a31d1.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/pushup_e18a31d1.r1.json
+exit=0
+== pushup_e18a31d1 r1 vs base-image
+MATCH /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/pushup_e18a31d1.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/pushup_e18a31d1.r1.json
+exit=0
+== situp_16b6ca35 r1 vs prod
+MATCH /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/situp_16b6ca35.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/situp_16b6ca35.r1.json
+exit=0
+== situp_16b6ca35 r1 vs base-image
+MATCH /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/situp_16b6ca35.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/situp_16b6ca35.r1.json
+exit=0
+== situp_667a8480 r1 vs prod
+MATCH /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/situp_667a8480.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/situp_667a8480.r1.json
+exit=0
+== situp_667a8480 r1 vs base-image
+MATCH /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/situp_667a8480.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/situp_667a8480.r1.json
+exit=0
+== situp_c9dec98b r1 vs prod
+FAIL [reps] total_reps: 13 vs 14 (rep_metrics 13 vs 14)
+FAIL [score_drift] overall_score: 91.01764499797511 vs 93.31965442820528 (tol 2.0)
+FAIL [reps] rep 1 (1.0-2.67s) only in A
+FAIL [reps] rep B#5 (17.58-19.59s) only in B
+FAIL [reps] rep B#7 (24.67-26.11s) only in B
+FAIL [reps] rep B#10 (32.29-33.97s) only in B
+FAIL [reps] rep 13 (56.06-57.33s) only in A
+DIFF /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/situp_c9dec98b.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/situp_c9dec98b.r1.json failing gates: reps,score_drift
+exit=1
+== situp_c9dec98b r1 vs base-image
+MATCH /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/situp_c9dec98b.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/situp_c9dec98b.r1.json
+exit=0
+== plank_9600f455 r1 vs prod
+FAIL [plank_hold] total_in_plank_s: 82.7886568703274 vs 82.18680072183552 (tol 0.5)
+FAIL [plank_hold] longest_run_s: 81.18370714101573 vs 80.3143593709719 (tol 0.5)
+FAIL [plank_score] overall_form_score: 0.7951557155929178 vs 0.8224493683661361 (tol 0.02)
+DIFF /Users/toka/code/bowling-app/perf-fixtures-2026-11-13/plank_9600f455.prod.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/plank_9600f455.r1.json failing gates: plank_hold,plank_score
+exit=1
+== plank_9600f455 r1 vs base-image
+FAIL [plank_hold] total_in_plank_s: 82.7886568703274 vs 82.18680072183552 (tol 0.5)
+FAIL [plank_hold] longest_run_s: 81.18370714101573 vs 80.3143593709719 (tol 0.5)
+FAIL [plank_score] overall_form_score: 0.7951557155929178 vs 0.8224493683661361 (tol 0.02)
+DIFF /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/harness/../base-image/plank_9600f455.summary.json vs /Users/toka/code/toms_gym-perf/docs/sessions/2026-11-13-perf-loop/exp-non-pose/cloudrun/np-off-all/plank_9600f455.r1.json failing gates: plank_hold,plank_score
+exit=1

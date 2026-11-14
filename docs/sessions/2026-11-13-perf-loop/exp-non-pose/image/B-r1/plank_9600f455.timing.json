@@ -1,0 +1,33 @@
+{
+  "fixture": "plank_9600f455",
+  "lift_type": "plank",
+  "worktree": "/app",
+  "code_hash": "dbd08903c0b9eda2",
+  "env": {
+    "PLANK_POSE_WORKERS": "8",
+    "NORMALIZE_BEFORE_ANALYZE": "true",
+    "LIFT_VIDEO_ENCODER": "ffmpeg",
+    "SKIP_METRIC_CLIPS_FOR": "pushup,situp"
+  },
+  "stages": {
+    "download": 0.03,
+    "analyze": 80.68,
+    "reencode": 0.0,
+    "artifact_copy": 0.01,
+    "clips": 0.0
+  },
+  "analyze_breakdown": {
+    "plank_analyze": 80.66
+  },
+  "wall_s": 80.71,
+  "artifact": {
+    "ffmpeg_reencode_runs": 0,
+    "clips_uploaded": 0,
+    "clips_reencoded": 0,
+    "annotated_uploaded_from": "annotated.mp4",
+    "annotated_bytes": 6272539,
+    "clips_dir_exists": false
+  },
+  "total_reps": null,
+  "total_in_plank_s": 82.7886568703274
+}
