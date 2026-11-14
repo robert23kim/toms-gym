@@ -161,7 +161,7 @@ const FindProfilePage: React.FC = () => {
                 signup required.
               </p>
               <Link
-                to="/upload"
+                to={next ?? "/upload"}
                 className="inline-block px-3 py-2 bg-primary text-primary-foreground rounded text-sm hover:bg-primary/90"
               >
                 Upload something

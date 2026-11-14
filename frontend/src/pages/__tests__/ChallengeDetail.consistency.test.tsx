@@ -22,6 +22,8 @@ jest.mock("../../components/Layout", () => ({
 }));
 jest.mock("../../lib/resumableUpload", () => ({ uploadVideo: jest.fn() }));
 jest.mock("../../lib/telemetry", () => ({ reportUploadError: jest.fn() }));
+const mockToast = jest.fn();
+jest.mock("../../components/ui/use-toast", () => ({ useToast: () => ({ toast: mockToast }) }));
 jest.mock("axios", () => ({
   __esModule: true,
   default: { get: jest.fn(), post: jest.fn(), isAxiosError: () => false },
@@ -196,6 +198,9 @@ describe("ChallengeDetail on a 100 Club board", () => {
     await waitFor(() => expect(uploadVideo).toHaveBeenCalled());
     await waitFor(() => expect(api.triggerLiftingAnalysis).toHaveBeenCalled());
     expect(localStorage.setItem).not.toHaveBeenCalledWith("userId", expect.anything());
+    expect(mockToast).toHaveBeenCalledWith(
+      expect.objectContaining({ description: "Logged to other@example.com's profile. This device stays on its current profile." }),
+    );
   });
 
   it("drops the Everyone else header when the podium holds everyone", async () => {

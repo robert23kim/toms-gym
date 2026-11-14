@@ -65,6 +65,12 @@ describe("FindProfilePage", () => {
     expect(await screen.findByRole("link", { name: /Back to the challenge/i })).toHaveAttribute("href", "/challenges/c1");
   });
 
+  it("sends someone with no profile back to the board to upload", async () => {
+    (axios.get as jest.Mock).mockRejectedValue({ response: { status: 404 } });
+    submit(`/find-profile?next=${encodeURIComponent("/challenges/c1")}`);
+    expect(await screen.findByRole("link", { name: /Upload something/i })).toHaveAttribute("href", "/challenges/c1");
+  });
+
   it("ignores a next that leaves the site", async () => {
     lookup([]);
     submit(`/find-profile?next=${encodeURIComponent("//evil.example/x")}`);
