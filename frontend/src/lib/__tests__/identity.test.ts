@@ -114,6 +114,14 @@ describe("identity in the APK", () => {
     expect(getUserId()).toBe("u-web");
   });
 
+  test("boot seeds Preferences for an athlete the WebView already knows", async () => {
+    store.set("userId", "u-old");
+    store.set("userEmail", "old@example.com");
+    await restoreIdentity();
+    expect(mockPrefs.get("userId")).toBe("u-old");
+    expect(mockPrefs.get("userEmail")).toBe("old@example.com");
+  });
+
   test("forget clears the native mirror before it resolves", async () => {
     mockPrefs.set("userId", "u-7");
     mockPrefs.set("userEmail", "f@example.com");

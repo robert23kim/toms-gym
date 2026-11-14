@@ -144,12 +144,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
     }
     
-    clearTokens();
+    const cleared = clearTokens();
     setUser(null);
     setIsAuthenticated(false);
-    
-    // Redirect to home page
-    window.location.href = '/';
+
+    // Redirect home only after the APK's native identity mirror is cleared.
+    cleared.finally(() => {
+      window.location.href = '/';
+    });
   };
 
   // Context value

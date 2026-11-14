@@ -23,8 +23,8 @@ export const setTokens = (accessToken: string, refreshToken: string, userId: str
   remember({ userId });
 };
 
-export const clearTokens = (): void => {
+export const clearTokens = (): Promise<void> => {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
-  void forget();
+  return forget();
 }; 

@@ -4,7 +4,7 @@ import { X, Eye, EyeOff } from 'lucide-react';
 import axios from 'axios';
 import { API_URL } from '../config';
 import { useAuth } from '../auth/AuthContext';
-import { remember } from '../lib/identity';
+import { getEmail, remember } from '../lib/identity';
 
 interface CreateProfileProps {
   onClose: () => void;
@@ -15,7 +15,7 @@ const CreateProfile: React.FC<CreateProfileProps> = ({ onClose, onSubmit }) => {
   const { handleLoginSuccess } = useAuth();
   const [formData, setFormData] = useState({
     name: '',
-    email: '',
+    email: getEmail() ?? '',
     password: '',
     confirmPassword: '',
     weight_class: '83kg',

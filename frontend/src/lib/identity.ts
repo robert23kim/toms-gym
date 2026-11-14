@@ -73,10 +73,19 @@ export const forget = async (): Promise<void> => {
   ]);
 };
 
-/** APK boot: refills an emptied WebView localStorage from Preferences. Never rejects. */
+/** APK boot: refills an emptied WebView localStorage from Preferences, or seeds Preferences from it. Never rejects. */
 export const restoreIdentity = async (): Promise<void> => {
-  if (!isNative() || getUserId()) return;
+  if (!isNative()) return;
+  const known = getUserId();
   const restore = async () => {
+    if (known) {
+      const mail = getEmail();
+      await Promise.all([
+        Preferences.set({ key: USER_ID_KEY, value: known }),
+        ...(mail ? [Preferences.set({ key: EMAIL_KEY, value: mail })] : []),
+      ]);
+      return;
+    }
     const [id, mail] = await Promise.all([
       Preferences.get({ key: USER_ID_KEY }),
       Preferences.get({ key: EMAIL_KEY }),

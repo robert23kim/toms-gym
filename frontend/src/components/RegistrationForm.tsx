@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { API_URL } from '../config';
 import { setTokens } from '../auth/tokenUtils';
-import { remember } from '../lib/identity';
+import { getEmail, remember } from '../lib/identity';
 import { useAuth } from '../auth/AuthContext';
 
 interface RegistrationFormProps {
@@ -13,7 +13,7 @@ interface RegistrationFormProps {
 export const RegistrationForm: React.FC<RegistrationFormProps> = ({ onSuccess, onError }) => {
     const [formData, setFormData] = useState({
         username: '',
-        email: '',
+        email: getEmail() ?? '',
         password: '',
         confirmPassword: '',
         name: ''

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { API_URL } from '../config';
+import { getEmail } from '../lib/identity';
 
 interface PasswordResetFormProps {
     onSuccess?: () => void;
@@ -10,7 +11,7 @@ interface PasswordResetFormProps {
 export const PasswordResetForm: React.FC<PasswordResetFormProps> = ({ onSuccess, onError }) => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get('token');
-    const [email, setEmail] = useState('');
+    const [email, setEmail] = useState(() => getEmail() ?? '');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [error, setError] = useState<string | null>(null);

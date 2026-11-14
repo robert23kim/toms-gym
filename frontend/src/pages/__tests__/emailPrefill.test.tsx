@@ -9,6 +9,9 @@ import FileTicket from "../FileTicket";
 import GolfUpload from "../GolfUpload";
 import BowlingUpload from "../BowlingUpload";
 import BowlingSheetUpload from "../BowlingSheetUpload";
+import { RegistrationForm } from "../../components/RegistrationForm";
+import CreateProfile from "../../components/CreateProfile";
+import { PasswordResetForm } from "../../components/PasswordResetForm";
 
 jest.mock("../../config", () => ({ API_URL: "https://test-api.example" }));
 jest.mock("../../components/Layout", () => ({
@@ -21,6 +24,7 @@ jest.mock("../../components/FairwayScope", () => ({
 }));
 jest.mock("../../components/GhibliAvatar", () => ({ __esModule: true, default: () => <div /> }));
 jest.mock("axios");
+jest.mock("../../auth/AuthContext", () => ({ useAuth: () => ({ handleLoginSuccess: jest.fn() }) }));
 
 const REMEMBERED = "sam@example.com";
 
@@ -35,6 +39,9 @@ const forms: [string, React.ReactElement][] = [
   ["Golf upload", <GolfUpload />],
   ["Bowling upload", <BowlingUpload />],
   ["Bowling sheet upload", <BowlingSheetUpload />],
+  ["Registration", <RegistrationForm />],
+  ["Create profile", <CreateProfile onClose={() => {}} />],
+  ["Password reset request", <PasswordResetForm />],
 ];
 
 const emailInput = (container: HTMLElement) =>
