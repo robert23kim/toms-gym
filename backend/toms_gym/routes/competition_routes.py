@@ -1026,10 +1026,14 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
                            a.lift_type, 
                            a.weight_kg as weight, 
                            a.status,
-                           a.video_url
+                           a.video_url,
+                           a.lift_type_source,
+                           a.lift_type_confidence,
+                           lr.processing_status AS analysis_status
                     FROM "Attempt" a
                     JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
                     JOIN "User" u ON uc.user_id = u.id
+                    LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
                     WHERE uc.competition_id = :competition_id
                     AND uc.user_id = :participant_id
                     AND a.id = :attempt_id
@@ -1053,7 +1057,10 @@ def get_attempt_details(competition_id, participant_id, attempt_id):
                     result[column] = value.isoformat()
                 else:
                     result[column] = value
-                
+            from toms_gym.services.lift_type_auto import needs_lift_type
+            result['needs_lift_type'] = needs_lift_type(
+                result.get('lift_type'), result.pop('analysis_status', None))
+
             # Process video URL if available
             if result.get('video_url'):
                 logger.info(f"Original video URL: {result['video_url']}")

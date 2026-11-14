@@ -197,4 +197,79 @@ def delete_attempt(attempt_id):
         return {"error": str(e)}, 500
     finally:
         if session:
-            session.close() 
+            session.close()
+
+
+@attempt_bp.route('/attempts/<string:attempt_id>/lift-type', methods=['POST'])
+def change_lift_type(attempt_id):
+    """Owner sets the lift type (never Auto) and the attempt is re-analysed."""
+    from toms_gym.routes.competition_routes import _parse_metadata, invalidate_champions_cache
+    from toms_gym.routes.lifting_routes import queue_lifting_analysis
+
+    body = request.get_json(silent=True) or {}
+    if not is_valid_uuid(attempt_id):
+        return {"error": "Attempt not found"}, 404
+    session = None
+    try:
+        session = get_db_connection()
+        row = session.execute(
+            sqlalchemy.text("""
+                SELECT a.id, a.lift_type, a.weight_kg, a.video_url,
+                       uc.user_id, uc.competition_id, c.description,
+                       lr.processing_status
+                FROM "Attempt" a
+                JOIN "UserCompetition" uc ON a.user_competition_id = uc.id
+                JOIN "Competition" c ON uc.competition_id = c.id
+                LEFT JOIN "LiftingResult" lr ON lr.attempt_id = a.id
+                WHERE a.id = :id
+            """),
+            {"id": attempt_id}
+        ).fetchone()
+        if row is None:
+            return {"error": "Attempt not found"}, 404
+        user_id = body.get("user_id")
+        if not user_id or str(user_id) != str(row.user_id):
+            return {"error": "Only the athlete who uploaded this lift can change it"}, 403
+        declared = _parse_metadata(row.description).get("lifttypes")
+        lift_type = lift_type_auto.match_declared(body.get("lift_type"), declared)
+        if lift_type is None:
+            return {"error": "lift_type must be one of this challenge's lift types"}, 400
+        if row.processing_status in ("queued", "processing"):
+            return {"error": "Analysis is still running; try again when it finishes"}, 409
+
+        if row.lift_type == lift_type and row.processing_status == "completed":
+            session.execute(
+                sqlalchemy.text("""
+                    UPDATE "Attempt"
+                    SET lift_type_source = 'user', lift_type_confidence = NULL
+                    WHERE id = :id
+                """),
+                {"id": attempt_id}
+            )
+            session.commit()
+            return {"attempt_id": attempt_id, "lift_type": lift_type, "status": "unchanged"}, 200
+
+        if not row.video_url:
+            return {"error": "Attempt has no video"}, 400
+        session.execute(
+            sqlalchemy.text("""
+                UPDATE "Attempt"
+                SET lift_type = :lift_type, lift_type_source = 'user',
+                    lift_type_confidence = NULL, weight_kg = :weight_kg, status = :status
+                WHERE id = :id
+            """),
+            {"id": attempt_id, "lift_type": lift_type,
+             "weight_kg": bodyweight_weight_kg(lift_type, row.weight_kg), "status": "pending"}
+        )
+        queue_lifting_analysis(session, attempt_id)
+        session.commit()
+        invalidate_champions_cache()
+        return {"attempt_id": attempt_id, "lift_type": lift_type, "status": "queued"}, 200
+    except Exception as e:
+        logger.error(f"Error changing lift type: {str(e)}")
+        if session:
+            session.rollback()
+        return {"error": str(e)}, 500
+    finally:
+        if session:
+            session.close()

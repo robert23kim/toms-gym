@@ -30,6 +30,9 @@ def _result_row(**overrides):
     row.attempt_created_at = datetime(2026, 8, 29, 0, 58, 0)
     row.user_id = "u1"
     row.competition_id = "c1"
+    row.lift_type = "Pushup"
+    row.lift_type_source = "user"
+    row.lift_type_confidence = None
     for k, v in overrides.items():
         setattr(row, k, v)
     return row

@@ -1,7 +1,8 @@
 """Automatic lift type (docs/plans/2026-11-13-auto-lift-type.md), DB-free.
 
 Upload accepts/rejects Auto, dispatch sends auto + candidates, completion writes
-the detected type, an Auto attempt scores nothing and is pending.
+the detected type, an Auto attempt scores nothing and is pending, and
+POST /attempts/<id>/lift-type re-queues through the shared /analyze code path.
 """
 import pathlib
 from io import BytesIO
@@ -12,7 +13,7 @@ import pytest
 from flask import Flask
 
 from toms_gym.integrations import lifting_processor
-from toms_gym.routes import attempt_routes, competition_routes, upload_routes
+from toms_gym.routes import attempt_routes, competition_routes, lifting_routes, upload_routes
 from toms_gym.services import lift_type_auto
 from toms_gym.services.consistency import rank_consistency
 from toms_gym.services.challenge_leaderboard import rank_challenge
@@ -46,6 +47,7 @@ def client():
     app.config["TESTING"] = True
     app.register_blueprint(upload_routes.upload_bp)
     app.register_blueprint(attempt_routes.attempt_bp)
+    app.register_blueprint(lifting_routes.lifting_bp)
     app.register_blueprint(competition_routes.competition_bp)
     return app.test_client()
 
@@ -104,7 +106,7 @@ def bucket(monkeypatch):
 
 
 def _use(monkeypatch, session):
-    for mod in (upload_routes, attempt_routes, competition_routes):
+    for mod in (upload_routes, attempt_routes, lifting_routes, competition_routes):
         monkeypatch.setattr(mod, "get_db_connection", lambda: session)
 
 
@@ -397,6 +399,214 @@ def test_lift_history_never_shows_the_engine_auto_label():
     assert shape_lift_row(row)["lift_type"] == "Pushup"
     assert shape_lift_row({"lift_type": "Auto"})["lift_type"] == "Auto"
     assert shape_lift_row({"lift_type": "Pushup", "report_lift_type": "pushup"})["lift_type"] == "pushup"
+
+
+# --------------------------------------------------------------------------- #
+# Result / attempt payloads
+# --------------------------------------------------------------------------- #
+
+def _lr_row(**kw):
+    import datetime as dt
+    base = dict(id=RESULT_ID, attempt_id=ATTEMPT_ID, processing_status="completed",
+                annotated_video_url="a", summary_url=None, report={"total_reps": 3},
+                processing_time_s=1.0, error_message=None,
+                created_at=dt.datetime(2026, 11, 13), updated_at=dt.datetime(2026, 11, 13),
+                attempt_created_at=dt.datetime(2026, 11, 13), user_id=USER_ID,
+                competition_id=COMP_ID, lift_type="Pushup", lift_type_source="auto",
+                lift_type_confidence=0.83)
+    base.update(kw)
+    return SimpleNamespace(**base)
+
+
+@pytest.mark.parametrize("row_kw, needs", [
+    ({}, False),
+    ({"lift_type": "Auto", "lift_type_source": "user", "lift_type_confidence": None}, True),
+    ({"lift_type": "Auto", "processing_status": "processing"}, False),
+    ({"lift_type": "Auto", "processing_status": "failed"}, True),
+])
+def test_lifting_result_carries_lift_type_fields(client, monkeypatch, row_kw, needs):
+    session = MagicMock()
+    session.execute.return_value.fetchone.return_value = _lr_row(**row_kw)
+    monkeypatch.setattr(lifting_routes, "get_db_connection", lambda: session)
+    body = client.get(f"/lifting/result/{ATTEMPT_ID}").get_json()
+    row = _lr_row(**row_kw)
+    assert body["lift_type"] == row.lift_type
+    assert body["lift_type_source"] == row.lift_type_source
+    assert body["lift_type_confidence"] == row.lift_type_confidence
+    assert body["needs_lift_type"] is needs
+
+
+def _detail_row(**kw):
+    base = {"id": ATTEMPT_ID, "participant_id": USER_ID, "competition_id": COMP_ID,
+            "participant_name": "alice", "lift_type": "Auto", "weight": 0, "status": "completed",
+            "video_url": "https://x/v.mp4", "lift_type_source": "user",
+            "lift_type_confidence": None, "analysis_status": None}
+    base.update(kw)
+    row = MagicMock()
+    row._mapping = base
+    return row
+
+
+@pytest.mark.parametrize("row_kw, needs", [
+    ({}, True),
+    ({"analysis_status": "queued"}, False),
+    ({"lift_type": "Situp", "lift_type_source": "auto", "lift_type_confidence": 0.5,
+      "analysis_status": "completed"}, False),
+])
+def test_attempt_details_carry_lift_type_fields(client, monkeypatch, row_kw, needs):
+    session = MagicMock()
+    session.execute.return_value.fetchone.return_value = _detail_row(**row_kw)
+    monkeypatch.setattr(competition_routes, "get_db_connection", lambda: session)
+    body = client.get(f"/competitions/{COMP_ID}/participants/{USER_ID}/attempts/{ATTEMPT_ID}").get_json()
+    expected = {**_detail_row()._mapping, **row_kw}
+    assert body["lift_type_source"] == expected["lift_type_source"]
+    assert body["lift_type_confidence"] == expected["lift_type_confidence"]
+    assert body["needs_lift_type"] is needs
+    assert "analysis_status" not in body
+    assert 'LEFT JOIN "LiftingResult"' in str(session.execute.call_args[0][0])
+
+
+# --------------------------------------------------------------------------- #
+# POST /attempts/<id>/lift-type
+# --------------------------------------------------------------------------- #
+
+def _owner_row(**kw):
+    base = dict(id=ATTEMPT_ID, lift_type="Pushup", weight_kg=0, video_url="https://x/v.mp4",
+                user_id=USER_ID, competition_id=COMP_ID, description=CLUB_DESC,
+                processing_status="completed")
+    base.update(kw)
+    return SimpleNamespace(**base)
+
+
+def _change_session(row, lr=None):
+    """lr: the (id, processing_status) the shared re-queue helper sees."""
+    if lr is None and row is not None and row.processing_status is not None:
+        lr = SimpleNamespace(id=RESULT_ID, processing_status=row.processing_status)
+
+    def lookup(r):
+        r.fetchone.return_value = row
+
+    def existing(r):
+        r.fetchone.return_value = lr
+    return _dispatch_session([('JOIN "Competition"', lookup),
+                              ('SELECT id, processing_status FROM "LiftingResult"', existing)])
+
+
+@pytest.fixture
+def enqueued(monkeypatch):
+    calls = []
+    monkeypatch.setattr(lifting_routes, "enqueue_analysis_job", lambda kind, rid: calls.append((kind, rid)))
+    return calls
+
+
+def _change(client, monkeypatch, session, lift_type="Situp", user_id=USER_ID, attempt_id=ATTEMPT_ID):
+    _use(monkeypatch, session)
+    body = {"lift_type": lift_type}
+    if user_id is not None:
+        body["user_id"] = user_id
+    return client.post(f"/attempts/{attempt_id}/lift-type", json=body)
+
+
+def test_change_404_on_unknown_attempt(client, monkeypatch, enqueued):
+    assert _change(client, monkeypatch, _change_session(None)).status_code == 404
+    assert _change(client, monkeypatch, _change_session(None), attempt_id="not-a-uuid").status_code == 404
+    assert enqueued == []
+
+
+@pytest.mark.parametrize("user_id", [OTHER_ID, None, ""])
+def test_change_403_unless_owner(client, monkeypatch, enqueued, user_id):
+    session = _change_session(_owner_row())
+    resp = _change(client, monkeypatch, session, user_id=user_id)
+    assert resp.status_code == 403
+    assert _writes(session, 'UPDATE "Attempt"') == []
+    assert enqueued == []
+
+
+@pytest.mark.parametrize("lift_type", ["Deadlift", "Auto", "auto", "", None, "Bowling"])
+def test_change_400_unless_a_competition_lift_type(client, monkeypatch, enqueued, lift_type):
+    session = _change_session(_owner_row())
+    resp = _change(client, monkeypatch, session, lift_type=lift_type)
+    assert resp.status_code == 400
+    assert _writes(session, 'UPDATE "Attempt"') == []
+    assert enqueued == []
+
+
+@pytest.mark.parametrize("status", ["queued", "processing"])
+def test_change_409_while_analysis_runs(client, monkeypatch, enqueued, status):
+    session = _change_session(_owner_row(processing_status=status))
+    resp = _change(client, monkeypatch, session)
+    assert resp.status_code == 409
+    assert _writes(session, 'UPDATE "Attempt"') == []
+    assert enqueued == []
+
+
+def test_change_same_type_completed_is_unchanged_and_not_requeued(client, monkeypatch, enqueued):
+    session = _change_session(_owner_row(lift_type="Pushup"))
+    resp = _change(client, monkeypatch, session, lift_type="pushup")
+    assert resp.status_code == 200
+    assert resp.get_json() == {"attempt_id": ATTEMPT_ID, "lift_type": "Pushup", "status": "unchanged"}
+    sqls = _sqls(session, 'UPDATE "Attempt"')
+    assert len(sqls) == 1 and "lift_type_source = 'user'" in sqls[0]
+    assert "lift_type_confidence = NULL" in sqls[0]
+    assert _sqls(session, 'UPDATE "LiftingResult"') == []
+    assert _sqls(session, 'INSERT INTO "LiftingResult"') == []
+    assert enqueued == []
+    session.commit.assert_called()
+
+
+def test_change_requeues_through_the_shared_analyze_path(client, monkeypatch, enqueued):
+    competition_routes._champions_cache.update(at=1e12, data=[{"stale": True}])
+    session = _change_session(_owner_row(lift_type="Pushup", weight_kg=60))
+    resp = _change(client, monkeypatch, session, lift_type="Situp")
+    assert resp.status_code == 200, resp.get_json()
+    assert resp.get_json() == {"attempt_id": ATTEMPT_ID, "lift_type": "Situp", "status": "queued"}
+
+    (sql,) = _sqls(session, 'UPDATE "Attempt"')
+    (params,) = _writes(session, 'UPDATE "Attempt"')
+    assert "lift_type_source = 'user'" in sql and "lift_type_confidence = NULL" in sql
+    assert params["lift_type"] == "Situp"
+    assert params["weight_kg"] == 0
+    assert params["status"] == "pending"
+
+    (reset,) = _sqls(session, 'UPDATE "LiftingResult"')
+    assert "processing_status = 'queued'" in reset and "report = NULL" in reset
+    assert enqueued == [("lifting", RESULT_ID)]
+    assert competition_routes._champions_cache["data"] is None
+    session.commit.assert_called()
+
+
+def test_change_from_auto_creates_a_result_when_none_exists(client, monkeypatch, enqueued):
+    session = _change_session(_owner_row(lift_type="Auto", processing_status=None), lr=None)
+    resp = _change(client, monkeypatch, session, lift_type="Plank")
+    assert resp.status_code == 200
+    assert resp.get_json()["status"] == "queued"
+    assert len(_sqls(session, 'INSERT INTO "LiftingResult"')) == 1
+    assert len(enqueued) == 1
+
+
+def test_change_same_type_after_failed_analysis_requeues(client, monkeypatch, enqueued):
+    session = _change_session(_owner_row(lift_type="Situp", processing_status="failed"))
+    resp = _change(client, monkeypatch, session, lift_type="Situp")
+    assert resp.status_code == 200
+    assert resp.get_json()["status"] == "queued"
+    assert enqueued == [("lifting", RESULT_ID)]
+
+
+def test_analyze_route_still_uses_the_same_helper(client, monkeypatch, enqueued):
+    session = _dispatch_session([
+        ('FROM "Attempt" WHERE id', lambda r: setattr(r.fetchone, "return_value",
+                                                      SimpleNamespace(id=ATTEMPT_ID, video_url="v"))),
+        ('SELECT id, processing_status FROM "LiftingResult"',
+         lambda r: setattr(r.fetchone, "return_value",
+                           SimpleNamespace(id=RESULT_ID, processing_status="completed"))),
+    ])
+    _use(monkeypatch, session)
+    resp = client.post(f"/lifting/analyze/{ATTEMPT_ID}")
+    assert resp.status_code == 200
+    assert resp.get_json() == {"lifting_result_id": RESULT_ID, "status": "queued",
+                               "message": "Re-queued for analysis"}
+    assert enqueued == [("lifting", RESULT_ID)]
+    assert len(_sqls(session, 'UPDATE "LiftingResult"')) == 1
 
 
 # --------------------------------------------------------------------------- #
