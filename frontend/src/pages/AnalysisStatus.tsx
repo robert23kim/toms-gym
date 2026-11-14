@@ -388,7 +388,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                           <span className="font-semibold text-foreground">{leader.name || "Someone"}</span>
                           {" leads at "}
                           <span className="font-semibold text-foreground">{formatWithUnit(leader.score, board.metric)}</span>
-                          {` · ${board.rows.length} on the board`}
+                          {` · ${board.rows.length} ${board.rows.length === 1 ? "athlete" : "athletes"} on the board`}
                         </>
                       ) : (
                         "Nobody on the board yet — you're first in."

@@ -132,7 +132,7 @@ describe("AnalysisStatus", () => {
 
     expect(await screen.findByText("rob")).toBeInTheDocument();
     expect(screen.getByText("39 reps")).toBeInTheDocument();
-    expect(screen.getByText(/3 on the board/)).toBeInTheDocument();
+    expect(screen.getByText(/3 athletes on the board/)).toBeInTheDocument();
   });
 
   it("sends Upload Another on a challenge result back to that board's form, not the generic upload page", async () => {
