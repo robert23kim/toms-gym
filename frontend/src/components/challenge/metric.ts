@@ -57,7 +57,7 @@ export function scoringNote(
 const CLUB_COUNTED_TYPES = ["Situp", "Pushup", "Squat", "Plank"];
 
 export const typeBonusClause = (bonus: number): string =>
-  `+${bonus} extra for each lift type where nobody logs more than you that week`;
+  `+${bonus} extra for each lift type you log the most of that week, ties included`;
 
 const CONSISTENCY_DEFAULTS = {
   base_quota: 100,
