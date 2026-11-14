@@ -14,6 +14,8 @@ import { deriveStanding, personalBest, attemptScore, standingShareText } from '.
 import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
 import ConsistencyResult, { consistencyShareText } from '../components/challenge/ConsistencyResult';
+import LiftTypeLine from '../components/challenge/LiftTypeLine';
+import { isAutoLiftType, pickLiftTypeFields, type LiftTypeFields } from '../lib/autoLiftType';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription, metricAppliesToLift } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
@@ -34,7 +36,7 @@ function usesSetSummary(liftType: string | undefined | null): boolean {
   return key === 'pushup' || key === 'situp';
 }
 
-interface VideoData {
+interface VideoData extends LiftTypeFields {
   id: number;
   participant_id: number;
   competition_id: number;
@@ -308,6 +310,14 @@ const VideoPlayer: React.FC = () => {
     return () => clearInterval(interval);
   }, [isAnalyzing, liftingResult?.processing_status, videoId]);
 
+  const handleLiftTypeRequeued = (liftType: string) => {
+    const settled = { lift_type: liftType, lift_type_source: 'user' as const, lift_type_confidence: null, needs_lift_type: false };
+    setVideoData((v) => (v ? { ...v, ...settled } : v));
+    setLiftingResult((r) => (r ? { ...r, ...settled, processing_status: 'queued', report: undefined, annotated_video_url: undefined } : r));
+    setVideoTab('original');
+    setIsAnalyzing(true);
+  };
+
   const handleAnalyzeForm = async () => {
     if (!videoId) return;
     setLiftingResult(null);
@@ -401,6 +411,7 @@ const VideoPlayer: React.FC = () => {
   }
 
   const liftReport = liftingResult?.report;
+  const liftLine = pickLiftTypeFields(liftingResult, videoData);
   const hasPassingGrade = liftReport && ['A', 'B', 'C', 'D'].includes(liftReport.overall_grade);
   const hasFailingGrade = liftReport && liftReport.overall_grade === 'F' && liftReport.total_reps > 0;
   const badge = hasPassingGrade || hasFailingGrade || analysisDone ? null : statusBadge(videoData.status);
@@ -423,7 +434,7 @@ const VideoPlayer: React.FC = () => {
           </Link>
 
           {(() => {
-            const hasAnalysis = liftingResult?.processing_status === 'completed' && liftingResult.report;
+            const hasAnalysis = liftingResult?.processing_status === 'completed' && liftingResult.report && !isAutoLiftType(liftingResult.report.lift_type);
             const hasAnnotatedVideo = hasAnalysis && liftingResult?.annotated_video_url;
             const report = liftingResult?.report;
 
@@ -539,7 +550,7 @@ const VideoPlayer: React.FC = () => {
                           >
                             {videoData.participant_name}
                           </Link>
-                          's {videoData.lift_type}
+                          's {isAutoLiftType(videoData.lift_type) ? 'lift' : videoData.lift_type}
                         </h1>
                         <button
                           onClick={handleShare}
@@ -551,6 +562,21 @@ const VideoPlayer: React.FC = () => {
                           {isCreatingShortLink ? 'Creating...' : 'Share'}
                         </button>
                       </div>
+                      {liftLine.present && videoId && !isAnalyzing && liftingResult?.processing_status !== 'queued' && liftingResult?.processing_status !== 'processing' && (board?.lift_types?.length ?? 0) >= 2 && (
+                        <div className="-mt-1 mb-2">
+                          <LiftTypeLine
+                            attemptId={videoId}
+                            viewerId={getUserId()}
+                            isOwner={isOwner}
+                            candidates={board!.lift_types}
+                            liftType={liftLine.liftType}
+                            source={liftLine.source}
+                            confidence={liftLine.confidence}
+                            needsLiftType={liftLine.needsLiftType}
+                            onRequeued={handleLiftTypeRequeued}
+                          />
+                        </div>
+                      )}
                       <div className="flex items-center gap-3 text-muted-foreground">
                         {!isBodyweightLift(videoData.lift_type) && videoData.weight ? (
                           <span className="font-medium text-foreground">{videoData.weight} lbs</span>

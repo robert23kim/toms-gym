@@ -149,3 +149,13 @@ describe("consistencyShareText", () => {
     ).toBe("I logged 3 warm-up lifts in The 100 Club. Join me:");
   });
 });
+
+describe("ConsistencyResult while the lift type is still Automatic", () => {
+  it("counts nothing and says why instead of banking zero", () => {
+    expect(attemptLifts({ lift_type: "auto" }, consistencyRules)).toBeNull();
+    renderResult(consistencyLeaderboard, "a1", { lift_type: "auto" });
+    const block = screen.getByTestId("consistency-result");
+    expect(block).toHaveTextContent("Not counted until the lift type is set");
+    expect(block).not.toHaveTextContent(/banked/);
+  });
+});

@@ -192,6 +192,10 @@ export interface LiftingResult {
   updated_at?: string;
   /** Upload time of the attempt itself (ISO, with offset). */
   attempt_created_at?: string | null;
+  lift_type?: string | null;
+  lift_type_source?: "user" | "auto" | null;
+  lift_type_confidence?: number | null;
+  needs_lift_type?: boolean | null;
 }
 
 export type CompetitionStatus = 'upcoming' | 'ongoing' | 'completed';

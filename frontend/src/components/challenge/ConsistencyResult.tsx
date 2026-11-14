@@ -17,6 +17,7 @@ export function attemptLifts(
 ): number | null {
   if (!report) return null;
   const type = (report.lift_type || "").trim().toLowerCase();
+  if (type === "auto") return null;
   if (type === "plank") {
     const held = report.total_in_plank_s;
     if (held == null) return null;
@@ -108,7 +109,9 @@ const ConsistencyResult: React.FC<Props> = ({
   const thisWeek = row?.this_week;
 
   let headline: string;
-  if (block.status === "upcoming") {
+  if (attemptLifts(report, block.rules) === null && (report?.lift_type || "").trim().toLowerCase() === "auto") {
+    headline = "Not counted until the lift type is set";
+  } else if (block.status === "upcoming") {
     headline = `+${plural(lifts, "warm-up lift")} · scoring starts ${startDayLabel(block.rules.week_start)}`;
   } else if (warmup) {
     headline = `+${plural(lifts, "warm-up lift")} · not scored`;

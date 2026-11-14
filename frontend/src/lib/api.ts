@@ -395,6 +395,18 @@ export async function triggerLiftingAnalysis(attemptId: string): Promise<{ lifti
   return response.data;
 }
 
+export interface LiftTypeChange {
+  attempt_id: string;
+  lift_type: string;
+  status: "queued" | "unchanged";
+}
+
+/** Owner sets the lift type; re-queues analysis unless nothing changed. */
+export async function changeLiftType(attemptId: string, liftType: string, userId: string): Promise<LiftTypeChange> {
+  const response = await axios.post(`${API_URL}/attempts/${attemptId}/lift-type`, { lift_type: liftType, user_id: userId });
+  return response.data;
+}
+
 export async function getLiftingResult(attemptId: string): Promise<LiftingResult> {
   const response = await axios.get(`${API_URL}/lifting/result/${attemptId}`);
   return response.data;

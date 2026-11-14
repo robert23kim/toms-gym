@@ -12,6 +12,8 @@ import ResultLadder from "../components/challenge/ResultLadder";
 import ConsistencyResult from "../components/challenge/ConsistencyResult";
 import { cleanRepCount, isQualityScoredLift } from "../lib/cleanReps";
 import { getUserId } from "../lib/identity";
+import LiftTypeLine from "../components/challenge/LiftTypeLine";
+import { isAutoLiftType, pickLiftTypeFields, type LiftTypeFields } from "../lib/autoLiftType";
 
 // T8 — Post-upload status page. Survives reload via its URL (attemptId is in the
 // path) and polls the existing per-attempt result endpoints. Covers LIFTING and
@@ -21,7 +23,7 @@ type AnalysisKind = "lifting" | "bowling";
 
 type ProcessingStatus = "queued" | "processing" | "completed" | "failed";
 
-interface StatusResult {
+interface StatusResult extends LiftTypeFields {
   processing_status: ProcessingStatus;
   error_message?: string | null;
   user_id?: string | null;
@@ -139,8 +141,40 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
 
   const leader = board?.rows[0] && board.rows[0].score > 0 ? board.rows[0] : null;
 
+  const liftLine = pickLiftTypeFields(result);
+  const candidates = board?.lift_types ?? [];
+  const viewerOwns = !!userId && !!result?.user_id && String(userId) === String(result.user_id);
+  const restartPolling = () => {
+    startedAtRef.current = Date.now();
+    setElapsedS(0);
+    if (!pollRef.current) pollRef.current = setInterval(poll, POLL_INTERVAL_MS);
+  };
+  const handleLiftTypeRequeued = (liftType: string) => {
+    setResult((r) =>
+      r
+        ? { ...r, processing_status: "queued", report: null, lift_type: liftType, lift_type_source: "user", lift_type_confidence: null, needs_lift_type: false }
+        : r,
+    );
+    restartPolling();
+  };
+  const renderLiftLine = () =>
+    kind === "lifting" && liftLine.present && attemptId && candidates.length >= 2 ? (
+      <LiftTypeLine
+        attemptId={attemptId}
+        viewerId={userId}
+        isOwner={viewerOwns}
+        candidates={candidates}
+        liftType={liftLine.liftType}
+        source={liftLine.source}
+        confidence={liftLine.confidence}
+        needsLiftType={liftLine.needsLiftType}
+        onRequeued={handleLiftTypeRequeued}
+        className="justify-center"
+      />
+    ) : null;
+
   const renderReveal = () => {
-    if (kind !== "lifting" || !result?.report) return null;
+    if (kind !== "lifting" || !result?.report || isAutoLiftType(result.report.lift_type)) return null;
     const club = board?.metric === "consistency" ? board : null;
     const liftMetric = metricForLift(result.report.lift_type);
     const metric = club ? (liftMetric === "time" ? "time" : "reps") : board?.metric ?? liftMetric;
@@ -181,6 +215,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
               {clean} clean of {total} · sloppy reps count half
             </p>
           )}
+          {renderLiftLine()}
         </motion.div>
         {club && (
           <motion.div
@@ -268,6 +303,7 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                       <p className="text-muted-foreground mb-6">
                         Your results are ready to view.
                       </p>
+                      {renderLiftLine() && <div className="-mt-4 mb-6">{renderLiftLine()}</div>}
                     </>
                   )}
                   <div className="flex flex-col gap-3">

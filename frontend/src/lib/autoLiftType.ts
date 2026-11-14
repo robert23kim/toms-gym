@@ -57,3 +57,33 @@ export function liftTypeQuestion(t: string): string {
   const k = t.trim().toLowerCase();
   return SINGULAR[k] ?? `a ${k}`;
 }
+
+export interface LiftTypeFields {
+  lift_type?: string | null;
+  lift_type_source?: string | null;
+  lift_type_confidence?: number | null;
+  needs_lift_type?: boolean | null;
+}
+
+export interface LiftTypeState {
+  /** The backend reports the source, so it supports changing the type. */
+  present: boolean;
+  liftType: string | null;
+  source: "user" | "auto" | null;
+  confidence: number | null;
+  needsLiftType: boolean;
+}
+
+/** First payload that carries the fields wins (lifting result, then the attempt). */
+export function pickLiftTypeFields(...sources: (LiftTypeFields | null | undefined)[]): LiftTypeState {
+  const withSource = sources.find((s) => s && (s.lift_type_source === "user" || s.lift_type_source === "auto"));
+  const liftType = sources.map((s) => s?.lift_type).find((t) => !!t) ?? null;
+  if (!withSource) return { present: false, liftType, source: null, confidence: null, needsLiftType: false };
+  return {
+    present: true,
+    liftType: withSource.lift_type || liftType,
+    source: withSource.lift_type_source as "user" | "auto",
+    confidence: typeof withSource.lift_type_confidence === "number" ? withSource.lift_type_confidence : null,
+    needsLiftType: withSource.needs_lift_type === true,
+  };
+}
