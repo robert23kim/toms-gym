@@ -68,7 +68,7 @@ describe("FindProfilePage", () => {
   it("sends someone with no profile back to the board to upload", async () => {
     (axios.get as jest.Mock).mockRejectedValue({ response: { status: 404 } });
     submit(`/find-profile?next=${encodeURIComponent("/challenges/c1")}`);
-    expect(await screen.findByRole("link", { name: /Upload something/i })).toHaveAttribute("href", "/challenges/c1");
+    expect(await screen.findByRole("link", { name: /Upload something/i })).toHaveAttribute("href", "/challenges/c1?upload=1");
   });
 
   it.each(["//evil.example/x", "/\\evil.example", "/\t/evil.example", "/profile/u1", "/challenges/c1/../../x", "https://evil.example"])(

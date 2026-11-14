@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useMemo, useState, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, useSearchParams, Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Dumbbell, Upload } from "lucide-react";
 import VideoCaptureInput from "../components/challenge/VideoCaptureInput";
@@ -638,6 +638,14 @@ const ChallengeDetail: React.FC = () => {
     setShowUpload(true);
     setTimeout(() => uploadRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
   };
+
+  const [searchParams] = useSearchParams();
+  const uploadFromLink = useRef(searchParams.get("upload") === "1");
+  useEffect(() => {
+    if (!challenge || !uploadFromLink.current) return;
+    uploadFromLink.current = false;
+    openUpload();
+  }, [challenge]);
 
   // The viewer's uploads in the week in progress, with lifts from the
   // analysis results the page already fetches for every video.

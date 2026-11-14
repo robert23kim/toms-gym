@@ -62,7 +62,13 @@ const mockGet = axios.get as jest.Mock;
 
 type LiftRow = { id: string; participant_id: string; lift_type: string; created_at: string; video_url: string; status: string };
 
-const setup = (board: ChallengeLeaderboard | null, viewer: string | null | Error, comp: object = competition, lifts: LiftRow[] = []) => {
+const setup = (
+  board: ChallengeLeaderboard | null,
+  viewer: string | null | Error,
+  comp: object = competition,
+  lifts: LiftRow[] = [],
+  path = `/challenges/${ID}`,
+) => {
   (localStorage.getItem as jest.Mock).mockImplementation((key: string) => {
     if (viewer instanceof Error) throw viewer;
     return key === "userId" ? viewer : null;
@@ -78,7 +84,7 @@ const setup = (board: ChallengeLeaderboard | null, viewer: string | null | Error
     return Promise.reject(new Error(`unexpected GET ${url}`));
   });
   return render(
-    <MemoryRouter initialEntries={[`/challenges/${ID}`]}>
+    <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/challenges/:id" element={<ChallengeDetail />} />
       </Routes>
@@ -186,6 +192,18 @@ describe("ChallengeDetail on a 100 Club board", () => {
     await waitFor(() => expect(localStorage.setItem).toHaveBeenCalledWith("userId", "u-new"));
     await waitFor(() => expect(screen.getByTestId("you-row")).toHaveTextContent("Analysing your upload…"));
     expect(screen.queryByTestId("you-row-unknown")).toBeNull();
+  });
+
+  it("opens the upload form when Find Profile sends someone back to upload", async () => {
+    setup(liveClubBoard, null, competition, [], `/challenges/${ID}?upload=1`);
+    expect(await screen.findByText("Lift Type")).toBeInTheDocument();
+    expect(screen.getByTestId("you-row-unknown")).toBeInTheDocument();
+  });
+
+  it("keeps the upload form closed on a plain visit", async () => {
+    setup(liveClubBoard, null);
+    await screen.findByTestId("you-row-unknown");
+    expect(screen.queryByText("Lift Type")).toBeNull();
   });
 
   const submitInlineUpload = async (email: string) => {
