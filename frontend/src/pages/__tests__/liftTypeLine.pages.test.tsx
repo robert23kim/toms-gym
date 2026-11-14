@@ -132,6 +132,7 @@ describe("result line on the challenge video page", () => {
     expect(api.changeLiftType).toHaveBeenCalledWith("v1", "Situp", OWNER);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Ben's Situp$/);
     expect(screen.queryByTestId("consistency-result")).toBeNull();
+    expect(screen.getByText("Pending")).toBeInTheDocument();
   });
 });
 

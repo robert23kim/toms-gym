@@ -312,7 +312,7 @@ const VideoPlayer: React.FC = () => {
 
   const handleLiftTypeRequeued = (liftType: string) => {
     const settled = { lift_type: liftType, lift_type_source: 'user' as const, lift_type_confidence: null, needs_lift_type: false };
-    setVideoData((v) => (v ? { ...v, ...settled } : v));
+    setVideoData((v) => (v ? { ...v, ...settled, status: 'pending' } : v));
     setLiftingResult((r) => (r ? { ...r, ...settled, processing_status: 'queued', report: undefined, annotated_video_url: undefined } : r));
     setVideoTab('original');
     setIsAnalyzing(true);
