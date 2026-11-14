@@ -6,6 +6,14 @@ research. "(unverified)" beside a number means no checker could confirm it. px =
 unit, a gyroscope and accelerometer chip that logs head motion; Gen 1 / Gen 2 = the first and second Ray-Ban Meta
 models.
 
+**Use case changed by the owner, 2026-11-14 (after this plan was written):** the device is not for first-person
+bowling. It is for filming people from the outside so their videos upload to the app. That retires the Meta
+comparison, the pixel gate, the shoot-out and the head-worn pod (stage 0's three Meta checks, stage 1's upload page
+for Meta clips, stages 2, 3 and 4, and decisions 4 and 6; it answers decision 2). What still holds: the device-to-cloud upload design in section 4, the board and camera data in
+[lane-build-electronics.md](lane-build-electronics.md), and print-and-hand-assemble at this quantity. This study did
+not research cameras that sit on a stand (consumer Wi-Fi cameras, USB webcams), and it rejected the cheapest boards
+against a bowling pixel bar that no longer applies.
+
 **Correction, 2026-11-14 (lead session, after the workflow):** the "4 to 13 px" figure is the ball's radius over the
 far part of the lane, not a measurement at the pin row. The requirements file handed to the agents said "at the
 pins"; this file and REQUIREMENTS.md are fixed, while candidates.md and the two verify files still carry the old
