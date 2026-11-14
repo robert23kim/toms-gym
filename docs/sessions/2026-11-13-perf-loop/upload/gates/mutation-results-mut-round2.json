@@ -1,0 +1,86 @@
+[
+ {
+  "id": "T1-phase-start-ignored",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "records each phase's duration and returns the phase's value",
+   "a phase that throws is still timed and the error propagates",
+   "a phase run twice (parallel attempt, then resumable fallback) sums"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "T2-throwing-phase-untimed",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "a phase that throws is still timed and the error propagates"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "T3-untimed-skips-run",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "untimed runs the phase without recording anything"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "T4-zero-ms-not-null",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "is null when the duration is missing or zero"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "T5-net-type-dropped",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "reads the connection when the browser exposes one"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "T6-net-default-not-null",
+  "file": "src/lib/uploadTiming.ts",
+  "killed": true,
+  "failed": [
+   "is all null on browsers without the API (iOS)"
+  ],
+  "suite_fail": [],
+  "total": 10
+ },
+ {
+  "id": "T7-net-hints-not-wired",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "network hints from the browser ride along on the event"
+  ],
+  "suite_fail": [],
+  "total": 9
+ },
+ {
+  "id": "T8-kept-original-mislabelled",
+  "file": "src/lib/resumableUpload.ts",
+  "killed": true,
+  "failed": [
+   "no option (default): a failed hardware encode sends the original and never tries MediaRecorder",
+   "'auto': a failed hardware encode sends the original and never tries MediaRecorder",
+   "'fast-only': a failed hardware encode sends the original and never tries MediaRecorder"
+  ],
+  "suite_fail": [],
+  "total": 6
+ }
+]

@@ -7,7 +7,7 @@ Branch `perf/upload-analysis-2026-11-13`, worktree `/Users/toka/code/toms_gym-pe
 - The part of an upload the backend can see is short: **median 6.65 s** from the signed-URL request to the analysis request being accepted (n=28 real uploads, 14 days). Signing, finalize, the two CORS preflights and the analysis trigger together are about 0.5 to 0.9 s of that. The rest is the PUT.
 - The part the backend cannot see is longer on Android. Every Android upload was compressed on the phone first, and the encode took **7 to 21 s, about 0.25 s per second of clip** (read off the container timestamps of 5 fixtures, one device). Then the PUT took 1 to 12 s.
 - iPhone uploads are slow because of the link, not the code: **median 5.5 Mbit/s** (0.7 to 12.9) against 45.5 Mbit/s on the Android phone. The files are already tiny (480x360, 0.7 Mbit/s).
-- No cheap change moves the median for these 28 uploads. Two changes are committed: client timing telemetry so the next pass has real-device numbers, and removal of a realtime fallback that cost a full clip length when hit (0 of 28 hit it).
+- Nothing is deployed, and no cheap change moves the median for these 28 uploads. Two changes are committed: client timing telemetry so the next pass has real-device numbers, and removal of a realtime fallback that cost a full clip length when hit (0 of 28 hit it).
 
 ## 1. Baseline from prod logs (my-python-backend, 2026-10-30 to 2026-11-14)
 
@@ -36,7 +36,7 @@ Control-plane cost per upload (backend request log, n=28):
 | finalize response to `/lifting/analyze` arriving | 0.12 s | 0.19 s | 0.24 s |
 | `/lifting/analyze` server time | 0.18 s | 0.55 s | 0.69 s |
 
-Client telemetry in the same window (303 `FRONTEND_ERROR` lines): boot 172 (157 web, 15 capacitor), resource-error 107 (avatar SVG loads), window-error 20, render-error 4. **`upload-died`: 0. `video-upload` (reportUploadError): 0.** The filter matched every `FRONTEND_ERROR` line, so those zeros are real for reports that reached the backend; a report that never got sent is invisible.
+Client telemetry in the same window (303 `FRONTEND_ERROR` lines): boot 172 (157 web, 15 capacitor), resource-error 107 (avatar SVG loads), window-error 20, render-error 4. **`upload-died`: 0. `video-upload` (reportUploadError): 0.** The filter matched every `FRONTEND_ERROR` line, and the request log shows 303 `POST /log-error` against 303 logged lines, so no report was dropped by the 2 KB body cap. Those zeros are real for reports that reached the backend; a report that never got sent is invisible.
 
 ### What the logs cannot see
 
@@ -100,20 +100,25 @@ The synthetic 1080p rows are the canary that the encoder works in this browser. 
 
 ## 4. What changed
 
-Two commits, frontend only.
+Three code commits, frontend only.
 
 **`4af22d5 feat(upload): report client upload timing through the telemetry route`**
-Each successful upload sends one `upload-timing` event through `/log-error` (logged as `FRONTEND_ERROR page=upload action=upload-timing`). It is emitted once inside `uploadVideo`, so all three callers are covered without touching them. Fields: `liftType`, `mode`, `compress` (`skipped:<reason>`, `kept-original`, `webcodecs`, `mediarecorder`), `path` (`single-put`, `parallel`, `resumable`, `resumable-fallback`), `srcBytes`, `sentBytes`, `srcType`, `sentType`, `compressMs`, `signMs`, `putMs`, `completeMs`, `finalizeMs`, `transferMs`, `totalMs`, `putMbps`, `hiddenCount` (times the page went to the background), `netType`, `netEffective`, `netDownMbps`. No file name. `reportError` now caps `userAgent` and `url` at 300 characters, because `/log-error` drops any body over 2 KB without logging it. New file `frontend/src/lib/uploadTiming.ts`; an optional timer argument is threaded through `upload.ts`, `parallelUpload.ts` and `uploadVideoResumable`.
+Each successful upload sends one `upload-timing` event through `/log-error` (logged as `FRONTEND_ERROR page=upload action=upload-timing`). It is emitted once inside `uploadVideo`, so all three callers are covered without touching them. Fields: `liftType`, `mode`, `compress` (`skipped:<reason>`, `kept-original`, `webcodecs`), `path` (`single-put`, `parallel`, `resumable`, `resumable-fallback`), `srcBytes`, `sentBytes`, `srcType`, `sentType`, `compressMs`, `signMs`, `putMs`, `completeMs`, `finalizeMs`, `transferMs`, `totalMs`, `putMbps`, `hiddenCount` (times the page went to the background), `netType`, `netEffective`, `netDownMbps`. No file name. `reportError` now caps `userAgent` and `url` at 300 characters, because `/log-error` drops any body over 2 KB without logging it. New file `frontend/src/lib/uploadTiming.ts`; an optional timer argument is threaded through `upload.ts`, `parallelUpload.ts` and `uploadVideoResumable`.
 
 **`962dd5b perf(upload): never run the realtime MediaRecorder fallback before an upload`**
-`uploadVideo` defaults to `fast-only` and treats `auto` as the same thing. Effect on the 28 observed uploads: none (all 14 Android encodes succeeded in WebCodecs, iOS is not compressed). Effect when hit: one clip length less waiting (92.7 s to 6.2 s on the laptop for the 86 s clip), and a canvas re-recording can no longer stand in for the athlete's video. It does not change which files WebCodecs compresses or what it produces, so rep counts, the clean/sloppy split and plank hold time are untouched for every clip that uploads today.
+`uploadVideo` defaults to `fast-only` and treats `auto` as the same thing. Effect on the 28 observed uploads: none (all 14 Android encodes succeeded in WebCodecs, iOS is not compressed). Effect when hit: one clip length less waiting (92.7 s to 6.2 s on the laptop for the 86 s clip), and a canvas re-recording can no longer stand in for the athlete's video. It does not change which files WebCodecs compresses or what it produces, so rep counts, the clean/sloppy split and plank hold time are untouched for every clip that uploads today. No engine comparison was run, because no fixture's uploaded bytes change.
+
+The loss case is not measured: every `auto` row in the harness kept the original, so it only shows the win. If WebCodecs throws on a large source that MediaRecorder could have shrunk, the upload is now the full original, up to 200 MiB, through the parallel path.
+
+**`c03c28b refactor(upload): drop the pipeline callback that fast-only made unreachable`**
+With MediaRecorder out of the upload path, a compressed file is always the WebCodecs output, so the callback added to `videoCompress.ts` in the first commit had nothing to report. `videoCompress.ts` is byte-identical to base again. Adds the network-hints wiring test.
 
 ### Checks
 
-- jest, full suite, `--coverage=false --maxWorkers=4`: 113 suites, 810 tests, all pass (24 tests are new, in `uploadTiming.test.ts`, `uploadVideoTiming.test.ts`, `uploadVideoCompression.test.ts`).
-- Mutation checks: 16 of 16 mutants killed (12 telemetry, 4 fast-only), each mutation re-read from disk and restored from memory. Specs and results in `upload/gates/`.
-- `tsc --noEmit -p tsconfig.app.json`: 49 error lines, the identical set on a clean export of base `b5792eb` and on HEAD; none in the new files. A planted type error in `uploadTiming.ts` was caught. Bare `npx tsc --noEmit` uses a root tsconfig with `files: []` and checks nothing, which is why `-p` was used.
-- Real browser: `uploadVideo` itself ran in headless Chrome against a local fake backend (`upload/harness/entry2.ts`, `run2.mjs`, results `upload/upload-harness-after.json`). Five cases covered single PUT, WebCodecs compression, kept-original under `auto`, and the 4-part parallel path. Each sent one event by `sendBeacon` as `text/plain`, 624 to 635 bytes, with no request leaving localhost and no MediaRecorder start.
+- jest, full suite, `--coverage=false --maxWorkers=4`: 113 suites, 811 tests, all pass (25 tests are new, in `uploadTiming.test.ts`, `uploadVideoTiming.test.ts`, `uploadVideoCompression.test.ts`).
+- Mutation checks: 24 of 24 mutants killed (12 telemetry, 4 fast-only, 8 in a second round), each mutation re-read from disk and restored from memory. Every new test has been seen failing except the one-line sanity check that the WebCodecs stubs are in place. Specs and results in `upload/gates/`.
+- `tsc --noEmit -p tsconfig.app.json`: 49 error lines, byte-identical output on a clean export of base `b5792eb` and on HEAD; none in the new files. A planted type error in `uploadTiming.ts` was caught. Bare `npx tsc --noEmit` uses a root tsconfig with `files: []` and checks nothing, which is why `-p` was used.
+- Real browser: `uploadVideo` itself ran in headless Chrome against a local fake backend (`upload/harness/entry2.ts`, `run2.mjs`, results `upload/upload-harness-after.json`). Five cases covered single PUT, WebCodecs compression, kept-original under `auto`, and the 4-part parallel path, rerun on the final code. Each sent one event by `sendBeacon` as `text/plain`, 623 to 634 bytes, with no request leaving localhost and no MediaRecorder start.
 - Backend gate (`tools/run_ci_tests.sh`): not run, no backend file changed.
 - Not checked: a phone, iOS Safari, the APK, or the event landing in prod logs. The receiving route is the one boot pings already use.
 
@@ -135,3 +140,4 @@ Each successful upload sends one `upload-timing` event through `/log-error` (log
 - Query: `textPayload:"action=upload-timing"` on `my-python-backend`. `details=` is a Python dict repr (single quotes, `None`), so parse it with `ast.literal_eval`.
 - Questions the data answers: `compressMs` against `(srcBytes - sentBytes) * 8 / putMbps` per device (does compression pay), `putMbps` on iOS with `hiddenCount` (link or backgrounding), and how often `compress` is `kept-original`.
 - These events are logged at WARNING under the `FRONTEND_ERROR` prefix, like boot pings. Anything counting that prefix will count them.
+- `frontend/node_modules` in this worktree is a symlink to the main checkout's (git-ignored, left in place for whoever integrates).

@@ -2,7 +2,7 @@
  {
   "label": "U1 already-720p plank fixture 27.3MB, lift Situp, compression auto (what ChallengeDetail passes)",
   "chrome": "157.0.8103.51",
-  "wallMs": 6887,
+  "wallMs": 6850,
   "attempt": "perf-bench-local-attempt",
   "mediaRecorderStarts": 0,
   "puts": [
@@ -14,7 +14,7 @@
   "requestsOutsideLocalhost": [],
   "telemetry": [
    {
-    "bytes": 632,
+    "bytes": 631,
     "contentType": "text/plain",
     "body": {
      "page": "upload",
@@ -23,7 +23,7 @@
      "details": {
       "netType": null,
       "netEffective": "4g",
-      "netDownMbps": 1.5,
+      "netDownMbps": 1.6,
       "liftType": "Situp",
       "mode": "auto",
       "compress": "kept-original",
@@ -32,14 +32,14 @@
       "sentBytes": 27290628,
       "srcType": "video/mp4",
       "sentType": "video/mp4",
-      "compressMs": 6826,
-      "signMs": 11,
-      "putMs": 47,
+      "compressMs": 6794,
+      "signMs": 6,
+      "putMs": 46,
       "completeMs": null,
-      "finalizeMs": 2,
-      "transferMs": 60,
-      "totalMs": 6886,
-      "putMbps": 4645.21,
+      "finalizeMs": 1,
+      "transferMs": 53,
+      "totalMs": 6847,
+      "putMbps": 4787.83,
       "hiddenCount": 0
      },
      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
@@ -53,7 +53,7 @@
  {
   "label": "U2 synth 1080p/17Mbps pushup 59.7MB, compression auto",
   "chrome": "157.0.8103.51",
-  "wallMs": 2515,
+  "wallMs": 2436,
   "attempt": "perf-bench-local-attempt",
   "mediaRecorderStarts": 0,
   "puts": [
@@ -65,7 +65,7 @@
   "requestsOutsideLocalhost": [],
   "telemetry": [
    {
-    "bytes": 627,
+    "bytes": 628,
     "contentType": "text/plain",
     "body": {
      "page": "upload",
@@ -83,14 +83,14 @@
       "sentBytes": 8866236,
       "srcType": "video/mp4",
       "sentType": "video/mp4",
-      "compressMs": 2493,
-      "signMs": 11,
-      "putMs": 9,
+      "compressMs": 2407,
+      "signMs": 12,
+      "putMs": 14,
       "completeMs": null,
       "finalizeMs": 1,
-      "transferMs": 21,
-      "totalMs": 2514,
-      "putMbps": 8344.69,
+      "transferMs": 28,
+      "totalMs": 2435,
+      "putMbps": 4925.69,
       "hiddenCount": 0
      },
      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
@@ -104,7 +104,7 @@
  {
   "label": "U3 pushup fixture 9.2MB, no option",
   "chrome": "157.0.8103.51",
-  "wallMs": 16,
+  "wallMs": 32,
   "attempt": "perf-bench-local-attempt",
   "mediaRecorderStarts": 0,
   "puts": [
@@ -116,7 +116,7 @@
   "requestsOutsideLocalhost": [],
   "telemetry": [
    {
-    "bytes": 630,
+    "bytes": 631,
     "contentType": "text/plain",
     "body": {
      "page": "upload",
@@ -125,7 +125,7 @@
      "details": {
       "netType": null,
       "netEffective": "4g",
-      "netDownMbps": 1.75,
+      "netDownMbps": 1.55,
       "liftType": "Pushup",
       "mode": "fast-only",
       "compress": "skipped:small",
@@ -135,13 +135,13 @@
       "srcType": "video/mp4",
       "sentType": "video/mp4",
       "compressMs": 0,
-      "signMs": 4,
-      "putMs": 9,
+      "signMs": 7,
+      "putMs": 22,
       "completeMs": null,
-      "finalizeMs": 2,
-      "transferMs": 14,
-      "totalMs": 15,
-      "putMbps": 8434.95,
+      "finalizeMs": 1,
+      "transferMs": 31,
+      "totalMs": 31,
+      "putMbps": 3276.08,
       "hiddenCount": 0
      },
      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
@@ -155,7 +155,7 @@
  {
   "label": "U4 synth 1080p/17Mbps plank 185MB, no option",
   "chrome": "157.0.8103.51",
-  "wallMs": 7379,
+  "wallMs": 7277,
   "attempt": "perf-bench-local-attempt",
   "mediaRecorderStarts": 0,
   "puts": [
@@ -167,7 +167,7 @@
   "requestsOutsideLocalhost": [],
   "telemetry": [
    {
-    "bytes": 635,
+    "bytes": 634,
     "contentType": "text/plain",
     "body": {
      "page": "upload",
@@ -176,7 +176,7 @@
      "details": {
       "netType": null,
       "netEffective": "4g",
-      "netDownMbps": 1.65,
+      "netDownMbps": 1.75,
       "liftType": "Plank",
       "mode": "fast-only",
       "compress": "webcodecs",
@@ -185,14 +185,14 @@
       "sentBytes": 26809203,
       "srcType": "video/mp4",
       "sentType": "video/mp4",
-      "compressMs": 7299,
-      "signMs": 12,
-      "putMs": 66,
+      "compressMs": 7221,
+      "signMs": 9,
+      "putMs": 45,
       "completeMs": null,
       "finalizeMs": 1,
-      "transferMs": 79,
-      "totalMs": 7378,
-      "putMbps": 3259.48,
+      "transferMs": 55,
+      "totalMs": 7277,
+      "putMbps": 4755.51,
       "hiddenCount": 0
      },
      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
@@ -206,7 +206,7 @@
  {
   "label": "U5 synth 1080p/17Mbps pushup 59.7MB, compression off (parallel path)",
   "chrome": "157.0.8103.51",
-  "wallMs": 123,
+  "wallMs": 208,
   "attempt": "perf-bench-local-attempt",
   "mediaRecorderStarts": 0,
   "puts": [
@@ -230,7 +230,7 @@
   "requestsOutsideLocalhost": [],
   "telemetry": [
    {
-    "bytes": 624,
+    "bytes": 623,
     "contentType": "text/plain",
     "body": {
      "page": "upload",
@@ -250,12 +250,12 @@
       "sentType": "video/mp4",
       "compressMs": 0,
       "signMs": 3,
-      "putMs": 103,
-      "completeMs": 2,
-      "finalizeMs": 12,
-      "transferMs": 121,
-      "totalMs": 121,
-      "putMbps": 4625.03,
+      "putMs": 200,
+      "completeMs": 1,
+      "finalizeMs": 2,
+      "transferMs": 207,
+      "totalMs": 207,
+      "putMbps": 2384.13,
       "hiddenCount": 0
      },
      "userAgent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/157.0.0.0 Safari/537.36",
