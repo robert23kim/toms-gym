@@ -124,7 +124,7 @@ Each file holds the full notes that used to live here: design decisions, endpoin
 | Auth history | `docs/reference/auth-key-files.md` | Files touched by the passwordless change. |
 | Owner-only Bowl/Golf, past-challenges fold | `docs/reference/finch-shell.md` (2026-11-07 section) | `useIsOwner` hides bowling and golf surfaces unless the viewer's email is the owner's; `/challenges` folds ended challenges behind a toggle. |
 | The 100 Club (consistency challenge) | `docs/reference/100-club.md` | `mode: "consistency"` metadata; weekly quota 100 (+25 / reset), points = capped lifts + 50 + 25 per type led; admin `?as_of=` preview; prod proof, cleanup recipe, open follow-ups. |
-| Automatic lift type | `docs/reference/auto-lift-type.md` | `Auto` pick on all-bodyweight boards, engine classifier with a rep-count guard, Change + re-analyse, `lib/identity.ts`; switch `AUTO_LIFT_TYPE` is **on** since 2026-11-14; practice board `78167bbc…` with a canary user still exists. |
+| Automatic lift type | `docs/reference/auto-lift-type.md` | `Auto` pick on all-bodyweight boards, engine classifier with a rep-count guard, Change + re-analyse, `lib/identity.ts`; switch `AUTO_LIFT_TYPE` is **on** since 2026-11-14 |
 
 ### Rules that bite without reading the doc
 
