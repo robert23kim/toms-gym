@@ -86,8 +86,9 @@ describe("consistency metric (The 100 Club)", () => {
 
   test("words the type bonus as an extra per type, not a split of the quota", () => {
     const note = scoringNote("consistency", ["Situp", "Pushup", "Squat", "Plank"]);
-    expect(note).toMatch(/ Log more of a lift type than anyone else that week for \+25 extra each, up to \+100; any mix counts toward the quota\.$/);
+    expect(note).toMatch(/ \+25 extra for each lift type where nobody logs more than you that week, up to \+100; any mix counts toward the quota\.$/);
     expect(note).not.toMatch(/Most of a lift type/);
-    expect(scoringNote("consistency", ["Situp", "Pushup"], { type_bonus: 10 })).toMatch(/for \+10 extra each, up to \+20;/);
+    expect(scoringNote("consistency", ["Situp", "Pushup"], { type_bonus: 10 })).toMatch(/\+10 extra for each lift type .* up to \+20;/);
+    expect(scoringNote("consistency", ["Situp", "Pushup", "Bench"], { type_bonus: 10 })).toMatch(/ up to \+20;/);
   });
 });

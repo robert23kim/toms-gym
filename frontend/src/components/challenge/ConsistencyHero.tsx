@@ -1,7 +1,7 @@
 import React, { Fragment, useState } from "react";
 import { Link } from "react-router-dom";
 import type { ChallengeLeaderboardRow, ConsistencyBlock, ConsistencyThisWeek } from "../../lib/types";
-import { formatScoreValue } from "./metric";
+import { formatScoreValue, typeBonusClause } from "./metric";
 import {
   groupUploadsByDay,
   pointsReceipt,
@@ -345,7 +345,7 @@ const ConsistencyHero: React.FC<ConsistencyHeroProps> = ({ block, liftTypes, vie
       )}
       {leaders.length > 0 && (
         <div data-testid="consistency-bonus-note" className="mt-2 text-[11.5px] text-white/50">
-          Each type you log more of than anyone else is +{block.rules.type_bonus} extra, locked in when the week ends on Sunday.
+          {typeBonusClause(block.rules.type_bonus)}, locked in when the week ends on Sunday.
         </div>
       )}
     </div>

@@ -46,11 +46,18 @@ export function scoringNote(
   liftTypes?: string[],
   rules?: Partial<ConsistencyRules>,
 ): string | null {
-  if (metric === "consistency") return consistencyNote(rules, liftTypes?.length ?? 0);
+  if (metric === "consistency")
+    return consistencyNote(rules, liftTypes?.filter((t) => CLUB_COUNTED_TYPES.includes(t)).length ?? 0);
   if (metric !== "reps") return null;
   if (!liftTypes?.some((t) => t.toLowerCase() === "situp")) return null;
   return "Clean reps count in full and sloppy reps count half — a rep is clean when its form grades C or better.";
 }
+
+// Mirrors COUNTED_LIFT_TYPES in backend/toms_gym/services/consistency.py.
+const CLUB_COUNTED_TYPES = ["Situp", "Pushup", "Squat", "Plank"];
+
+export const typeBonusClause = (bonus: number): string =>
+  `+${bonus} extra for each lift type where nobody logs more than you that week`;
 
 const CONSISTENCY_DEFAULTS = {
   base_quota: 100,
@@ -66,6 +73,6 @@ function consistencyNote(rules: Partial<ConsistencyRules> | undefined, typeCount
   return (
     `Every rep is a lift (sloppy situps count half) and every ${r.plank_seconds_per_lift} s of plank is one. ` +
     `Hit the weekly quota for +${r.quota_bonus} and next week's goes up ${r.ramp}; miss it and it resets to ${r.base_quota}. ` +
-    `Log more of a lift type than anyone else that week for +${r.type_bonus} extra each${cap}; any mix counts toward the quota.`
+    `${typeBonusClause(r.type_bonus)}${cap}; any mix counts toward the quota.`
   );
 }
