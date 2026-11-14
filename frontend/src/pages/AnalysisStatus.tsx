@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { useParams, Link, useSearchParams } from "react-router-dom";
+import { useParams, Link, useLocation, useSearchParams } from "react-router-dom";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowLeft, CheckCircle2, Loader2, Mail, XCircle } from "lucide-react";
 import axios from "axios";
@@ -13,7 +13,7 @@ import ConsistencyResult from "../components/challenge/ConsistencyResult";
 import { cleanRepCount, isQualityScoredLift } from "../lib/cleanReps";
 import { getUserId } from "../lib/identity";
 import LiftTypeLine from "../components/challenge/LiftTypeLine";
-import { isAutoLiftType, offersAutomatic, pickLiftTypeFields, type LiftTypeFields } from "../lib/autoLiftType";
+import { autoLiftTypeEnabled, isAutoLiftType, offersAutomatic, pickLiftTypeFields, type LiftTypeFields } from "../lib/autoLiftType";
 
 // T8 — Post-upload status page. Survives reload via its URL (attemptId is in the
 // path) and polls the existing per-attempt result endpoints. Covers LIFTING and
@@ -139,6 +139,18 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
     return () => { cancelled = true; };
   }, [boardId, status]);
 
+  const [autoEnabled, setAutoEnabled] = useState(false);
+  useEffect(() => {
+    if (!boardId) return;
+    let cancelled = false;
+    axios
+      .get(`${API_URL}/competitions/${boardId}`)
+      .then((r) => { if (!cancelled) setAutoEnabled(autoLiftTypeEnabled(r.data)); })
+      .catch(() => {});
+    return () => { cancelled = true; };
+  }, [boardId]);
+  const location = useLocation();
+
   const leader = board?.rows[0] && board.rows[0].score > 0 ? board.rows[0] : null;
 
   const liftLine = pickLiftTypeFields(result);
@@ -157,8 +169,9 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
     );
     restartPolling();
   };
-  const renderLiftLine = () =>
-    kind === "lifting" && liftLine.present && attemptId && !!board && offersAutomatic(true, candidates, board.metric) ? (
+  const uncounted = kind === "lifting" && status === "completed" && isAutoLiftType(liftLine.liftType);
+  const renderLiftLine = (prominent = false) =>
+    kind === "lifting" && liftLine.present && attemptId && !!board && offersAutomatic(autoEnabled, candidates, board.metric) ? (
       <LiftTypeLine
         attemptId={attemptId}
         viewerId={userId}
@@ -169,6 +182,8 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
         confidence={liftLine.confidence}
         needsLiftType={liftLine.needsLiftType}
         onRequeued={handleLiftTypeRequeued}
+        findProfileHref={`/find-profile?next=${encodeURIComponent(location.pathname + location.search)}`}
+        prominent={prominent}
         className="justify-center"
       />
     ) : null;
@@ -296,7 +311,17 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                 </div>
               ) : status === "completed" ? (
                 <div className="text-center">
-                  {renderReveal() ?? (
+                  {uncounted ? (
+                    <>
+                      <h1 className="text-2xl font-bold mb-2">Which lift was this?</h1>
+                      <p className="text-muted-foreground mb-6">
+                        {viewerOwns
+                          ? "We couldn't tell from the video. Pick one and we'll count it."
+                          : "We couldn't tell from the video, so it isn't counted yet."}
+                      </p>
+                      {renderLiftLine(true) && <div className="mb-3">{renderLiftLine(true)}</div>}
+                    </>
+                  ) : renderReveal() ?? (
                     <>
                       <CheckCircle2 className="w-12 h-12 text-green-500 mx-auto mb-4" />
                       <h1 className="text-2xl font-bold mb-2">Analysis complete!</h1>
@@ -310,7 +335,11 @@ const AnalysisStatus: React.FC<AnalysisStatusProps> = ({ kind }) => {
                     {config.resultPath(attemptId ?? "", result) ? (
                       <Link
                         to={config.resultPath(attemptId ?? "", result) as string}
-                        className="w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
+                        className={
+                          uncounted && viewerOwns && autoEnabled
+                            ? "w-full bg-secondary text-secondary-foreground py-2 px-4 rounded-lg hover:bg-secondary/90 text-center"
+                            : "w-full bg-primary text-primary-foreground py-2 px-4 rounded-lg hover:bg-primary/90 text-center"
+                        }
                       >
                         See your result
                       </Link>

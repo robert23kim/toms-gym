@@ -1,6 +1,7 @@
 import React from "react";
 import "@testing-library/jest-dom";
 import { fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import LiftTypeLine from "../LiftTypeLine";
 import { changeLiftType } from "../../../lib/api";
 
@@ -75,11 +76,11 @@ describe("LiftTypeLine", () => {
     fireEvent.click(screen.getByRole("button", { name: "Change" }));
     const sheet = screen.getByRole("dialog", { name: "Change lift type" });
     const options = within(sheet).getAllByRole("radio");
-    expect(options.map((o) => o.textContent)).toEqual(["Situps", "Pushups", "Squats", "Plank"]);
-    expect(within(sheet).getByRole("radio", { name: "Pushups" })).toHaveAttribute("aria-checked", "true");
+    expect(options.map((o) => o.textContent)).toEqual(["Situp", "Pushup", "Squat", "Plank"]);
+    expect(within(sheet).getByRole("radio", { name: "Pushup" })).toHaveAttribute("aria-checked", "true");
     expect(within(sheet).queryByText(/Automatic/)).toBeNull();
-    fireEvent.click(within(sheet).getByRole("radio", { name: "Situps" }));
-    fireEvent.click(within(sheet).getByRole("button", { name: "Re-analyse" }));
+    fireEvent.click(within(sheet).getByRole("radio", { name: "Situp" }));
+    fireEvent.click(within(sheet).getByRole("button", { name: "Re-analyze" }));
     await waitFor(() => expect(onRequeued).toHaveBeenCalledWith("Situp"));
     expect(changeLiftType).toHaveBeenCalledWith("a-1", "Situp", "u-1");
     expect(screen.queryByRole("dialog")).toBeNull();
@@ -90,8 +91,8 @@ describe("LiftTypeLine", () => {
     const onRequeued = jest.fn();
     render(<LiftTypeLine {...base} onRequeued={onRequeued} />);
     fireEvent.click(screen.getByRole("button", { name: "Change" }));
-    fireEvent.click(screen.getByRole("radio", { name: "Squats" }));
-    fireEvent.click(screen.getByRole("button", { name: "Re-analyse" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Squat" }));
+    fireEvent.click(screen.getByRole("button", { name: "Re-analyze" }));
     expect(await screen.findByText("Analysis is already running")).toBeInTheDocument();
     expect(screen.getByRole("dialog")).toBeInTheDocument();
     expect(onRequeued).not.toHaveBeenCalled();
@@ -109,5 +110,73 @@ describe("LiftTypeLine", () => {
       <LiftTypeLine {...base} isOwner={false} liftType="Auto" needsLiftType onRequeued={jest.fn()} />,
     );
     expect(container).toBeEmptyDOMElement();
+  });
+
+  test("a failed Yes says why and keeps the sheet closed", async () => {
+    (changeLiftType as jest.Mock).mockRejectedValue({ response: { status: 500, data: { error: "boom" } } });
+    render(<LiftTypeLine {...base} confidence={0.41} onRequeued={jest.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "Yes" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent("boom");
+    expect(screen.queryByRole("dialog")).toBeNull();
+  });
+
+  test("Re-analyze stays off until the pick differs from the current type", () => {
+    render(<LiftTypeLine {...base} onRequeued={jest.fn()} />);
+    fireEvent.click(screen.getByRole("button", { name: "Change" }));
+    const cta = screen.getByRole("button", { name: "Re-analyze" });
+    expect(cta).toBeDisabled();
+    fireEvent.click(screen.getByRole("radio", { name: "Situp" }));
+    expect(cta).toBeEnabled();
+  });
+
+  test("with no type yet the owner picks the lift and counts it", async () => {
+    (changeLiftType as jest.Mock).mockResolvedValue({ attempt_id: "a-1", lift_type: "Plank", status: "queued" });
+    const onRequeued = jest.fn();
+    render(<LiftTypeLine {...base} liftType="Auto" confidence={0} needsLiftType onRequeued={onRequeued} />);
+    expect(screen.queryByRole("button", { name: "Change" })).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "Pick the lift" }));
+    const sheet = screen.getByRole("dialog", { name: "Which lift is this?" });
+    expect(within(sheet).getByRole("button", { name: "Count it" })).toBeDisabled();
+    fireEvent.click(within(sheet).getByRole("radio", { name: "Plank" }));
+    fireEvent.click(within(sheet).getByRole("button", { name: "Count it" }));
+    await waitFor(() => expect(onRequeued).toHaveBeenCalledWith("Plank"));
+  });
+
+  test("confirm chips are phone-sized and spaced apart", () => {
+    render(<LiftTypeLine {...base} confidence={0.41} onRequeued={jest.fn()} />);
+    for (const name of ["Yes", "Change"]) expect(screen.getByRole("button", { name })).toHaveClass("min-h-9", "px-3");
+    expect(screen.getByRole("button", { name: "Yes" }).parentElement).toHaveClass("gap-2");
+  });
+
+  test.each([
+    ["the type is known", "Pushup"],
+    ["the type is still unknown", "Auto"],
+  ])("a device that remembers nobody is pointed to Find Profile when %s", (_n, liftType) => {
+    render(
+      <MemoryRouter>
+        <LiftTypeLine
+          {...base}
+          viewerId={null}
+          isOwner={false}
+          liftType={liftType}
+          needsLiftType={liftType === "Auto"}
+          findProfileHref="/find-profile?next=%2Fx"
+          onRequeued={jest.fn()}
+        />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole("link", { name: "Yours? Find your profile to change it" })).toHaveAttribute(
+      "href",
+      "/find-profile?next=%2Fx",
+    );
+  });
+
+  test("a known other athlete gets no Find Profile hint", () => {
+    render(
+      <MemoryRouter>
+        <LiftTypeLine {...base} isOwner={false} findProfileHref="/find-profile" onRequeued={jest.fn()} />
+      </MemoryRouter>,
+    );
+    expect(screen.queryByRole("link")).toBeNull();
   });
 });

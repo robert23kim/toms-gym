@@ -110,7 +110,7 @@ const ConsistencyResult: React.FC<Props> = ({
 
   let headline: string;
   if (attemptLifts(report, block.rules) === null && (report?.lift_type || "").trim().toLowerCase() === "auto") {
-    headline = "Not counted until the lift type is set";
+    headline = "Not banked yet";
   } else if (block.status === "upcoming") {
     headline = `+${plural(lifts, "warm-up lift")} · scoring starts ${startDayLabel(block.rules.week_start)}`;
   } else if (warmup) {

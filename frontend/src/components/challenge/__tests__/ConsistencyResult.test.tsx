@@ -155,7 +155,7 @@ describe("ConsistencyResult while the lift type is still Automatic", () => {
     expect(attemptLifts({ lift_type: "auto" }, consistencyRules)).toBeNull();
     renderResult(consistencyLeaderboard, "a1", { lift_type: "auto" });
     const block = screen.getByTestId("consistency-result");
-    expect(block).toHaveTextContent("Not counted until the lift type is set");
-    expect(block).not.toHaveTextContent(/banked/);
+    expect(block).toHaveTextContent("Not banked yet");
+    expect(block).not.toHaveTextContent(/\+\d+ lifts? banked/);
   });
 });

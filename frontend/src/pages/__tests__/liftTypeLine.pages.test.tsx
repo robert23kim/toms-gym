@@ -43,12 +43,12 @@ const result = (over: object = {}) => ({
   ...over,
 });
 
-const routeGets = (res: object, attempt: object = {}) => {
+const routeGets = (res: object, attempt: object = {}, autoEnabled: unknown = true) => {
   (api.getChallengeLeaderboard as jest.Mock).mockResolvedValue(consistencyLeaderboard);
   (api.getLiftingResult as jest.Mock).mockResolvedValue(res);
   (axios.get as jest.Mock).mockImplementation((url: string) => {
     if (url.endsWith(`/competitions/${ID}`))
-      return Promise.resolve({ data: { competition: { id: ID, name: "The 100 Club", start_date: "2026-01-01", end_date: "2099-12-27" } } });
+      return Promise.resolve({ data: { competition: { id: ID, name: "The 100 Club", start_date: "2026-01-01", end_date: "2099-12-27", auto_lift_type_enabled: autoEnabled } } });
     if (url.includes("/attempts/v1"))
       return Promise.resolve({ data: { id: "v1", lift_type: "Pushup", weight: 0, participant_name: "Ben", status: "completed", ...attempt } });
     if (url.includes("/lifting/result/v1")) return Promise.resolve({ data: res });
@@ -126,13 +126,52 @@ describe("result line on the challenge video page", () => {
     (api.changeLiftType as jest.Mock).mockResolvedValue({ attempt_id: "v1", lift_type: "Situp", status: "queued" });
     openVideo();
     fireEvent.click(within(await screen.findByTestId("lift-type-line")).getByRole("button", { name: "Change" }));
-    fireEvent.click(screen.getByRole("radio", { name: "Situps" }));
-    fireEvent.click(screen.getByRole("button", { name: "Re-analyse" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Situp" }));
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Re-analyze" }));
     expect(await screen.findByText("Analyzing your form...")).toBeInTheDocument();
+    expect(screen.getByText(/This usually takes about 2 minutes/)).toBeInTheDocument();
     expect(api.changeLiftType).toHaveBeenCalledWith("v1", "Situp", OWNER);
     expect(screen.getByRole("heading", { level: 1 })).toHaveTextContent(/Ben's Situp$/);
     expect(screen.queryByTestId("consistency-result")).toBeNull();
     expect(screen.getByText("Pending")).toBeInTheDocument();
+  });
+});
+
+describe("with the switch off the result pages are unchanged", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  test.each([
+    ["video page", false, openVideo],
+    ["status page", false, openStatus],
+    ["video page", null, openVideo],
+    ["status page", "true", openStatus],
+  ])("%s shows no line or Change (flag %p)", async (_n, flag, open) => {
+    viewer(OWNER);
+    routeGets(result(), {}, flag);
+    open();
+    await waitFor(() => expect(axios.get).toHaveBeenCalledWith(expect.stringMatching(new RegExp(`/competitions/${ID}$`))));
+    await screen.findAllByText(/Pushup|pushup/i);
+    await new Promise((r) => setTimeout(r, 50));
+    expect(screen.queryByTestId("lift-type-line")).toBeNull();
+    expect(screen.queryByRole("button", { name: "Change" })).toBeNull();
+  });
+});
+
+describe("an attempt still typed Auto on the video page", () => {
+  beforeEach(() => jest.clearAllMocks());
+
+  test("shows no weight, and a device that remembers nobody is pointed to Find Profile", async () => {
+    viewer(null);
+    routeGets(
+      result({ lift_type: "Auto", needs_lift_type: true, lift_type_confidence: 0, report: { lift_type: "auto" } }),
+      { lift_type: "Auto", weight: "0.00" },
+    );
+    openVideo();
+    expect(await screen.findByRole("link", { name: "Yours? Find your profile to change it" })).toHaveAttribute(
+      "href",
+      `/find-profile?next=${encodeURIComponent(`/challenges/${ID}/participants/${OWNER}/video/v1`)}`,
+    );
+    expect(screen.queryByText(/lbs/)).toBeNull();
   });
 });
 
@@ -171,11 +210,25 @@ describe("result line on the status page", () => {
     expect(within(line).queryByRole("button")).toBeNull();
   });
 
-  test("an undetected type asks which lift even with no score to reveal", async () => {
+  test("an undetected type is never framed as a success: it asks which lift, with the pick as the primary action", async () => {
     viewer(OWNER);
     routeGets(result({ lift_type: "Auto", needs_lift_type: true, lift_type_confidence: 0, report: { lift_type: "auto" } }));
     openStatus();
-    expect(await screen.findByTestId("lift-type-line")).toHaveTextContent("Which lift is this?");
+    expect(await screen.findByRole("heading", { name: "Which lift was this?" })).toBeInTheDocument();
+    expect(screen.getByText("We couldn't tell from the video. Pick one and we'll count it.")).toBeInTheDocument();
+    expect(screen.queryByText("Analysis complete!")).toBeNull();
+    expect(await screen.findByRole("button", { name: "Pick the lift" })).toHaveClass("bg-primary");
+    expect(screen.getByRole("link", { name: "See your result" })).toHaveClass("bg-secondary");
+  });
+
+  test("an undetected type on a device that remembers nobody points to Find Profile", async () => {
+    viewer(null);
+    routeGets(result({ lift_type: "Auto", needs_lift_type: true, lift_type_confidence: 0, report: { lift_type: "auto" } }));
+    openStatus();
+    expect(await screen.findByRole("heading", { name: "Which lift was this?" })).toBeInTheDocument();
+    const link = await screen.findByRole("link", { name: "Yours? Find your profile to change it" });
+    expect(link.getAttribute("href")).toBe(`/find-profile?next=${encodeURIComponent(`/status/v1?challenge=${ID}`)}`);
+    expect(screen.queryByText("Analysis complete!")).toBeNull();
   });
 
   test("a confirmed change returns to the queued state", async () => {
@@ -184,8 +237,8 @@ describe("result line on the status page", () => {
     (api.changeLiftType as jest.Mock).mockResolvedValue({ attempt_id: "v1", lift_type: "Squat", status: "queued" });
     openStatus();
     fireEvent.click(within(await screen.findByTestId("lift-type-line")).getByRole("button", { name: "Change" }));
-    fireEvent.click(screen.getByRole("radio", { name: "Squats" }));
-    fireEvent.click(screen.getByRole("button", { name: "Re-analyse" }));
+    fireEvent.click(screen.getByRole("radio", { name: "Squat" }));
+    fireEvent.click(within(screen.getByRole("dialog")).getByRole("button", { name: "Re-analyze" }));
     expect(await screen.findByText("Queued for analysis")).toBeInTheDocument();
     await waitFor(() => expect(screen.queryByTestId("lift-type-line")).toBeNull());
   });

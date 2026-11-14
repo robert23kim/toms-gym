@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import { ArrowLeft, Share2, AlertTriangle } from "lucide-react";
 import axios from "axios";
@@ -15,7 +15,7 @@ import { steadiestYet } from '../lib/steadiest';
 import ResultLadder from '../components/challenge/ResultLadder';
 import ConsistencyResult, { consistencyShareText } from '../components/challenge/ConsistencyResult';
 import LiftTypeLine from '../components/challenge/LiftTypeLine';
-import { isAutoLiftType, offersAutomatic, pickLiftTypeFields, type LiftTypeFields } from '../lib/autoLiftType';
+import { autoLiftTypeEnabled, isAutoLiftType, offersAutomatic, pickLiftTypeFields, type LiftTypeFields } from '../lib/autoLiftType';
 import { getMetricCoaching, getOverallSummary, getMetricLabel, getMetricDescription, metricAppliesToLift } from '../lib/liftCoaching';
 import { summarizeSet, collapseSetInsight } from '../lib/setSummary';
 import { shareResult } from '../lib/share';
@@ -69,6 +69,7 @@ function statusBadge(status: string | undefined): { label: string; className: st
 
 const VideoPlayer: React.FC = () => {
   const { id, participantId, videoId } = useParams<{ id: string; participantId: string; videoId: string }>();
+  const location = useLocation();
   const [videoData, setVideoData] = useState<VideoData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -89,6 +90,7 @@ const VideoPlayer: React.FC = () => {
   const [challengeOpen, setChallengeOpen] = useState(false);
   const [challengeName, setChallengeName] = useState<string | null>(null);
   const [steadiest, setSteadiest] = useState(false);
+  const [autoEnabled, setAutoEnabled] = useState(false);
 
   const analysisDone = liftingResult?.processing_status === 'completed';
   useEffect(() => {
@@ -104,6 +106,7 @@ const VideoPlayer: React.FC = () => {
           setChallengeOpen(determineStatus(c.start_date, c.end_date) === 'ongoing');
         }
         if (!cancelled && c?.name) setChallengeName(c.name);
+        if (!cancelled) setAutoEnabled(autoLiftTypeEnabled(r.data));
       })
       .catch(() => {});
     return () => { cancelled = true; };
@@ -132,7 +135,7 @@ const VideoPlayer: React.FC = () => {
       const lift = videoData?.lift_type || "lift";
       const bits: string[] = [];
       if (report?.total_reps != null) bits.push(`${report.total_reps} rep${report.total_reps !== 1 ? "s" : ""}`);
-      if (videoData?.weight && !isBodyweightLift(lift)) bits.push(`${videoData.weight} lbs`);
+      if (videoData?.weight && !isBodyweightLift(lift) && !isAutoLiftType(lift)) bits.push(`${videoData.weight} lbs`);
       const words = board?.metric === 'consistency' && board.consistency
         ? consistencyShareText({
             board, userId: participantId, report, attemptAt: liftingResult?.attempt_created_at,
@@ -562,7 +565,7 @@ const VideoPlayer: React.FC = () => {
                           {isCreatingShortLink ? 'Creating...' : 'Share'}
                         </button>
                       </div>
-                      {liftLine.present && videoId && !isAnalyzing && liftingResult?.processing_status !== 'queued' && liftingResult?.processing_status !== 'processing' && !!board && offersAutomatic(true, board.lift_types, board.metric) && (
+                      {liftLine.present && videoId && !isAnalyzing && liftingResult?.processing_status !== 'queued' && liftingResult?.processing_status !== 'processing' && !!board && offersAutomatic(autoEnabled, board.lift_types, board.metric) && (
                         <div className="-mt-1 mb-2">
                           <LiftTypeLine
                             attemptId={videoId}
@@ -574,11 +577,12 @@ const VideoPlayer: React.FC = () => {
                             confidence={liftLine.confidence}
                             needsLiftType={liftLine.needsLiftType}
                             onRequeued={handleLiftTypeRequeued}
+                            findProfileHref={`/find-profile?next=${encodeURIComponent(location.pathname)}`}
                           />
                         </div>
                       )}
                       <div className="flex items-center gap-3 text-muted-foreground">
-                        {!isBodyweightLift(videoData.lift_type) && videoData.weight ? (
+                        {!isBodyweightLift(videoData.lift_type) && !isAutoLiftType(videoData.lift_type) && videoData.weight ? (
                           <span className="font-medium text-foreground">{videoData.weight} lbs</span>
                         ) : null}
                         {badge && (
@@ -646,7 +650,7 @@ const VideoPlayer: React.FC = () => {
                           <div className="bg-card rounded-lg shadow-lg p-6 text-center">
                             <div className="animate-spin h-8 w-8 border-[3px] border-blue-500 border-t-transparent rounded-full mx-auto mb-3" />
                             <p className="font-medium">Analyzing your form...</p>
-                            <p className="text-sm text-muted-foreground mt-1">This usually takes 30-60 seconds.</p>
+                            <p className="text-sm text-muted-foreground mt-1">This usually takes about 2 minutes. Longer videos (like planks) can take up to 10 minutes.</p>
                           </div>
                         )}
 

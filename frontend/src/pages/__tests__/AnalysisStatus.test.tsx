@@ -106,9 +106,7 @@ describe("AnalysisStatus", () => {
   });
 
   it("deep-links a completed lift to its result page when the ids are known", async () => {
-    (axios.get as jest.Mock).mockResolvedValue({
-      data: { processing_status: "completed", user_id: "u9", competition_id: "c3" },
-    });
+    routeGet({ processing_status: "completed", user_id: "u9", competition_id: "c3" });
     renderAt("lifting", "a9");
 
     const link = await screen.findByRole("link", { name: /See your result/i });
