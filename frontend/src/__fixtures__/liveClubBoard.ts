@@ -1,6 +1,6 @@
 import type { ChallengeLeaderboard } from "../lib/types";
 
-export const REPORTER_ID = "b7bb417c-9407-42c5-9cee-be7816d03f13";
+export const REPORTER_ID = "00000000-0000-4000-8000-0000000000a1";
 
 export const liveClubBoard: ChallengeLeaderboard = {
   "competition_id": "32ca7bad-a970-4a09-acec-02b768793063",
@@ -42,8 +42,8 @@ export const liveClubBoard: ChallengeLeaderboard = {
       "Squat": [
         {
           "amount": 12,
-          "name": "caleb.li.larson",
-          "user_id": "b7bb417c-9407-42c5-9cee-be7816d03f13"
+          "name": "athlete.one",
+          "user_id": "00000000-0000-4000-8000-0000000000a1"
         }
       ]
     },
@@ -66,10 +66,10 @@ export const liveClubBoard: ChallengeLeaderboard = {
   "rows": [
     {
       "attempt_count": 14,
-      "attempt_id": "3ac564e5-ca93-4b62-b500-5f388ca56813",
+      "attempt_id": "00000000-0000-4000-8000-0000000a7701",
       "best_by_lift": {},
       "best_streak": 2,
-      "clip_url": "https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/3ac564e5-ca93-4b62-b500-5f388ca56813/annotated.mp4",
+      "clip_url": "https://storage.example/lifting/clip-1/annotated.mp4",
       "date": "2026-11-13",
       "form_score": null,
       "gender": "male",
@@ -131,7 +131,7 @@ export const liveClubBoard: ChallengeLeaderboard = {
           "score": 5
         }
       ],
-      "name": "caleb.li.larson",
+      "name": "athlete.one",
       "rank": 1,
       "score": 375,
       "steadiness": null,
@@ -154,7 +154,7 @@ export const liveClubBoard: ChallengeLeaderboard = {
         "quota": 125
       },
       "thumbnail_url": null,
-      "user_id": "b7bb417c-9407-42c5-9cee-be7816d03f13",
+      "user_id": "00000000-0000-4000-8000-0000000000a1",
       "warmup_lifts": 0,
       "weeks": [
         {
@@ -200,10 +200,10 @@ export const liveClubBoard: ChallengeLeaderboard = {
     },
     {
       "attempt_count": 14,
-      "attempt_id": "1dd00e0f-807b-46fb-a47d-9ec637b698d4",
+      "attempt_id": "00000000-0000-4000-8000-0000000a7702",
       "best_by_lift": {},
       "best_streak": 2,
-      "clip_url": "https://storage.googleapis.com/jtr-lift-u-4ever-cool-bucket/lifting/1dd00e0f-807b-46fb-a47d-9ec637b698d4/annotated.mp4",
+      "clip_url": "https://storage.example/lifting/clip-2/annotated.mp4",
       "date": "2026-11-13",
       "form_score": null,
       "gender": "male",
