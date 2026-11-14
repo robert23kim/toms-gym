@@ -221,10 +221,10 @@ def test_switch_defaults_off(monkeypatch):
     assert lift_type_auto.switch_on() is True
 
 
-def test_deploy_py_commits_the_switch_off():
+def test_deploy_py_commits_the_switch_on():
     text = (pathlib.Path(__file__).resolve().parents[2] / "deploy.py").read_text()
-    assert '"AUTO_LIFT_TYPE=0"' in text
-    assert "AUTO_LIFT_TYPE=1" not in text
+    assert '"AUTO_LIFT_TYPE=1"' in text
+    assert "AUTO_LIFT_TYPE=0" not in text
 
 
 def _comp_by_id(client, monkeypatch, description):
