@@ -71,10 +71,13 @@ describe("FindProfilePage", () => {
     expect(await screen.findByRole("link", { name: /Upload something/i })).toHaveAttribute("href", "/challenges/c1");
   });
 
-  it("ignores a next that leaves the site", async () => {
-    lookup([]);
-    submit(`/find-profile?next=${encodeURIComponent("//evil.example/x")}`);
-    await screen.findByText("Your profile is ready.");
-    expect(screen.queryByRole("link", { name: /Back to the challenge/i })).toBeNull();
-  });
+  it.each(["//evil.example/x", "/\\evil.example", "/\t/evil.example", "/profile/u1", "/challenges/c1/../../x", "https://evil.example"])(
+    "only takes a challenge board as next, not %j",
+    async (bad) => {
+      lookup([]);
+      submit(`/find-profile?next=${encodeURIComponent(bad)}`);
+      await screen.findByText("Your profile is ready.");
+      expect(screen.queryByRole("link", { name: /Back to the challenge/i })).toBeNull();
+    },
+  );
 });

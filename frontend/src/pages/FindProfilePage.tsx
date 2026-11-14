@@ -28,7 +28,7 @@ const FindProfilePage: React.FC = () => {
   const [found, setFound] = useState<Found | null>(null);
   const [searchParams] = useSearchParams();
   const nextParam = searchParams.get("next");
-  const next = nextParam && /^\/(?![/\\])/.test(nextParam) ? nextParam : null;
+  const next = nextParam && /^\/challenges\/[A-Za-z0-9-]+$/.test(nextParam) ? nextParam : null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
