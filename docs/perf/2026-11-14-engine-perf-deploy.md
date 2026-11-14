@@ -5,7 +5,7 @@ start with `candidate.md` and `verify-engine.md`).
 
 ## What is live
 
-**Superseded the same day:** `bowling-service-00057-qag` (engine `main` at `7e0169c`) is this build plus automatic lift type; explicit lift types return the same reports. See `docs/reference/auto-lift-type.md`. The rest of this section describes `00054-zj5`, now the rollback target.
+**Superseded the same day:** live is `bowling-service-00061-ram` (engine `main` at `f4d0059`): this build plus automatic lift type (`00057-qag`, the rollback target) and auto on the parallel pose workers; explicit lift types return the same reports. See `docs/reference/auto-lift-type.md`. The rest of this section describes `00054-zj5`.
 
 - `bowling-service-00054-zj5`, image digest `sha256:42f105dd…6e11`, built from engine branch
   `perf/engine-2026-11-13` at `f198bac` (worktree `~/code/bowling-app/perf-engine`, off `feat/situp-config` `93378b0`).
